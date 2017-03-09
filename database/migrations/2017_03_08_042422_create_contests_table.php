@@ -17,7 +17,7 @@ class CreateContestsTable extends Migration
             $table->increments('id');
             $table->string('name', 100);
             $table->dateTime('time');
-            $table->time('duration');
+            $table->integer('duration');
             $table->enum('visibility', config('constants.CONTEST_VISIBILITY'));
             $table->timestamps();
         });
