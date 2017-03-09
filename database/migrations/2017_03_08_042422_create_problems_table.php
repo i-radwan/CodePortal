@@ -14,7 +14,12 @@ class CreateProblemsTable extends Migration
     public function up()
     {
         Schema::create('problems', function (Blueprint $table) {
-            $table->increments('id');
+            $table->string('id');
+            $table->integer('judge_id');
+            $table->string('name');
+            $table->integer('difficulty');
+            $table->integer('accepted_count');
+            $table->unique(array('judge_id', 'id'));
             $table->timestamps();
         });
     }

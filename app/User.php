@@ -26,4 +26,35 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function participating_in_contests()
+    {
+        return $this->belongsToMany('App\Contest', 'participants')->withTimestamps();
+    }
+
+    public function organizing_contests()
+    {
+        return $this->belongsToMany('App\Contest', 'contest_admin');
+    }
+
+    public function questions()
+    {
+        return $this->hasMany('App\Question');
+    }
+
+    public function contest_questions($contest_id)
+    {
+        return $this->hasMany('App\Question')->where('contest_id', '=', $contest_id);
+    }
+
+    public function handles()
+    {
+        return $this->belongsToMany('App\Judge', 'user_handles')->withPivot('handle');
+    }
+    public function submissions()
+    {
+        return $this->hasMany('App\Submission');
+    }
+
+
 }

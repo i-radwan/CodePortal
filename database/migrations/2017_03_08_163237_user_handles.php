@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateJudgesTable extends Migration
+class UserHandles extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateJudgesTable extends Migration
      */
     public function up()
     {
-        Schema::create('judges', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->string('link')->unique();
-            $table->string('api_link');
-
-            $table->timestamps();
+        Schema::create('user_handles', function (Blueprint $table) {
+            $table->integer('user_id');
+            $table->integer('provider_id');
+            $table->string('handle');
+            $table->unique(array('user_id', 'provider_id'));
         });
     }
 
@@ -30,6 +28,6 @@ class CreateJudgesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('judges');
+        Schema::dropIfExists('user_handles');
     }
 }
