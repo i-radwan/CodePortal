@@ -29,31 +29,31 @@ class User extends Authenticatable
 
     public function participating_in_contests()
     {
-        return $this->belongsToMany('App\Contest', 'participants')->withTimestamps();
+        return $this->belongsToMany('App\Models\Contest', 'participants')->withTimestamps();
     }
 
     public function organizing_contests()
     {
-        return $this->belongsToMany('App\Contest', 'contest_admin');
+        return $this->belongsToMany('App\Models\Contest', 'contest_admin');
     }
 
     public function questions()
     {
-        return $this->hasMany('App\Question');
+        return $this->hasMany('App\Models\Question');
     }
 
     public function contest_questions($contest_id)
     {
-        return $this->hasMany('App\Question')->where('contest_id', '=', $contest_id);
+        return $this->hasMany('App\Models\Question')->where('contest_id', '=', $contest_id);
     }
 
     public function handles()
     {
-        return $this->belongsToMany('App\Judge', 'user_handles')->withPivot('handle');
+        return $this->belongsToMany('App\Models\Judge', 'user_handles')->withPivot('handle');
     }
     public function submissions()
     {
-        return $this->hasMany('App\Submission');
+        return $this->hasMany('App\Models\Submission');
     }
 
 

@@ -10,22 +10,22 @@ class Contest extends Model
 
     public function participating_users()
     {
-        return $this->belongsToMany('App\User', 'participants')->withTimestamps();
+        return $this->belongsToMany('App\Models\User', 'participants')->withTimestamps();
     }
 
     public function organizing_users()
     {
-        return $this->belongsToMany('App\User', 'contest_admin');
+        return $this->belongsToMany('App\Models\User', 'contest_admin');
     }
 
     public function questions()
     {
-        return $this->hasMany('App\Question');
+        return $this->hasMany('App\Models\Question');
     }
 
     public function problems()
     {
-        return $this->belongsToMany('App\Problem', 'contest_problem');
+        return $this->belongsToMany('App\Models\Problem', 'contest_problem');
     }
 
 

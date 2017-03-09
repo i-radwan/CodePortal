@@ -10,6 +10,6 @@ class Language extends Model
 
     public function submissions()
     {
-        return $this->hasMany('App\Submission');
+        return $this->hasMany('App\Models\Submission');
     }
 }

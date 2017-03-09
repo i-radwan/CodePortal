@@ -11,7 +11,7 @@ class Tag extends Model
 
     public function problems()
     {
-        return $this->belongsToMany('App\Problem', 'problem_tag');
+        return $this->belongsToMany('App\Models\Problem', 'problem_tag');
     }
 
 }

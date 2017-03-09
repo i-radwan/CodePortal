@@ -10,16 +10,16 @@ class Question extends Model
 
     public function contest()
     {
-        return $this->belongsTo('App\Contest');
+        return $this->belongsTo('App\Models\Contest');
     }
 
     public function admin()
     {
-        return $this->hasOne('App\User', 'admin_id');
+        return $this->hasOne('App\Models\User', 'admin_id');
     }
 
     public function user()
     {
-        return $this->hasOne('App\User', 'user_id');
+        return $this->hasOne('App\Models\User', 'user_id');
     }
 }

@@ -15,10 +15,10 @@ class CreateContestsTable extends Migration
     {
         Schema::create('contests', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name', 100);
             $table->dateTime('time');
             $table->time('duration');
-            $table->enum('visibility', config('constants.CONTEST_VISIBILITYs'));
+            $table->enum('visibility', config('constants.CONTEST_VISIBILITY'));
             $table->timestamps();
         });
     }

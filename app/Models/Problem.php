@@ -10,21 +10,21 @@ class Problem extends Model
 
     public function contests()
     {
-        return $this->belongsToMany('App\Contest', 'contest_problem');
+        return $this->belongsToMany('App\Models\Contest', 'contest_problem');
     }
 
     public function judge()
     {
-        return $this->hasOne('App\Judge');
+        return $this->hasOne('App\Models\Judge');
     }
 
     public function tags()
     {
-        return $this->belongsToMany('App\Tag', 'problem_tag');
+        return $this->belongsToMany('App\Models\Tag', 'problem_tag');
     }
     public function submissions()
     {
-        return $this->hasMany('App\Submission');
+        return $this->hasMany('App\Models\Submission');
     }
 
 }
