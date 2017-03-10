@@ -32,6 +32,16 @@ class JudgeTest extends TestCase
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - missing data");
         } catch (ValidationException $e){
         }
+        try {
+            ($this->insertInvalidJudgeLink());
+            $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid link");
+        } catch (ValidationException $e){
+        }
+        try {
+            ($this->insertInvalidJudgeAPILink());
+            $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid api link");
+        } catch (ValidationException $e){
+        }
         $validJudge = $this->insertValidJudge();
         try {
             ($this->insertDuplicateNameJudge());
@@ -51,26 +61,38 @@ class JudgeTest extends TestCase
 
     public function insertValidJudge()
     {
-        $judge = new Judge(['name' => 'Judge1', 'link' => 'www.link.com', 'api_link' => 'www.apilink.com']);
+        $judge = new Judge(['name' => 'Judge1', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
         $judge->store();
         return $judge;
     }
 
     public function insertInvalidJudgeWithMissingData()
     {
-        $judge = new Judge(['name' => '', 'link' => 'www.link.com', 'api_link' => 'www.apilink.com']);
+        $judge = new Judge(['name' => '', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
+        $judge->store();
+        return $judge;
+    }
+    public function insertInvalidJudgeLink()
+    {
+        $judge = new Judge(['name' => 'Judge14', 'link' => 'www.link.com', 'api_link' => 'http://www.apilink.com']);
+        $judge->store();
+        return $judge;
+    }
+    public function insertInvalidJudgeAPILink()
+    {
+        $judge = new Judge(['name' => 'Judge3', 'link' => 'http://www.link.com', 'api_link' => 'ask;lfadkls;']);
         $judge->store();
         return $judge;
     }
     public function insertDuplicateNameJudge()
     {
-        $judge = new Judge(['name' => 'Judge1', 'link' => 'www.link.com', 'api_link' => 'www.apilink.com']);
+        $judge = new Judge(['name' => 'Judge1', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
         $judge->store();
         return $judge;
     }
     public function insertDuplicateLinkJudge()
     {
-        $judge = new Judge(['name' => 'Judge2', 'link' => 'www.link.com', 'api_link' => 'www.apilink.com']);
+        $judge = new Judge(['name' => 'Judge2', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
         $judge->store();
         return $judge;
     }

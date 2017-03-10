@@ -17,8 +17,8 @@ return [
     "judge" => [
         "store_validation_rules" => [
             'name' => 'required|unique:judges|max:100',
-            'link' => 'required|unique:judges|max:100',
-            'api_link' => 'required|max:255',
+            'link' => 'required|unique:judges|max:100|url',
+            'api_link' => 'required|max:255|url',
         ]
     ],
 ];
