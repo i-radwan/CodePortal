@@ -56,5 +56,8 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Submission');
     }
 
+    public function store(){
+        $this->save();
+    }
 
 }
