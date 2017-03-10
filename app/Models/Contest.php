@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Validator;
 
 class Contest extends Model
 {
@@ -28,5 +29,11 @@ class Contest extends Model
         return $this->belongsToMany('App\Models\Problem', 'contest_problem');
     }
 
+    public function store()
+    {
+        $v = Validator::make(['name' => $this->name, 'time' => $this->time, 'duration' => $this->duration, 'visibility' => $this->visibility], config('rules.contest.store_validation_rules'));
+        $v->validate();
+        $this->save();
+    }
 
 }
