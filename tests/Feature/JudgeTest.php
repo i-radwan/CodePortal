@@ -62,38 +62,38 @@ class JudgeTest extends TestCase
     public function insertValidJudge()
     {
         $judge = new Judge(['name' => 'Judge1', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->store();
+        $judge->save();
         return $judge;
     }
 
     public function insertInvalidJudgeWithMissingData()
     {
         $judge = new Judge(['name' => '', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->store();
+        $judge->save();
         return $judge;
     }
     public function insertInvalidJudgeLink()
     {
         $judge = new Judge(['name' => 'Judge14', 'link' => 'www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->store();
+        $judge->save();
         return $judge;
     }
     public function insertInvalidJudgeAPILink()
     {
         $judge = new Judge(['name' => 'Judge3', 'link' => 'http://www.link.com', 'api_link' => 'ask;lfadkls;']);
-        $judge->store();
+        $judge->save();
         return $judge;
     }
     public function insertDuplicateNameJudge()
     {
         $judge = new Judge(['name' => 'Judge1', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->store();
+        $judge->save();
         return $judge;
     }
     public function insertDuplicateLinkJudge()
     {
         $judge = new Judge(['name' => 'Judge2', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->store();
+        $judge->save();
         return $judge;
     }
 }

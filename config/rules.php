@@ -21,4 +21,22 @@ return [
             'api_link' => 'required|max:255|url',
         ]
     ],
+    "language" => [
+        "store_validation_rules" => [
+            'name' => 'required|unique:languages|max:50',
+        ]
+    ],
+    "tag" => [
+        "store_validation_rules" => [
+            'name' => 'required|unique:tags|max:50',
+        ]
+    ],
+    "problem" => [
+        "store_validation_rules" => [
+            'name' => 'required|max:100',
+            'judge_id' => 'required',
+            'difficulty' => 'required|greater_than:0',
+            'accepted_count' => 'required|greater_than:0',
+        ]
+    ],
 ];

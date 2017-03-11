@@ -66,38 +66,38 @@ class ContestTest extends TestCase
     public function insertValidContest()
     {
         $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-10-10 12:12:12', 'duration' => 100, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->store();
+        $contest->save();
         return $contest;
     }
 
     public function insertInvalidContestsWithMissingData()
     {
         $contest = new Contest(array('time' => '2017-10-10 12:12:12', 'duration' => 100, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->store();
+        $contest->save();
     }
     public function insertInvalidContestTime()
     {
         $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-10-10 12:12s:12', 'duration' => 100, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->store();
+        $contest->save();
     }
     public function insertInvalidContestVisibility()
     {
         $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-10-10 12:12:12', 'duration' => 100, 'visibility' => '2'));
-        $contest->store();
+        $contest->save();
     }
     public function insertInvalidContestDuration()
     {
         $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-10-10 12:12:12', 'duration' => -1, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->store();
+        $contest->save();
     }
     public function insertInvalidContestName()
     {
         $contest = new Contest(array('name' => 'Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1', 'time' => '2017-10-10 12:12:12', 'duration' => 100, 'visibility' => '2'));
-        $contest->store();
+        $contest->save();
     }
     public function insertInvalidContestDate()
     {
         $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-03-8 10:56:05', 'duration' => 100, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->store();
+        $contest->save();
     }
 }
