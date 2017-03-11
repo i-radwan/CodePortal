@@ -15,9 +15,9 @@ class UserHandles extends Migration
     {
         Schema::create('user_handles', function (Blueprint $table) {
             $table->integer('user_id');
-            $table->integer('provider_id');
+            $table->integer('judge_id');
             $table->string('handle', 50);
-            $table->unique(array('user_id', 'provider_id'));
+            $table->unique(array('user_id', 'judge_id'));
         });
     }
 

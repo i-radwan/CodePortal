@@ -21,31 +21,33 @@ class ProblemTest extends TestCase
      */
     public function testProblem()
     {
+        $judge = new Judge(['name' => 'Codeforces', 'link' => 'http://www.judge.com', 'api_link' => 'http://www.judge.com']);
+        $judge->save();
         $initialCount = Problem::count();
         // insert valid contest and check for count
-        $validProblem = $this->insertValidProblem();
+        $validProblem = $this->insertProblem('Problem1', 10, 20, $judge);
         $this->assertTrue(Problem::count() == $initialCount + 1);
         $validProblem->delete();
         $this->assertTrue(Problem::count() == $initialCount); // test deleting
 
         // insert invalid models
         try {
-            ($this->insertInvalidProblemMissingData());
+            $this->insertProblem('', 10, 20, $judge);
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - missing data");
         } catch (ValidationException $e) {
         }
         try {
-            ($this->insertInvalidProblemName());
+            $this->insertProblem('Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1', 10, 20, $judge);
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - name too long");
         } catch (ValidationException $e) {
         }
         try {
-            ($this->insertInvalidProblemDiff());
+            $this->insertProblem('Problem 1', -10, 20, $judge);
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - diff -ve");
         } catch (ValidationException $e) {
         }
         try {
-            ($this->insertInvalidProblemAcceptedCount());
+            $this->insertProblem('Problem2', 10, -20, $judge);
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - accepted count -ve");
         } catch (ValidationException $e) {
         }
@@ -54,43 +56,12 @@ class ProblemTest extends TestCase
     }
 
 
-    public function insertValidProblem()
+    public function insertProblem($name, $difficulty, $accepted_count, $judge)
     {
-        $problem = new Problem(['name' => 'Problem1', 'difficulty' => 10, 'accepted_count' => 20]);
-        $problem->judge()->associate(Judge::first());
-        $problem->save();
+        $problem = new Problem(['name' => $name, 'difficulty' => $difficulty, 'accepted_count' => $accepted_count]);
+        $problem->judge()->associate($judge);
+        $problem->store();
         return $problem;
     }
 
-    public function insertInvalidProblemMissingData()
-    {
-        $problem = new Problem(['name' => '', 'difficulty' => 10, 'accepted_count' => 20]);
-        $problem->judge()->associate(Judge::first());
-        $problem->save();
-        return $problem;
-    }
-
-    public function insertInvalidProblemName()
-    {
-        $problem = new Problem(['name' => 'em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1Problem1em1Problem1P', 'difficulty' => 10, 'accepted_count' => 20]);
-        $problem->judge()->associate(Judge::first());
-        $problem->save();
-        return $problem;
-    }
-
-    public function insertInvalidProblemDiff()
-    {
-        $problem = new Problem(['name' => 'em1P', 'difficulty' => -1, 'accepted_count' => 20]);
-        $problem->judge()->associate(Judge::first());
-        $problem->save();
-        return $problem;
-    }
-
-    public function insertInvalidProblemAcceptedCount()
-    {
-        $problem = new Problem(['name' => 'em1Problem1Pr', 'difficulty' => 10, 'accepted_count' => -1]);
-        $problem->judge()->associate(Judge::first());
-        $problem->save();
-        return $problem;
-    }
 }

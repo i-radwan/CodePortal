@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Exceptions\UnknownJudgeException;
 use Validator;
+use DB;
 
 class Problem extends Model
 {
@@ -30,7 +31,7 @@ class Problem extends Model
         return $this->hasMany('App\Models\Submission');
     }
 
-    public function save(array $options = [])
+    public function store()
     {
         $v = Validator::make($this->attributes, config('rules.problem.store_validation_rules'));
         $v->validate();
@@ -38,6 +39,6 @@ class Problem extends Model
         if (!$this->judge()) {
             throw new UnknownJudgeException;
         }
-        return parent::save($options);
+        $this->save();
     }
 }

@@ -17,7 +17,7 @@ class CreateSubmissionsTable extends Migration
             $table->increments('id');
             $table->integer('problem_id');
             $table->integer('user_id');
-            $table->integer('submission_id');
+            $table->string('submission_id');
             $table->integer('language_id');
             $table->integer('execution_time');
             $table->integer('used_memory');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Validator;
 use Illuminate\Database\Eloquent\Model;
 
 class Submission extends Model
@@ -24,4 +25,11 @@ class Submission extends Model
         return $this->belongsTo('App\Models\Language');
     }
 
+    public function store()
+    {
+        $v = Validator::make($this->attributes, config('rules.submission.store_validation_rules'));
+        $v->validate();
+
+        $this->save();
+    }
 }

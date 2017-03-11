@@ -19,10 +19,10 @@ class CreateUsersTable extends Migration
             $table->string('email', 50)->unique();
             $table->string('password');
             $table->string('handle', 50)->unique();
-            $table->enum('gender', config('constants.USER_GENDER'));
-            $table->integer('age');
-            $table->string('profile_pic');
-            $table->string('country');
+            $table->enum('gender', config('constants.USER_GENDER'))->nullable();
+            $table->integer('age')->nullable();
+            $table->string('profile_pic')->nullable();
+            $table->string('country')->nullable();
             $table->enum('role', config('constants.USER_ROLE'));
             $table->rememberToken();
             $table->timestamps();

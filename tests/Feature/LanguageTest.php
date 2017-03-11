@@ -20,26 +20,27 @@ class LanguageTest extends TestCase
     {
         $initialCount = Language::count();
         // insert valid contest and check for count
-        $validLanguage = $this->insertValidLanguage();
+        $validLanguage = $this->insertLanguage('Lang1');
         $this->assertTrue(Language::count() == $initialCount + 1);
         $validLanguage->delete();
         $this->assertTrue(Language::count() == $initialCount); // test deleting
 
         // insert invalid models
         try {
-            ($this->insertInvalidLanguageMissingData());
+            $this->insertLanguage('');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - missing data");
         } catch (ValidationException $e){
         }
         try {
-            ($this->insertInvalidLanguageName());
+            $this->insertLanguage('Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1Lang1');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - name too long");
         } catch (ValidationException $e){
         }
         //Duplicate languages
-        $validLanguage = $this->insertValidLanguage();
+        $validLanguage = $this->insertLanguage('Lang1');
+
         try {
-            ($this->insertValidLanguage());
+            $this->insertLanguage('Lang1');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - name duplicate");
         } catch (ValidationException $e){
         }
@@ -50,24 +51,10 @@ class LanguageTest extends TestCase
     }
 
 
-    public function insertValidLanguage()
+    public function insertLanguage($name)
     {
-        $language = new Language(['name' => 'Lang1']);
-        $language->save();
+        $language = new Language(['name' => $name]);
+        $language->store();
         return $language;
     }
-
-    public function insertInvalidLanguageMissingData()
-    {
-        $language = new Language(['name' => '']);
-        $language->save();
-        return $language;
-    }
-    public function insertInvalidLanguageName()
-    {
-        $language = new Language(['name' => 'namenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamenamename']);
-        $language->save();
-        return $language;
-    }
-
 }

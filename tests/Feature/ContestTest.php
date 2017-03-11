@@ -17,42 +17,42 @@ class ContestTest extends TestCase
     {
         $initialCount = Contest::count();
         // insert valid contest and check for count
-        $validContest = $this->insertValidContest();
-        $this->assertTrue(Contest::count() == $initialCount+1);
+        $validContest = $this->insertContest('Contest1', '2017-10-10 12:12:12', 100, config('constants.CONTEST_VISIBILITY.PUBLIC'));
+        $this->assertTrue(Contest::count() == $initialCount + 1);
         $validContest->delete();
         $this->assertTrue(Contest::count() == $initialCount); // test deleting
 
 
         // insert invalid models
         try {
-            ($this->insertInvalidContestsWithMissingData());
+            $this->insertContest('', '2017-10-10 12:12:12', 100, config('constants.CONTEST_VISIBILITY.PUBLIC'));
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - missing data");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         try {
-            ($this->insertInvalidContestTime());
+            $this->insertContest('Contest1', '2017-10-10 12:1s2:12', 100, config('constants.CONTEST_VISIBILITY.PUBLIC'));
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid dateTime value");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         try {
-            $this->insertInvalidContestVisibility();
+            $this->insertContest('Contest1', '2017-10-10 12:12:12', 100, '2');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - contest visibility");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         try {
-            $this->insertInvalidContestDuration();
+            $this->insertContest('Contest1', '2017-10-10 12:12:12', -1, config('constants.CONTEST_VISIBILITY.PUBLIC'));
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - -ve duration");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         try {
-            $this->insertInvalidContestName();
+            $this->insertContest('Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1', '2017-10-10 12:12:12', 100, config('constants.CONTEST_VISIBILITY.PUBLIC'));
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - long name");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         try {
-            $this->insertInvalidContestDate();
+            $this->insertContest('Contest1', '2017-03-8 10:56:05', 100, config('constants.CONTEST_VISIBILITY.PUBLIC'));
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - before date");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         $this->assertTrue(Contest::count() == $initialCount); // not inserted
 
@@ -63,41 +63,10 @@ class ContestTest extends TestCase
 
     }
 
-    public function insertValidContest()
+    public function insertContest($name, $time, $duration, $visilibty)
     {
-        $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-10-10 12:12:12', 'duration' => 100, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->save();
+        $contest = new Contest(array('name' => $name, 'time' => $time, 'duration' => $duration, 'visibility' => $visilibty));
+        $contest->store();
         return $contest;
-    }
-
-    public function insertInvalidContestsWithMissingData()
-    {
-        $contest = new Contest(array('time' => '2017-10-10 12:12:12', 'duration' => 100, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->save();
-    }
-    public function insertInvalidContestTime()
-    {
-        $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-10-10 12:12s:12', 'duration' => 100, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->save();
-    }
-    public function insertInvalidContestVisibility()
-    {
-        $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-10-10 12:12:12', 'duration' => 100, 'visibility' => '2'));
-        $contest->save();
-    }
-    public function insertInvalidContestDuration()
-    {
-        $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-10-10 12:12:12', 'duration' => -1, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->save();
-    }
-    public function insertInvalidContestName()
-    {
-        $contest = new Contest(array('name' => 'Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1Contest1', 'time' => '2017-10-10 12:12:12', 'duration' => 100, 'visibility' => '2'));
-        $contest->save();
-    }
-    public function insertInvalidContestDate()
-    {
-        $contest = new Contest(array('name' => 'Contest1', 'time' => '2017-03-8 10:56:05', 'duration' => 100, 'visibility' => config('constants.CONTEST_VISIBILITY.PUBLIC')));
-        $contest->save();
     }
 }

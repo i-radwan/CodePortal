@@ -16,11 +16,12 @@ class CreateQuestionsTable extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
-            $table->string('content');
-            $table->string('answer');
+            $table->longText('content');
+            $table->longText('answer')->nullable();
             $table->enum('status', config('constants.QUESTION_STATUS'));
-            $table->integer('admin_id');
+            $table->integer('admin_id')->nullable();
             $table->integer('contest_id');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

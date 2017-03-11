@@ -14,8 +14,9 @@ class User extends Authenticatable
      *
      * @var array
      */
+    // ToDo remove role from fillables
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'handle', 'gender', 'age', 'profile_pic', 'country'
     ];
 
     /**
@@ -40,6 +41,11 @@ class User extends Authenticatable
     public function questions()
     {
         return $this->hasMany('App\Models\Question');
+    }
+
+    public function answered_questions()
+    {
+        return $this->hasMany('App\Models\Question')->where('admin_id', '=', $this->id);
     }
 
     public function contest_questions($contest_id)

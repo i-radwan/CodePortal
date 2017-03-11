@@ -20,7 +20,7 @@ class JudgeTest extends TestCase
     {
         $initialCount = Judge::count();
         // insert valid contest and check for count
-        $validJudge = $this->insertValidJudge();
+        $validJudge = $this->insertJudge('Judge1', 'http://www.link.com', 'http://www.apilink.com');
         $this->assertTrue(Judge::count() == $initialCount + 1);
         $validJudge->delete();
         $this->assertTrue(Judge::count() == $initialCount); // test deleting
@@ -28,30 +28,30 @@ class JudgeTest extends TestCase
 
         // insert invalid models
         try {
-            ($this->insertInvalidJudgeWithMissingData());
+            $this->insertJudge('', 'http://www.link.com', 'http://www.apilink.com');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - missing data");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         try {
-            ($this->insertInvalidJudgeLink());
+            $this->insertJudge('Judge1', 'link.com', 'http://www.apilink.com');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid link");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         try {
-            ($this->insertInvalidJudgeAPILink());
+            $this->insertJudge('Judge1', 'http://www.link.com', 'http://');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid api link");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
-        $validJudge = $this->insertValidJudge();
+        $validJudge = $this->insertJudge('Judge1', 'http://www.link.com', 'http://www.apilink.com');
         try {
-            ($this->insertDuplicateNameJudge());
+            $this->insertJudge('Judge1', 'http://www.link2.com', 'http://www.apilink.com');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - name duplicate");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
         try {
-            ($this->insertDuplicateLinkJudge());
+            $this->insertJudge('Judge2', 'http://www.link.com', 'http://www.apilink.com');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - link duplicate");
-        } catch (ValidationException $e){
+        } catch (ValidationException $e) {
         }
 
         $validJudge->delete();
@@ -59,41 +59,11 @@ class JudgeTest extends TestCase
         $this->assertTrue(Judge::count() == $initialCount); // not inserted
     }
 
-    public function insertValidJudge()
+    public function insertJudge($name, $link, $api_link)
     {
-        $judge = new Judge(['name' => 'Judge1', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->save();
+        $judge = new Judge(['name' => $name, 'link' => $link, 'api_link' => $api_link]);
+        $judge->store();
         return $judge;
     }
 
-    public function insertInvalidJudgeWithMissingData()
-    {
-        $judge = new Judge(['name' => '', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->save();
-        return $judge;
-    }
-    public function insertInvalidJudgeLink()
-    {
-        $judge = new Judge(['name' => 'Judge14', 'link' => 'www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->save();
-        return $judge;
-    }
-    public function insertInvalidJudgeAPILink()
-    {
-        $judge = new Judge(['name' => 'Judge3', 'link' => 'http://www.link.com', 'api_link' => 'ask;lfadkls;']);
-        $judge->save();
-        return $judge;
-    }
-    public function insertDuplicateNameJudge()
-    {
-        $judge = new Judge(['name' => 'Judge1', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->save();
-        return $judge;
-    }
-    public function insertDuplicateLinkJudge()
-    {
-        $judge = new Judge(['name' => 'Judge2', 'link' => 'http://www.link.com', 'api_link' => 'http://www.apilink.com']);
-        $judge->save();
-        return $judge;
-    }
 }
