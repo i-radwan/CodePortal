@@ -3,7 +3,7 @@
 
     <div class="row vertical-padding">
         @foreach($sponsors as $sponsor)
-            <a href="{{ $sponsor['url'] }}">
+            <a href="{{ $sponsor['url'] }}" target='_blank'>
                 <div class="col-md-4 text-center">
                     <img src="{{ $sponsor['img'] }}" alt="{{ $sponsor['name'] }}" class="sponsor-img">
                     <h3>{{ $sponsor['name'] }}</h3>
