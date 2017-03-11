@@ -55,15 +55,6 @@
                             {!! Request::is('groups') ? '<span class="sr-only">(current)</span>' : '' !!}
                         </a>
                     </li>
-
-                    {{--<li class="dropdown">--}}
-                        {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Extras <span class="caret"></span></a>--}}
-                        {{--<ul class="dropdown-menu">--}}
-                            {{--<li><a href="#">Contact Us</a></li>--}}
-                            {{--<li role="separator" class="divider"></li>--}}
-                            {{--<li><a href="#">About</a></li>--}}
-                        {{--</ul>--}}
-                    {{--</li>--}}
                 </ul>
 
                 <!-- Right Side Of Navbar -->
@@ -89,6 +80,10 @@
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="{{ url('profile/' . Auth::user()->name) }}">Profile</a>
+                                </li>
+                                <li role="separator" class="divider">
                                 <li>
                                     <a href="{{ route('logout') }}"
                                        onclick="event.preventDefault();

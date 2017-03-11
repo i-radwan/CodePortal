@@ -12,10 +12,11 @@
 */
 
 Route::get('/', 'HomeController@index');
-Route::get('/contests', 'ContestController@index');
-Route::get('/problems', 'ProblemController@index');
-Route::get('/blogs', 'BlogController@index');
-Route::get('/groups', 'GroupController@index');
+Route::get('profile/{user}', 'ProfileController@index');
+Route::get('contests', 'ContestController@index');
+Route::get('problems', 'ProblemController@index');
+Route::get('blogs', 'BlogController@index');
+Route::get('groups', 'GroupController@index');
 
 
 // Authentication route definitions copied from function 'Auth::routes()'
