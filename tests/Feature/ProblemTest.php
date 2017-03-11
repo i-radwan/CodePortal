@@ -3,13 +3,9 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Validation\ValidationException;
 use App\Models\Problem;
 use App\Models\Judge;
-use App\Exceptions\UnknownJudgeException;
 
 class ProblemTest extends TestCase
 {

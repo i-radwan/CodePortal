@@ -4,9 +4,6 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\Judge;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Validation\ValidationException;
 
 class JudgeTest extends TestCase

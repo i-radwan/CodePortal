@@ -56,11 +56,6 @@ class ContestTest extends TestCase
         }
         $this->assertTrue(Contest::count() == $initialCount); // not inserted
 
-        // ToDo another file
-        // get contest problems
-        // get contest admins
-        // get contest participants
-
     }
 
     public function insertContest($name, $time, $duration, $visilibty)
