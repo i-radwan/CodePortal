@@ -1,4 +1,4 @@
-<header id="header">
+<header>
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -21,11 +21,40 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Contests</a></li>
-                    <li><a href="#">Problems</a></li>
-                    <li><a href="#">Blogs</a></li>
-                    <li><a href="#">Groups</a></li>
+                    <li class="{{ Request::is('/') ? 'active' : '' }}">
+                        <a href="{{ url('/') }}">
+                            Home
+                            {!! Request::is('/') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::is('contests') ? 'active' : '' }}">
+                        <a href="{{ url('contests') }}">
+                            Contests
+                            {!! Request::is('contests') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::is('problems') ? 'active' : '' }}">
+                        <a href="{{ url('problems') }}">
+                            Problems
+                            {!! Request::is('problems') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::is('blogs') ? 'active' : '' }}">
+                        <a href="{{ url('blogs') }}">
+                            Blogs
+                            {!! Request::is('blogs') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::is('groups') ? 'active' : '' }}">
+                        <a href="{{ url('groups') }}">
+                            Groups
+                            {!! Request::is('groups') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
 
                     {{--<li class="dropdown">--}}
                         {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Extras <span class="caret"></span></a>--}}
