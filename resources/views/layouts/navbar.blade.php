@@ -70,8 +70,18 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
-                        <li><a href="{{ route('login') }}">Log In</a></li>
-                        <li><a href="{{ route('register') }}">Sign Up</a></li>
+                        <li class="{{ Request::url() == route('login') ? 'active' : '' }}">
+                            <a href="{{ route('login') }}">
+                                Log In
+                                {!! Request::url() == route('login') ? '<span class="sr-only">(current)</span>' : '' !!}
+                            </a>
+                        </li>
+                        <li class="{{ Request::url() == route('register') ? 'active' : '' }}">
+                            <a href="{{ route('register') }}">
+                                Sign Up
+                                {!! Request::url() == route('register') ? '<span class="sr-only">(current)</span>' : '' !!}
+                            </a>
+                        </li>
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
