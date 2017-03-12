@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\Types\Integer;
 use Validator;
 use DB;
 
@@ -28,8 +29,9 @@ class Tag extends Model
         $this->save();
     }
 
-    public static function index($count)
+    public static function index($count = 15)
     {
         return json_encode(DB::table(config('db_constants.TABLES.TBL_TAGS'))->take($count)->get());
     }
+
 }

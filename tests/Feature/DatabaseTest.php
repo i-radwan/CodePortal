@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use App\Models\Question;
 use App\Models\Submission;
 use App\Models\Tag;
@@ -11,9 +11,19 @@ use App\Models\Judge;
 use App\Models\User;
 use App\Models\Contest;
 use App\Models\Problem;
+use Tests;
+use Artisan;
 
-class DatabaseTest extends TestCase
+abstract class DatabaseTest extends BaseTestCase
 {
+    use Tests\CreatesApplication;
+
+    protected function setUp()
+    {
+        putenv('DB_CONNECTION=mysql_testing');
+        parent::setUp();
+        Artisan::call('migrate');
+    }
 
     public function insertProblem($name, $difficulty, $acceptedSubmissionsCount, $judge)
     {
@@ -72,6 +82,7 @@ class DatabaseTest extends TestCase
         $contest->store();
         return $contest;
     }
+
     public function insertSubmission($submission_id, $execution_time, $used_memory, $verdict, $problem, $user, $language)
     {
         $submission = new Submission(['submission_id' => $submission_id, 'execution_time' => $execution_time, 'consumed_memory' => $used_memory, 'verdict' => $verdict]);
@@ -95,5 +106,12 @@ class DatabaseTest extends TestCase
         $tag = new Tag([config('db_constants.FIELDS.FLD_TAGS_NAME') => $name]);
         $tag->store();
         return $tag;
+    }
+
+    protected function tearDown()
+    {
+        Artisan::call('migrate:reset');
+        parent::tearDown();
+        putenv('DB_CONNECTION=mysql');
     }
 }
