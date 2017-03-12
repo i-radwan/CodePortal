@@ -21,7 +21,6 @@ class ContestTest extends DatabaseTest
         $validContest->delete();
         $this->assertTrue(Contest::count() == $initialCount); // test deleting
 
-
         // insert invalid models
         try {
             $this->insertContest('', '2017-10-10 12:12:12', 100, config('constants.CONTEST_VISIBILITY.PUBLIC'));
