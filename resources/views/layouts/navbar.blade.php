@@ -1,4 +1,4 @@
-<header id="header">
+<header>
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -21,28 +21,58 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Contests</a></li>
-                    <li><a href="#">Problems</a></li>
-                    <li><a href="#">Blogs</a></li>
-                    <li><a href="#">Groups</a></li>
+                    <li class="{{ Request::is('/') ? 'active' : '' }}">
+                        <a href="{{ url('/') }}">
+                            Home
+                            {!! Request::is('/') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
 
-                    {{--<li class="dropdown">--}}
-                        {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Extras <span class="caret"></span></a>--}}
-                        {{--<ul class="dropdown-menu">--}}
-                            {{--<li><a href="#">Contact Us</a></li>--}}
-                            {{--<li role="separator" class="divider"></li>--}}
-                            {{--<li><a href="#">About</a></li>--}}
-                        {{--</ul>--}}
-                    {{--</li>--}}
+                    <li class="{{ Request::is('contests') ? 'active' : '' }}">
+                        <a href="{{ url('contests') }}">
+                            Contests
+                            {!! Request::is('contests') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::is('problems') ? 'active' : '' }}">
+                        <a href="{{ url('problems') }}">
+                            Problems
+                            {!! Request::is('problems') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::is('blogs') ? 'active' : '' }}">
+                        <a href="{{ url('blogs') }}">
+                            Blogs
+                            {!! Request::is('blogs') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
+
+                    <li class="{{ Request::is('groups') ? 'active' : '' }}">
+                        <a href="{{ url('groups') }}">
+                            Groups
+                            {!! Request::is('groups') ? '<span class="sr-only">(current)</span>' : '' !!}
+                        </a>
+                    </li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
-                        <li><a href="{{ route('login') }}">Log In</a></li>
-                        <li><a href="{{ route('register') }}">Sign Up</a></li>
+                        <li class="{{ Request::url() == route('login') ? 'active' : '' }}">
+                            <a href="{{ route('login') }}">
+                                Log In
+                                {!! Request::url() == route('login') ? '<span class="sr-only">(current)</span>' : '' !!}
+                            </a>
+                        </li>
+                        <li class="{{ Request::url() == route('register') ? 'active' : '' }}">
+                            <a href="{{ route('register') }}">
+                                Sign Up
+                                {!! Request::url() == route('register') ? '<span class="sr-only">(current)</span>' : '' !!}
+                            </a>
+                        </li>
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -50,6 +80,10 @@
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <a href="{{ url('profile/' . Auth::user()->name) }}">Profile</a>
+                                </li>
+                                <li role="separator" class="divider">
                                 <li>
                                     <a href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
