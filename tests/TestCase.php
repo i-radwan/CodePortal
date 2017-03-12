@@ -23,6 +23,6 @@ abstract class TestCase extends BaseTestCase
         parent::tearDown();
         putenv('DB_CONNECTION=mysql');
     }
-    
+
 
 }
