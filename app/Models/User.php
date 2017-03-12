@@ -14,10 +14,22 @@ class User extends Authenticatable
      *
      * @var array
      */
-    // ToDo remove role from fillables
-    protected $fillable = [
-        'name', 'email', 'password', 'username', 'gender', 'age', 'profile_pic', 'country'
-    ];
+
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable =  [
+            config('db_constants.FIELDS.FLD_USERS_NAME'),
+            config('db_constants.FIELDS.FLD_USERS_EMAIL'),
+            config('db_constants.FIELDS.FLD_USERS_PASSWORD'),
+            config('db_constants.FIELDS.FLD_USERS_USERNAME'),
+            config('db_constants.FIELDS.FLD_USERS_GENDER'),
+            config('db_constants.FIELDS.FLD_USERS_AGE'),
+            config('db_constants.FIELDS.FLD_USERS_PROFILE_PIC'),
+            config('db_constants.FIELDS.FLD_USERS_COUNTRY')
+        ];
+        parent::__construct($attributes);
+    }
+
     /**
      * The attributes that should be hidden for arrays.
      *

@@ -52,7 +52,7 @@ class ProblemTest extends DatabaseTest
 
         for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge);
 
-        $problems = Problem::index();
+        $problems = Problem::index(2);
         \Log::info($problems);
     }
 }

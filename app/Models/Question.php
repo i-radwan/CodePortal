@@ -10,8 +10,16 @@ use App\Exceptions\UnknownUserException;
 use Log;
 class Question extends Model
 {
-    protected $fillable = ['title', 'content', 'answer', 'status'];
-
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable =  [
+            config('db_constants.FIELDS.FLD_QUESTIONS_TITLE'),
+            config('db_constants.FIELDS.FLD_QUESTIONS_CONTENT'),
+            config('db_constants.FIELDS.FLD_QUESTIONS_ANSWER'),
+            config('db_constants.FIELDS.FLD_QUESTIONS_STATUS'),
+        ];
+        parent::__construct($attributes);
+    }
     public function contest()
     {
         return $this->belongsTo(Contest::class);

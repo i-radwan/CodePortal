@@ -7,8 +7,13 @@ use Validator;
 
 class Language extends Model
 {
-    protected $fillable = ['name'];
-
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable =  [
+            config('db_constants.FIELDS.FLD_LANGUAGES_NAME'),
+        ];
+        parent::__construct($attributes);
+    }
     public function submissions()
     {
         return $this->hasMany(Submission::class);

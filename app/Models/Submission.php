@@ -7,8 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Submission extends Model
 {
-    protected $fillable = ['submission_id', 'execution_time', 'consumed_memory', 'verdict'];
-
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable =  [
+            config('db_constants.FIELDS.FLD_SUBMISSIONS_SUBMISSION_ID'),
+            config('db_constants.FIELDS.FLD_SUBMISSIONS_EXECUTION_TIME'),
+            config('db_constants.FIELDS.FLD_SUBMISSIONS_CONSUMED_MEMORY'),
+            config('db_constants.FIELDS.FLD_SUBMISSIONS_VERDICT'),
+        ];
+        parent::__construct($attributes);
+    }
 
     public function problem()
     {

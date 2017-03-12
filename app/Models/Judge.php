@@ -6,7 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Validator;
 class Judge extends Model
 {
-    protected $fillable = ['name', 'link', 'api_link'];
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable =  [
+            config('db_constants.FIELDS.FLD_JUDGES_NAME'),
+            config('db_constants.FIELDS.FLD_JUDGES_LINK'),
+            config('db_constants.FIELDS.FLD_JUDGES_API_LINK'),
+        ];
+        parent::__construct($attributes);
+    }
 
     public function problems()
     {

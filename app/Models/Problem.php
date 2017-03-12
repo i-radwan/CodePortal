@@ -5,11 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Exceptions\UnknownJudgeException;
 use Validator;
+use Illuminate\Pagination\Paginator;
 use DB;
 
 class Problem extends Model
 {
-    protected $fillable = ['name', 'difficulty', 'accepted_submissions_count'];
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable =  [
+            config('db_constants.FIELDS.FLD_PROBLEMS_NAME'),
+            config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'),
+            config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT')
+        ];
+        parent::__construct($attributes);
+    }
 
     public function contests()
     {
@@ -42,11 +51,29 @@ class Problem extends Model
         $this->save();
     }
 
-    public static function index()
+    public static function index($page = 1)
     {
+        // Set page
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+        // Set columns and count
+        $problems = DB::table(config('db_constants.TABLES.TBL_PROBLEMS'))
+            ->select(
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_ID'),
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_NAME'),
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'),
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT'),
+                config('db_constants.TABLES.TBL_JUDGES').'.'.config('db_constants.FIELDS.FLD_JUDGES_NAME') . ' as Judge')
+            ->join(config('db_constants.TABLES.TBL_JUDGES'),
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'. config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'),
+                '=',
+                config('db_constants.TABLES.TBL_JUDGES').'.'. config('db_constants.FIELDS.FLD_JUDGES_ID'))
+            ->paginate(config('constants.PROBLEMS_COUNT_PER_PAGE'));
+        // Assign data
         $ret = [
             "headings" => ["ID", "Name", "Difficulty", "# Accepted submissions", "Judge"],
-            "problems" => Problem::paginate(config('constants.PROBLEMS_COUNT_PER_PAGE')),
+            "problems" => $problems,
             "extra" => [
                 "checkbox" => "no",
                 "checkboxPosition" => "-1",

@@ -7,7 +7,16 @@ use Validator;
 
 class Contest extends Model
 {
-    protected $fillable = ['name', 'time', 'duration', 'visibility'];
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable =  [
+            config('db_constants.FIELDS.FLD_CONTESTS_NAME'),
+            config('db_constants.FIELDS.FLD_CONTESTS_TIME'),
+            config('db_constants.FIELDS.FLD_CONTESTS_DURATION'),
+            config('db_constants.FIELDS.FLD_CONTESTS_VISIBILITY'),
+        ];
+        parent::__construct($attributes);
+    }
 
     public function participatingUsers()
     {

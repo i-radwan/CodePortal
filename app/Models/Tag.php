@@ -7,8 +7,13 @@ use Validator;
 
 class Tag extends Model
 {
-    protected $fillable = ['name'];
-
+    public function __construct(array $attributes = [])
+    {
+        $this->fillable =  [
+            config('db_constants.FIELDS.FLD_TAGS_NAME'),
+        ];
+        parent::__construct($attributes);
+    }
 
     public function problems()
     {
