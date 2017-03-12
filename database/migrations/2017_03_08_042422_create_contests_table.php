@@ -13,12 +13,12 @@ class CreateContestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('contests', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100);
-            $table->dateTime('time');
-            $table->integer('duration')->unsigned();
-            $table->enum('visibility', config('constants.CONTEST_VISIBILITY'));
+        Schema::create(config('db_constants.TABLES.TBL_CONTESTS'), function (Blueprint $table) {
+            $table->increments(config('db_constants.FIELDS.FLD_CONTESTS_ID'));
+            $table->string(config('db_constants.FIELDS.FLD_CONTESTS_NAME'), 100);
+            $table->dateTime(config('db_constants.FIELDS.FLD_CONTESTS_TIME'));
+            $table->integer(config('db_constants.FIELDS.FLD_CONTESTS_DURATION'))->unsigned();
+            $table->enum(config('db_constants.FIELDS.FLD_CONTESTS_VISIBILITY'), config('constants.CONTEST_VISIBILITY'));
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateContestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contests');
+        Schema::dropIfExists(config('db_constants.TABLES.TBL_CONTESTS'));
     }
 }

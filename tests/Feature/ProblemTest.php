@@ -2,12 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use Illuminate\Validation\ValidationException;
 use App\Models\Problem;
-use App\Models\Judge;
 
-class ProblemTest extends TestCase
+class ProblemTest extends DatabaseTest
 {
 
     /**
@@ -17,7 +15,7 @@ class ProblemTest extends TestCase
      */
     public function testProblem()
     {
-        $judge = new Judge(['name' => 'Codeforces', 'link' => 'http://www.judge.com', 'api_link' => 'http://www.judge.com']);
+        $judge = $this->insertJudge('Codeforces', 'http://www.judge.com', 'http://www.judge.com');
         $judge->save();
         $initialCount = Problem::count();
         // insert valid contest and check for count
@@ -49,15 +47,12 @@ class ProblemTest extends TestCase
         }
 
         $this->assertTrue(Problem::count() == $initialCount); // not inserted
+
+        // Test pagination
+
+        for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge);
+
+        $problems = Problem::index();
+        \Log::info($problems);
     }
-
-
-    public function insertProblem($name, $difficulty, $accepted_count, $judge)
-    {
-        $problem = new Problem(['name' => $name, 'difficulty' => $difficulty, 'accepted_count' => $accepted_count]);
-        $problem->judge()->associate($judge);
-        $problem->store();
-        return $problem;
-    }
-
 }

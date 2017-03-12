@@ -13,15 +13,15 @@ class CreateSubmissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('submissions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('problem_id');
-            $table->integer('user_id');
-            $table->string('submission_id');
-            $table->integer('language_id');
-            $table->integer('execution_time');
-            $table->integer('used_memory');
-            $table->enum('verdict', config('constants.SUBMISSION_VERDICT'));
+        Schema::create(config('db_constants.TABLES.TBL_SUBMISSIONS'), function (Blueprint $table) {
+            $table->increments(config('db_constants.FIELDS.FLD_SUBMISSIONS_ID'));
+            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_PROBLEM_ID'));
+            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_USER_ID'));
+            $table->string(config('db_constants.FIELDS.FLD_SUBMISSIONS_SUBMISSION_ID'));
+            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_LANGUAGE_ID'));
+            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_EXECUTION_TIME'));
+            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_CONSUMED_MEMORY'));
+            $table->enum(config('db_constants.FIELDS.FLD_SUBMISSIONS_VERDICT'), config('constants.SUBMISSION_VERDICT'));
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateSubmissionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('submissions');
+        Schema::dropIfExists(config('db_constants.TABLES.TBL_SUBMISSIONS'));
     }
 }

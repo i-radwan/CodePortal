@@ -9,24 +9,24 @@ class Contest extends Model
 {
     protected $fillable = ['name', 'time', 'duration', 'visibility'];
 
-    public function participating_users()
+    public function participatingUsers()
     {
-        return $this->belongsToMany('App\Models\User', 'participants')->withTimestamps();
+        return $this->belongsToMany(User::class, config('db_constants.TABLES.TBL_PARTICIPANTS'))->withTimestamps();
     }
 
-    public function organizing_users()
+    public function organizingUsers()
     {
-        return $this->belongsToMany('App\Models\User', 'contest_admin');
+        return $this->belongsToMany(User::class, config('db_constants.TABLES.TBL_CONTEST_ADMIN'));
     }
 
     public function questions()
     {
-        return $this->hasMany('App\Models\Question');
+        return $this->hasMany(Question::class);
     }
 
     public function problems()
     {
-        return $this->belongsToMany('App\Models\Problem', 'contest_problem');
+        return $this->belongsToMany(Problem::class, config('db_constants.TABLES.TBL_CONTEST_PROBLEM'));
     }
 
     public function store()

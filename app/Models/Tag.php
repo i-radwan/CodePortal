@@ -12,7 +12,7 @@ class Tag extends Model
 
     public function problems()
     {
-        return $this->belongsToMany('App\Models\Problem', 'problem_tag');
+        return $this->belongsToMany(Problem::class, config('db_constants.TABLES.TBL_PROBLEM_TAG'));
     }
 
     public function store()

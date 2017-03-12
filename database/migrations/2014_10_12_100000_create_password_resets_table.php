@@ -13,10 +13,10 @@ class CreatePasswordResetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('password_resets', function (Blueprint $table) {
-            $table->string('email', 100)->index();
-            $table->string('token', 100)->index();
-            $table->timestamp('created_at')->nullable();
+        Schema::create(config('db_constants.TABLES.TBL_PASSWORD_RESETS'), function (Blueprint $table) {
+            $table->string(config('db_constants.FIELDS.FLD_PASSWORD_RESETS_EMAIL'), 100)->index();
+            $table->string(config('db_constants.FIELDS.FLD_PASSWORD_RESETS_TOKEN'), 100)->index();
+            $table->timestamp(config('db_constants.FIELDS.FLD_PASSWORD_RESETS_CREATED_AT'))->nullable();
         });
     }
 
@@ -27,6 +27,6 @@ class CreatePasswordResetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('password_resets');
+        Schema::dropIfExists(config('db_constants.TABLES.TBL_PASSWORD_RESETS'));
     }
 }

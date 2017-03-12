@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Contest;
 use Illuminate\Validation\ValidationException;
 
-class ContestTest extends TestCase
+class ContestTest extends DatabaseTest
 {
     /**
      * A basic test example.
@@ -58,10 +57,4 @@ class ContestTest extends TestCase
 
     }
 
-    public function insertContest($name, $time, $duration, $visilibty)
-    {
-        $contest = new Contest(array('name' => $name, 'time' => $time, 'duration' => $duration, 'visibility' => $visilibty));
-        $contest->store();
-        return $contest;
-    }
 }

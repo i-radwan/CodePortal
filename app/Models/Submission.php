@@ -7,22 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Submission extends Model
 {
-    protected $fillable = ['submission_id', 'execution_time', 'used_memory', 'verdict'];
+    protected $fillable = ['submission_id', 'execution_time', 'consumed_memory', 'verdict'];
 
 
     public function problem()
     {
-        return $this->belongsTo('App\Models\Problem');
+        return $this->belongsTo(Problem::class);
     }
 
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class);
     }
 
     public function language()
     {
-        return $this->belongsTo('App\Models\Language');
+        return $this->belongsTo(Language::class);
     }
 
     public function store()

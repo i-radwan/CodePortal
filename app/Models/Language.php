@@ -11,7 +11,7 @@ class Language extends Model
 
     public function submissions()
     {
-        return $this->hasMany('App\Models\Submission');
+        return $this->hasMany(Submission::class);
     }
 
     public function store()

@@ -24,15 +24,15 @@
                             </div>
                         </div>
 
-                        <div class="form-group{{ $errors->has('handle') ? ' has-error' : '' }}">
-                            <label for="handle" class="col-md-4 control-label">Handle</label>
+                        <div class="form-group{{ $errors->has('username') ? ' has-error' : '' }}">
+                            <label for="username" class="col-md-4 control-label">Username</label>
 
                             <div class="col-md-6">
-                                <input id="handle" type="handle" class="form-control" name="handle" value="{{ old('handle') }}" required>
+                                <input id="username" type="username" class="form-control" name="username" value="{{ old('username') }}" required>
 
-                                @if ($errors->has('handle'))
+                                @if ($errors->has('username'))
                                     <span class="help-block">
-                                        <strong>{{ $errors->first('handle') }}</strong>
+                                        <strong>{{ $errors->first('username') }}</strong>
                                     </span>
                                 @endif
                             </div>

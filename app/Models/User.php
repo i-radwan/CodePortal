@@ -16,9 +16,8 @@ class User extends Authenticatable
      */
     // ToDo remove role from fillables
     protected $fillable = [
-        'name', 'email', 'password', 'handle', 'gender', 'age', 'profile_pic', 'country'
+        'name', 'email', 'password', 'username', 'gender', 'age', 'profile_pic', 'country'
     ];
-
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -28,38 +27,38 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function participating_in_contests()
+    public function participatingContests()
     {
-        return $this->belongsToMany('App\Models\Contest', 'participants')->withTimestamps();
+        return $this->belongsToMany(Contest::class, config('db_constants.TABLES.TBL_PARTICIPANTS'))->withTimestamps();
     }
 
-    public function organizing_contests()
+    public function organizingContests()
     {
-        return $this->belongsToMany('App\Models\Contest', 'contest_admin');
+        return $this->belongsToMany(Contest::class, config('db_constants.TABLES.TBL_CONTEST_ADMIN'));
     }
 
     public function questions()
     {
-        return $this->hasMany('App\Models\Question');
+        return $this->hasMany(Question::class);
     }
 
     public function answered_questions()
     {
-        return $this->hasMany('App\Models\Question')->where('admin_id', '=', $this->id);
+        return $this->hasMany(Question::class)->where(config('db_constants.FIELDS.FLD_QUESTIONS_ADMIN_ID'), '=', $this->id);
     }
 
     public function contest_questions($contest_id)
     {
-        return $this->hasMany('App\Models\Question')->where('contest_id', '=', $contest_id);
+        return $this->hasMany(Question::class)->where(config('db_constants.FIELDS.FLD_QUESTIONS_CONTEST_ID'), '=', $contest_id);
     }
 
     public function handles()
     {
-        return $this->belongsToMany('App\Models\Judge', 'user_handles')->withPivot('handle');
+        return $this->belongsToMany(Judge::class, config('db_constants.TABLES.TBL_USER_HANDLES'))->withPivot(config('db_constants.FIELDS.FLD_USER_HANDLES_HANDLE'));
     }
     public function submissions()
     {
-        return $this->hasMany('App\Models\Submission');
+        return $this->hasMany(Submission::class);
     }
 
 }

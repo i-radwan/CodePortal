@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Judge;
 use Illuminate\Validation\ValidationException;
 
-class JudgeTest extends TestCase
+class JudgeTest extends DatabaseTest
 {
     /**
      * A basic test example.
@@ -55,12 +54,4 @@ class JudgeTest extends TestCase
 
         $this->assertTrue(Judge::count() == $initialCount); // not inserted
     }
-
-    public function insertJudge($name, $link, $api_link)
-    {
-        $judge = new Judge(['name' => $name, 'link' => $link, 'api_link' => $api_link]);
-        $judge->store();
-        return $judge;
-    }
-
 }

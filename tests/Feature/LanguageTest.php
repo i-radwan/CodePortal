@@ -2,11 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use App\Models\Language;
 use Illuminate\Validation\ValidationException;
 
-class LanguageTest extends TestCase
+class LanguageTest extends DatabaseTest
 {
     /**
      * A basic test example.
@@ -45,13 +44,5 @@ class LanguageTest extends TestCase
         $validLanguage->delete();
 
         $this->assertTrue(Language::count() == $initialCount); // not inserted
-    }
-
-
-    public function insertLanguage($name)
-    {
-        $language = new Language(['name' => $name]);
-        $language->store();
-        return $language;
     }
 }

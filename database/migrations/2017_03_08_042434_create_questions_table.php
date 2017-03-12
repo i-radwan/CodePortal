@@ -13,15 +13,15 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('questions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('title');
-            $table->longText('content');
-            $table->longText('answer')->nullable();
-            $table->enum('status', config('constants.QUESTION_STATUS'));
-            $table->integer('admin_id')->nullable();
-            $table->integer('contest_id');
-            $table->integer('user_id');
+        Schema::create(config('db_constants.TABLES.TBL_QUESTIONS'), function (Blueprint $table) {
+            $table->increments(config('db_constants.FIELDS.FLD_QUESTIONS_ID'));
+            $table->string(config('db_constants.FIELDS.FLD_QUESTIONS_TITLE'));
+            $table->longText(config('db_constants.FIELDS.FLD_QUESTIONS_CONTENT'));
+            $table->longText(config('db_constants.FIELDS.FLD_QUESTIONS_ANSWER'))->nullable();
+            $table->enum(config('db_constants.FIELDS.FLD_QUESTIONS_STATUS'), config('constants.QUESTION_STATUS'));
+            $table->integer(config('db_constants.FIELDS.FLD_QUESTIONS_ADMIN_ID'))->nullable();
+            $table->integer(config('db_constants.FIELDS.FLD_QUESTIONS_CONTEST_ID'));
+            $table->integer(config('db_constants.FIELDS.FLD_QUESTIONS_USER_ID'));
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists(config('db_constants.TABLES.TBL_QUESTIONS'));
     }
 }

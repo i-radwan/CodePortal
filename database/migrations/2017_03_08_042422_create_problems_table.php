@@ -13,12 +13,12 @@ class CreateProblemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('problems', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('judge_id');
-            $table->string('name', 100);
-            $table->integer('difficulty');
-            $table->integer('accepted_count');
+        Schema::create(config('db_constants.TABLES.TBL_PROBLEMS'), function (Blueprint $table) {
+            $table->increments(config('db_constants.FIELDS.FLD_PROBLEMS_ID'));
+            $table->integer(config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'));
+            $table->string(config('db_constants.FIELDS.FLD_PROBLEMS_NAME'), 100);
+            $table->integer(config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'));
+            $table->integer(config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT'));
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateProblemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('problems');
+        Schema::dropIfExists(config('db_constants.TABLES.TBL_PROBLEMS'));
     }
 }

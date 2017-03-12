@@ -13,9 +13,9 @@ class CreateLanguagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('languages', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 50)->unique();
+        Schema::create(config('db_constants.TABLES.TBL_LANGUAGES'), function (Blueprint $table) {
+            $table->increments(config('db_constants.FIELDS.FLD_LANGUAGES_ID'));
+            $table->string(config('db_constants.FIELDS.FLD_LANGUAGES_NAME'), 50)->unique();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreateLanguagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('languages');
+        Schema::dropIfExists(config('db_constants.TABLES.TBL_LANGUAGES'));
     }
 }

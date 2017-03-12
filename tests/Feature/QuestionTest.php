@@ -2,13 +2,10 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use Illuminate\Validation\ValidationException;
 use App\Models\Question;
-use App\Models\User;
-use App\Models\Contest;
 
-class QuestionTest extends TestCase
+class QuestionTest extends DatabaseTest
 {
     /**
      * A basic test example.
@@ -17,12 +14,8 @@ class QuestionTest extends TestCase
      */
     public function testQuestion()
     {
-        $user = new User(['name' => 'user1', 'email' => 'a@a.a', 'password' => 'aaaaaa', 'handle' => 'aaa']);
-        $user->role = ('1');
-        $user->save();
-        $contest = new Contest(['name' => 'Contest1', 'time' => '2017-12-12 12:12:12', 'duration' => '10', 'visibility' => '0']);
-        $contest->save();
-
+        $user = $this->insertUser('user1', 'a@a.a', 'aaaaaa', 'aaa', '1');
+        $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0');
         $initialCount = Question::count();
         // insert valid question and check for count
         $validQuestion = $this->insertQuestion('Question1', 'Hello', '', $contest, $user);
@@ -67,13 +60,4 @@ class QuestionTest extends TestCase
         $this->assertTrue(Question::count() == $initialCount); // not inserted
     }
 
-
-    public function insertQuestion($title, $content, $answer, $contest, $user, $status = '0')
-    {
-        $question = new Question(['title' => $title, 'content' => $content, 'answer' => $answer, 'status' => $status]);
-        $question->contest()->associate($contest);
-        $question->user()->associate($user);
-        $question->store();
-        return $question;
-    }
 }

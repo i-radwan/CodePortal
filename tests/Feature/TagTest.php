@@ -2,10 +2,9 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use Illuminate\Validation\ValidationException;
 use App\Models\Tag;
-class TagTest extends TestCase
+class TagTest extends DatabaseTest
 {
 
     /**
@@ -44,14 +43,6 @@ class TagTest extends TestCase
         $validTag->delete();
 
         $this->assertTrue(Tag::count() == $initialCount); // not inserted
-    }
-
-
-    public function insertTag($name)
-    {
-        $tag = new Tag(['name' => $name]);
-        $tag->store();
-        return $tag;
     }
 
 }

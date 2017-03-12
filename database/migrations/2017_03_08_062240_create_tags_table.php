@@ -13,9 +13,9 @@ class CreateTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tags', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100)->unique();
+        Schema::create(config('db_constants.TABLES.TBL_TAGS'), function (Blueprint $table) {
+            $table->increments(config('db_constants.FIELDS.FLD_TAGS_ID'));
+            $table->string(config('db_constants.FIELDS.FLD_TAGS_NAME'), 100)->unique();
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class CreateTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists(config('db_constants.TABLES.TBL_TAGS'));
     }
 }

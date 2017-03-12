@@ -10,7 +10,7 @@ class Judge extends Model
 
     public function problems()
     {
-        return $this->hasMany('App\Models\Problem');
+        return $this->hasMany(Problem::class);
     }
 
     public function store()

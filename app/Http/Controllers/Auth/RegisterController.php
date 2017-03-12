@@ -59,10 +59,10 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'handle' => $data['handle'],
-            'password' => bcrypt($data['password']),
+            config('db_constants.FIELDS.FLD_USERS_NAME') => $data['name'],
+            config('db_constants.FIELDS.FLD_USERS_EMAIL') => $data['email'],
+            config('db_constants.FIELDS.FLD_USERS_USERNAME')  => $data['username'],
+            config('db_constants.FIELDS.FLD_USERS_PASSWORD')  => bcrypt($data['password']),
         ]);
     }
 }

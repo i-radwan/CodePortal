@@ -52,4 +52,5 @@ return [
         "REJECTED" => 16,
         "UNKNOWN" => 17
     ],
+    "PROBLEMS_COUNT_PER_PAGE" => 30,
 ];

@@ -2,15 +2,13 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use Illuminate\Validation\ValidationException;
 use App\Models\Submission;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Language;
-use App\Models\Judge;
 
-class SubmissionTest extends TestCase
+class SubmissionTest extends DatabaseTest
 {
     /**
      * A basic test example.
@@ -19,14 +17,10 @@ class SubmissionTest extends TestCase
      */
     public function testSubmission()
     {
-        $judge = new Judge(['name' => 'Codeforces1', 'link' => 'http://www.judge2.com', 'api_link' => 'http://www.judge.com']);
-        $judge->save();
-        $problem = new Problem(['name' => 'Problem1', 'difficulty' => '10', 'accepted_count' => '20']);
-        $problem->judge()->associate($judge);
-        $problem->save();
-        $user = new User(['name' => 'user12', 'email' => 'a2@a.a', 'password' => 'aaaaaa', 'handle' => 'aaa2']);
-        $user->save();
-        $language = new Language(['name' => 'C+++']);
+        $judge = $this->insertJudge('Codeforces1', 'http://www.judge2.com', 'http://www.judge.com');
+        $problem = $this->insertProblem('Problem1', '10', '20', $judge);
+        $user = $this->insertUser('user12', 'a2@a.a', 'aaaaaa', 'aaa2');
+        $language = new Language([config('db_constants.FIELDS.FLD_LANGUAGES_NAME') => 'C+++']);
         $language->save();
 
 
@@ -89,16 +83,5 @@ class SubmissionTest extends TestCase
         } catch (ValidationException $e) {
         }
         $this->assertTrue(Submission::count() == $initialCount); // not inserted
-    }
-
-
-    public function insertSubmission($submission_id, $execution_time, $used_memory, $verdict, $problem, $user, $language)
-    {
-        $submission = new Submission(['submission_id' => $submission_id, 'execution_time' => $execution_time, 'used_memory' => $used_memory, 'verdict' => $verdict]);
-        $submission->problem()->associate($problem);
-        $submission->user()->associate($user);
-        $submission->language()->associate($language);
-        $submission->store();
-        return $submission;
     }
 }

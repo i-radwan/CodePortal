@@ -2,18 +2,11 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use App\Models\User;
-use App\Models\Contest;
-use App\Models\Problem;
 use App\Models\Language;
 use App\Models\Tag;
-use App\Models\Question;
-use App\Models\Submission;
-use App\Models\Judge;
 use Log;
 
-class ModelsRelationsTest extends TestCase
+class ModelsRelationsTest extends DatabaseTest
 {
     /**
      * A basic test example.
@@ -23,41 +16,25 @@ class ModelsRelationsTest extends TestCase
     public function testRelations()
     {
         // Create models
-        $user = new User(['name' => 'user121', 'email' => 'a12@a.a', 'password' => 'aaaaaa', 'handle' => 'aa31a']);
-        $user->save();
-        $admin = new User(['name' => 'use12r121', 'email' => 'a1312@a.a', 'password' => 'aaaaaa', 'handle' => 'aa131a']);
-        $admin->role = '1';
-        $admin->save();
-        $language = new Language(['name' => 'C+++1']);
+        $user = $this->insertUser('user121', 'a12@a.a', 'aaaaaa', 'aa31a');
+        $admin = $this->insertUser('use12r121', 'a1312@a.a', 'aaaaaa', 'aa131a', '1');
+        $language = new Language([config('db_constants.FIELDS.FLD_LANGUAGES_NAME') => 'C+++1']);
         $language->store();
-        $judge = new Judge(['name' => 'Codeforces3', 'link' => 'http://www.judge3.com', 'api_link' => 'http://www.judge.com']);
-        $judge->store();
-        $contest = new Contest(['name' => 'Contest1', 'time' => '2017-12-12 12:12:12', 'duration' => '10', 'visibility' => '0']);
-        $contest->store();
-        $problem1 = new Problem(['name' => 'Problem1', 'difficulty' => '10', 'accepted_count' => '20']);
-        $problem1->judge()->associate($judge);
-        $problem1->store();
-        $question = new Question(['title' => 'Question1', 'content' => "Hello", 'answer' => 'Answer1', 'status' => '0']);
-        $question->contest()->associate($contest);
-        $question->user()->associate($user);
-        $question->store();
+        $judge = $this->insertJudge('Codeforces3', 'http://www.judge3.com', 'http://www.judge.com');
+        $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0');
+        $problem1 = $this->insertProblem('Problem1', '10', '20', $judge);
+        $question = $this->insertQuestion('Question1', "Hello", 'Answer1', $contest, $user);
         $question->saveAnswer("Ansert1", $admin);
-        $submission = new Submission(['submission_id' => '123', 'execution_time' => 100, 'used_memory' => 200, 'verdict' => '1']);
-        $submission->problem()->associate($problem1);
-        $submission->user()->associate($user);
-        $submission->language()->associate($language);
-        $submission->store();
-        $tag = new Tag(['name' => 'Tag0123']);
+        $submission = $this->insertSubmission('123', 100, 200, '1', $problem1, $user, $language);
+        $tag = new Tag([config('db_constants.FIELDS.FLD_TAGS_NAME') => 'Tag0123']);
         $tag->store();
 
         // Tags + problems
         $problem1->tags()->sync([$tag->id], false);
-        $tag = new Tag(['name' => 'Tag01232']);
+        $tag = new Tag([config('db_constants.FIELDS.FLD_TAGS_NAME') => 'Tag01232']);
         $tag->store();
         $problem1->tags()->sync([$tag->id], false);
-        $problem = new Problem(['name' => 'Problem1', 'difficulty' => '10', 'accepted_count' => '20']);
-        $problem->judge()->associate($judge);
-        $problem->store();
+        $problem = $this->insertProblem('Problem1', '10', '20', $judge);
         $problem->tags()->sync([$tag->id], false);
         $problem->tags()->sync([$tag->id], false);
         $problem->tags()->sync([$tag->id], false);
@@ -99,14 +76,15 @@ class ModelsRelationsTest extends TestCase
         $this->assertEquals($question->admin()->getResults()->id, $admin->id);
 
         // User + Judge
-        $user->handles()->save($judge, ['handle' => 'asd']);
+        $user->handles()->save($judge, [config('db_constants.FIELDS.FLD_USER_HANDLES_HANDLE') => 'asd']);
 
         // User + Contest
-        $user->participating_in_contests()->save($contest);
-        $admin->organizing_contests()->save($contest);
-        $this->assertEquals(count($user->participating_in_contests()), 1);
-        $this->assertEquals(count($admin->organizing_contests()), 1);
-        Log::info($contest->organizing_users()->getResults());
-        Log::info($contest->participating_users()->getResults());
+        $user->participatingContests()->save($contest);
+        $admin->organizingContests()->save($contest);
+        $this->assertEquals(count($user->participatingContests()), 1);
+        $this->assertEquals(count($admin->organizingContests()), 1);
+        Log::info($contest->organizingUsers()->getResults());
+        Log::info($contest->participatingUsers()->getResults());
     }
+
 }

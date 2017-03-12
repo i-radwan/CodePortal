@@ -13,11 +13,11 @@ class CreateJudgesTable extends Migration
      */
     public function up()
     {
-        Schema::create('judges', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 100);
-            $table->string('link', 100)->unique();
-            $table->string('api_link');
+        Schema::create(config('db_constants.TABLES.TBL_JUDGES'), function (Blueprint $table) {
+            $table->increments(config('db_constants.FIELDS.FLD_JUDGES_ID'));
+            $table->string(config('db_constants.FIELDS.FLD_JUDGES_NAME'), 100);
+            $table->string(config('db_constants.FIELDS.FLD_JUDGES_LINK'), 100)->unique();
+            $table->string(config('db_constants.FIELDS.FLD_JUDGES_API_LINK'));
 
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ class CreateJudgesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('judges');
+        Schema::dropIfExists(config('db_constants.TABLES.TBL_JUDGES'));
     }
 }
