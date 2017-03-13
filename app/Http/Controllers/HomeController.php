@@ -26,24 +26,32 @@ class HomeController extends Controller
         // @Wael : To be stored in database && to use db_constants
         $features = [
             [
-                'title' => 'Prepare Contests',
+                'title' => 'Contests',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                'img' => 'images/features/wolf.jpg'
+                'img' => 'images/features/contest-md.jpg',
+                'link_title' => 'Prepare Contests',
+                'url' => '#'
             ],
             [
-                'title' => 'Solve Problems',
+                'title' => 'Problems',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                'img' => 'images/features/sloth.jpg'
+                'img' => 'images/features/problem-md.jpeg',
+                'link_title' => 'Solve Problems',
+                'url' => '#'
             ],
             [
-                'title' => 'Write Blogs',
+                'title' => 'Blogs',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                'img' => 'images/features/wolf.jpg'
+                'img' => 'images/features/blog-md.jpg',
+                'link_title' => 'Write Blogs',
+                'url' => '#'
             ],
             [
-                'title' => 'Manage Groups',
+                'title' => 'Groups',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                'img' => 'images/features/sloth.jpg'
+                'img' => 'images/features/group-md.jpg',
+                'link_title' => 'Manage Groups',
+                'url' => '#'
             ]
         ];
 

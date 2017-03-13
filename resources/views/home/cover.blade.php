@@ -1,7 +1,7 @@
 <div class="jumbotron flex-center">
     <div class="container text-center">
-        <h1>{{ config('app.name') }}</h1>
-        <h3>Practice Competitive Programming</h3>
+        <h1><strong>{{ config('app.name') }}</strong></h1>
+        <h3>Practise Competitive Programming</h3>
 
         {{-- Search form --}}
         <div class="row">
@@ -13,7 +13,7 @@
                         <input type="text" class="form-control" id="search" placeholder="Search for..." required>
                         <span class="input-group-btn">
 
-                            <button type="button" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary">
                                 <span class="glyphicon glyphicon-search"></span>
                                 Search
                             </button>

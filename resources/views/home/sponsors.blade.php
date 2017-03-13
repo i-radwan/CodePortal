@@ -1,14 +1,16 @@
-<div class="container">
-    <h2 class="text-center">Our Sponsors</h2>
+<section class="sponsors-section">
+    <div class="container">
+        <h2 class="text-center">Sponsors</h2>
 
-    <div class="row vertical-padding">
-        @foreach($sponsors as $sponsor)
-            <a href="{{ $sponsor['url'] }}" target='_blank'>
-                <div class="col-md-4 text-center">
-                    <img src="{{ $sponsor['img'] }}" alt="{{ $sponsor['name'] }}" class="sponsor-img">
+        <div class="row">
+            @foreach($sponsors as $sponsor)
+                <div class="col-sm-4 col-xs-6 text-center">
+                    <a href="{{ $sponsor['url'] }}" target="_blank">
+                        <img src="{{ $sponsor['img'] }}" alt="{{ $sponsor['name'] }}" class="img-circle">
+                    </a>
                     <h3>{{ $sponsor['name'] }}</h3>
                 </div>
-            </a>
-        @endforeach
+            @endforeach
+        </div>
     </div>
-</div>
+</section>
