@@ -8,7 +8,7 @@
             </div>
 
             <div class="col-md-4 {{ $loop->index % 2 == 1 ? 'col-md-pull-8' : '' }}">
-                <img src="{{ $feature['img'] }}" alt="{{ $feature['title'] }}" class="img-rounded center-block img-limit-size">
+                <img src="{{ $feature['img'] }}" alt="{{ $feature['title'] }}" class="img-responsive img-rounded center-block">
             </div>
         </div>
         <hr>
