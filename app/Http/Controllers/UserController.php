@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-class ProfileController extends Controller
+class UserController extends Controller
 {
     /**
      * Show the problems page.

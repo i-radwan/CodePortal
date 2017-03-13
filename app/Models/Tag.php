@@ -31,7 +31,12 @@ class Tag extends Model
 
     public static function index($count = 15)
     {
-        return json_encode(DB::table(config('db_constants.TABLES.TBL_TAGS'))->take($count)->get());
+        return json_encode(
+            DB::table(config('db_constants.TABLES.TBL_TAGS'))
+                ->select(
+                    config('db_constants.FIELDS.FLD_TAGS_ID'),
+                    config('db_constants.FIELDS.FLD_TAGS_NAME'))
+                ->take($count)->get());
     }
 
 }
