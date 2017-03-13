@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Validation\ValidationException;
 use App\Models\Problem;
+use App\Utilities\Constants;
 
 class ProblemTest extends DatabaseTest
 {
@@ -50,7 +51,7 @@ class ProblemTest extends DatabaseTest
         // Test pagination
         for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge);
         $problems = Problem::index(2);
-        $this->assertEquals(count(json_decode($problems, true)['problems']['data']), config('constants.PROBLEMS_COUNT_PER_PAGE'));
+        $this->assertEquals(count(json_decode($problems, true)['problems']['data']), Constants::PROBLEMS_COUNT_PER_PAGE);
 
         // Test problems filtering
         $judge1 = $this->insertJudge('Judge1', 'http://www.link.com', 'http://www.apilink.com');

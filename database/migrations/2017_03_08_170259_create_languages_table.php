@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Utilities\Constants;
 
 class CreateLanguagesTable extends Migration
 {
@@ -13,9 +14,9 @@ class CreateLanguagesTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('db_constants.TABLES.TBL_LANGUAGES'), function (Blueprint $table) {
-            $table->increments(config('db_constants.FIELDS.FLD_LANGUAGES_ID'));
-            $table->string(config('db_constants.FIELDS.FLD_LANGUAGES_NAME'), 50)->unique();
+        Schema::create(Constants::TBL_LANGUAGES, function (Blueprint $table) {
+            $table->increments(Constants::FLD_LANGUAGES_ID);
+            $table->string(Constants::FLD_LANGUAGES_NAME, 50)->unique();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateLanguagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('db_constants.TABLES.TBL_LANGUAGES'));
+        Schema::dropIfExists(Constants::TBL_LANGUAGES);
     }
 }

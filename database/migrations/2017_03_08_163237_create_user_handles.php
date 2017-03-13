@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Utilities\Constants;
 
 class CreateUserHandles extends Migration
 {
@@ -13,12 +14,12 @@ class CreateUserHandles extends Migration
      */
     public function up()
     {
-        Schema::create(config('db_constants.TABLES.TBL_USER_HANDLES'), function (Blueprint $table) {
-            $table->integer(config('db_constants.FIELDS.FLD_USER_HANDLES_USER_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_USER_HANDLES_JUDGE_ID'));
-            $table->string(config('db_constants.FIELDS.FLD_USER_HANDLES_HANDLE'), 50);
-            $table->primary(array(config('db_constants.FIELDS.FLD_USER_HANDLES_USER_ID'),
-                config('db_constants.FIELDS.FLD_USER_HANDLES_JUDGE_ID')));
+        Schema::create(Constants::TBL_USER_HANDLES, function (Blueprint $table) {
+            $table->integer(Constants::FLD_USER_HANDLES_USER_ID);
+            $table->integer(Constants::FLD_USER_HANDLES_JUDGE_ID);
+            $table->string(Constants::FLD_USER_HANDLES_HANDLE, 50);
+            $table->primary(array(Constants::FLD_USER_HANDLES_USER_ID,
+                Constants::FLD_USER_HANDLES_JUDGE_ID));
         });
     }
 
@@ -29,6 +30,6 @@ class CreateUserHandles extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('db_constants.TABLES.TBL_USER_HANDLES'));
+        Schema::dropIfExists(Constants::TBL_USER_HANDLES);
     }
 }

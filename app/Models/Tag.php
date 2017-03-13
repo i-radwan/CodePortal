@@ -6,20 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Validator;
 use DB;
 use Illuminate\Pagination\Paginator;
+use App\Utilities\Constants;
 
 class Tag extends Model
 {
     public function __construct(array $attributes = [])
     {
         $this->fillable = [
-            config('db_constants.FIELDS.FLD_TAGS_NAME'),
+            Constants::FLD_TAGS_NAME,
         ];
         parent::__construct($attributes);
     }
 
     public function problems()
     {
-        return $this->belongsToMany(Problem::class, config('db_constants.TABLES.TBL_PROBLEM_TAG'));
+        return $this->belongsToMany(Problem::class, Constants::TBL_PROBLEM_TAG);
     }
 
     public function store()
@@ -32,10 +33,10 @@ class Tag extends Model
     public static function index($count = 15)
     {
         return json_encode(
-            DB::table(config('db_constants.TABLES.TBL_TAGS'))
+            DB::table(Constants::TBL_TAGS)
                 ->select(
-                    config('db_constants.FIELDS.FLD_TAGS_ID'),
-                    config('db_constants.FIELDS.FLD_TAGS_NAME'))
+                    Constants::FLD_TAGS_ID,
+                    Constants::FLD_TAGS_NAME)
                 ->take($count)->get());
     }
 
@@ -47,22 +48,22 @@ class Tag extends Model
             return $page;
         });
         // Set columns and count
-        $problems = DB::table(config('db_constants.TABLES.TBL_PROBLEMS'))
+        $problems = DB::table(Constants::TBL_PROBLEMS)
             ->select(
-                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_ID'),
-                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_NAME'),
-                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'),
-                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT'),
-                config('db_constants.TABLES.TBL_JUDGES') . '.' . config('db_constants.FIELDS.FLD_JUDGES_NAME') . ' as judge')
-            ->join(config('db_constants.TABLES.TBL_JUDGES'),
-                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'),
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge')
+            ->join(Constants::TBL_JUDGES,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
                 '=',
-                config('db_constants.TABLES.TBL_JUDGES') . '.' . config('db_constants.FIELDS.FLD_JUDGES_ID'))
-            ->join(config('db_constants.TABLES.TBL_PROBLEM_TAG'),
-                config('db_constants.TABLES.TBL_PROBLEM_TAG') . '.' . config('db_constants.FIELDS.FLD_PROBLEM_TAG_PROBLEM_ID'),
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID)
+            ->join(Constants::TBL_PROBLEM_TAG,
+                Constants::TBL_PROBLEM_TAG . '.' . Constants::FLD_PROBLEM_TAG_PROBLEM_ID,
                 '=',
-                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_ID'))
-            ->where(config('db_constants.TABLES.TBL_PROBLEM_TAG') . '.' . config('db_constants.FIELDS.FLD_PROBLEM_TAG_TAG_ID'), '=', $tagID);
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
+            ->where(Constants::TBL_PROBLEM_TAG . '.' . Constants::FLD_PROBLEM_TAG_TAG_ID, '=', $tagID);
         return Problem::prepareProblemsOutput($problems, $sortBy);
     }
 }

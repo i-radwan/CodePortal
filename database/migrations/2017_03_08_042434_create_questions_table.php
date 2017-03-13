@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-
+use App\Utilities\Constants;
 class CreateQuestionsTable extends Migration
 {
     /**
@@ -13,15 +13,15 @@ class CreateQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('db_constants.TABLES.TBL_QUESTIONS'), function (Blueprint $table) {
-            $table->increments(config('db_constants.FIELDS.FLD_QUESTIONS_ID'));
-            $table->string(config('db_constants.FIELDS.FLD_QUESTIONS_TITLE'));
-            $table->longText(config('db_constants.FIELDS.FLD_QUESTIONS_CONTENT'));
-            $table->longText(config('db_constants.FIELDS.FLD_QUESTIONS_ANSWER'))->nullable();
-            $table->enum(config('db_constants.FIELDS.FLD_QUESTIONS_STATUS'), config('constants.QUESTION_STATUS'));
-            $table->integer(config('db_constants.FIELDS.FLD_QUESTIONS_ADMIN_ID'))->nullable();
-            $table->integer(config('db_constants.FIELDS.FLD_QUESTIONS_CONTEST_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_QUESTIONS_USER_ID'));
+        Schema::create(Constants::TBL_QUESTIONS, function (Blueprint $table) {
+            $table->increments(Constants::FLD_QUESTIONS_ID);
+            $table->string(Constants::FLD_QUESTIONS_TITLE);
+            $table->longText(Constants::FLD_QUESTIONS_CONTENT);
+            $table->longText(Constants::FLD_QUESTIONS_ANSWER)->nullable();
+            $table->enum(Constants::FLD_QUESTIONS_STATUS, Constants::QUESTION_STATUS);
+            $table->integer(Constants::FLD_QUESTIONS_ADMIN_ID)->nullable();
+            $table->integer(Constants::FLD_QUESTIONS_CONTEST_ID);
+            $table->integer(Constants::FLD_QUESTIONS_USER_ID);
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('db_constants.TABLES.TBL_QUESTIONS'));
+        Schema::dropIfExists(Constants::TBL_QUESTIONS);
     }
 }

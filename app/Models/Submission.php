@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Validator;
 use Illuminate\Database\Eloquent\Model;
+use App\Utilities\Constants;
 
 class Submission extends Model
 {
     public function __construct(array $attributes = [])
     {
         $this->fillable =  [
-            config('db_constants.FIELDS.FLD_SUBMISSIONS_SUBMISSION_ID'),
-            config('db_constants.FIELDS.FLD_SUBMISSIONS_EXECUTION_TIME'),
-            config('db_constants.FIELDS.FLD_SUBMISSIONS_CONSUMED_MEMORY'),
-            config('db_constants.FIELDS.FLD_SUBMISSIONS_VERDICT'),
+            Constants::FLD_SUBMISSIONS_SUBMISSION_ID,
+            Constants::FLD_SUBMISSIONS_EXECUTION_TIME,
+            Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY,
+            Constants::FLD_SUBMISSIONS_VERDICT,
         ];
         parent::__construct($attributes);
     }

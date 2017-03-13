@@ -76,7 +76,7 @@ return [
             'language_id' => 'required|integer',
             'execution_time' => 'required|integer',
             'consumed_memory' => 'required|integer',
-            'verdict' => 'integer|required|greater_than:-1|less_than:' . count(config('constants.SUBMISSION_VERDICT')),
+            'verdict' => 'integer|required|greater_than:-1|less_than:' . count(\App\Utilities\Constants::SUBMISSION_VERDICT),
         ]
     ],
 ];
