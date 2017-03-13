@@ -92,6 +92,10 @@ class ProblemTest extends DatabaseTest
         $this->assertEquals(json_decode($problems, true)['problems']['total'], 50);
         \Log::info("Filtered Problems :: " . $problems);
 
+        // Sorted problems
+        $problems = Problem::filter($name, [$validTag1->id, $validTag2->id], [$judge2->id, $judge1->id]);
+        \Log::info("Sorted Problems :: " . $problems);
+
 
     }
 }

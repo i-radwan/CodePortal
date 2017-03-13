@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Validator;
 use Illuminate\Pagination\Paginator;
 use DB;
+
 class Judge extends Model
 {
     public function __construct(array $attributes = [])
     {
-        $this->fillable =  [
+        $this->fillable = [
             config('db_constants.FIELDS.FLD_JUDGES_NAME'),
             config('db_constants.FIELDS.FLD_JUDGES_LINK'),
             config('db_constants.FIELDS.FLD_JUDGES_API_LINK'),
@@ -30,8 +31,10 @@ class Judge extends Model
         $this->save();
     }
 
-    public static function getJudgeProblems($judgeID, $page = 1)
+    public static function getJudgeProblems($judgeID, $page = 1, $sortBy = [])
     {
+        $sortBy = Problem::initializeProblemsSortByArray($sortBy);
+
         // Set page
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
@@ -39,26 +42,16 @@ class Judge extends Model
         // Set columns and count
         $problems = DB::table(config('db_constants.TABLES.TBL_PROBLEMS'))
             ->select(
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_ID'),
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_NAME'),
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'),
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT'),
-                config('db_constants.TABLES.TBL_JUDGES').'.'.config('db_constants.FIELDS.FLD_JUDGES_NAME') . ' as judge')
+                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_ID'),
+                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_NAME'),
+                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'),
+                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT'),
+                config('db_constants.TABLES.TBL_JUDGES') . '.' . config('db_constants.FIELDS.FLD_JUDGES_NAME') . ' as judge')
             ->join(config('db_constants.TABLES.TBL_JUDGES'),
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'. config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'),
+                config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'),
                 '=',
-                config('db_constants.TABLES.TBL_JUDGES').'.'. config('db_constants.FIELDS.FLD_JUDGES_ID'))
-            ->where(config('db_constants.TABLES.TBL_PROBLEMS').'.'. config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'), '=', $judgeID)
-            ->paginate(config('constants.PROBLEMS_COUNT_PER_PAGE'));
-        // Assign data
-        $ret = [
-            "headings" => ["ID", "Name", "Difficulty", "# Accepted submissions", "Judge"],
-            "problems" => $problems,
-            "extra" => [
-                "checkbox" => "no",
-                "checkboxPosition" => "-1",
-            ]
-        ];
-        return json_encode($ret);
+                config('db_constants.TABLES.TBL_JUDGES') . '.' . config('db_constants.FIELDS.FLD_JUDGES_ID'))
+            ->where(config('db_constants.TABLES.TBL_PROBLEMS') . '.' . config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'), '=', $judgeID);
+        return Problem::prepareProblemsOutput($problems, $sortBy);
     }
 }
