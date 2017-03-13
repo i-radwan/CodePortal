@@ -24,8 +24,11 @@
 </head>
 
 <body>
-    @include('layouts.navbar')
-    @yield('content')
+    <div class="space-wrapper">
+        @include('layouts.navbar')
+        @yield('content')
+    </div>
+
     @include('layouts.footer')
 
     <!-- Scripts -->

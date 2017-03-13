@@ -21,13 +21,6 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li class="{{ Request::is('/') ? 'active' : '' }}">
-                        <a href="{{ url('/') }}">
-                            Home
-                            {!! Request::is('/') ? '<span class="sr-only">(current)</span>' : '' !!}
-                        </a>
-                    </li>
-
                     <li class="{{ Request::is('contests') ? 'active' : '' }}">
                         <a href="{{ url('contests') }}">
                             Contests

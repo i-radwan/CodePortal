@@ -1,5 +1,5 @@
-<footer>
-    <div class="text-center">
+<footer class="flex-center">
+    <div class="container text-center">
         <a href="#" title="Go to the top of the page">
             <span class="glyphicon glyphicon-chevron-up"></span>
         </a>
