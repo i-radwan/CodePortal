@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+// Navbar routes...
 Route::get('/', 'HomeController@index');
 Route::get('profile/{user}', 'ProfileController@index');
 Route::get('contests', 'ContestController@index');

@@ -11,12 +11,12 @@ use App\Models\Judge;
 use App\Models\User;
 use App\Models\Contest;
 use App\Models\Problem;
-use Tests;
+use Tests\CreatesApplication;
 use Artisan;
 
 abstract class DatabaseTest extends BaseTestCase
 {
-    use Tests\CreatesApplication;
+    use CreatesApplication;
 
     protected function setUp()
     {
