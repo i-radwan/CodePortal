@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Utilities\Constants;
 
 class CreateProblemsTable extends Migration
 {
@@ -13,12 +14,12 @@ class CreateProblemsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('db_constants.TABLES.TBL_PROBLEMS'), function (Blueprint $table) {
-            $table->increments(config('db_constants.FIELDS.FLD_PROBLEMS_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'));
-            $table->string(config('db_constants.FIELDS.FLD_PROBLEMS_NAME'), 100);
-            $table->integer(config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'));
-            $table->integer(config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT'));
+        Schema::create(Constants::TBL_PROBLEMS, function (Blueprint $table) {
+            $table->increments(Constants::FLD_PROBLEMS_ID);
+            $table->integer(Constants::FLD_PROBLEMS_JUDGE_ID);
+            $table->string(Constants::FLD_PROBLEMS_NAME, 100);
+            $table->integer(Constants::FLD_PROBLEMS_DIFFICULTY);
+            $table->integer(Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT);
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ class CreateProblemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('db_constants.TABLES.TBL_PROBLEMS'));
+        Schema::dropIfExists(Constants::TBL_PROBLEMS);
     }
 }

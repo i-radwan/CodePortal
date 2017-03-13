@@ -7,6 +7,7 @@ use App\Models\Submission;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Language;
+use App\Utilities\Constants;
 
 class SubmissionTest extends DatabaseTest
 {
@@ -20,7 +21,7 @@ class SubmissionTest extends DatabaseTest
         $judge = $this->insertJudge('Codeforces1', 'http://www.judge2.com', 'http://www.judge.com');
         $problem = $this->insertProblem('Problem1', '10', '20', $judge);
         $user = $this->insertUser('user12', 'a2@a.a', 'aaaaaa', 'aaa2');
-        $language = new Language([config('db_constants.FIELDS.FLD_LANGUAGES_NAME') => 'C+++']);
+        $language = new Language([Constants::FLD_LANGUAGES_NAME => 'C+++']);
         $language->save();
 
 

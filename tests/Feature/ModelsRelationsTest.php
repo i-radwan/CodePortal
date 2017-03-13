@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Language;
 use App\Models\Tag;
 use Log;
+use App\Utilities\Constants;
 
 class ModelsRelationsTest extends DatabaseTest
 {
@@ -18,7 +19,7 @@ class ModelsRelationsTest extends DatabaseTest
         // Create models
         $user = $this->insertUser('user121', 'a12@a.a', 'aaaaaa', 'aa31a');
         $admin = $this->insertUser('use12r121', 'a1312@a.a', 'aaaaaa', 'aa131a', '1');
-        $language = new Language([config('db_constants.FIELDS.FLD_LANGUAGES_NAME') => 'C+++1']);
+        $language = new Language([Constants::FLD_LANGUAGES_NAME => 'C+++1']);
         $language->store();
         $judge = $this->insertJudge('Codeforces3', 'http://www.judge3.com', 'http://www.judge.com');
         $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0');
@@ -26,12 +27,12 @@ class ModelsRelationsTest extends DatabaseTest
         $question = $this->insertQuestion('Question1', "Hello", 'Answer1', $contest, $user);
         $question->saveAnswer("Ansert1", $admin);
         $submission = $this->insertSubmission('123', 100, 200, '1', $problem1, $user, $language);
-        $tag = new Tag([config('db_constants.FIELDS.FLD_TAGS_NAME') => 'Tag0123']);
+        $tag = new Tag([Constants::FLD_TAGS_NAME => 'Tag0123']);
         $tag->store();
 
         // Tags + problems
         $problem1->tags()->sync([$tag->id], false);
-        $tag = new Tag([config('db_constants.FIELDS.FLD_TAGS_NAME') => 'Tag01232']);
+        $tag = new Tag([Constants::FLD_TAGS_NAME => 'Tag01232']);
         $tag->store();
         $problem1->tags()->sync([$tag->id], false);
         $problem = $this->insertProblem('Problem1', '10', '20', $judge);
@@ -76,7 +77,7 @@ class ModelsRelationsTest extends DatabaseTest
         $this->assertEquals($question->admin()->getResults()->id, $admin->id);
 
         // User + Judge
-        $user->handles()->save($judge, [config('db_constants.FIELDS.FLD_USER_HANDLES_HANDLE') => 'asd']);
+        $user->handles()->save($judge, [Constants::FLD_USER_HANDLES_HANDLE => 'asd']);
 
         // User + Contest
         $user->participatingContests()->save($contest);

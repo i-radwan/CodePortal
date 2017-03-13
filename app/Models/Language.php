@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Validator;
+use App\Utilities\Constants;
 
 class Language extends Model
 {
     public function __construct(array $attributes = [])
     {
         $this->fillable =  [
-            config('db_constants.FIELDS.FLD_LANGUAGES_NAME'),
+            Constants::FLD_LANGUAGES_NAME,
         ];
         parent::__construct($attributes);
     }

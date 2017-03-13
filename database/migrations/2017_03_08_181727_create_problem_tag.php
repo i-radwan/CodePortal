@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Utilities\Constants;
 
 class CreateProblemTag extends Migration
 {
@@ -13,10 +14,10 @@ class CreateProblemTag extends Migration
      */
     public function up()
     {
-        Schema::create(config('db_constants.TABLES.TBL_PROBLEM_TAG'), function (Blueprint $table) {
-            $table->integer(config('db_constants.FIELDS.FLD_PROBLEM_TAG_PROBLEM_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_PROBLEM_TAG_TAG_ID'));
-            $table->primary(array(config('db_constants.FIELDS.FLD_PROBLEM_TAG_PROBLEM_ID'), config('db_constants.FIELDS.FLD_PROBLEM_TAG_TAG_ID')));
+        Schema::create(Constants::TBL_PROBLEM_TAG, function (Blueprint $table) {
+            $table->integer(Constants::FLD_PROBLEM_TAG_PROBLEM_ID);
+            $table->integer(Constants::FLD_PROBLEM_TAG_TAG_ID);
+            $table->primary(array(Constants::FLD_PROBLEM_TAG_PROBLEM_ID, Constants::FLD_PROBLEM_TAG_TAG_ID));
         });
     }
 
@@ -27,6 +28,6 @@ class CreateProblemTag extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('db_constants.TABLES.TBL_PROBLEM_TAG'));
+        Schema::dropIfExists(Constants::TBL_PROBLEM_TAG);
     }
 }

@@ -13,6 +13,7 @@ use App\Models\Contest;
 use App\Models\Problem;
 use Tests\CreatesApplication;
 use Artisan;
+use App\Utilities\Constants;
 
 abstract class DatabaseTest extends BaseTestCase
 {
@@ -28,9 +29,9 @@ abstract class DatabaseTest extends BaseTestCase
     public function insertProblem($name, $difficulty, $acceptedSubmissionsCount, $judge)
     {
         $problem = new Problem([
-            config('db_constants.FIELDS.FLD_PROBLEMS_NAME') => $name,
-            config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY') => $difficulty,
-            config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT') => $acceptedSubmissionsCount]);
+            Constants::FLD_PROBLEMS_NAME => $name,
+            Constants::FLD_PROBLEMS_DIFFICULTY => $difficulty,
+            Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $acceptedSubmissionsCount]);
         $problem->judge()->associate($judge);
         $problem->store();
         return $problem;
@@ -39,9 +40,9 @@ abstract class DatabaseTest extends BaseTestCase
     public function insertJudge($name, $link, $api_link)
     {
         $judge = new Judge([
-            config('db_constants.FIELDS.FLD_JUDGES_NAME') => $name,
-            config('db_constants.FIELDS.FLD_JUDGES_LINK') => $link,
-            config('db_constants.FIELDS.FLD_JUDGES_API_LINK') => $api_link]);
+            Constants::FLD_JUDGES_NAME => $name,
+            Constants::FLD_JUDGES_LINK => $link,
+            Constants::FLD_JUDGES_API_LINK => $api_link]);
         $judge->store();
         return $judge;
     }
@@ -49,10 +50,10 @@ abstract class DatabaseTest extends BaseTestCase
     public function insertQuestion($title, $content, $answer, $contest, $user, $status = '0')
     {
         $question = new Question([
-            config('db_constants.FIELDS.FLD_QUESTIONS_TITLE') => $title,
-            config('db_constants.FIELDS.FLD_QUESTIONS_CONTENT') => $content,
-            config('db_constants.FIELDS.FLD_QUESTIONS_ANSWER') => $answer,
-            config('db_constants.FIELDS.FLD_QUESTIONS_STATUS') => $status]);
+            Constants::FLD_QUESTIONS_TITLE => $title,
+            Constants::FLD_QUESTIONS_CONTENT => $content,
+            Constants::FLD_QUESTIONS_ANSWER => $answer,
+            Constants::FLD_QUESTIONS_STATUS => $status]);
         $question->contest()->associate($contest);
         $question->user()->associate($user);
         $question->store();
@@ -62,10 +63,10 @@ abstract class DatabaseTest extends BaseTestCase
     public function insertUser($name, $email, $password, $username, $role = '0')
     {
         $user = new User([
-            config('db_constants.FIELDS.FLD_USERS_NAME') => $name,
-            config('db_constants.FIELDS.FLD_USERS_EMAIL') => $email,
-            config('db_constants.FIELDS.FLD_USERS_PASSWORD') => $password,
-            config('db_constants.FIELDS.FLD_USERS_USERNAME') => $username]);
+            Constants::FLD_USERS_NAME => $name,
+            Constants::FLD_USERS_EMAIL => $email,
+            Constants::FLD_USERS_PASSWORD => $password,
+            Constants::FLD_USERS_USERNAME => $username]);
         $user->role = $role;
         $user->save();
         return $user;
@@ -75,10 +76,10 @@ abstract class DatabaseTest extends BaseTestCase
     public function insertContest($name, $time, $duration, $visilibty)
     {
         $contest = new Contest(array(
-            config('db_constants.FIELDS.FLD_CONTESTS_NAME') => $name,
-            config('db_constants.FIELDS.FLD_CONTESTS_TIME') => $time,
-            config('db_constants.FIELDS.FLD_CONTESTS_DURATION') => $duration,
-            config('db_constants.FIELDS.FLD_CONTESTS_VISIBILITY') => $visilibty));
+            Constants::FLD_CONTESTS_NAME => $name,
+            Constants::FLD_CONTESTS_TIME => $time,
+            Constants::FLD_CONTESTS_DURATION => $duration,
+            Constants::FLD_CONTESTS_VISIBILITY => $visilibty));
         $contest->store();
         return $contest;
     }
@@ -96,14 +97,14 @@ abstract class DatabaseTest extends BaseTestCase
 
     public function insertLanguage($name)
     {
-        $language = new Language([config('db_constants.FIELDS.FLD_LANGUAGES_NAME') => $name]);
+        $language = new Language([Constants::FLD_LANGUAGES_NAME => $name]);
         $language->store();
         return $language;
     }
 
     public function insertTag($name)
     {
-        $tag = new Tag([config('db_constants.FIELDS.FLD_TAGS_NAME') => $name]);
+        $tag = new Tag([Constants::FLD_TAGS_NAME => $name]);
         $tag->store();
         return $tag;
     }

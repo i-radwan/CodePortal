@@ -6,7 +6,7 @@ use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-
+use App\Utilities\Constants;
 class RegisterController extends Controller
 {
     /*
@@ -59,10 +59,10 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            config('db_constants.FIELDS.FLD_USERS_NAME') => $data['name'],
-            config('db_constants.FIELDS.FLD_USERS_EMAIL') => $data['email'],
-            config('db_constants.FIELDS.FLD_USERS_USERNAME')  => $data['username'],
-            config('db_constants.FIELDS.FLD_USERS_PASSWORD')  => bcrypt($data['password']),
+            Constants::FLD_USERS_NAME => $data['name'],
+            Constants::FLD_USERS_EMAIL => $data['email'],
+            Constants::FLD_USERS_USERNAME => $data['username'],
+            Constants::FLD_USERS_PASSWORD => bcrypt($data['password']),
         ]);
     }
 }

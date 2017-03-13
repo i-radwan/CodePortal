@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Utilities\Constants;
 
 class CreateContestProblem extends Migration
 {
@@ -13,11 +14,11 @@ class CreateContestProblem extends Migration
      */
     public function up()
     {
-        Schema::create(config('db_constants.TABLES.TBL_CONTEST_PROBLEM'), function (Blueprint $table) {
-            $table->integer(config('db_constants.FIELDS.FLD_CONTEST_PROBLEM_CONTEST_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_CONTEST_PROBLEM_PROBLEM_ID'));
-            $table->primary(array(config('db_constants.FIELDS.FLD_CONTEST_PROBLEM_CONTEST_ID'),
-                config('db_constants.FIELDS.FLD_CONTEST_PROBLEM_PROBLEM_ID')));
+        Schema::create(Constants::TBL_CONTEST_PROBLEM, function (Blueprint $table) {
+            $table->integer(Constants::FLD_CONTEST_PROBLEM_CONTEST_ID);
+            $table->integer(Constants::FLD_CONTEST_PROBLEM_PROBLEM_ID);
+            $table->primary(array(Constants::FLD_CONTEST_PROBLEM_CONTEST_ID,
+                Constants::FLD_CONTEST_PROBLEM_PROBLEM_ID));
         });
     }
 
@@ -28,6 +29,6 @@ class CreateContestProblem extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('db_constants.TABLES.TBL_CONTEST_PROBLEM'));
+        Schema::dropIfExists(Constants::TBL_CONTEST_PROBLEM);
     }
 }

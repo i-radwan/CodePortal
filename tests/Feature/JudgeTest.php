@@ -53,5 +53,19 @@ class JudgeTest extends DatabaseTest
         $validJudge->delete();
 
         $this->assertTrue(Judge::count() == $initialCount); // not inserted
+
+        // Get jduge problems paginated
+        $judge1 = $this->insertJudge('Judge1', 'http://www.link.com', 'http://www.apilink.com');
+        $judge2 = $this->insertJudge('Judge2', 'http://www.link2.com', 'http://www.apilink2.com');
+
+        for ($i = 0; $i < 100; $i++) {
+            if ($i % 2 == 0)
+                $this->insertProblem('Problem' . $i, 10, 20, $judge1);
+            else
+                $this->insertProblem('Problem' . $i, 10, 20, $judge2);
+        }
+        $problems = Judge::getJudgeProblems($judge1->id);
+        $this->assertEquals(json_decode($problems, true)['problems']['total'], 50);
+        \Log::info("Judge's Problems :: " . $problems);
     }
 }

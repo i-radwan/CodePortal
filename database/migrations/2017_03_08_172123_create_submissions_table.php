@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-
+use App\Utilities\Constants;
 class CreateSubmissionsTable extends Migration
 {
     /**
@@ -13,15 +13,15 @@ class CreateSubmissionsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('db_constants.TABLES.TBL_SUBMISSIONS'), function (Blueprint $table) {
-            $table->increments(config('db_constants.FIELDS.FLD_SUBMISSIONS_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_PROBLEM_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_USER_ID'));
-            $table->string(config('db_constants.FIELDS.FLD_SUBMISSIONS_SUBMISSION_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_LANGUAGE_ID'));
-            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_EXECUTION_TIME'));
-            $table->integer(config('db_constants.FIELDS.FLD_SUBMISSIONS_CONSUMED_MEMORY'));
-            $table->enum(config('db_constants.FIELDS.FLD_SUBMISSIONS_VERDICT'), config('constants.SUBMISSION_VERDICT'));
+        Schema::create(Constants::TBL_SUBMISSIONS, function (Blueprint $table) {
+            $table->increments(Constants::FLD_SUBMISSIONS_ID);
+            $table->integer(Constants::FLD_SUBMISSIONS_PROBLEM_ID);
+            $table->integer(Constants::FLD_SUBMISSIONS_USER_ID);
+            $table->string(Constants::FLD_SUBMISSIONS_SUBMISSION_ID);
+            $table->integer(Constants::FLD_SUBMISSIONS_LANGUAGE_ID);
+            $table->integer(Constants::FLD_SUBMISSIONS_EXECUTION_TIME);
+            $table->integer(Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY);
+            $table->enum(Constants::FLD_SUBMISSIONS_VERDICT, Constants::SUBMISSION_VERDICT);
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ class CreateSubmissionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('db_constants.TABLES.TBL_SUBMISSIONS'));
+        Schema::dropIfExists(Constants::TBL_SUBMISSIONS);
     }
 }

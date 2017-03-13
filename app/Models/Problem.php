@@ -7,22 +7,23 @@ use App\Exceptions\UnknownJudgeException;
 use Validator;
 use Illuminate\Pagination\Paginator;
 use DB;
+use App\Utilities\Constants;
 
 class Problem extends Model
 {
     public function __construct(array $attributes = [])
     {
-        $this->fillable =  [
-            config('db_constants.FIELDS.FLD_PROBLEMS_NAME'),
-            config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'),
-            config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT')
+        $this->fillable = [
+            Constants::FLD_PROBLEMS_NAME,
+            Constants::FLD_PROBLEMS_DIFFICULTY,
+            Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT
         ];
         parent::__construct($attributes);
     }
 
     public function contests()
     {
-        return $this->belongsToMany(Contest::class, config('db_constants.TABLES.TBL_CONTEST_PROBLEM'));
+        return $this->belongsToMany(Contest::class, Constants::TBL_CONTEST_PROBLEM);
     }
 
     public function judge()
@@ -32,7 +33,7 @@ class Problem extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, config('db_constants.TABLES.TBL_PROBLEM_TAG'));
+        return $this->belongsToMany(Tag::class, Constants::TBL_PROBLEM_TAG);
     }
 
     public function submissions()
@@ -51,25 +52,101 @@ class Problem extends Model
         $this->save();
     }
 
-    public static function index($page = 1)
+    public static function index($page = 1, $sortBy = [])
     {
+        $sortBy = Problem::initializeProblemsSortByArray($sortBy);
         // Set page
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
         // Set columns and count
-        $problems = DB::table(config('db_constants.TABLES.TBL_PROBLEMS'))
+        $problems = DB::table(Constants::TBL_PROBLEMS)
             ->select(
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_ID'),
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_NAME'),
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'),
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT'),
-                config('db_constants.TABLES.TBL_JUDGES').'.'.config('db_constants.FIELDS.FLD_JUDGES_NAME') . ' as Judge')
-            ->join(config('db_constants.TABLES.TBL_JUDGES'),
-                config('db_constants.TABLES.TBL_PROBLEMS').'.'. config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'),
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge')
+            ->join(Constants::TBL_JUDGES,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
                 '=',
-                config('db_constants.TABLES.TBL_JUDGES').'.'. config('db_constants.FIELDS.FLD_JUDGES_ID'))
-            ->paginate(config('constants.PROBLEMS_COUNT_PER_PAGE'));
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID);
+        return Problem::prepareProblemsOutput($problems, $sortBy);
+    }
+
+    /**
+     * This function applies given filters to problems set
+     * @param $name problem name
+     * @param $tagsIDs array of tags IDs
+     * @param $judgesIDs array of judges IDs
+     * @param int $page
+     * @param array $sortBy array of 'sort by' columns
+     * @return string JSON of problems
+     */
+    public static function filter($name, $tagsIDs, $judgesIDs, $page = 1, $sortBy = [])
+    {
+        $sortBy = Problem::initializeProblemsSortByArray($sortBy);
+        // Set page
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+        // Set columns and count
+        $problems = DB::table(Constants::TBL_PROBLEMS)
+            ->select(
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge')
+            ->join(Constants::TBL_JUDGES,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
+                '=',
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID)
+            ->join(Constants::TBL_PROBLEM_TAG,
+                Constants::TBL_PROBLEM_TAG . '.' . Constants::FLD_PROBLEM_TAG_PROBLEM_ID,
+                '=',
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
+            ->whereIn(Constants::TBL_PROBLEM_TAG . '.' . Constants::FLD_PROBLEM_TAG_TAG_ID, $tagsIDs)
+            ->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs)
+            ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%");
+
+        return Problem::prepareProblemsOutput($problems, $sortBy);
+    }
+    /**
+     * This function takes the given sortBy array and if it's empty it generates the
+     * basic sort by condition
+     * @param $sortBy
+     * @return array
+     */
+    public static function initializeProblemsSortByArray($sortBy)
+    {
+        if (count($sortBy) == 0) {
+            $sortBy = [
+                [
+                    "column" => Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+                    "mode" => "asc"
+                ]
+            ];
+        }
+        return $sortBy;
+    }
+
+    /**
+     * This function applies the sortBy array to the problems collection and paginate it
+     * then it adds the extra info like headings and return the json encoded string
+     * @param $problems
+     * @param $sortBy
+     * @return string
+     */
+
+    public static function prepareProblemsOutput($problems, $sortBy)
+    {
+        // Apply sorting
+        foreach ($sortBy as $sortField){
+            $problems->orderBy($sortField["column"], $sortField["mode"]);
+        }
+        // Paginate
+        $problems = $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
         // Assign data
         $ret = [
             "headings" => ["ID", "Name", "Difficulty", "# Accepted submissions", "Judge"],
