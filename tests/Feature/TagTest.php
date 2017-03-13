@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Illuminate\Validation\ValidationException;
 use App\Models\Tag;
+
 class TagTest extends DatabaseTest
 {
 
@@ -44,10 +45,23 @@ class TagTest extends DatabaseTest
 
         $this->assertTrue(Tag::count() == $initialCount); // not inserted
 
-        for ($i = 0; $i < 100; $i++) $this->insertTag('Tag'.$i);
+        for ($i = 0; $i < 100; $i++) $this->insertTag('Tag' . $i);
         $tags = Tag::index(20);
         $this->assertEquals(count(json_decode($tags, true)), 20);
-        \Log::info('Tags:: '.$tags);
+        \Log::info('Tags:: ' . $tags);
+
+        // Get tag problems paginated
+        $validTag = $this->insertTag("NewTag");
+        $judge = $this->insertJudge('Codeforces', 'http://www.judge.com', 'http://www.judge.com');
+        for ($i = 0; $i < 100; $i++) {
+            $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge);
+            if ($i % 2 == 0)
+                $problem->tags()->sync([$validTag->id], false);
+        }
+        $problems = Tag::getTagProblems($validTag->id);
+        $this->assertEquals(json_decode($problems, true)['problems']['total'], 50);
+        \Log::info("Tag's Problems :: " . $problems);
+
     }
 
 }

@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use phpDocumentor\Reflection\Types\Integer;
 use Validator;
 use DB;
+use Illuminate\Pagination\Paginator;
 
 class Tag extends Model
 {
@@ -39,4 +39,39 @@ class Tag extends Model
                 ->take($count)->get());
     }
 
+    public static function getTagProblems($tagID, $page = 1)
+    {
+        // Set page
+        Paginator::currentPageResolver(function () use ($page) {
+            return $page;
+        });
+        // Set columns and count
+        $problems = DB::table(config('db_constants.TABLES.TBL_PROBLEMS'))
+            ->select(
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_ID'),
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_NAME'),
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_DIFFICULTY'),
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'.config('db_constants.FIELDS.FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT'),
+                config('db_constants.TABLES.TBL_JUDGES').'.'.config('db_constants.FIELDS.FLD_JUDGES_NAME') . ' as judge')
+            ->join(config('db_constants.TABLES.TBL_JUDGES'),
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'. config('db_constants.FIELDS.FLD_PROBLEMS_JUDGE_ID'),
+                '=',
+                config('db_constants.TABLES.TBL_JUDGES').'.'. config('db_constants.FIELDS.FLD_JUDGES_ID'))
+            ->join(config('db_constants.TABLES.TBL_PROBLEM_TAG'),
+                config('db_constants.TABLES.TBL_PROBLEM_TAG').'.'. config('db_constants.FIELDS.FLD_PROBLEM_TAG_PROBLEM_ID'),
+                '=',
+                config('db_constants.TABLES.TBL_PROBLEMS').'.'. config('db_constants.FIELDS.FLD_PROBLEMS_ID'))
+            ->where(config('db_constants.TABLES.TBL_PROBLEM_TAG').'.'. config('db_constants.FIELDS.FLD_PROBLEM_TAG_TAG_ID'), '=', $tagID)
+            ->paginate(config('constants.PROBLEMS_COUNT_PER_PAGE'));
+        // Assign data
+        $ret = [
+            "headings" => ["ID", "Name", "Difficulty", "# Accepted submissions", "Judge"],
+            "problems" => $problems,
+            "extra" => [
+                "checkbox" => "no",
+                "checkboxPosition" => "-1",
+            ]
+        ];
+        return json_encode($ret);
+    }
 }
