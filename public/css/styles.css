@@ -1,3 +1,4 @@
+/*<editor-fold desc="Global Styles">*/
 /*====================================*/
 /*========== GLOBAL STYLES ===========*/
 /*====================================*/
@@ -17,8 +18,28 @@ html, body {
     display: flex;
     align-items: center;
 }
-/**************************************/
 
+.btn-primary {
+    /*background-color: #56783D;*/
+    /*border-color: #56783D;*/
+    /*color: #fff;*/
+}
+
+.btn-primary:hover {
+    /*background-color: ;*/
+    /*border-color: ;*/
+    /*color: #000;*/
+}
+
+form-control {
+    /*border-color: #56783D;*/
+    /*-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;*/
+    /*box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;*/
+}
+/**************************************/
+/*</editor-fold>*/
+
+/*<editor-fold desc="Header & Footer Styles">*/
 /* Navigation bar styles */
 .navbar-default {
 
@@ -58,7 +79,9 @@ footer {
     color: #cdcccc;
 }
 /**************************************/
+/*</editor-fold>*/
 
+/*<editor-fold desc="Homepage">*/
 /*====================================*/
 /*============ HOME PAGE =============*/
 /*====================================*/
@@ -167,7 +190,27 @@ footer {
     box-shadow: 0 0 1px 1px #757575;
 }
 /**************************************/
+/*</editor-fold>*/
 
+/*<editor-fold desc="Login Page">*/
+/*====================================*/
+/*============ LOGIN PAGE ============*/
+/*====================================*/
+
+/* Cover photo styles*/
+.login-page {
+    /*margin-top: -20px;  !* to negate the navbar margin *!*/
+    /*padding-top: 20px;*/
+    /*min-height: 100%;*/
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url("/images/cover/5.jpg");
+}
+/**************************************/
+/*</editor-fold>*/
+
+/*<editor-fold desc="Media Queries">*/
 /*====================================*/
 /*========== MEDIA QUERIES ===========*/
 /*====================================*/
@@ -240,3 +283,4 @@ footer {
         background-image: url("/images/cover/1/xxs.jpg");
     }
 }
+/*</editor-fold>*/

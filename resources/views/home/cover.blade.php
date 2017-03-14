@@ -10,7 +10,7 @@
                     {{ csrf_field() }}
 
                     <div class="input-group input-group-lg">
-                        <input type="text" class="form-control" id="search" placeholder="Search for..." required>
+                        <input type="search" class="form-control" id="search" placeholder="Search for..." required>
 
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-primary">
