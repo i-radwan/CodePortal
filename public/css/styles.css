@@ -17,35 +17,37 @@ html, body {
     display: flex;
     align-items: center;
 }
-
 /**************************************/
 
 /* Navigation bar styles */
 .navbar-default {
-    /*background-color: #f8f8f8;*/
-    /*border-color: #e7e7e7;*/
-    /*color: #777;*/
+
 }
 
-.navbar-default .navbar-nav > li {
-    background: #e7e7e7;
-}
+/* Small devices and above */
+@media (min-width: 768px) {
+    .navbar-default .navbar-nav > li {
+        height: 50px;
+        background: #e7e7e7;
+    }
 
-.navbar-default .navbar-nav > li > a {
-    background: #f8f8f8;
-}
+    .navbar-default .navbar-nav > li > a {
+        transition: 0.1s;
+        background: #f8f8f8;
+    }
 
-.navbar-default .navbar-nav > li > a:hover {
-    background-color: #e7e7e7;
-    color: #555;
-}
+    .navbar-default .navbar-nav > li > a:hover {
+        transition: 0.3s;
+        background-color: #e7e7e7;
+        color: #555;
+    }
 
-.navbar-default .navbar-nav > .active > a {
-    background-color: #f8f8f8;
-    color: #777;
-    height: calc(100% - 3px);
+    .navbar-default .navbar-nav > .active > a {
+        height: calc(100% - 4px);
+        background-color: #f8f8f8;
+        color: #777;
+    }
 }
-
 /**************************************/
 
 /* Footer section styles */
@@ -53,9 +55,8 @@ footer {
     height: 50px;
     background-color: #393E41;
     border-top: 1px solid #25282A;
-    color: #CDCCCC;
+    color: #cdcccc;
 }
-
 /**************************************/
 
 /*====================================*/
@@ -64,78 +65,57 @@ footer {
 
 /* Cover photo styles*/
 .jumbotron {
-    margin-top: -20px;
+    margin-top: -20px;  /* to negate the navbar margin */
     min-height: 90vh;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    color: white;
+}
+
+.jumbotron .container > h1, .jumbotron .container > h3 {
+    color: #e5e5e5;
+    text-shadow: 3px 3px 5px #000;
 }
 
 .jumbotron .container > h1 > strong {
     font-size: 150%;
 }
 
-.jumbotron .container > h1, .jumbotron .container > h3 {
-    text-shadow: 3px 3px 5px #000;
-    color: #e5e5e5;
-}
-
 .jumbotron .container > h3 {
+    margin-bottom: 60px;
 }
-
-.jumbotron-search-form {
-    margin-top: 60px;
-}
-
 /**************************************/
 
 /* Features styles*/
-.feature-content h1 {
-    margin-top: 0;
-    font-weight: 500;
+.feature-item p {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    line-height: 200%;
 }
 
-.feature-content p {
-    line-height: 240%;
-    margin-top: 35px;
-}
-
-.feature-link {
-    padding: 0;
-    margin-top: 45px;
-    color: #0D70BC;
-    border: 1px solid #0D70BC;
-    padding: 10px 20px;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    border-radius: 2px;
-}
-
+/* Medium devices and above */
 @media (min-width: 992px) {
-    /* Medium devices and above */
     .feature-item {
         padding-top: 70px;
         padding-bottom: 70px;
     }
 
-    .feature-item .feature-content {
-
+    .feature-item h1 {
+        margin-top: 0;
     }
 }
 
+/* Small devices and below */
 @media (max-width: 991px) {
-    /* Small devices and below */
-    .feature-item {
-
-    }
-
-    .feature-item .feature-content {
+    .feature-item h1 {
         padding-bottom: 30px;
         text-align: center;
     }
-}
 
+    .feature-item .btn {
+        margin-bottom: 30px;
+    }
+}
 /**************************************/
 
 /* Quotes styles */
@@ -166,7 +146,6 @@ footer {
     width: 150px;
     height: 150px;
 }
-
 /**************************************/
 
 /* Sponsors styles */
@@ -176,25 +155,24 @@ footer {
     background-color: #eeeeee;
 }
 
-.sponsors-section h2 {
+.sponsors-section h1 {
     margin-bottom: 60px;
 }
 
 .sponsors-section img {
+    max-width: 150px;
+    max-height: 150px;
     -moz-box-shadow: 0 0 1px 1px #757575;
     -webkit-box-shadow: 0 0 1px 1px #757575;
     box-shadow: 0 0 1px 1px #757575;
-    max-width: 150px;
-    max-height: 150px;
 }
-
 /**************************************/
 
 /*====================================*/
 /*========== MEDIA QUERIES ===========*/
 /*====================================*/
 
-/* Super extra large devices only */
+/* Super extra large devices  */
 @media (min-width: 2000px) {
 
     /* Home page cover photo styles*/
@@ -202,10 +180,9 @@ footer {
         background-image: url("/images/cover/1/xxlg.jpg");
     }
 }
-
 /**************************************/
 
-/* Extra large devices only */
+/* Extra large devices */
 @media (min-width: 1500px) and (max-width: 1999px) {
 
     /* Home page cover photo styles*/
@@ -213,10 +190,9 @@ footer {
         background-image: url("/images/cover/1/xlg.jpg");
     }
 }
-
 /**************************************/
 
-/* Large devices only */
+/* Large devices */
 @media (min-width: 1200px) and (max-width: 1499px) {
 
     /* Home page cover photo styles*/
@@ -224,10 +200,9 @@ footer {
         background-image: url("/images/cover/1/lg.jpg");
     }
 }
-
 /**************************************/
 
-/* Medium devices only */
+/* Medium devices */
 @media (min-width: 992px) and (max-width: 1199px) {
 
     /* Home page cover photo styles*/
@@ -235,10 +210,9 @@ footer {
         background-image: url("/images/cover/1/md.jpg");
     }
 }
-
 /**************************************/
 
-/* Small devices only */
+/* Small devices */
 @media (min-width: 768px) and (max-width: 991px) {
 
     /* Home page cover photo styles*/
@@ -246,17 +220,9 @@ footer {
         background-image: url("/images/cover/1/sm.jpg");
     }
 }
-
-@media (min-width: 768px) {
-
-    .navbar-default .navbar-nav > li {
-        height: 50px;
-    }
-}
-
 /**************************************/
 
-/* Extra small devices only */
+/* Extra small devices */
 @media (min-width: 480px) and (max-width: 767px) {
 
     /* Home page cover photo styles*/
@@ -264,10 +230,9 @@ footer {
         background-image: url("/images/cover/1/xs.jpg");
     }
 }
-
 /**************************************/
 
-/* Super extra small devices Only */
+/* Super extra small devices */
 @media (max-width: 479px) {
 
     /* Home page cover photo styles*/

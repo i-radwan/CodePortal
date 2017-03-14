@@ -1,10 +1,10 @@
 <section class="sponsors-section">
     <div class="container">
-        <h2 class="text-center">Sponsors</h2>
+        <h1 class="text-center">Sponsors</h1>
 
         <div class="row">
             @foreach($sponsors as $sponsor)
-                <div class="col-sm-4 col-xs-6 text-center">
+                <div class="col-md-4 col-sm-6 text-center">
                     <a href="{{ $sponsor['url'] }}" target="_blank">
                         <img src="{{ $sponsor['img'] }}" alt="{{ $sponsor['name'] }}" class="img-circle">
                     </a>

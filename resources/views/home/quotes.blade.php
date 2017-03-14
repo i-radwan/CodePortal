@@ -1,6 +1,6 @@
 <section class="quotes-section">
     <div class="container">
-        <h2 class="text-center">What people are saying about competitive programming</h2>
+        <h1 class="text-center">What people are saying about competitive programming</h1>
 
         <div id="quotes-carousel" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
