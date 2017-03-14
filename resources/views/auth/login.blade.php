@@ -6,7 +6,7 @@
 
         <div class="container">
             <div class="row">
-                <div class="col-md-4 col-md-offset-8">
+                <div class="col-md-4 col-md-offset-8 col-sm-6 col-sm-offset-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">Login</div>
                         <div class="panel-body">

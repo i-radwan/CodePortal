@@ -199,13 +199,13 @@ footer {
 
 /* Cover photo styles*/
 .login-page {
-    /*margin-top: -20px;  !* to negate the navbar margin *!*/
-    /*padding-top: 20px;*/
-    /*min-height: 100%;*/
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
-    background-image: url("/images/cover/5.jpg");
+}
+
+.login-page .panel-default {
+    background: rgba(255, 255, 255, 0.85);
 }
 /**************************************/
 /*</editor-fold>*/
@@ -222,6 +222,11 @@ footer {
     .jumbotron {
         background-image: url("/images/cover/1/xxlg.jpg");
     }
+
+    /* Login page cover photo styles*/
+    .login-page {
+        background-image: url("/images/cover/2/xxlg.jpg");
+    }
 }
 /**************************************/
 
@@ -231,6 +236,11 @@ footer {
     /* Home page cover photo styles*/
     .jumbotron {
         background-image: url("/images/cover/1/xlg.jpg");
+    }
+
+    /* Login page cover photo styles*/
+    .login-page {
+        background-image: url("/images/cover/2/xlg.jpg");
     }
 }
 /**************************************/
@@ -242,6 +252,11 @@ footer {
     .jumbotron {
         background-image: url("/images/cover/1/lg.jpg");
     }
+
+    /* Login page cover photo styles*/
+    .login-page {
+        background-image: url("/images/cover/2/lg.jpg");
+    }
 }
 /**************************************/
 
@@ -251,6 +266,11 @@ footer {
     /* Home page cover photo styles*/
     .jumbotron {
         background-image: url("/images/cover/1/md.jpg");
+    }
+
+    /* Login page cover photo styles*/
+    .login-page {
+        background-image: url("/images/cover/2/md.jpg");
     }
 }
 /**************************************/
@@ -262,6 +282,11 @@ footer {
     .jumbotron {
         background-image: url("/images/cover/1/sm.jpg");
     }
+
+    /* Login page cover photo styles*/
+    .login-page {
+        background-image: url("/images/cover/2/sm.jpg");
+    }
 }
 /**************************************/
 
@@ -272,6 +297,11 @@ footer {
     .jumbotron {
         background-image: url("/images/cover/1/xs.jpg");
     }
+
+    /* Login page cover photo styles*/
+    .login-page {
+        background-image: url("/images/cover/2/xs.jpg");
+    }
 }
 /**************************************/
 
@@ -281,6 +311,11 @@ footer {
     /* Home page cover photo styles*/
     .jumbotron {
         background-image: url("/images/cover/1/xxs.jpg");
+    }
+
+    /* Login page cover photo styles*/
+    .login-page {
+        background-image: url("/images/cover/2/xxs.jpg");
     }
 }
 /*</editor-fold>*/
