@@ -6,15 +6,18 @@ html, body {
     height: 100%;
     font-family: 'Raleway', sans-serif;
 }
+
 .space-wrapper {
     min-height: 100%;
-    margin-bottom: -70px; /* negative value of footer height */
-    padding-bottom: 70px; /* footer height + needed padding */
+    margin-bottom: -50px; /* negative value of footer height */
+    padding-bottom: 50px; /* footer height + needed padding */
 }
+
 .flex-center {
     display: flex;
     align-items: center;
 }
+
 /**************************************/
 
 /* Navigation bar styles */
@@ -23,32 +26,37 @@ html, body {
     /*border-color: #e7e7e7;*/
     /*color: #777;*/
 }
+
+.navbar-default .navbar-nav > li {
+    background: #e7e7e7;
+}
+
+.navbar-default .navbar-nav > li > a {
+    background: #f8f8f8;
+}
+
 .navbar-default .navbar-nav > li > a:hover {
     background-color: #e7e7e7;
     color: #555;
 }
+
 .navbar-default .navbar-nav > .active > a {
     background-color: #f8f8f8;
     color: #777;
-    /*padding-top: 5px;*/
-    margin-top: -5px;
-    border-bottom: 5px solid #e7e7e7;
+    height: calc(100% - 3px);
 }
+
 /**************************************/
 
 /* Footer section styles */
 footer {
-    height: 70px;
+    height: 50px;
     background-color: #393E41;
     border-top: 1px solid #25282A;
     color: #CDCCCC;
 }
+
 /**************************************/
-
-
-
-
-
 
 /*====================================*/
 /*============ HOME PAGE =============*/
@@ -63,32 +71,71 @@ footer {
     background-position: center center;
     color: white;
 }
+
+.jumbotron .container > h1 > strong {
+    font-size: 150%;
+}
+
+.jumbotron .container > h1, .jumbotron .container > h3 {
+    text-shadow: 3px 3px 5px #000;
+    color: #e5e5e5;
+}
+
+.jumbotron .container > h3 {
+}
+
 .jumbotron-search-form {
     margin-top: 60px;
 }
+
 /**************************************/
 
 /* Features styles*/
-@media (min-width: 992px) {     /* Medium devices and above */
+.feature-content h1 {
+    margin-top: 0;
+    font-weight: 500;
+}
+
+.feature-content p {
+    line-height: 240%;
+    margin-top: 35px;
+}
+
+.feature-link {
+    padding: 0;
+    margin-top: 45px;
+    color: #0D70BC;
+    border: 1px solid #0D70BC;
+    padding: 10px 20px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+}
+
+@media (min-width: 992px) {
+    /* Medium devices and above */
     .feature-item {
-        display: flex;
-        align-items: center;
         padding-top: 70px;
         padding-bottom: 70px;
     }
+
     .feature-item .feature-content {
 
     }
 }
-@media (max-width: 991px) {     /* Small devices and below */
+
+@media (max-width: 991px) {
+    /* Small devices and below */
     .feature-item {
 
     }
+
     .feature-item .feature-content {
         padding-bottom: 30px;
         text-align: center;
     }
 }
+
 /**************************************/
 
 /* Quotes styles */
@@ -100,21 +147,26 @@ footer {
     border-top: 1px solid #e7e7e7;
     border-bottom: 1px solid #e7e7e7;
 }
+
 .carousel-indicators li {
     border-color: #2e6da4;
 }
+
 .carousel-indicators li.active {
     border-color: #2e6da4;
     background-color: #337ab7;
 }
+
 .item {
     margin-top: 50px;
     margin-bottom: 100px;
 }
+
 .item > img {
     width: 150px;
     height: 150px;
 }
+
 /**************************************/
 
 /* Sponsors styles */
@@ -123,19 +175,20 @@ footer {
     padding-bottom: 60px;
     background-color: #eeeeee;
 }
+
 .sponsors-section h2 {
     margin-bottom: 60px;
 }
+
 .sponsors-section img {
+    -moz-box-shadow: 0 0 1px 1px #757575;
+    -webkit-box-shadow: 0 0 1px 1px #757575;
+    box-shadow: 0 0 1px 1px #757575;
     max-width: 150px;
     max-height: 150px;
 }
+
 /**************************************/
-
-
-
-
-
 
 /*====================================*/
 /*========== MEDIA QUERIES ===========*/
@@ -149,6 +202,7 @@ footer {
         background-image: url("/images/cover/1/xxlg.jpg");
     }
 }
+
 /**************************************/
 
 /* Extra large devices only */
@@ -159,6 +213,7 @@ footer {
         background-image: url("/images/cover/1/xlg.jpg");
     }
 }
+
 /**************************************/
 
 /* Large devices only */
@@ -169,6 +224,7 @@ footer {
         background-image: url("/images/cover/1/lg.jpg");
     }
 }
+
 /**************************************/
 
 /* Medium devices only */
@@ -179,6 +235,7 @@ footer {
         background-image: url("/images/cover/1/md.jpg");
     }
 }
+
 /**************************************/
 
 /* Small devices only */
@@ -189,6 +246,14 @@ footer {
         background-image: url("/images/cover/1/sm.jpg");
     }
 }
+
+@media (min-width: 768px) {
+
+    .navbar-default .navbar-nav > li {
+        height: 50px;
+    }
+}
+
 /**************************************/
 
 /* Extra small devices only */
@@ -199,6 +264,7 @@ footer {
         background-image: url("/images/cover/1/xs.jpg");
     }
 }
+
 /**************************************/
 
 /* Super extra small devices Only */

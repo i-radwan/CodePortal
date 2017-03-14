@@ -2,9 +2,9 @@
     @foreach($features as $feature)
         <div class="row feature-item">
             <div class="col-md-6{{ $loop->index % 2 == 1 ? ' col-md-push-6' : '' }} feature-content">
-                <h2>{{ $feature['title'] }}</h2>
+                <h1>{{ $feature['title'] }}</h1>
                 <p>{{ $feature['description'] }}</p>
-                <a href="{{ $feature['url'] }}" class="btn btn-primary btn-lg">{{ $feature['link_title'] }}</a>
+                <a href="{{ $feature['url'] }}" class="btn btn-default btn-lg feature-link">{{ $feature['link_title'] }}</a>
             </div>
 
             <div class="col-md-6{{ $loop->index % 2 == 1 ? ' col-md-pull-6' : '' }}">
