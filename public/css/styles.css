@@ -337,10 +337,11 @@ footer {
     .login-page {
         background-image: url("/images/cover/2/sm.jpg");
     }
+}
 
-
-    .quotes-section blockquote p {
-        margin-top: 20px;
+@media (max-width: 991px) {
+    .quotes-section blockquote {
+        margin-top: 35px;
     }
 }
 
