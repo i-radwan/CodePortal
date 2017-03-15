@@ -36,6 +36,11 @@ form-control {
     /*-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;*/
     /*box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;*/
 }
+
+.left-align {
+    text-align: left;
+}
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -69,6 +74,7 @@ form-control {
         color: #777;
     }
 }
+
 /**************************************/
 
 /* Footer section styles */
@@ -78,6 +84,7 @@ footer {
     border-top: 1px solid #25282A;
     color: #cdcccc;
 }
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -88,7 +95,7 @@ footer {
 
 /* Cover photo styles*/
 .jumbotron {
-    margin-top: -20px;  /* to negate the navbar margin */
+    margin-top: -20px; /* to negate the navbar margin */
     min-height: 90vh;
     background-size: cover;
     background-repeat: no-repeat;
@@ -107,6 +114,7 @@ footer {
 .jumbotron .container > h3 {
     margin-bottom: 60px;
 }
+
 /**************************************/
 
 /* Features styles*/
@@ -114,6 +122,11 @@ footer {
     margin-top: 30px;
     margin-bottom: 30px;
     line-height: 200%;
+    font-weight: lighter;
+}
+
+.feature-item a {
+    margin-top: 30px;
 }
 
 /* Medium devices and above */
@@ -139,6 +152,7 @@ footer {
         margin-bottom: 30px;
     }
 }
+
 /**************************************/
 
 /* Quotes styles */
@@ -149,6 +163,35 @@ footer {
     background-color: #f8f8f8;
     border-top: 1px solid #e7e7e7;
     border-bottom: 1px solid #e7e7e7;
+}
+
+.quote-image {
+    width: 190px;
+    height: auto;
+}
+
+.quotes-section blockquote {
+    border-left: 0;
+    position: relative;
+    padding: 0;
+}
+
+.quotes-section blockquote i {
+    position: absolute;
+    top: 5px;
+    color: #1f648b;
+    font-size: 20px;
+}
+
+.quotes-section blockquote p {
+    display: inline-block;
+    padding-left: 60px;
+}
+
+.quotes-section h3 {
+    color: #1f648b;
+    padding-left: 60px;
+    margin-top: 35px;
 }
 
 .carousel-indicators li {
@@ -169,6 +212,7 @@ footer {
     width: 150px;
     height: 150px;
 }
+
 /**************************************/
 
 /* Sponsors styles */
@@ -189,6 +233,7 @@ footer {
     -webkit-box-shadow: 0 0 1px 1px #757575;
     box-shadow: 0 0 1px 1px #757575;
 }
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -207,6 +252,7 @@ footer {
 .login-page .panel-default {
     background: rgba(255, 255, 255, 0.85);
 }
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -228,6 +274,7 @@ footer {
         background-image: url("/images/cover/2/xxlg.jpg");
     }
 }
+
 /**************************************/
 
 /* Extra large devices */
@@ -243,6 +290,7 @@ footer {
         background-image: url("/images/cover/2/xlg.jpg");
     }
 }
+
 /**************************************/
 
 /* Large devices */
@@ -258,6 +306,7 @@ footer {
         background-image: url("/images/cover/2/lg.jpg");
     }
 }
+
 /**************************************/
 
 /* Medium devices */
@@ -273,6 +322,7 @@ footer {
         background-image: url("/images/cover/2/md.jpg");
     }
 }
+
 /**************************************/
 
 /* Small devices */
@@ -287,7 +337,13 @@ footer {
     .login-page {
         background-image: url("/images/cover/2/sm.jpg");
     }
+
+
+    .quotes-section blockquote p {
+        margin-top: 20px;
+    }
 }
+
 /**************************************/
 
 /* Extra small devices */
@@ -303,6 +359,7 @@ footer {
         background-image: url("/images/cover/2/xs.jpg");
     }
 }
+
 /**************************************/
 
 /* Super extra small devices */
@@ -318,4 +375,5 @@ footer {
         background-image: url("/images/cover/2/xxs.jpg");
     }
 }
+
 /*</editor-fold>*/
