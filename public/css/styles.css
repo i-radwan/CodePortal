@@ -4,11 +4,13 @@
 /*====================================*/
 
 html, body {
+    width: 100%;
     height: 100%;
     font-family: 'Raleway', sans-serif;
 }
 
 .space-wrapper {
+    /*min-width: 100vw;*/
     min-height: 100%;
     margin-bottom: -50px; /* negative value of footer height */
     padding-bottom: 50px; /* footer height + needed padding */
@@ -19,23 +21,6 @@ html, body {
     align-items: center;
 }
 
-.btn-primary {
-    /*background-color: #56783D;*/
-    /*border-color: #56783D;*/
-    /*color: #fff;*/
-}
-
-.btn-primary:hover {
-    /*background-color: ;*/
-    /*border-color: ;*/
-    /*color: #000;*/
-}
-
-form-control {
-    /*border-color: #56783D;*/
-    /*-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;*/
-    /*box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 6px #67b168;*/
-}
 /**************************************/
 /*</editor-fold>*/
 
@@ -69,6 +54,7 @@ form-control {
         color: #777;
     }
 }
+
 /**************************************/
 
 /* Footer section styles */
@@ -78,6 +64,7 @@ footer {
     border-top: 1px solid #25282A;
     color: #cdcccc;
 }
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -88,7 +75,7 @@ footer {
 
 /* Cover photo styles*/
 .jumbotron {
-    margin-top: -20px;  /* to negate the navbar margin */
+    margin-top: -20px; /* to negate the navbar margin */
     min-height: 90vh;
     background-size: cover;
     background-repeat: no-repeat;
@@ -107,6 +94,17 @@ footer {
 .jumbotron .container > h3 {
     margin-bottom: 60px;
 }
+
+.jumbotron .has-feedback .form-control {
+    padding-left: 42.5px;
+    padding-right: 16px;
+}
+
+.jumbotron .form-control-feedback {
+    left: 0;
+    z-index: 3;
+}
+
 /**************************************/
 
 /* Features styles*/
@@ -114,6 +112,11 @@ footer {
     margin-top: 30px;
     margin-bottom: 30px;
     line-height: 200%;
+    font-weight: lighter;
+}
+
+.feature-item a {
+    margin-top: 30px;
 }
 
 /* Medium devices and above */
@@ -139,6 +142,7 @@ footer {
         margin-bottom: 30px;
     }
 }
+
 /**************************************/
 
 /* Quotes styles */
@@ -149,6 +153,35 @@ footer {
     background-color: #f8f8f8;
     border-top: 1px solid #e7e7e7;
     border-bottom: 1px solid #e7e7e7;
+}
+
+.quote-image {
+    width: 190px;
+    height: auto;
+}
+
+.quotes-section blockquote {
+    border-left: 0;
+    position: relative;
+    padding: 0;
+}
+
+.quotes-section blockquote i {
+    position: absolute;
+    top: 5px;
+    color: #1f648b;
+    font-size: 20px;
+}
+
+.quotes-section blockquote p {
+    display: inline-block;
+    padding-left: 60px;
+}
+
+.quotes-section h3 {
+    color: #1f648b;
+    padding-left: 60px;
+    margin-top: 35px;
 }
 
 .carousel-indicators li {
@@ -165,10 +198,12 @@ footer {
     margin-bottom: 100px;
 }
 
-.item > img {
-    width: 150px;
-    height: 150px;
+@media (max-width: 991px) {
+    .quotes-section blockquote {
+        margin-top: 35px;
+    }
 }
+
 /**************************************/
 
 /* Sponsors styles */
@@ -189,6 +224,7 @@ footer {
     -webkit-box-shadow: 0 0 1px 1px #757575;
     box-shadow: 0 0 1px 1px #757575;
 }
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -197,7 +233,6 @@ footer {
 /*============ LOGIN PAGE ============*/
 /*====================================*/
 
-/* Cover photo styles*/
 .login-page {
     background-size: cover;
     background-repeat: no-repeat;
@@ -207,6 +242,20 @@ footer {
 .login-page .panel-default {
     background: rgba(255, 255, 255, 0.85);
 }
+
+.login-page .container h1, .login-page .container h3 {
+    color: #e5e5e5;
+    text-shadow: 3px 3px 5px #000;
+}
+
+.login-page .container h1 {
+    /*margin-top: 0;*/
+}
+
+.login-page .container h1 > strong {
+    /*font-size: 250%;*/
+}
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -228,6 +277,7 @@ footer {
         background-image: url("/images/cover/2/xxlg.jpg");
     }
 }
+
 /**************************************/
 
 /* Extra large devices */
@@ -243,6 +293,7 @@ footer {
         background-image: url("/images/cover/2/xlg.jpg");
     }
 }
+
 /**************************************/
 
 /* Large devices */
@@ -258,6 +309,7 @@ footer {
         background-image: url("/images/cover/2/lg.jpg");
     }
 }
+
 /**************************************/
 
 /* Medium devices */
@@ -273,6 +325,7 @@ footer {
         background-image: url("/images/cover/2/md.jpg");
     }
 }
+
 /**************************************/
 
 /* Small devices */
@@ -288,6 +341,7 @@ footer {
         background-image: url("/images/cover/2/sm.jpg");
     }
 }
+
 /**************************************/
 
 /* Extra small devices */
@@ -303,6 +357,7 @@ footer {
         background-image: url("/images/cover/2/xs.jpg");
     }
 }
+
 /**************************************/
 
 /* Super extra small devices */
@@ -417,3 +472,5 @@ footer {
 #custom-search-input .glyphicon-search{
     font-size: 23px;
 }
+/**************************************/
+/*</editor-fold>*/
