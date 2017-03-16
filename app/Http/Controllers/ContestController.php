@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Contest;
 
 class ContestController extends Controller
 {
@@ -14,5 +15,21 @@ class ContestController extends Controller
     public function index()
     {
         return view('contests.index');
+    }
+
+    public function addEdit()
+    {
+        return view('contests.add_edit');
+    }
+
+    public function addContest(Request $request)
+    {
+        $contest = new Contest($request->all());
+        $contest->store();
+    }
+
+    public function editContest(Request $request)
+    {
+
     }
 }
