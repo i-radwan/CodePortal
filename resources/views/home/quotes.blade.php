@@ -6,20 +6,19 @@
             <!-- Indicators -->
             <ol class="carousel-indicators">
                 @foreach($quotes as $quote)
-                    <li data-target="#quotes-carousel"
-                        data-slide-to="{{ $loop->index }}" {!! $loop->first ? 'class="active"' : '' !!}></li>
+                    <li data-target="#quotes-carousel" data-slide-to="{{ $loop->index }}"{!! $loop->first ? ' class="active"' : '' !!}></li>
                 @endforeach
             </ol>
+
             <!-- Wrapper for slides -->
             <div class="carousel-inner" role="listbox">
                 @foreach($quotes as $quote)
-                    <div class="item text-center{{ $loop->first ? ' active' : '' }}">
+                    <div class="item{{ $loop->first ? ' active' : '' }}">
                         <div class="container">
                             <div class="col-md-3">
-                                <img src="{{ $quote['img'] }}" alt="{{ $quote['name'] }}"
-                                     class="img-circle center-block quote-image">
+                                <img src="{{ $quote['img'] }}" alt="{{ $quote['name'] }}" class="img-circle center-block quote-image">
                             </div>
-                            <div class="col-md-9 left-align">
+                            <div class="col-md-9">
                                 <blockquote>
                                     <i class="fa fa-quote-left"></i>
                                     <p>{{ $quote['description'] }}</p>

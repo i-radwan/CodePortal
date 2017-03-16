@@ -20,6 +20,16 @@ class Judge extends Model
         parent::__construct($attributes);
     }
 
+    public static function index()
+    {
+        return json_encode(
+            DB::table(Constants::TBL_JUDGES)
+                ->select(
+                    Constants::FLD_JUDGES_ID,
+                    Constants::FLD_JUDGES_NAME)
+                ->get());
+    }
+
     public function problems()
     {
         return $this->hasMany(Problem::class);
