@@ -5,10 +5,27 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">problems</div>
+                    <div class="panel-heading">Problems</div>
 
                     <div class="panel-body">
-                        List of all problems
+                        @include('problems.table')
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Filters</div>
+                    <div class="panel-body">
+                        @include('problems.filters')
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Tags</div>
+                    <div class="panel-body">
+                        @include('problems.tags')
                     </div>
                 </div>
             </div>

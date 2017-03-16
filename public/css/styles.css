@@ -318,4 +318,250 @@ footer {
         background-image: url("/images/cover/2/xxs.jpg");
     }
 }
+
 /*</editor-fold>*/
+/**************************************/
+/* Problems */
+
+.table-container{
+    width: 90%
+}
+
+.table-hover>tbody>tr:hover {
+
+}
+
+.table-head{
+    text-align: center;
+}
+
+.td-problems{
+    text-align: center;
+}
+
+.tr-runtimeerror{
+    background-color: #b78ffc;
+
+}
+
+.tr-wronganswer{
+    background-color: #f94e48;
+}
+
+.tr-accepted{
+    background-color: #3af466;
+}
+
+.tr-tle{
+    background-color: #fcf92f;
+}
+
+.tr-notsolved{
+    background-color: #f8f7f9;
+}
+
+.td-problems-badge{
+    display: inline-flex;
+    height: 24px;
+    border: 1px solid #47b8e0;
+    border-radius: 5px;
+    padding: 6px 12px;
+    background: cyan;
+    justify-content: center;
+    align-items: center;
+    background: #47b8e0;
+    margin-right: 12px;
+    color: #fff;
+
+.details{
+    font-size: 10px;
+    border: 1px solid #ff7473;
+    padding: 2px 6px;
+    border-radius: 5px;
+    background: #ff7473;
+    margin-left: 12px;
+}
+
+/*Filter from bootstrap Filter and Search */
+.dropdown-menu li>span {
+    display: block;
+    padding: 1px 10px;
+    clear: both;
+}
+
+.filterTable-input{
+    width: 20%;
+}
+
+.tags-table{
+    width: 20%;
+
+}
+
+/*SearchBar Styles in Problems Page*/
+@import url(http://weloveiconfonts.com/api/?family=fontawesome);
+
+/* fontawesome */
+[class*="fontawesome-"]:before {
+    font-family: 'FontAwesome', sans-serif;
+}
+
+body{
+    text-align:center;
+
+    background-color:#ebebeb;
+}
+
+.cf:before, .cf:after{
+    content:"";
+    display:table;
+}
+
+.cf:after{
+    clear:both;
+}
+
+.cf{
+    zoom:1;
+}
+
+/* Form wrapper styling */
+.search-wrapper {
+    width: 240px;
+    margin: 45px auto 50px auto;
+
+}
+
+/* Form text input */
+
+.search-wrapper input {
+    width: 160px;
+    height: 20px;
+    padding: 10px 15px;
+    float: left;
+    font: normal 16px 'Arial', 'Tahoma';
+    border: 0;
+    background: #fff;
+    border-radius: 5px 0 0 5px;
+}
+
+.search-wrapper input:hover + .search-wrapper button {
+    background: #ccc
+}
+
+.search-wrapper input:focus {
+    outline: 0;
+    background: #fff;
+
+}
+
+.search-wrapper input::-webkit-input-placeholder {
+    color: #c6c7c6;
+    font-weight: normal;
+
+}
+
+.search-wrapper input:-moz-placeholder {
+    color: #999;
+    font-weight: normal;
+    font-style: italic;
+}
+
+.search-wrapper input:-ms-input-placeholder {
+    color: #999;
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* Form submit button */
+.search-wrapper button {
+    overflow: visible;
+    position: relative;
+    float: right;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    height: 40px;
+    width: 50px;
+    font: bold 18px 'Arial', 'Tahoma';
+    color: white;
+    background: #c1c1c1;
+    border-radius: 0 5px 5px 0;
+    transition: all 2.0s linear;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -ms-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+}
+
+.search-wrapper button:hover{
+    background: #5cc924;
+    transition: all 2.0s linear;
+    -webkit-transition: all 0.2s linear;
+    -moz-transition: all 0.2s linear;
+    -ms-transition: all 0.2s linear;
+    -o-transition: all 0.2s linear;
+}
+
+.search-wrapper button:active,
+.search-wrapper button:focus{
+    background: #329400;
+    outline: 0;
+    transition: all 0s linear;
+    -webkit-transition: all 0s linear;
+    -moz-transition: all 0s linear;
+    -ms-transition: all 0s linear;
+    -o-transition: all 0s linear;
+
+}
+
+
+
+.search-wrapper button:hover:before{
+    border-right-color: #e54040;
+
+}
+
+.search-wrapper button:focus:before,
+.search-wrapper button:active:before{
+    border-right-color: #c42f2f;
+}
+
+.search-wrapper button::-moz-focus-inner { /* remove extra button spacing for Mozilla Firefox */
+    border: 0;
+    padding: 0;
+}
+
+
+/*New search*/
+#custom-search-input{
+    padding: 3px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input .glyphicon-search{
+    font-size: 23px;
+}
