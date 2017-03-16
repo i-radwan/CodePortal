@@ -38,7 +38,7 @@
     </script>
 </head>
 <body>
-<div class = "container table-container">
+<div class = "container problems-table-container">
     <div>
             <span>
                <form>
@@ -47,11 +47,11 @@
             </span>
     </div>
     <br>
-    <table class = "table table-bordered  table-hover " id = "problems_table">
+    <table class = "table table-bordered  problems-table-hover " id = "problems_table">
         <thead>
         <!-- We are gonna loop here for the head tags -->
         @foreach ($data->headings as $heading)
-            <th class = 'table-head'> {{$heading}}</th>
+            <th class = 'problems-table-head'> {{$heading}}</th>
         @endforeach
         </thead>
         <tbody>
