@@ -69,30 +69,33 @@ abstract class JudgeSyncService
      * Fetch problems data from the online judge's API
      * and synchronize them with our local database
      *
-     * @return void
+     * @return bool whether the problems synchronization process completed successfully
      */
     public function syncProblems()
     {
-        if ($this->fetchProblems() != Response::HTTP_OK) {
-            Log::alert(JudgeSyncService::class . "::Failed to fetch problems from" . $this->apiBaseProblemsUrl);
-            return;
+        if (!$this->fetchProblems()) {
+            Log::alert("Failed to fetch problems from $this->judgeName.");
+            return false;
         }
 
         if (!$this->syncProblemsWithDatabase()) {
-            Log::alert(JudgeSyncService::class . "::Failed to sync problems with database");
-            return;
+            Log::alert("Failed to sync problems from $this->judgeName with database.");
+            return false;
         }
+
+        Log::info("$this->judgeName problems was synced successfully.");
+        return true;
     }
 
     /**
      * Fetch submissions data from the online judge's API
      * and synchronize them with our local database
      *
-     * @return void
+     * @return bool whether the submissions synchronization process completed successfully
      */
     public function syncSubmissions()
     {
-        // ToDo
+        return true;
     }
 
     /**
@@ -102,7 +105,7 @@ abstract class JudgeSyncService
      *
      * @param string $url
      * @param array $params
-     * @return int the HTTP request status code
+     * @return bool whether the request was handled successfully by the online judge's API
      */
     protected function fetchDataFromApi($url, $params)
     {
@@ -126,7 +129,7 @@ abstract class JudgeSyncService
         // Close cURL resource, and free up system resources
         curl_close($ch);
 
-        return $http_status;
+        return ($http_status == Response::HTTP_OK);
     }
 
     /**

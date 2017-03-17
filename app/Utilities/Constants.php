@@ -6,6 +6,15 @@ class Constants
 {
     const PROBLEMS_COUNT_PER_PAGE = 30;
 
+    const CODEFORCES_NAME = "Codeforces";
+    const CODEFORCES_LINK = "http://codeforces.com/";
+
+    const UVA_NAME = "UVa Online Judge";
+    const UVA_LINK = "";
+
+    const LIVE_ARCHIVE_NAME = "Live Archive";
+    const LIVE_ARCHIVE_LINK = "";
+
     const USER_ROLE = [
         "USER" => 0,
         "ADMIN" => 1
