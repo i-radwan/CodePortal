@@ -2,28 +2,45 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Log;
 use Validator;
+use App\Utilities\Constants;
 use App\Exceptions\UnknownContestException;
 use App\Exceptions\UnknownAdminException;
 use App\Exceptions\UnknownUserException;
-use Log;
-use App\Utilities\Constants;
+use Illuminate\Database\Eloquent\Model;
+
 class Question extends Model
 {
-    public function __construct(array $attributes = [])
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = Constants::TBL_QUESTIONS;
+
+    /**
+     * The primary key of the table associated with the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = Constants::FLD_QUESTIONS_ID;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        Constants::FLD_QUESTIONS_TITLE,
+        Constants::FLD_QUESTIONS_CONTENT,
+        Constants::FLD_QUESTIONS_ANSWER,
+        Constants::FLD_QUESTIONS_STATUS
+    ];
+
+    public function user()
     {
-        $this->fillable =  [
-            Constants::FLD_QUESTIONS_TITLE,
-            Constants::FLD_QUESTIONS_CONTENT,
-            Constants::FLD_QUESTIONS_ANSWER,
-            Constants::FLD_QUESTIONS_STATUS,
-        ];
-        parent::__construct($attributes);
-    }
-    public function contest()
-    {
-        return $this->belongsTo(Contest::class);
+        return $this->belongsTo(User::class, Constants::FLD_QUESTIONS_USER_ID);
     }
 
     public function admin()
@@ -31,9 +48,9 @@ class Question extends Model
         return $this->belongsTo(User::class, Constants::FLD_QUESTIONS_ADMIN_ID);
     }
 
-    public function user()
+    public function contest()
     {
-        return $this->belongsTo(User::class, Constants::FLD_QUESTIONS_USER_ID);
+        return $this->belongsTo(Contest::class, Constants::FLD_QUESTIONS_CONTEST_ID);
     }
 
     public function store()
@@ -47,6 +64,7 @@ class Question extends Model
         if ($this->attributes[Constants::FLD_QUESTIONS_USER_ID] && !$this->user()) {
             throw new UnknownUserException();
         }
+
         $this->save();
     }
 

@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Artisan;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -15,7 +15,6 @@ abstract class TestCase extends BaseTestCase
         parent::setUp();
         Artisan::call('migrate');
     }
-
 
     protected function tearDown()
     {

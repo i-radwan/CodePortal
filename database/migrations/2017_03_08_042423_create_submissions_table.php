@@ -1,9 +1,10 @@
 <?php
 
+use App\Utilities\Constants;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use App\Utilities\Constants;
+
 class CreateSubmissionsTable extends Migration
 {
     /**

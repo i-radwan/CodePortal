@@ -373,9 +373,13 @@ footer {
         background-image: url("/images/cover/2/xxs.jpg");
     }
 }
-/*</editor-fold>*/
 /**************************************/
-/* Problems */
+/*</editor-fold>*/
+
+/*<editor-fold desc="Problems Page">*/
+/*====================================*/
+/*========== PROBLEMS PAGE ===========*/
+/*====================================*/
 
 .problems-table-container{
     width: 90%
@@ -426,6 +430,7 @@ footer {
     background: #47b8e0;
     margin-right: 12px;
     color: #fff;
+}
 
 .details{
     font-size: 10px;
@@ -435,10 +440,6 @@ footer {
     background: #ff7473;
     margin-left: 12px;
 }
-
-}
-
-
 
 /*New search*/
 #custom-search-input{

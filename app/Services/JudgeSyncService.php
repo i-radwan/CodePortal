@@ -2,40 +2,108 @@
 
 namespace App\Services;
 
+use Log;
+use App\Models\Judge;
+use App\Utilities\Constants;
 use Illuminate\Http\Response;
 
 abstract class JudgeSyncService
 {
+    /**
+     * The name of the online judge
+     *
+     * @var string
+     */
+    protected $judgeName;
+
+    /**
+     * The base url link of the online judge
+     *
+     * @var string
+     */
+    protected $judgeLink;
+
+    /**
+     * The base url link of the online judge's API
+     *
+     * @var string
+     */
+    protected $judgeApiLink;
+
+    /**
+     * The problems API's url link
+     *
+     * @var string
+     */
     protected $apiBaseProblemsUrl;
+
+    /**
+     * The problems API's url parameters
+     *
+     * @var array
+     */
     protected $apiProblemsParams;
+
+    /**
+     * The submissions API's url link
+     *
+     * @var string
+     */
     protected $apiBaseSubmissionsUrl;
+
+    /**
+     * The submissions API's url parameters
+     *
+     * @var array
+     */
     protected $apiSubmissionsParams;
 
+    /**
+     * The retrieved raw data response from the judge's API
+     *
+     * @var string
+     */
     protected $rawDataString;
-    protected $parsedData;
 
+    /**
+     * Fetch problems data from the online judge's API
+     * and synchronize them with our local database
+     *
+     * @return void
+     */
     public function syncProblems()
     {
-        if (!$this->fetchProblems()) {
-            return -1;
-        }
-
-        if (!$this->parseProblemsRawData()) {
-            return -2;
+        if ($this->fetchProblems() != Response::HTTP_OK) {
+            Log::alert(JudgeSyncService::class . "::Failed to fetch problems from" . $this->apiBaseProblemsUrl);
+            return;
         }
 
         if (!$this->syncProblemsWithDatabase()) {
-            return -3;
+            Log::alert(JudgeSyncService::class . "::Failed to sync problems with database");
+            return;
         }
-
-        return $this->parsedData;
     }
 
+    /**
+     * Fetch submissions data from the online judge's API
+     * and synchronize them with our local database
+     *
+     * @return void
+     */
     public function syncSubmissions()
     {
-
+        // ToDo
     }
 
+    /**
+     * Fetch the data from the online judge by making a request with
+     * a certain parameters to the given url.
+     * The fetched raw data will be assigned to $rawDataString
+     *
+     * @param string $url
+     * @param array $params
+     * @return int the HTTP request status code
+     */
     protected function fetchDataFromApi($url, $params)
     {
         // Create a new cURL resource handler
@@ -58,30 +126,61 @@ abstract class JudgeSyncService
         // Close cURL resource, and free up system resources
         curl_close($ch);
 
-        return ($http_status == Response::HTTP_OK);
+        return $http_status;
     }
 
+    /**
+     * Request and fetch problems data from the online judge's API
+     *
+     * @return int the HTTP request status code
+     */
     protected function fetchProblems()
     {
         return $this->fetchDataFromApi($this->apiBaseProblemsUrl, $this->apiProblemsParams);
     }
 
+    /**
+     * Request and fetch submissions data from the online judge's API
+     *
+     * @return int the HTTP request status code
+     */
     protected function fetchSubmissions()
     {
         return $this->fetchDataFromApi($this->apiBaseSubmissionsUrl, $this->apiSubmissionsParams);
     }
 
-    abstract protected function parseProblemsRawData();
+    /**
+     * Parse the fetched raw problems data from the online judge's api and sync
+     * them with our local database
+     *
+     * @return bool whether the synchronization process completed successfully or not
+     */
+    abstract protected function syncProblemsWithDatabase();
 
-    abstract protected function parseSubmissionsRawData();
+    /**
+     * Parse the fetched raw submissions data from the online judge's api and sync
+     * them with our local database
+     *
+     * @return bool whether the synchronization process completed successfully or not
+     */
+    abstract protected function syncSubmissionsWithDatabase();
 
-    protected function syncProblemsWithDatabase()
+    /**
+     * Return an instance of the judge model, if it does not exists then create it first
+     *
+     * @return Judge
+     */
+    protected function getJudgeModel()
     {
-        return true;
-    }
+        $judge = Judge::firstOrNew([Constants::FLD_JUDGES_NAME => $this->judgeName]);
 
-    protected function syncSubmissionsWithDatabase()
-    {
-        return true;
+        if (!$judge->exists) {
+            $judge->fill([
+                Constants::FLD_JUDGES_LINK => $this->judgeLink,
+                Constants::FLD_JUDGES_API_LINK => $this->judgeApiLink
+            ])->store();
+        }
+
+        return $judge;
     }
 }

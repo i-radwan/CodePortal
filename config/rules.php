@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ibrahimradwan
- * Date: 3/10/17
- * Time: 10:52 AM
- */
+
 return [
     "user" => [
         "store_validation_rules" => [
@@ -25,29 +20,23 @@ return [
             'visibility' => 'required|Regex:/([01])/',
         ]
     ],
-    "judge" => [
-        "store_validation_rules" => [
-            'name' => 'required|unique:judges|max:100',
-            'link' => 'required|unique:judges|max:100|url',
-            'api_link' => 'required|max:255|url',
-        ]
-    ],
-    "language" => [
-        "store_validation_rules" => [
-            'name' => 'required|unique:languages|max:50',
-        ]
-    ],
-    "tag" => [
-        "store_validation_rules" => [
-            'name' => 'required|unique:tags|max:50',
-        ]
-    ],
     "problem" => [
         "store_validation_rules" => [
             'name' => 'required|max:100',
             'judge_id' => 'integer|required',
             'difficulty' => 'integer|required|greater_than:0',
             'accepted_submissions_count' => 'integer|required|greater_than:0',
+        ]
+    ],
+    "submission" => [
+        "store_validation_rules" => [
+            'problem_id' => 'required|integer',
+            'user_id' => 'required|integer',
+            'submission_id' => 'required',
+            'language_id' => 'required|integer',
+            'execution_time' => 'required|integer',
+            'consumed_memory' => 'required|integer',
+            'verdict' => 'integer|required|greater_than:-1|less_than:' . count(\App\Utilities\Constants::SUBMISSION_VERDICT),
         ]
     ],
     "question" => [
@@ -68,15 +57,21 @@ return [
             'status' => 'Regex:/([01])/',
         ]
     ],
-    "submission" => [
+    "judge" => [
         "store_validation_rules" => [
-            'problem_id' => 'required|integer',
-            'user_id' => 'required|integer',
-            'submission_id' => 'required',
-            'language_id' => 'required|integer',
-            'execution_time' => 'required|integer',
-            'consumed_memory' => 'required|integer',
-            'verdict' => 'integer|required|greater_than:-1|less_than:' . count(\App\Utilities\Constants::SUBMISSION_VERDICT),
+            'name' => 'required|unique:judges|max:100',
+            'link' => 'required|unique:judges|max:100|url',
+            'api_link' => 'required|max:255|url',
+        ]
+    ],
+    "tag" => [
+        "store_validation_rules" => [
+            'name' => 'required|unique:tags|max:50',
+        ]
+    ],
+    "language" => [
+        "store_validation_rules" => [
+            'name' => 'required|unique:languages|max:50',
         ]
     ],
 ];
