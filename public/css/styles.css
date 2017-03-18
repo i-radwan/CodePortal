@@ -373,15 +373,17 @@ footer {
         background-image: url("/images/cover/2/xxs.jpg");
     }
 }
+
+/**************************************/
 /*</editor-fold>*/
 
-/*<editor-fold desc="Problems">*/
+/*<editor-fold desc="Problems Page">*/
 /*====================================*/
-/*============ Problems =============*/
+/*========== PROBLEMS PAGE ===========*/
 /*====================================*/
 
 .problems-table-container{
-    width: 90%
+    width: 99%
 }
 
 .problems-table-hover>tbody>tr:hover {
@@ -429,6 +431,7 @@ footer {
     background: #47b8e0;
     margin-right: 12px;
     color: #fff;
+}
 
 .details{
     font-size: 10px;
@@ -440,11 +443,52 @@ footer {
 }
 
 
+.filters-table-container{
+    width:99%;
+}
+
+.tags-table-container{
+    width: 99%;
+}
+/*New search*/
+#custom-search-input{
+    padding: 3px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input .glyphicon-search{
+    font-size: 23px;
+}
+/**************************************/
 /*</editor-fold>*/
+
 
 /*<editor-fold desc="VisibilityRadioGroup">*/
 /*====================================*/
-/*============ Visibility RADIO BUTTONS =============*/
+/*==== Visibility RADIO BUTTONS ======*/
 /*====================================*/
 
 .visibility-div ul {
@@ -530,42 +574,5 @@ footer {
     color: #0D964B;
 }
 
-/**************************************/
-/*</editor-fold>*/
-
-/*<editor-fold desc="Search bar">*/
-
-/*New search*/
-#custom-search-input{
-    padding: 3px;
-    border: solid 1px #E4E4E4;
-    border-radius: 6px;
-    background-color: #fff;
-}
-
-#custom-search-input input{
-    border: 0;
-    box-shadow: none;
-}
-
-#custom-search-input button{
-    margin: 2px 0 0 0;
-    background: none;
-    box-shadow: none;
-    border: 0;
-    color: #666666;
-    padding: 0 8px 0 10px;
-    border-left: solid 1px #ccc;
-}
-
-#custom-search-input button:hover{
-    border: 0;
-    box-shadow: none;
-    border-left: solid 1px #ccc;
-}
-
-#custom-search-input .glyphicon-search{
-    font-size: 23px;
-}
 /**************************************/
 /*</editor-fold>*/

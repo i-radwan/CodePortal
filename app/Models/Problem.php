@@ -2,43 +2,70 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use App\Exceptions\UnknownJudgeException;
-use Validator;
-use Illuminate\Pagination\Paginator;
 use DB;
+use Validator;
 use App\Utilities\Constants;
+use App\Exceptions\UnknownJudgeException;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Model;
 
 class Problem extends Model
 {
-    public function __construct(array $attributes = [])
-    {
-        $this->fillable = [
-            Constants::FLD_PROBLEMS_NAME,
-            Constants::FLD_PROBLEMS_DIFFICULTY,
-            Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT
-        ];
-        parent::__construct($attributes);
-    }
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = Constants::TBL_PROBLEMS;
 
-    public function contests()
-    {
-        return $this->belongsToMany(Contest::class, Constants::TBL_CONTEST_PROBLEM);
-    }
+    /**
+     * The primary key of the table associated with the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = Constants::FLD_PROBLEMS_ID;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        Constants::FLD_PROBLEMS_NAME,
+        Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+        Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
+        Constants::FLD_PROBLEMS_DIFFICULTY,
+        Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT
+    ];
 
     public function judge()
     {
-        return $this->belongsTo(Judge::class);
+        return $this->belongsTo(Judge::class, Constants::FLD_PROBLEMS_JUDGE_ID);
     }
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, Constants::TBL_PROBLEM_TAG);
+        return $this->belongsToMany(
+            Tag::class,
+            Constants::TBL_PROBLEM_TAGS,
+            Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
+            Constants::FLD_PROBLEM_TAGS_TAG_ID
+        );
+    }
+
+    public function contests()
+    {
+        return $this->belongsToMany(
+            Contest::class,
+            Constants::TBL_CONTEST_PROBLEMS,
+            Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID,
+            Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID
+        );
     }
 
     public function submissions()
     {
-        return $this->hasMany(Submission::class);
+        return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_PROBLEM_ID);
     }
 
     public function store()
@@ -49,6 +76,7 @@ class Problem extends Model
         if (!$this->judge()) {
             throw new UnknownJudgeException;
         }
+
         $this->save();
     }
 
@@ -76,6 +104,7 @@ class Problem extends Model
 
     /**
      * This function applies given filters to problems set
+     *
      * @param $name problem name
      * @param $tagsIDs array of tags IDs
      * @param $judgesIDs array of judges IDs
@@ -102,19 +131,21 @@ class Problem extends Model
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
                 '=',
                 Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID)
-            ->join(Constants::TBL_PROBLEM_TAG,
-                Constants::TBL_PROBLEM_TAG . '.' . Constants::FLD_PROBLEM_TAG_PROBLEM_ID,
+            ->join(Constants::TBL_PROBLEM_TAGS,
+                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
                 '=',
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
-            ->whereIn(Constants::TBL_PROBLEM_TAG . '.' . Constants::FLD_PROBLEM_TAG_TAG_ID, $tagsIDs)
+            ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs)
             ->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs)
             ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%");
 
         return Problem::prepareProblemsOutput($problems, $sortBy);
     }
+
     /**
      * This function takes the given sortBy array and if it's empty it generates the
      * basic sort by condition
+     *
      * @param $sortBy
      * @return array
      */
@@ -134,15 +165,15 @@ class Problem extends Model
     /**
      * This function applies the sortBy array to the problems collection and paginate it
      * then it adds the extra info like headings and return the json encoded string
+     *
      * @param $problems
      * @param $sortBy
      * @return string
      */
-
     public static function prepareProblemsOutput($problems, $sortBy)
     {
         // Apply sorting
-        foreach ($sortBy as $sortField){
+        foreach ($sortBy as $sortField) {
             $problems->orderBy($sortField["column"], $sortField["mode"]);
         }
         // Paginate

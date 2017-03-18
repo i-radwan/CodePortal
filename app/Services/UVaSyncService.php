@@ -3,26 +3,59 @@
 namespace App\Services;
 
 use App\Utilities\Constants;
-use App\Services\JudgeSyncService;
 
 class UVaSyncService extends UHuntSyncService
 {
+    /**
+     * The name of the online judge
+     *
+     * @var string
+     */
+    protected $judgeName = Constants::UVA_NAME;
+
+    /**
+     * The base url link of the online judge
+     *
+     * @var string
+     */
+    protected $judgeLink = Constants::UVA_LINK;
+
+    /**
+     * The base url link of the online judge's API
+     *
+     * @var string
+     */
+    protected $judgeApiLink;
+
+    /**
+     * The problems API's url link
+     *
+     * @var string
+     */
     protected $apiBaseProblemsUrl;
-    protected $apiProblemsParams = [];
+
+    /**
+     * The problems API's url parameters
+     *
+     * @var array
+     */
+    protected $apiProblemsParams = [
+
+    ];
+
+    /**
+     * The submissions API's url link
+     *
+     * @var string
+     */
     protected $apiBaseSubmissionsUrl;
-    protected $apiSubmissionsParams = [];
 
-    protected function parseProblemsRawData()
-    {
-        $data = json_decode($this->rawDataString, true);
+    /**
+     * The submissions API's url parameters
+     *
+     * @var array
+     */
+    protected $apiSubmissionsParams = [
 
-        dd($data);
-
-        return true;
-    }
-
-    protected function parseSubmissionsRawData()
-    {
-        return true;
-    }
+    ];
 }

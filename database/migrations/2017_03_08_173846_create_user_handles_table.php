@@ -1,11 +1,11 @@
 <?php
 
+use App\Utilities\Constants;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use App\Utilities\Constants;
 
-class CreateUserHandles extends Migration
+class CreateUserHandlesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,8 +18,11 @@ class CreateUserHandles extends Migration
             $table->integer(Constants::FLD_USER_HANDLES_USER_ID);
             $table->integer(Constants::FLD_USER_HANDLES_JUDGE_ID);
             $table->string(Constants::FLD_USER_HANDLES_HANDLE, 50);
-            $table->primary(array(Constants::FLD_USER_HANDLES_USER_ID,
-                Constants::FLD_USER_HANDLES_JUDGE_ID));
+            $table->primary(array(
+                    Constants::FLD_USER_HANDLES_USER_ID,
+                    Constants::FLD_USER_HANDLES_JUDGE_ID
+                )
+            );
         });
     }
 

@@ -2,22 +2,49 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Validator;
-use Illuminate\Pagination\Paginator;
 use DB;
+use Validator;
 use App\Utilities\Constants;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Model;
 
 class Judge extends Model
 {
-    public function __construct(array $attributes = [])
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = Constants::TBL_JUDGES;
+
+    /**
+     * The primary key of the table associated with the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = Constants::FLD_JUDGES_ID;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        Constants::FLD_JUDGES_NAME,
+        Constants::FLD_JUDGES_LINK,
+        Constants::FLD_JUDGES_API_LINK
+    ];
+
+    public function problems()
     {
-        $this->fillable = [
-            Constants::FLD_JUDGES_NAME,
-            Constants::FLD_JUDGES_LINK,
-            Constants::FLD_JUDGES_API_LINK,
-        ];
-        parent::__construct($attributes);
+        return $this->hasMany(Problem::class, Constants::FLD_PROBLEMS_JUDGE_ID);
+    }
+
+    public function store()
+    {
+        $v = Validator::make($this->attributes, config('rules.judge.store_validation_rules'));
+        $v->validate();
+        $this->save();
     }
 
     public static function index()
@@ -26,20 +53,10 @@ class Judge extends Model
             DB::table(Constants::TBL_JUDGES)
                 ->select(
                     Constants::FLD_JUDGES_ID,
-                    Constants::FLD_JUDGES_NAME)
-                ->get());
-    }
-
-    public function problems()
-    {
-        return $this->hasMany(Problem::class);
-    }
-
-    public function store()
-    {
-        $v = Validator::make($this->attributes, config('rules.judge.store_validation_rules'));
-        $v->validate();
-        $this->save();
+                    Constants::FLD_JUDGES_NAME
+                )
+                ->get()
+        );
     }
 
     public static function getJudgeProblems($judgeID, $page = 1, $sortBy = [])
