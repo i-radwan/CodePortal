@@ -55,7 +55,7 @@ class ProblemController extends Controller
         }
         //If search or filters are applied
         if (($request->get('tags') || $request->get('q') || $request->get('judges'))) {
-            $data = Problem::filter($request->get('q'), $request->get('tags'), $request->get('judges'), $request->get('page'), $sortby);
+            $data = Problem::filter($request->get('q'), (($request->get('tags'))?$request->get('tags'):[]), (($request->get('judges'))?$request->get('judges'):[]), $request->get('page'), $sortby);
         } //If a single Tag is applied
         else if ($request->get('tag') != "") {
             $data = Tag::getTagProblems($request->get('tag'), $request->get('page'), $sortby);
