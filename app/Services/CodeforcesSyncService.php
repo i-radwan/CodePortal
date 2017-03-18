@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Log;
-use Exception;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Submission;
@@ -100,65 +99,59 @@ class CodeforcesSyncService extends JudgeSyncService
      */
     protected function syncProblemsWithDatabase()
     {
-        try {
-            $data = json_decode($this->rawDataString, true);
+        $data = json_decode($this->rawDataString, true);
 
-            // Check the response status
-            if ($data[Codeforces::RESPONSE_STATUS] == Codeforces::RESPONSE_STATUS_FAILED) {
-                Log::alert("$this->judgeName response comment: " . $data[Codeforces::RESPONSE_COMMENT]);
-                return false;
+        // Check the response status
+        if ($data[Codeforces::RESPONSE_STATUS] == Codeforces::RESPONSE_STATUS_FAILED) {
+            Log::alert("$this->judgeName response comment: " . $data[Codeforces::RESPONSE_COMMENT]);
+            return false;
+        }
+
+        // Get the judge model in order to associate it with the problems
+        $codeforces = $this->getJudgeModel();
+
+        // Get the main objects from the response data
+        $result = $data[Codeforces::RESPONSE_RESULT];
+        $problems = $result[Codeforces::PROBLEMS];
+        $problemStatistics = $result[Codeforces::PROBLEM_STATISTICS];
+        $len = sizeof($problems);
+
+        // Loop through each problem in the return data
+        for ($i = 0; $i < $len; ++$i) {
+            // Extract problem info
+            $contestId = $problems[$i][Codeforces::PROBLEM_CONTEST_ID];
+            $problemIdx =  $problems[$i][Codeforces::PROBLEM_INDEX];
+            $problemName = $problems[$i][Codeforces::PROBLEM_NAME];
+            $problemSolvedCount = $problemStatistics[$i][Codeforces::PROBLEM_SOLVED_COUNT];
+            $problemDifficulty = array_key_exists(Codeforces::PROBLEM_POINTS, $problems[$i]) ? $problems[$i][Codeforces::PROBLEM_POINTS] : $this->calculateProblemDifficulty($problemSolvedCount);
+            $problemTags = $problems[$i][Codeforces::PROBLEM_TAGS];
+
+            // Search for the problem in the local database, if it does not exists then create a new instance of it
+            $problem = Problem::firstOrNew([
+                Constants::FLD_PROBLEMS_JUDGE_ID => $codeforces->id,
+                Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $contestId,
+                Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $problemIdx
+            ]);
+
+            // If the problem already exists then just update its info
+            if ($problem->exists) {
+                $problem->update([
+                    Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
+                    Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $problemSolvedCount
+                ]);
             }
-
-            // Get the judge model in order to associate it with the problems
-            $codeforces = $this->getJudgeModel();
-
-            // Get the main objects from the response data
-            $result = $data[Codeforces::RESPONSE_RESULT];
-            $problems = $result[Codeforces::PROBLEMS];
-            $problemStatistics = $result[Codeforces::PROBLEM_STATISTICS];
-            $len = sizeof($problems);
-
-            // Loop through each problem in the return data
-            for ($i = 0; $i < $len; ++$i) {
-                // Extract problem info
-                $contestId = $problems[$i][Codeforces::PROBLEM_CONTEST_ID];
-                $problemIdx =  $problems[$i][Codeforces::PROBLEM_INDEX];
-                $problemName = $problems[$i][Codeforces::PROBLEM_NAME];
-                $problemSolvedCount = $problemStatistics[$i][Codeforces::PROBLEM_SOLVED_COUNT];
-                $problemDifficulty = array_key_exists(Codeforces::PROBLEM_POINTS, $problems[$i]) ? $problems[$i][Codeforces::PROBLEM_POINTS] : $this->calculateProblemDifficulty($problemSolvedCount);
-                $problemTags = $problems[$i][Codeforces::PROBLEM_TAGS];
-
-                // Search for the problem in the local database, if it does not exists then create a new instance of it
-                $problem = Problem::firstOrNew([
-                    Constants::FLD_PROBLEMS_JUDGE_ID => $codeforces->id,
-                    Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $contestId,
-                    Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $problemIdx
+            // Else then fill in the problem's data and save it to our local database
+            else {
+                $problem->fill([
+                    Constants::FLD_PROBLEMS_NAME => $problemName,
+                    Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
+                    Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $problemSolvedCount
                 ]);
 
-                // If the problem already exists then just update its info
-                if ($problem->exists) {
-                    $problem->update([
-                        Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
-                        Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $problemSolvedCount
-                    ]);
-                }
-                // Else then fill in the problem's data and save it to our local database
-                else {
-                    $problem->fill([
-                        Constants::FLD_PROBLEMS_NAME => $problemName,
-                        Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
-                        Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $problemSolvedCount
-                    ]);
-
-                    // TODO: need to find a way to call store method for input validation
-                    $codeforces->problems()->save($problem);
-                    $this->attachProblemTags($problem, $problemTags);
-                }
+                // TODO: need to find a way to call store method for input validation
+                $codeforces->problems()->save($problem);
+                $this->attachProblemTags($problem, $problemTags);
             }
-        }
-        catch (Exception $ex) {
-            Log::error("Exception occurred while syncing $this->judgeName problems: " . $ex->getMessage());
-            return false;
         }
 
         return true;
@@ -200,21 +193,15 @@ class CodeforcesSyncService extends JudgeSyncService
      */
     protected function syncSubmissionsWithDatabase()
     {
-        try {
-            $data = json_decode($this->rawDataString, true);
+        $data = json_decode($this->rawDataString, true);
 
-            // Check the response status
-            if ($data[Codeforces::RESPONSE_STATUS] == Codeforces::RESPONSE_STATUS_FAILED) {
-                Log::alert("$this->judgeName response comment: " . $data[Codeforces::RESPONSE_COMMENT]);
-                return false;
-            }
-
-            // TODO:
-        }
-        catch (Exception $ex) {
-            Log::error("Exception occurred while syncing $this->judgeName submissions: " . $ex->getMessage());
+        // Check the response status
+        if ($data[Codeforces::RESPONSE_STATUS] == Codeforces::RESPONSE_STATUS_FAILED) {
+            Log::alert("$this->judgeName response comment: " . $data[Codeforces::RESPONSE_COMMENT]);
             return false;
         }
+
+        // TODO:
 
         return true;
     }

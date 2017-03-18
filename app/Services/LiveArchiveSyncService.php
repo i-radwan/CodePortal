@@ -25,14 +25,14 @@ class LiveArchiveSyncService extends UHuntSyncService
      *
      * @var string
      */
-    protected $judgeApiLink;
+    protected $judgeApiLink = "https://icpcarchive.ecs.baylor.edu/uhunt/api/";
 
     /**
      * The problems API's url link
      *
      * @var string
      */
-    protected $apiBaseProblemsUrl;
+    protected $apiBaseProblemsUrl = "https://icpcarchive.ecs.baylor.edu/uhunt/api/p";
 
     /**
      * The problems API's url parameters

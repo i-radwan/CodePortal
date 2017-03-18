@@ -25,14 +25,14 @@ class UVaSyncService extends UHuntSyncService
      *
      * @var string
      */
-    protected $judgeApiLink;
+    protected $judgeApiLink = "http://uhunt.felix-halim.net/api/";
 
     /**
      * The problems API's url link
      *
      * @var string
      */
-    protected $apiBaseProblemsUrl;
+    protected $apiBaseProblemsUrl = "http://uhunt.felix-halim.net/api/p";
 
     /**
      * The problems API's url parameters

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Log;
+use Exception;
 use App\Models\Judge;
 use App\Utilities\Constants;
 use Illuminate\Http\Response;
@@ -73,13 +74,19 @@ abstract class JudgeSyncService
      */
     public function syncProblems()
     {
-        if (!$this->fetchProblems()) {
-            Log::alert("Failed to fetch problems from $this->judgeName.");
-            return false;
-        }
+        try {
+            if (!$this->fetchProblems()) {
+                Log::alert("Failed to fetch problems from $this->judgeName.");
+                return false;
+            }
 
-        if (!$this->syncProblemsWithDatabase()) {
-            Log::alert("Failed to sync problems from $this->judgeName with database.");
+            if (!$this->syncProblemsWithDatabase()) {
+                Log::alert("Failed to sync problems from $this->judgeName with database.");
+                return false;
+            }
+        }
+        catch (Exception $ex) {
+            Log::error("Exception occurred while syncing $this->judgeName problems: " . $ex->getMessage());
             return false;
         }
 
@@ -95,6 +102,22 @@ abstract class JudgeSyncService
      */
     public function syncSubmissions()
     {
+        try {
+            if (!$this->fetchSubmissions()) {
+                Log::alert("Failed to fetch submissions from $this->judgeName.");
+                return false;
+            }
+
+            if (!$this->syncSubmissionsWithDatabase()) {
+                Log::alert("Failed to sync submissions from $this->judgeName with database.");
+                return false;
+            }
+        }
+        catch (Exception $ex) {
+            Log::error("Exception occurred while syncing $this->judgeName submissions: " . $ex->getMessage());
+            return false;
+        }
+
         return true;
     }
 
