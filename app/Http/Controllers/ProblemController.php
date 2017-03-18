@@ -7,7 +7,6 @@ use App\Models\Tag;
 use App\Models\Judge;
 use Illuminate\Http\Request;
 use App\Utilities\Constants;
-use Session;
 
 class ProblemController extends Controller
 {
@@ -66,6 +65,19 @@ class ProblemController extends Controller
         $data->judges = json_decode(Judge::index());
         $data->sortbyMode = $sortbyMode;
         $data->sortbyParam = $request->get('sortby');
+        // Set pagination limits
+        $j = $data->problems->current_page;
+        if ($j < 7) {
+            $forcedLimit = 12;
+            $forcedLimit = ($forcedLimit > $data->problems->last_page) ? $data->problems->last_page : $forcedLimit;
+            $i = 1;
+        } else {
+            $i = $j - 6;
+            $forcedLimit = $j + 6;
+            $forcedLimit = ($forcedLimit > $data->problems->last_page) ? $data->problems->last_page : $forcedLimit;
+        }
+        $data->initialPage = $i;
+        $data->pagesLimit = $forcedLimit;
         return view('problems.index')->with('data', $data);
     }
 }
