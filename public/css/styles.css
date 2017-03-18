@@ -37,6 +37,10 @@ html, body {
     background: rgba(251, 240, 227, 0.83);
 }
 
+.margin-5px {
+    margin: 5px;
+}
+
 /**************************************/
 /*</editor-fold>*/
 
