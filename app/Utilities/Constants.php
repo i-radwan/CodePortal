@@ -10,10 +10,10 @@ class Constants
     const CODEFORCES_LINK = "http://codeforces.com/";
 
     const UVA_NAME = "UVa Online Judge";
-    const UVA_LINK = "";
+    const UVA_LINK = "https://uva.onlinejudge.org/";
 
     const LIVE_ARCHIVE_NAME = "Live Archive";
-    const LIVE_ARCHIVE_LINK = "";
+    const LIVE_ARCHIVE_LINK = "https://icpcarchive.ecs.baylor.edu/";
 
     const USER_ROLE = [
         "USER" => 0,

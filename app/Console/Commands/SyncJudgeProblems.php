@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Utilities\Constants;
 use App\Services\CodeforcesSyncService;
 use App\Services\UVaSyncService;
 use App\Services\LiveArchiveSyncService;
@@ -45,16 +46,25 @@ class SyncJudgeProblems extends Command
         switch ($judgeName) {
             case 'codeforces':
                 if ((new CodeforcesSyncService())->syncProblems())
-                    $this->info('Codeforces problems synced successfully.');
+                    $this->info(Constants::CODEFORCES_NAME . ' problems synced successfully.');
                 else
-                    $this->error('Failed to sync Codeforces problems');
+                    $this->error('Failed to sync ' . Constants::CODEFORCES_NAME . ' problems');
                 break;
+
             case 'uva':
-                $this->info('Problems synchronization with UVa is not supported yet.');
+                if ((new UVaSyncService())->syncProblems())
+                    $this->info(Constants::UVA_NAME . ' problems synced successfully.');
+                else
+                    $this->error('Failed to sync ' . Constants::UVA_NAME . ' problems');
                 break;
+
             case 'live-archive':
-                $this->info('Problems synchronization with Live Archive is not supported yet.');
+                if ((new LiveArchiveSyncService())->syncProblems())
+                    $this->info(Constants::LIVE_ARCHIVE_NAME . ' problems synced successfully.');
+                else
+                    $this->error('Failed to sync ' . Constants::LIVE_ARCHIVE_NAME . ' problems');
                 break;
+
             default:
                 $this->error($judgeName . ' is not one of the supported online judges by ' . config('app.name'));
                 break;
