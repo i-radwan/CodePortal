@@ -11,6 +11,8 @@
         $url_parts = parse_url(Request::fullUrl());
         if(isset($url_parts['query'])){
             parse_str($url_parts['query'], $params);
+            if( $key == 'sortby')
+                $params['page'] = 1;
             $params[$key] = $value; //overwriting if page parameter exists
             $url_parts['query'] = http_build_query($params);
 //            I commented cause port gives an error (I am working with valet)
@@ -34,6 +36,7 @@
                 <th class = <?php echo($heading == 'Name' ? 'problems-table-name-head': 'problems-table-head'); ?> > <a class="problems-table-head-link" href=<?php echo(getURl("sortby",$heading,"/problems")) ?> >{{$heading}} </a>
                     @if( old('sortby') != null && old('sortby') == $heading)
                         <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                        <?php old('sortby', null); ?>
                     @endif
                 </th>
             @endforeach
@@ -41,6 +44,7 @@
         </thead>
         <tbody>
         <!-- we are going to display the fetched problems -->
+
         @foreach ( $data->problems->data as $problem)
             <!-- We may here get the colour from a specific constant table -->
             @if(isset($problem->verdict ))
@@ -74,15 +78,28 @@
         </tbody>
     </table>
     {{--Pagination--}}
+<!--    --><?php //dd($data); ?>
     <nav aria-label="Page navigation example">
-        <ul class="pagination">
+        <ul class="pagination" max-size='12'>
             <li class="page-item <?php echo((isset($data->problems->prev_page_url)  ? (""): ("disabled"))); ?>">
                 <a class="page-link" href="<?php echo(isset($data->problems->prev_page_url) ? getURl("page",$data->problems->current_page-1,"/problems") : ""); ?>" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Previous</span>
                 </a>
             </li>
-            @for ($i = 1; $i <= $data->problems->last_page; $i++)
+             <?php $j = $data->problems->current_page;
+             if( $j < 7){
+            $forcedLimit = 12;
+            $forcedLimit = ($forcedLimit > $data->problems->last_page) ? $data->problems->last_page:$forcedLimit;
+                 $i = 1;
+            }
+            else{
+                 $i = $j-6;
+            $forcedLimit = $j+6;
+            $forcedLimit = ($forcedLimit > $data->problems->last_page) ? $data->problems->last_page:$forcedLimit;
+            }
+             ?>
+            @for (; ($i <= $forcedLimit) ; $i++)
                 <li  class = <?php echo($data->problems->current_page == $i ? "active" : "");?>><a class="page-link" href= <?php echo(getURl("page", $i, "/problems")); ?>>{{$i}}</a></li>
             @endfor
             <li class="page-item <?php echo((isset($data->problems->next_page_url)  ? (""): ("disabled"))); ?>">
