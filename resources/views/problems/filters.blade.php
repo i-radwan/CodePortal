@@ -29,9 +29,10 @@
                 <div>
                     <h4>Tags:</h4>
                     @foreach ($data->tags as $tag)
-                        <div class="checkbox">
-                            <label><input type="checkbox" value="{{$tag->id}}"
-                                          name="tags[]" {{(in_array($tag->id, $data->tagsIDs))?'checked':''}}> {{$tag->name}}
+                        <div class="checkbox filters-checkbox-div">
+                            <label>
+                                <input type="checkbox" value="{{$tag->id}}"
+                                       name="tags[]" {{(in_array($tag->id, $data->tagsIDs))?'checked':''}}> {{$tag->name}}
                             </label>
                         </div>
                     @endforeach

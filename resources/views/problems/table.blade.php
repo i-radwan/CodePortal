@@ -26,9 +26,9 @@
             <!-- We may here get the colour from a specific constant table -->
             @if(isset($problem->verdict ))
                 @if($problem->verdict == Constants::SUBMISSION_VERDICT["OK"])
-                    <tr class="success">
+                    <tr class="light-warning">
                 @elseif($problem->verdict != Constants::SUBMISSION_VERDICT["OK"])
-                    <tr class="warning">
+                    <tr class="light-danger">
                 @else
                     <tr class="tr-notsolved">
                 @endif

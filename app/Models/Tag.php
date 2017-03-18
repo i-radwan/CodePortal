@@ -50,7 +50,7 @@ class Tag extends Model
         $this->save();
     }
 
-    public static function index($count = 15)
+    public static function index()
     {
         return json_encode(
             DB::table(Constants::TBL_TAGS)
@@ -58,7 +58,6 @@ class Tag extends Model
                     Constants::FLD_TAGS_ID,
                     Constants::FLD_TAGS_NAME
                 )
-                ->take($count)
                 ->get()
         );
     }

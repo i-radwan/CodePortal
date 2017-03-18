@@ -25,6 +25,14 @@ html, body {
     color: #555;
 }
 
+.light-danger {
+    background: rgba(248, 222, 222, 0.73);
+}
+
+.light-warning {
+    background: rgba(251, 240, 227, 0.83);
+}
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -446,17 +454,12 @@ footer {
 }
 
 .td-problems-badge {
-    display: inline-flex;
-    height: 24px;
-    border: 1px solid #47b8e0;
-    border-radius: 5px;
-    padding: 6px 12px;
-    background: cyan;
-    justify-content: center;
-    align-items: center;
-    background: #47b8e0;
-    margin-right: 12px;
-    color: #fff;
+    transition: 0.5s;
+}
+
+.td-problems-badge:hover {
+    transition: 0.5s;
+    color: #ffff91;
 }
 
 .details {
@@ -477,6 +480,11 @@ footer {
     font-weight: 500;
     margin-bottom: 10px;
 }
+
+.filters-checkbox-div {
+    display: inline-block;
+}
+
 .tags-table-container {
     width: 99%;
 }
