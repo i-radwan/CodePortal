@@ -35,7 +35,7 @@ class ProblemController extends Controller
                 $sortByParameter = Constants::FLD_PROBLEMS_NAME;
             else if ($request->get('sortby') == "Difficulty")
                 $sortByParameter = Constants::FLD_PROBLEMS_DIFFICULTY;
-            else if ($request->get('sortby') == "# Accepted")
+            else if ($request->get('sortby') == "# Acc.")
                 $sortByParameter = Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT;
             else if ($request->get('sortby') == "ID")
                 $sortByParameter = Constants::FLD_PROBLEMS_ID;

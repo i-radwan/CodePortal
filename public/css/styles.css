@@ -428,7 +428,11 @@ footer {
 
 .problems-table-name-head {
     text-align: center;
-    width: 33%;
+}
+
+.problems-table-tags-head {
+    text-align: center;
+    width: 20%;
 }
 
 .problems-table-head,
@@ -507,6 +511,17 @@ footer {
 
 .tags-table-container {
     width: 99%;
+}
+
+.problems-table-tags-links {
+    font-size: 11px;
+    color: #000;
+    font-weight: 300;
+}
+
+.problems-table-tags-links:not(:last-child) ::after {
+    content: ',';
+    margin-left: -2px;
 }
 
 /*New search*/

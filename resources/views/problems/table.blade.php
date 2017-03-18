@@ -4,7 +4,7 @@
         <tr>
             <!-- We are gonna loop here for the head tags -->
             @foreach ($data->headings as $heading)
-                <th class={{($heading == 'Name')?"problems-table-name-head" : "problems-table-head"}}>
+                <th class={{($heading == 'Name')?"problems-table-name-head" : (($heading == 'Tags')?"problems-table-tags-head":"problems-table-head")}}>
                     <a class="problems-table-head-link"
                        href="{{(Utilities::getURL("sortby", $heading, "/problems", Request::fullUrl()))}}&order={{($data->sortbyMode == 'desc')?'asc':'desc'}}">{{$heading}}
                     </a>
@@ -40,17 +40,22 @@
                             <td class="td-problems">
                                 <a target="_blank" href="{{Utilities::generateProblemLink($problem)}}">  {{$value}} </a>
                             </td>
-                        @elseif( $key ==  "tags")
-                            <?php $tags = explode(',', $value); ?>
-                            <td>
-                                @foreach($tags as $tag)
-                                    <span class="td-problems-badge"> {{$tag}} </span>
-                                @endforeach
-                            </td>
                         @elseif(in_array($key, \App\Models\Problem::$displayable))
                             <td class="td-problems">  {{$value}} </td>
                         @endif
                     @endforeach
+                    <td>
+                        @if(count(explode(',', $problem->tags_ids)) > 1)
+                            @foreach(explode(',', $problem->tags_ids) as $tagID)
+                                <a href="/problems/?tag={{$tagID}}" class="problems-table-tags-links"><span>
+                                {{ ((App\Models\Tag::find($tagID))?(App\Models\Tag::find($tagID)->getAttributes()[Constants::FLD_TAGS_NAME]):'')}}
+                                </span>
+                                </a>
+                            @endforeach
+                        @else
+                            <p class="text-center">-</p>
+                        @endif
+                    </td>
                 </tr>
                 @endforeach
         </tbody>

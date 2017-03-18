@@ -131,7 +131,11 @@ class Problem extends Model
             ->join(Constants::TBL_JUDGES,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
                 '=',
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID);
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID)
+            ->leftJoin(Constants::TBL_PROBLEM_TAGS . ' as  pt',
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+                '=',
+                'pt.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID);
         if (Auth::check()) {
             $problems->leftJoin(Constants::TBL_SUBMISSIONS, function ($join) {
                 $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID),
@@ -169,6 +173,8 @@ class Problem extends Model
             });
         }
         $problems->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
+        // get the problem tags
+        $problems->selectRaw('GROUP_CONCAT(DISTINCT (pt.'.Constants::FLD_PROBLEM_TAGS_TAG_ID.')) as tags_ids');
         return $problems;
     }
 
@@ -241,7 +247,7 @@ class Problem extends Model
         $problems = $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
         // Assign data
         $ret = [
-            "headings" => ["ID", "Name", "Difficulty", "# Accepted", "Judge"],
+            "headings" => ["ID", "Name", "Difficulty", "# Acc.", "Judge", "Tags"],
             "problems" => $problems,
             "extra" => [
                 "checkbox" => "no",
