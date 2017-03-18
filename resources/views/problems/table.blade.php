@@ -6,14 +6,14 @@
     <script src="https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.js"></script>
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <?php
-    //        This function adds a new query to the saved ones and overwrites if needed
+    // This function adds a new query to the saved ones and overwrites if needed
     function getURl($key, $value,$defaultURL){
         $url_parts = parse_url(Request::fullUrl());
         if(isset($url_parts['query'])){
             parse_str($url_parts['query'], $params);
             $params[$key] = $value; //overwriting if page parameter exists
             $url_parts['query'] = http_build_query($params);
-            $url =  $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . '?' . $url_parts['query'];
+            $url =  $url_parts['scheme'] . '://' . $url_parts['host'] . ':' . $url_parts['port'] . $url_parts['path'] . '?' . $url_parts['query'];
         }
         else{
             $url = $defaultURL."?".$key. "=". $value;
@@ -42,16 +42,10 @@
         @foreach ( $data->problems->data as $problem)
             <!-- We may here get the colour from a specific constant table -->
             @if(isset($problem->verdict ))
-                @if($problem->verdict == "Accepted")
+                @if($problem->verdict == \App\Utilities\Constants::SUBMISSION_VERDICT["OK"])
                     <tr  class = "success"  >
-                @elseif($problem->verdict ==  "TLE")
+                @elseif($problem->verdict !=  \App\Utilities\Constants::SUBMISSION_VERDICT["OK"])
                     <tr class = "warning"  >
-                @elseif($problem->verdict == "Run-Time-Error")
-                    <tr class = "tr-runtimeerror" >
-                @elseif($problem->verdict == "CompilationError")
-                    <tr class = "info" >
-                @elseif($problem->verdict == "WrongAnswer")
-                    <tr class = "success" >
                 @else
                     <tr class = "tr-notsolved" >
                 @endif
@@ -69,7 +63,7 @@
                                     <span class="td-problems-badge"> {{$tag}} </span>
                                 @endforeach
                             </td>
-                        @else
+                        @elseif($key != "verdict")
                             <td class = "td-problems" >  {{$value}} </td>
                         @endif
                     @endforeach

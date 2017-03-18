@@ -70,19 +70,8 @@ class Tag extends Model
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
-        // Set columns and count
-        $problems = DB::table(Constants::TBL_PROBLEMS)
-            ->select(
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge')
-            ->join(Constants::TBL_JUDGES,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
-                '=',
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID)
-            ->join(Constants::TBL_PROBLEM_TAGS,
+        $problems = Problem::prepareBasicProblemsCollection();
+        $problems = $problems->join(Constants::TBL_PROBLEM_TAGS,
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
                 '=',
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
