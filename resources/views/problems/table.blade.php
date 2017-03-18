@@ -37,7 +37,8 @@
                     @endif
                     @foreach ($problem as $key => $value)
                         @if($key == "name")
-                            <td class="td-problems"><a href="">  {{$value}} </a>
+                            <td class="td-problems">
+                                <a target="_blank" href="{{Utilities::generateProblemLink($problem)}}">  {{$value}} </a>
                             </td>
                         @elseif( $key ==  "tags")
                             <?php $tags = explode(',', $value); ?>
@@ -46,7 +47,7 @@
                                     <span class="td-problems-badge"> {{$tag}} </span>
                                 @endforeach
                             </td>
-                        @elseif($key != "verdict")
+                        @elseif(in_array($key, \App\Models\Problem::$displayable))
                             <td class="td-problems">  {{$value}} </td>
                         @endif
                     @endforeach

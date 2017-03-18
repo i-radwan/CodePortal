@@ -26,4 +26,23 @@ class Utilities
         }
         return $url;
     }
+
+    /**
+     * This function takes the problem object and returns the problem link
+     * depending on the specified judge
+     * @param $problem problem model object
+     * @return url the problem link to the online judge
+     */
+    public static function generateProblemLink($problem)
+    {
+        // Get judge data from constants file
+        $judge = Constants::JUDGES[$problem->judge_id];
+
+        $link = $judge['problemLink'];
+        $replacingArray = $judge['toBeReplaced'];
+        foreach ($replacingArray as $key => $value) {
+            $link = str_replace($key, $problem->$value, $link);
+        }
+        return $link;
+    }
 }

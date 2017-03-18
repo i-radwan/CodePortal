@@ -38,6 +38,18 @@ class Problem extends Model
         Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT
     ];
+    /**
+     * The attributes that are displayable in the problems table.
+     *
+     * @var array
+     */
+    public static $displayable = [
+        Constants::FLD_PROBLEMS_ID,
+        Constants::FLD_PROBLEMS_NAME,
+        Constants::FLD_PROBLEMS_DIFFICULTY,
+        Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
+        Constants::FLD_PROBLEMS_JUDGE_NAME
+    ];
 
     public function judge()
     {
@@ -101,10 +113,13 @@ class Problem extends Model
     {
         // Selected columns
         $cols = array(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
             Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
             Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
             Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
-            Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge'
+            Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge',
+            Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID . ' as judge_id'
         );
         if (Auth::check()) {
             array_push($cols, Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT);
@@ -177,14 +192,14 @@ class Problem extends Model
         // Set columns and count
         $problems = self::prepareBasicProblemsCollection()
             ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%");
-        if($judgesIDs != [])
-            $problems = $problems ->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs);
-        if($tagsIDs != [])
+        if ($judgesIDs != [])
+            $problems = $problems->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs);
+        if ($tagsIDs != [])
             $problems = $problems->join(Constants::TBL_PROBLEM_TAGS,
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
                 '=',
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
-            ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs);
+                ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs);
         return Problem::prepareProblemsOutput($problems, $sortBy);
     }
 

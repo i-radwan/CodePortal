@@ -6,6 +6,7 @@ class Constants
 {
     const PROBLEMS_COUNT_PER_PAGE = 30;
 
+    // Judges constants
     const CODEFORCES_NAME = "Codeforces";
     const CODEFORCES_LINK = "http://codeforces.com/";
     const CODEFORCES_PROBLEM_LINK = "http://codeforces.com/problemset/problem/{contestId}/{contestIndex}";
@@ -17,6 +18,38 @@ class Constants
     const LIVE_ARCHIVE_NAME = "Live Archive";
     const LIVE_ARCHIVE_LINK = "https://icpcarchive.ecs.baylor.edu/";
     const LIVE_ARCHIVE_PROBLEM_LINK = "https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}";
+
+
+    // Judges array corresponding to database data
+    // allows access to judge info using judge id from db
+    // @IMPORTANT: The 1,2,3 keys are corresponding to the DB version
+    const JUDGES = [
+        1 => [
+            "name" => self::CODEFORCES_NAME,
+            "link" => self::CODEFORCES_LINK,
+            "problemLink" => self::CODEFORCES_PROBLEM_LINK,
+            "toBeReplaced" => [
+                "{contestId}" => "judge_first_key",
+                "{contestIndex}" => "judge_second_key",
+            ]
+        ],
+        2 => [
+            "name" => self::LIVE_ARCHIVE_NAME,
+            "link" => self::LIVE_ARCHIVE_LINK,
+            "problemLink" => self::LIVE_ARCHIVE_PROBLEM_LINK,
+            "toBeReplaced" => [
+                "{problemId}" => "judge_first_key",
+            ]
+        ],
+        3 => [
+            "name" => self::UVA_NAME,
+            "link" => self::UVA_LINK,
+            "problemLink" => self::UVA_PROBLEM_LINK,
+            "toBeReplaced" => [
+                "{problemId}" => "judge_first_key",
+            ]
+        ]
+    ];
 
     const USER_ROLE = [
         "USER" => 0,
@@ -129,6 +162,7 @@ class Constants
     const FLD_PROBLEMS_NAME = "name";
     const FLD_PROBLEMS_DIFFICULTY = "difficulty";
     const FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT = "accepted_submissions_count";
+    const FLD_PROBLEMS_JUDGE_NAME = "judge"; // used for the problems table
 
     // Submissions
     const FLD_SUBMISSIONS_ID = "id";
