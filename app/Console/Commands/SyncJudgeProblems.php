@@ -15,7 +15,8 @@ class SyncJudgeProblems extends Command
      *
      * @var string
      */
-    protected $signature = 'sync-judge:problems {name : the name of the online judge to be synced (codeforces, uva, live-archive)}';
+    protected $signature = 'sync-judge:problems
+                            {--judge=codeforces : the name of the online judge to be synced (codeforces, uva, live-archive)}';
 
     /**
      * The console command description.
@@ -41,7 +42,7 @@ class SyncJudgeProblems extends Command
      */
     public function handle()
     {
-        $judgeName = $this->argument('name');
+        $judgeName = $this->option('judge');
 
         switch ($judgeName) {
             case 'codeforces':

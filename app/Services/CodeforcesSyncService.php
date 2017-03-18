@@ -6,6 +6,7 @@ use Log;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Submission;
+use App\Models\Judge;
 use App\Models\Tag;
 use App\Models\Language;
 use App\Utilities\Constants;
@@ -55,7 +56,7 @@ class CodeforcesSyncService extends JudgeSyncService
      *
      * @var string
      */
-    protected $apiBaseSubmissionsUrl;
+    protected $apiBaseSubmissionsUrl = "http://codeforces.com/api/user.status";
 
     /**
      * The submissions API's url parameters
@@ -63,7 +64,9 @@ class CodeforcesSyncService extends JudgeSyncService
      * @var array
      */
     protected $apiSubmissionsParams = [
-
+        //"handle" => "Momentum",
+        //"from" => "1",
+        //"count" => "100"
     ];
 
     //
@@ -88,7 +91,13 @@ class CodeforcesSyncService extends JudgeSyncService
     const PROBLEM_SOLVED_COUNT = "solvedCount";
 
     // Submission object
-    const SUBMISSIONS = "submissions";
+    const SUBMISSION_ID = "id";
+    const SUBMISSION_PROBLEM = "problem";
+    const SUBMISSION_LANGUAGE = "programmingLanguage";
+    const SUBMISSION_TIME = "creationTimeSeconds";              // In seconds unix-format
+    const SUBMISSION_VERDICT = "verdict";
+    const SUBMISSION_EXECUTION_TIME = "timeConsumedMillis";     // In milliseconds
+    const SUBMISSION_CONSUMED_MEMORY = "memoryConsumedBytes";   // In bytes
 
 
     /**
@@ -107,54 +116,63 @@ class CodeforcesSyncService extends JudgeSyncService
             return false;
         }
 
-        // Get the judge model in order to associate it with the problems
-        $codeforces = $this->getJudgeModel();
-
         // Get the main objects from the response data
         $result = $data[Codeforces::RESPONSE_RESULT];
         $problems = $result[Codeforces::PROBLEMS];
         $problemStatistics = $result[Codeforces::PROBLEM_STATISTICS];
-        $len = sizeof($problems);
 
         // Loop through each problem in the return data
-        for ($i = 0; $i < $len; ++$i) {
-            // Extract problem info
-            $contestId = $problems[$i][Codeforces::PROBLEM_CONTEST_ID];
-            $problemIdx =  $problems[$i][Codeforces::PROBLEM_INDEX];
-            $problemName = $problems[$i][Codeforces::PROBLEM_NAME];
-            $problemSolvedCount = $problemStatistics[$i][Codeforces::PROBLEM_SOLVED_COUNT];
-            $problemDifficulty = array_key_exists(Codeforces::PROBLEM_POINTS, $problems[$i]) ? $problems[$i][Codeforces::PROBLEM_POINTS] : $this->calculateProblemDifficulty($problemSolvedCount);
-            $problemTags = $problems[$i][Codeforces::PROBLEM_TAGS];
-
-            // Search for the problem in the local database, if it does not exists then create a new instance of it
-            $problem = Problem::firstOrNew([
-                Constants::FLD_PROBLEMS_JUDGE_ID => $codeforces->id,
-                Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $contestId,
-                Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $problemIdx
-            ]);
-
-            // If the problem already exists then just update its info
-            if ($problem->exists) {
-                $problem->update([
-                    Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
-                    Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $problemSolvedCount
-                ]);
-            }
-            // Else then fill in the problem's data and save it to our local database
-            else {
-                $problem->fill([
-                    Constants::FLD_PROBLEMS_NAME => $problemName,
-                    Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
-                    Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $problemSolvedCount
-                ]);
-
-                // TODO: need to find a way to call store method for input validation
-                $codeforces->problems()->save($problem);
-                $this->attachProblemTags($problem, $problemTags);
-            }
+        for ($i = sizeof($problems) - 1; $i >= 0; --$i) {
+            $problemData = $problems[$i];
+            $problemData[Codeforces::PROBLEM_SOLVED_COUNT] = $problemStatistics[$i][Codeforces::PROBLEM_SOLVED_COUNT];
+            $this->saveProblem($problemData);
         }
 
         return true;
+    }
+
+    /**
+     * Parse the given problem data and save it into the database, if it is already exists then
+     * update its info
+     *
+     * @param array $problemData
+     * @return void
+     */
+    protected function saveProblem($problemData)
+    {
+        // Extract problem info
+        $contestId = $problemData[Codeforces::PROBLEM_CONTEST_ID];
+        $problemIdx =  $problemData[Codeforces::PROBLEM_INDEX];
+        $problemName = $problemData[Codeforces::PROBLEM_NAME];
+        $problemSolvedCount = array_key_exists(Codeforces::PROBLEM_SOLVED_COUNT, $problemData) ? $problemData[Codeforces::PROBLEM_SOLVED_COUNT] : 0;
+        $problemDifficulty = array_key_exists(Codeforces::PROBLEM_POINTS, $problemData) ? $problemData[Codeforces::PROBLEM_POINTS] : $this->calculateProblemDifficulty($problemSolvedCount);
+        $problemTags = $problemData[Codeforces::PROBLEM_TAGS];
+
+        // Search for the problem in the local database, if it does not exists then create a new instance of it
+        $problem = $this->judge->problems()->firstOrNew([
+            Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $contestId,
+            Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $problemIdx
+        ]);
+
+        // If the problem already exists then just update its info
+        if ($problem->exists) {
+            $problem->update([
+                Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
+                Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $problemSolvedCount
+            ]);
+        }
+        // Else then fill in the problem's data and save it to our local database
+        else {
+            $problem->fill([
+                Constants::FLD_PROBLEMS_NAME => $problemName,
+                Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
+                Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $problemSolvedCount
+            ]);
+
+            // TODO: need to find a way to call store method for input validation
+            $this->judge->problems()->save($problem);
+            $this->attachProblemTags($problem, $problemTags);
+        }
     }
 
     /**
@@ -186,12 +204,34 @@ class CodeforcesSyncService extends JudgeSyncService
     }
 
     /**
+     * Fetch submissions data from the online judge's API
+     * and synchronize them with our local database
+     *
+     * @param User $user
+     * @return bool whether the submissions synchronization process completed successfully
+     */
+    public function syncSubmissions(User $user)
+    {
+        $handle = $user
+            ->handles()
+            ->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $this->judge->id)
+            ->first()->pivot->handle;
+
+        $this->apiSubmissionsParams["handle"] = $handle;
+        $this->apiSubmissionsParams["from"] = '1';
+        $this->apiSubmissionsParams["count"] = '1000000';
+
+        return parent::syncSubmissions($user);
+    }
+
+    /**
      * Parse the fetched raw submissions data from the online judge's api and sync
      * them with our local database
      *
+     * @param User $user
      * @return bool whether the synchronization process completed successfully or not
      */
-    protected function syncSubmissionsWithDatabase()
+    protected function syncSubmissionsWithDatabase(User $user)
     {
         $data = json_decode($this->rawDataString, true);
 
@@ -201,8 +241,74 @@ class CodeforcesSyncService extends JudgeSyncService
             return false;
         }
 
-        // TODO:
+        // Get the main objects from the response data
+        $result = $data[Codeforces::RESPONSE_RESULT];
+
+        // Loop through each submission in the return data
+        for ($i = sizeof($result) - 1; $i >= 0; --$i) {
+            $this->saveSubmission($user, $result[$i]);
+        }
 
         return true;
+    }
+
+    /**
+     * Parse the given submission data and save it into the database, if it is already exists then
+     * update its info
+     *
+     * @param User $user
+     * @param array $submissionData
+     * @return void
+     */
+    protected function saveSubmission(User $user, $submissionData)
+    {
+        // Extract submission info
+        $submissionId = $submissionData[Codeforces::SUBMISSION_ID];
+        $submissionProblem = $submissionData[Codeforces::SUBMISSION_PROBLEM];
+        $submissionLanguage = $submissionData[Codeforces::SUBMISSION_LANGUAGE];
+        $submissionTime =  $submissionData[Codeforces::SUBMISSION_TIME];
+        $submissionExecutionTime = $submissionData[Codeforces::SUBMISSION_EXECUTION_TIME];
+        $submissionConsumedMemory = $submissionData[Codeforces::SUBMISSION_CONSUMED_MEMORY];
+        $submissionVerdict = Constants::SUBMISSION_VERDICT[array_key_exists(Codeforces::SUBMISSION_VERDICT, $submissionData) ? $submissionData[Codeforces::SUBMISSION_VERDICT] : "UNKNOWN"];
+
+        // Find if submission already exists
+        $submission = $this->judge->submissions()->firstOrNew([
+            Constants::FLD_SUBMISSIONS_USER_ID => $user->id,
+            Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => $submissionId
+        ]);
+
+        if ($submission->exists) {
+            $submission->update([
+                Constants::FLD_SUBMISSIONS_EXECUTION_TIME => $submissionExecutionTime,
+                Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => $submissionConsumedMemory,
+                Constants::FLD_SUBMISSIONS_VERDICT => $submissionVerdict
+            ]);
+            return;
+        }
+
+        // Find submission problem
+        $problem = $this->judge->problems()->firstOrNew([
+            Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $submissionProblem[Codeforces::PROBLEM_CONTEST_ID],
+            Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $submissionProblem[Codeforces::PROBLEM_INDEX]
+        ]);
+
+        if (!$problem->exists) {
+            // TODO:
+            return;
+        }
+
+        // Get language model or create it if it does not exist
+        $language = Language::firstOrCreate([Constants::FLD_LANGUAGES_NAME => $submissionLanguage]);
+
+        $submission->fill([
+            Constants::FLD_SUBMISSIONS_PROBLEM_ID => $problem->id,
+            Constants::FLD_SUBMISSIONS_LANGUAGE_ID => $language->id,
+            Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => $submissionTime,
+            Constants::FLD_SUBMISSIONS_EXECUTION_TIME => $submissionExecutionTime,
+            Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => $submissionConsumedMemory,
+            Constants::FLD_SUBMISSIONS_VERDICT => $submissionVerdict
+        ]);
+
+        $submission->store();
     }
 }
