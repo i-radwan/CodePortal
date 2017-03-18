@@ -9,6 +9,10 @@ html, body {
     font-family: 'Raleway', sans-serif;
 }
 
+.animated {
+    opacity: 1 !important;
+}
+
 .space-wrapper {
     /*min-width: 100vw;*/
     min-height: 100%;
@@ -120,6 +124,10 @@ footer {
 /**************************************/
 
 /* Features styles*/
+.js-wp-2 {
+    opacity: 0;
+}
+
 .feature-item p {
     margin-top: 30px;
     margin-bottom: 30px;
@@ -158,6 +166,10 @@ footer {
 /**************************************/
 
 /* Quotes styles */
+.js-wp-3 {
+    opacity: 0;
+}
+
 .quotes-section {
     margin-top: 30px;
     padding-top: 60px;
@@ -223,6 +235,10 @@ footer {
     padding-top: 60px;
     padding-bottom: 60px;
     background-color: #eeeeee;
+}
+
+.js-wp-4 {
+    opacity: 0;
 }
 
 .sponsors-section h1 {

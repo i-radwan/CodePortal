@@ -1,6 +1,6 @@
 <div class="container">
     @foreach($features as $feature)
-        <div class="row feature-item">
+        <div class="row feature-item js-wp-2">
             <div class="col-md-6{{ $loop->index % 2 == 1 ? ' col-md-push-6' : '' }}">
                 <h1>{{ $feature['title'] }}</h1>
 

@@ -1,5 +1,5 @@
 <section class="quotes-section">
-    <div class="container">
+    <div class="container js-wp-3">
         <h1 class="text-center">What are people saying about competitive programming?</h1>
 
         <div id="quotes-carousel" class="carousel slide" data-ride="carousel">
