@@ -5,9 +5,13 @@
             <!-- We are gonna loop here for the head tags -->
             @foreach ($data->headings as $heading)
                 <th class={{($heading == 'Name')?"problems-table-name-head" : (($heading == 'Tags')?"problems-table-tags-head":"problems-table-head")}}>
-                    <a class="problems-table-head-link"
-                       href="{{(Utilities::getURL("sortby", $heading, "/problems", Request::fullUrl()))}}&order={{($data->sortbyMode == 'desc')?'asc':'desc'}}">{{$heading}}
-                    </a>
+                    @if($heading != "Tags")
+                        <a class="problems-table-head-link"
+                           href="{{(Utilities::getURL("sortby", $heading, "/problems", Request::fullUrl()))}}&order={{($data->sortbyMode == 'desc')?'asc':'desc'}}">{{$heading}}
+                        </a>
+                    @else
+                        <span class="table-head">{{$heading}}</span>
+                    @endif
                     @if( $data->sortbyParam != null && $data->sortbyParam == $heading)
                         <i class="fa
                             {{($data->sortbyMode == 'desc') ?
@@ -44,7 +48,7 @@
                             <td class="td-problems">  {{$value}} </td>
                         @endif
                     @endforeach
-                    <td>
+                    <td class="td-problems">
                         @if(count(explode(',', $problem->tags_ids)) > 1)
                             @foreach(explode(',', $problem->tags_ids) as $tagID)
                                 <a href="/problems/?tag={{$tagID}}" class="problems-table-tags-links"><span>

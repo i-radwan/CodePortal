@@ -41,6 +41,22 @@ html, body {
     margin: 5px;
 }
 
+.col {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+    float: left;
+}
+
+.col-md-8-5 {
+    width: 70%;
+}
+
+.col-md-3-5 {
+    width: 30%;
+}
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -417,17 +433,17 @@ footer {
 .problems-table-container {
     width: 99%
 }
-
-.problems-table-hover > tbody > tr:hover {
-
-}
-
 .problems-table-head {
     text-align: center;
 }
 
+.table-head {
+    color: rgb(41, 101, 168);
+}
+
 .problems-table-name-head {
     text-align: center;
+    width: 25%;
 }
 
 .problems-table-tags-head {
