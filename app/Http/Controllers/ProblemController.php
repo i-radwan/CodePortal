@@ -24,7 +24,13 @@ class ProblemController extends Controller
 
     public function index(Request $request)
     {
+        // Get problems sorting mode and check validity
+        $sortbyMode = $request->get('order');
+        if ($sortbyMode && $sortbyMode != 'asc' && $sortbyMode != 'desc') {
+            $sortbyMode = 'desc';
+        }
         if ($request->get('sortby')) {
+
             // ToDo THIS MUST NOT BE HARDCODED LIKE THAT
             if ($request->get('sortby') == "Name")
                 $sortByParameter = Constants::FLD_PROBLEMS_NAME;
@@ -38,26 +44,17 @@ class ProblemController extends Controller
                 $sortByParameter = Constants::FLD_PROBLEMS_JUDGE_ID;
             else
                 $sortByParameter = Constants::FLD_PROBLEMS_NAME;
-            if ($request->get('sortby') == $request->old('sortby')) {
-                $sortby = [[
-                    "column" => Constants::TBL_PROBLEMS . '.' .$sortByParameter ,
-                    "mode" => "asc"
-                ]];
-                old('sortby', null);
-                redirect($request->fullUrl());
-            } else {
-                $sortby = [[
-                    "column" => Constants::TBL_PROBLEMS . '.' . $sortByParameter,
-                    "mode" => "desc"
-                ]];
-                $request->flashOnly('sortby');
-            }
+
+            $sortby = [[
+                "column" => Constants::TBL_PROBLEMS . '.' . $sortByParameter,
+                "mode" => $sortbyMode
+            ]];
         } else {
             $sortby = [];
         }
         //If search or filters are applied
         if (($request->get('tags') || $request->get('q') || $request->get('judges'))) {
-            $data = Problem::filter($request->get('q'), (($request->get('tags'))?$request->get('tags'):[]), (($request->get('judges'))?$request->get('judges'):[]), $request->get('page'), $sortby);
+            $data = Problem::filter($request->get('q'), (($request->get('tags')) ? $request->get('tags') : []), (($request->get('judges')) ? $request->get('judges') : []), $request->get('page'), $sortby);
         } //If a single Tag is applied
         else if ($request->get('tag') != "") {
             $data = Tag::getTagProblems($request->get('tag'), $request->get('page'), $sortby);
@@ -68,6 +65,8 @@ class ProblemController extends Controller
         $data = (json_decode($data));
         $data->tags = json_decode(Tag::index());
         $data->judges = json_decode(Judge::index());
+        $data->sortbyMode = $sortbyMode;
+        $data->sortbyParam = $request->get('sortby');
         return view('problems.index')->with('data', $data);
     }
 }

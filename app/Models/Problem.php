@@ -153,7 +153,7 @@ class Problem extends Model
                     });
             });
         }
-        $problems->groupBy('problems.id');
+        $problems->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
         return $problems;
     }
 
@@ -175,18 +175,8 @@ class Problem extends Model
             return $page;
         });
         // Set columns and count
-        $problems = DB::table(Constants::TBL_PROBLEMS)
-            ->select(
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge')
-            ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%")
-            ->join(Constants::TBL_JUDGES,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
-                '=',
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID);
+        $problems = self::prepareBasicProblemsCollection()
+            ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%");
         if($judgesIDs != [])
             $problems = $problems ->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs);
         if($tagsIDs != [])

@@ -21,6 +21,10 @@ html, body {
     align-items: center;
 }
 
+.text-dark {
+    color: #555;
+}
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -382,50 +386,66 @@ footer {
 /*========== PROBLEMS PAGE ===========*/
 /*====================================*/
 
-.problems-table-container{
+.problems-table-container {
     width: 99%
 }
 
-.problems-table-hover>tbody>tr:hover {
+.problems-table-hover > tbody > tr:hover {
 
 }
 
-.problems-table-head{
+.problems-table-head {
     text-align: center;
 }
 
-.problems-table-name-head{
+.problems-table-name-head {
     text-align: center;
     width: 33%;
 }
 
+.problems-table-head,
+.problems-table-name-head {
+    position: relative;
+}
 
-.td-problems{
+.problems-table-sorting-arrow-desc {
+    position: absolute;
+    right: 10%;
+    top: 25%;
+}
+
+.problems-table-sorting-arrow-asc {
+    position: absolute;
+    right: 10%;
+    top: 40%;
+}
+
+.td-problems {
     text-align: center;
 }
 
-.tr-runtimeerror{
+.tr-runtimeerror {
     background-color: #b78ffc;
 
 }
 
-.tr-wronganswer{
+.tr-wronganswer {
     background-color: #f94e48;
 }
 
-.tr-accepted{
+.tr-accepted {
     background-color: #3af466;
 }
 
-.tr-tle{
+.tr-tle {
     background-color: #fcf92f;
 }
 
-.tr-notsolved{
+.tr-notsolved {
     background-color: #f8f7f9;
 }
 
-.td-problems-badge{
+.td-problems-badge {
     display: inline-flex;
     height: 24px;
     border: 1px solid #47b8e0;
@@ -439,7 +459,7 @@ footer {
     color: #fff;
 }
 
-.details{
+.details {
     font-size: 10px;
     border: 1px solid #ff7473;
     padding: 2px 6px;
@@ -448,28 +468,33 @@ footer {
     margin-left: 12px;
 }
 
-
-.filters-table-container{
-    width:99%;
-}
-
-.tags-table-container{
+.filters-table-container {
     width: 99%;
 }
+
+.filters-table-container h4 {
+    margin-top: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+.tags-table-container {
+    width: 99%;
+}
+
 /*New search*/
-#custom-search-input{
+#custom-search-input {
     padding: 3px;
     border: solid 1px #E4E4E4;
     border-radius: 6px;
     background-color: #fff;
 }
 
-#custom-search-input input{
+#custom-search-input input {
     border: 0;
     box-shadow: none;
 }
 
-#custom-search-input button{
+#custom-search-input button {
     margin: 2px 0 0 0;
     background: none;
     box-shadow: none;
@@ -479,18 +504,18 @@ footer {
     border-left: solid 1px #ccc;
 }
 
-#custom-search-input button:hover{
+#custom-search-input button:hover {
     border: 0;
     box-shadow: none;
     border-left: solid 1px #ccc;
 }
 
-#custom-search-input .glyphicon-search{
+#custom-search-input .glyphicon-search {
     font-size: 23px;
 }
+
 /**************************************/
 /*</editor-fold>*/
-
 
 /*<editor-fold desc="VisibilityRadioGroup">*/
 /*====================================*/
