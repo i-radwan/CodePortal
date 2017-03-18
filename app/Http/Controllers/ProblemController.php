@@ -78,6 +78,10 @@ class ProblemController extends Controller
         }
         $data->initialPage = $i;
         $data->pagesLimit = $forcedLimit;
+        // Send query filters data to view (to maintain selected filters status as selected)
+        $data->judgesIDs = ($request->get('judges')) ? $request->get('judges') : [];
+        $data->tagsIDs = ($request->get('tags')) ? $request->get('tags') : [];
+        $data->q = $request->get('q');
         return view('problems.index')->with('data', $data);
     }
 }

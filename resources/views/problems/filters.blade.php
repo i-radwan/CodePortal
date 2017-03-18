@@ -6,7 +6,7 @@
                 <div id="custom-search-input">
                     <div class="input-group col-md-12">
                         <input type="text" class="form-control" placeholder="Problem Name"
-                               action="/problem/show" name="q">
+                               action="/problem/show" name="q" value="{{$data->q}}">
                         <span class="input-group-btn">
                             <button class="btn btn-info btn-lg" type="submit">
                                 <i class="glyphicon glyphicon-search"></i>
@@ -19,7 +19,8 @@
                     <h4>Online Judges:</h4>
                     @foreach ($data->judges as $judge)
                         <div class="checkbox">
-                            <label><input type="checkbox" value="{{$judge->id}}" name="judges[]"> {{$judge->name}}
+                            <label><input type="checkbox" value="{{$judge->id}}"
+                                          name="judges[]" {{(in_array($judge->id, $data->judgesIDs))?'checked':''}}> {{$judge->name}}
                             </label>
                         </div>
                     @endforeach
@@ -29,7 +30,9 @@
                     <h4>Tags:</h4>
                     @foreach ($data->tags as $tag)
                         <div class="checkbox">
-                            <label><input type="checkbox" value="{{$tag->id}}" name="tags[]"> {{$tag->name}} </label>
+                            <label><input type="checkbox" value="{{$tag->id}}"
+                                          name="tags[]" {{(in_array($tag->id, $data->tagsIDs))?'checked':''}}> {{$tag->name}}
+                            </label>
                         </div>
                     @endforeach
                     <hr/>
