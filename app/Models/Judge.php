@@ -40,6 +40,17 @@ class Judge extends Model
         return $this->hasMany(Problem::class, Constants::FLD_PROBLEMS_JUDGE_ID);
     }
 
+    public function submissions()
+    {
+        return $this->hasManyThrough(
+            Submission::class,
+            Problem::class,
+            Constants::FLD_PROBLEMS_JUDGE_ID,
+            Constants::FLD_SUBMISSIONS_PROBLEM_ID,
+            Constants::FLD_JUDGES_ID
+        );
+    }
+
     public function store()
     {
         $v = Validator::make($this->attributes, config('rules.judge.store_validation_rules'));

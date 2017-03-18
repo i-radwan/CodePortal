@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Log;
 use Exception;
+use App\Models\User;
 use App\Models\Judge;
 use App\Utilities\Constants;
 use Illuminate\Http\Response;
@@ -67,6 +68,24 @@ abstract class JudgeSyncService
     protected $rawDataString;
 
     /**
+     * The model of the online judge needed to associate data with
+     *
+     * @var Judge
+     */
+    protected $judge;
+
+
+    /**
+     * Initialize the online judge model
+     *
+     * JudgeSyncService constructor.
+     */
+    public function __construct()
+    {
+        $this->judge = $this->getJudgeModel();
+    }
+
+    /**
      * Fetch problems data from the online judge's API
      * and synchronize them with our local database
      *
@@ -98,9 +117,10 @@ abstract class JudgeSyncService
      * Fetch submissions data from the online judge's API
      * and synchronize them with our local database
      *
+     * @param User $user
      * @return bool whether the submissions synchronization process completed successfully
      */
-    public function syncSubmissions()
+    public function syncSubmissions(User $user)
     {
         try {
             if (!$this->fetchSubmissions()) {
@@ -108,7 +128,7 @@ abstract class JudgeSyncService
                 return false;
             }
 
-            if (!$this->syncSubmissionsWithDatabase()) {
+            if (!$this->syncSubmissionsWithDatabase($user)) {
                 Log::alert("Failed to sync submissions from $this->judgeName with database.");
                 return false;
             }
@@ -118,6 +138,7 @@ abstract class JudgeSyncService
             return false;
         }
 
+        Log::info("$this->judgeName submissions was synced successfully.");
         return true;
     }
 
@@ -187,9 +208,10 @@ abstract class JudgeSyncService
      * Parse the fetched raw submissions data from the online judge's api and sync
      * them with our local database
      *
+     * @param User $user
      * @return bool whether the synchronization process completed successfully or not
      */
-    abstract protected function syncSubmissionsWithDatabase();
+    abstract protected function syncSubmissionsWithDatabase(User $user);
 
     /**
      * Return an instance of the judge model, if it does not exists then create it first

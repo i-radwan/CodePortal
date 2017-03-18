@@ -16,12 +16,13 @@ class CreateSubmissionsTable extends Migration
     {
         Schema::create(Constants::TBL_SUBMISSIONS, function (Blueprint $table) {
             $table->increments(Constants::FLD_SUBMISSIONS_ID);
-            $table->integer(Constants::FLD_SUBMISSIONS_PROBLEM_ID);
             $table->integer(Constants::FLD_SUBMISSIONS_USER_ID);
-            $table->string(Constants::FLD_SUBMISSIONS_SUBMISSION_ID);
+            $table->integer(Constants::FLD_SUBMISSIONS_PROBLEM_ID);
+            $table->unsignedBigInteger(Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID);
             $table->integer(Constants::FLD_SUBMISSIONS_LANGUAGE_ID);
-            $table->integer(Constants::FLD_SUBMISSIONS_EXECUTION_TIME);
-            $table->integer(Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY);
+            $table->unsignedBigInteger(Constants::FLD_SUBMISSIONS_SUBMISSION_TIME);
+            $table->unsignedInteger(Constants::FLD_SUBMISSIONS_EXECUTION_TIME);
+            $table->unsignedBigInteger(Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY);
             $table->enum(Constants::FLD_SUBMISSIONS_VERDICT, Constants::SUBMISSION_VERDICT);
             $table->timestamps();
         });

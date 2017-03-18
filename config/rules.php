@@ -30,10 +30,11 @@ return [
     ],
     "submission" => [
         "store_validation_rules" => [
-            'problem_id' => 'required|integer',
             'user_id' => 'required|integer',
-            'submission_id' => 'required',
+            'problem_id' => 'required|integer',
+            'judge_submission_id' => 'required|integer',
             'language_id' => 'required|integer',
+            'submission_time' => 'required|integer',
             'execution_time' => 'required|integer',
             'consumed_memory' => 'required|integer',
             'verdict' => 'integer|required|greater_than:-1|less_than:' . count(\App\Utilities\Constants::SUBMISSION_VERDICT),

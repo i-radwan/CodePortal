@@ -28,7 +28,11 @@ class Submission extends Model
      * @var array
      */
     protected $fillable = [
-        Constants::FLD_SUBMISSIONS_SUBMISSION_ID,
+        Constants::FLD_SUBMISSIONS_USER_ID,
+        Constants::FLD_SUBMISSIONS_PROBLEM_ID,
+        Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID,
+        Constants::FLD_SUBMISSIONS_LANGUAGE_ID,
+        Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
         Constants::FLD_SUBMISSIONS_EXECUTION_TIME,
         Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY,
         Constants::FLD_SUBMISSIONS_VERDICT
