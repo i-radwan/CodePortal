@@ -11,6 +11,8 @@
         $url_parts = parse_url(Request::fullUrl());
         if(isset($url_parts['query'])){
             parse_str($url_parts['query'], $params);
+            if( $key == 'sortby')
+                $params['page'] = 1;
             $params[$key] = $value; //overwriting if page parameter exists
             $url_parts['query'] = http_build_query($params);
 //            I commented cause port gives an error (I am working with valet)
@@ -42,6 +44,7 @@
         </thead>
         <tbody>
         <!-- we are going to display the fetched problems -->
+
         @foreach ( $data->problems->data as $problem)
             <!-- We may here get the colour from a specific constant table -->
             @if(isset($problem->verdict ))
@@ -85,11 +88,18 @@
                 </a>
             </li>
              <?php $j = $data->problems->current_page;
-             $i = ($j < 7 ? 1: $j-6);
-             $limit = ( (($j+6) > $data->problems->last_page) ? ($data->problems->last_page - $j) : ($j+6));
-             $limit = ($j < 6 ? 12: $limit);
+             if( $j < 7){
+            $forcedLimit = 12;
+            $forcedLimit = ($forcedLimit > $data->problems->last_page) ? $data->problems->last_page:$forcedLimit;
+                 $i = 1;
+            }
+            else{
+                 $i = $j-6;
+            $forcedLimit = $j+6;
+            $forcedLimit = ($forcedLimit > $data->problems->last_page) ? $data->problems->last_page:$forcedLimit;
+            }
              ?>
-            @for (; (($i < 7) ? ($i <=12):($i <= $limit)) ; $i++)
+            @for (; ($i <= $forcedLimit) ; $i++)
                 <li  class = <?php echo($data->problems->current_page == $i ? "active" : "");?>><a class="page-link" href= <?php echo(getURl("page", $i, "/problems")); ?>>{{$i}}</a></li>
             @endfor
             <li class="page-item <?php echo((isset($data->problems->next_page_url)  ? (""): ("disabled"))); ?>">
