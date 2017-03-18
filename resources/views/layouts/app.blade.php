@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/animate.css" rel="stylesheet">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet">
@@ -35,6 +36,7 @@
 
     <!-- Scripts -->
     <script src="/js/jquery-3.1.1.min.js"></script>
+    <script src="/js/jquery.waypoints.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/script.js"></script>
 </body>

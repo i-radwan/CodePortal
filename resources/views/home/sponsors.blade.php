@@ -4,7 +4,7 @@
 
         <div class="row">
             @foreach($sponsors as $sponsor)
-                <div class="col-md-4 col-sm-6 text-center">
+                <div class="col-md-4 col-sm-6 text-center js-wp-4">
                     <a href="{{ $sponsor['url'] }}" target="_blank">
                         <img src="{{ $sponsor['img'] }}" alt="{{ $sponsor['name'] }}" class="img-circle">
                     </a>
