@@ -10,18 +10,27 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-// Navbar routes...
+
+// Homepage routes...
 Route::get('/', 'HomeController@index');
+
+// Profile routes...
 Route::get('profile/{user}', 'UserController@index');
-// Contest routing
+
+// Contest routes...
 Route::get('contests', 'ContestController@index');
 Route::get('contest/add', 'ContestController@addEdit');
 Route::post('contest/add', 'ContestController@addContest');
 Route::get('contest/edit', 'ContestController@addEdit');
 Route::post('contest/edit', 'ContestController@editContest');
-// Problems routing
+
+// Problems routes...
 Route::get('problems', 'ProblemController@index');
+
+// Blogs routes...
 Route::get('blogs', 'BlogController@index');
+
+// Groups routes...
 Route::get('groups', 'GroupController@index');
 
 

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use DB;
+use Auth;
 use Validator;
 use App\Utilities\Constants;
 use App\Exceptions\UnknownJudgeException;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
-use Auth;
 
 class Problem extends Model
 {

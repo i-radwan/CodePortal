@@ -282,6 +282,7 @@ class CodeforcesSyncService extends JudgeSyncService
             Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => $submissionId
         ]);
 
+        // If submission already exists then just update its info
         if ($submission->exists) {
             $submission->update([
                 Constants::FLD_SUBMISSIONS_EXECUTION_TIME => $submissionExecutionTime,
@@ -305,6 +306,7 @@ class CodeforcesSyncService extends JudgeSyncService
         // Get language model or create it if it does not exist
         $language = Language::firstOrCreate([Constants::FLD_LANGUAGES_NAME => $submissionLanguage]);
 
+        // Fill in submission data and store it in our local database
         $submission->fill([
             Constants::FLD_SUBMISSIONS_PROBLEM_ID => $problem->id,
             Constants::FLD_SUBMISSIONS_LANGUAGE_ID => $language->id,
@@ -313,7 +315,6 @@ class CodeforcesSyncService extends JudgeSyncService
             Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => $submissionConsumedMemory,
             Constants::FLD_SUBMISSIONS_VERDICT => $submissionVerdict
         ]);
-
         $submission->store();
     }
 }
