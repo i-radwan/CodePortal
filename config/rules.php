@@ -18,7 +18,7 @@ return [
         "store_validation_rules" => [
             Constants::FLD_CONTESTS_NAME => 'required|max:100',
             Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:today',
-            Constants::FLD_CONTESTS_DURATION => 'required|greater_than:0|integer',
+            Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1',
             Constants::FLD_CONTESTS_VISIBILITY => 'required|Regex:/([01])/',
         ]
     ],
