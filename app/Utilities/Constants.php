@@ -8,12 +8,15 @@ class Constants
 
     const CODEFORCES_NAME = "Codeforces";
     const CODEFORCES_LINK = "http://codeforces.com/";
+    const CODEFORCES_PROBLEM_LINK = "http://codeforces.com/problemset/problem/{contestId}/{contestIndex}";
 
     const UVA_NAME = "UVa Online Judge";
     const UVA_LINK = "https://uva.onlinejudge.org/";
+    const UVA_PROBLEM_LINK = "https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}";
 
     const LIVE_ARCHIVE_NAME = "Live Archive";
     const LIVE_ARCHIVE_LINK = "https://icpcarchive.ecs.baylor.edu/";
+    const LIVE_ARCHIVE_PROBLEM_LINK = "https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}";
 
     const USER_ROLE = [
         "USER" => 0,

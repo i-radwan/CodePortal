@@ -215,9 +215,14 @@ class CodeforcesSyncService extends JudgeSyncService
         $handle = $user
             ->handles()
             ->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $this->judge->id)
-            ->first()->pivot->handle;
+            ->first();
 
-        $this->apiSubmissionsParams["handle"] = $handle;
+        if (!$handle) {
+            Log::warning("$user->username has no handle on $this->judgeName.");
+            return false;
+        }
+
+        $this->apiSubmissionsParams["handle"] = $handle->pivot->handle;
         $this->apiSubmissionsParams["from"] = '1';
         $this->apiSubmissionsParams["count"] = '1000000';
 

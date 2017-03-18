@@ -49,7 +49,7 @@ class SyncJudgeSubmissions extends Command
         $judgeName = 'codeforces';//$this->option('judge');
 
         if(!$user) {
-            $this->error('No user with such id was found');
+            $this->error("No user with such id was found.");
             return;
         }
 
@@ -58,25 +58,25 @@ class SyncJudgeSubmissions extends Command
                 if ((new CodeforcesSyncService())->syncSubmissions($user))
                     $this->info(Constants::CODEFORCES_NAME . " submissions for $user->username were synced successfully.");
                 else
-                    $this->error("Failed to sync $user->username's " . Constants::CODEFORCES_NAME . " submissions");
+                    $this->error("Failed to sync $user->username's " . Constants::CODEFORCES_NAME . " submissions.");
                 break;
 
             case 'uva':
                 if ((new UVaSyncService())->syncSubmissions($user))
                     $this->info(Constants::UVA_NAME . " submissions for $user->username were synced successfully.");
                 else
-                    $this->error("Failed to sync $user->username's " . Constants::UVA_NAME . " submissions");
+                    $this->error("Failed to sync $user->username's " . Constants::UVA_NAME . " submissions.");
                 break;
 
             case 'live-archive':
                 if ((new LiveArchiveSyncService())->syncSubmissions($user))
                     $this->info(Constants::LIVE_ARCHIVE_NAME . " submissions for $user->username were synced successfully.");
                 else
-                    $this->error("Failed to sync $user->username's " . Constants::LIVE_ARCHIVE_NAME . " submissions");
+                    $this->error("Failed to sync $user->username's " . Constants::LIVE_ARCHIVE_NAME . " submissions.");
                 break;
 
             default:
-                $this->error($judgeName . ' is not one of the supported online judges by ' . config('app.name'));
+                $this->error($judgeName . ' is not one of the supported online judges by ' . config('app.name') . '.');
                 break;
         }
     }
