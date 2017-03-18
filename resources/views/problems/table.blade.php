@@ -87,8 +87,9 @@
              <?php $j = $data->problems->current_page;
              $i = ($j < 7 ? 1: $j-6);
              $limit = ( (($j+6) > $data->problems->last_page) ? ($data->problems->last_page - $j) : ($j+6));
+             $limit = ($j < 6 ? 12: $limit);
              ?>
-            @for (; $i <= (($i < 7) ? 12:$limit ); $i++)
+            @for (; (($i < 7) ? ($i <=12):($i <= $limit)) ; $i++)
                 <li  class = <?php echo($data->problems->current_page == $i ? "active" : "");?>><a class="page-link" href= <?php echo(getURl("page", $i, "/problems")); ?>>{{$i}}</a></li>
             @endfor
             <li class="page-item <?php echo((isset($data->problems->next_page_url)  ? (""): ("disabled"))); ?>">
