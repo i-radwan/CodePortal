@@ -394,6 +394,12 @@ footer {
     text-align: center;
 }
 
+.problems-table-name-head{
+    text-align: center;
+    width: 33%;
+}
+
+
 .td-problems{
     text-align: center;
 }

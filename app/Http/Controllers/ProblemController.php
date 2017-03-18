@@ -25,25 +25,27 @@ class ProblemController extends Controller
     public function index(Request $request)
     {
         if ($request->get('sortby')) {
-            //checkif the user previously pressed the current sortby column , if so change it back to ascending
+            // ToDo THIS MUST NOT BE HARDCODED LIKE THAT
+            if ($request->get('sortby') == "Name")
+                $sortByParameter = Constants::FLD_PROBLEMS_NAME;
+            else if ($request->get('sortby') == "Difficulty")
+                $sortByParameter = Constants::FLD_PROBLEMS_DIFFICULTY;
+            else if ($request->get('sortby') == "# Accepted submissions")
+                $sortByParameter = Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT;
+            else if ($request->get('sortby') == "ID")
+                $sortByParameter = Constants::FLD_PROBLEMS_ID;
+            else if ($request->get('sortby') == "Judge")
+                $sortByParameter = Constants::FLD_PROBLEMS_JUDGE_ID;
+            else
+                $sortByParameter = Constants::FLD_PROBLEMS_NAME;
             if ($request->get('sortby') == $request->old('sortby')) {
-                $sortby = [];
+                $sortby = [[
+                    "column" => Constants::TBL_PROBLEMS . '.' .$sortByParameter ,
+                    "mode" => "asc"
+                ]];
                 old('sortby', null);
                 redirect($request->fullUrl());
             } else {
-                // ToDo THIS MUST NOT BE HARDCODED LIKE THAT
-                if ($request->get('sortby') == "Name")
-                    $sortByParameter = Constants::FLD_PROBLEMS_NAME;
-                else if ($request->get('sortby') == "Difficulty")
-                    $sortByParameter = Constants::FLD_PROBLEMS_DIFFICULTY;
-                else if ($request->get('sortby') == "# Accepted submissions")
-                    $sortByParameter = Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT;
-                else if ($request->get('sortby') == "ID")
-                    $sortByParameter = Constants::FLD_PROBLEMS_ID;
-                else if ($request->get('sortby') == "Judge")
-                    $sortByParameter = Constants::FLD_PROBLEMS_JUDGE_ID;
-                else
-                    $sortByParameter = Constants::FLD_PROBLEMS_NAME;
                 $sortby = [[
                     "column" => Constants::TBL_PROBLEMS . '.' . $sortByParameter,
                     "mode" => "desc"

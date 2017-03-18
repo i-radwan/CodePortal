@@ -182,18 +182,19 @@ class Problem extends Model
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
                 Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge')
+            ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%")
             ->join(Constants::TBL_JUDGES,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
                 '=',
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID)
-            ->join(Constants::TBL_PROBLEM_TAGS,
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID);
+        if($judgesIDs != [])
+            $problems = $problems ->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs);
+        if($tagsIDs != [])
+            $problems = $problems->join(Constants::TBL_PROBLEM_TAGS,
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
                 '=',
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
-            ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs)
-            ->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs)
-            ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%");
-
+            ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs);
         return Problem::prepareProblemsOutput($problems, $sortBy);
     }
 
@@ -235,7 +236,7 @@ class Problem extends Model
         $problems = $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
         // Assign data
         $ret = [
-            "headings" => ["ID", "Name", "Difficulty", "# Accepted submissions", "Judge"],
+            "headings" => ["ID", "Name", "Difficulty", "# Accepted", "Judge"],
             "problems" => $problems,
             "extra" => [
                 "checkbox" => "no",

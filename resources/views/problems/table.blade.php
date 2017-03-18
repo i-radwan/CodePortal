@@ -13,7 +13,9 @@
             parse_str($url_parts['query'], $params);
             $params[$key] = $value; //overwriting if page parameter exists
             $url_parts['query'] = http_build_query($params);
-            $url =  $url_parts['scheme'] . '://' . $url_parts['host'] . ':' . $url_parts['port'] . $url_parts['path'] . '?' . $url_parts['query'];
+//            I commented cause port gives an error (I am working with valet)
+//            $url =  $url_parts['scheme'] . '://' . $url_parts['host'] . ':' . $url_parts['port'] . $url_parts['path'] . '?' . $url_parts['query'];
+            $url =  $url_parts['scheme'] . '://' . $url_parts['host'] . ':' . $url_parts['path'] . '?' . $url_parts['query'];
         }
         else{
             $url = $defaultURL."?".$key. "=". $value;
@@ -29,7 +31,7 @@
         <tr>
             <!-- We are gonna loop here for the head tags -->
             @foreach ($data->headings as $heading)
-                <th class = 'problems-table-head' > <a class="problems-table-head-link" href=<?php echo(getURl("sortby",$heading,"/problems")) ?> >{{$heading}} </a>
+                <th class = <?php echo($heading == 'Name' ? 'problems-table-name-head': 'problems-table-head'); ?> > <a class="problems-table-head-link" href=<?php echo(getURl("sortby",$heading,"/problems")) ?> >{{$heading}} </a>
                     @if( old('sortby') != null && old('sortby') == $heading)
                         <i class="fa fa-sort-desc" aria-hidden="true"></i>
                     @endif
