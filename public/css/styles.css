@@ -21,6 +21,18 @@ html, body {
     align-items: center;
 }
 
+.text-dark {
+    color: #555;
+}
+
+.light-danger {
+    background: rgba(248, 222, 222, 0.73);
+}
+
+.light-warning {
+    background: rgba(251, 240, 227, 0.83);
+}
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -373,6 +385,7 @@ footer {
         background-image: url("/images/cover/2/xxs.jpg");
     }
 }
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -381,58 +394,75 @@ footer {
 /*========== PROBLEMS PAGE ===========*/
 /*====================================*/
 
-.problems-table-container{
+.problems-table-container {
     width: 99%
 }
 
-.problems-table-hover>tbody>tr:hover {
+.problems-table-hover > tbody > tr:hover {
 
 }
 
-.problems-table-head{
+.problems-table-head {
     text-align: center;
 }
 
-.td-problems{
+.problems-table-name-head {
+    text-align: center;
+    width: 33%;
+}
+
+.problems-table-head,
+.problems-table-name-head {
+    position: relative;
+}
+
+.problems-table-sorting-arrow-desc {
+    position: absolute;
+    right: 10%;
+    top: 25%;
+}
+
+.problems-table-sorting-arrow-asc {
+    position: absolute;
+    right: 10%;
+    top: 40%;
+}
+
+.td-problems {
     text-align: center;
 }
 
-.tr-runtimeerror{
+.tr-runtimeerror {
     background-color: #b78ffc;
 
 }
 
-.tr-wronganswer{
+.tr-wronganswer {
     background-color: #f94e48;
 }
 
-.tr-accepted{
+.tr-accepted {
     background-color: #3af466;
 }
 
-.tr-tle{
+.tr-tle {
     background-color: #fcf92f;
 }
 
-.tr-notsolved{
+.tr-notsolved {
     background-color: #f8f7f9;
 }
 
-.td-problems-badge{
-    display: inline-flex;
-    height: 24px;
-    border: 1px solid #47b8e0;
-    border-radius: 5px;
-    padding: 6px 12px;
-    background: cyan;
-    justify-content: center;
-    align-items: center;
-    background: #47b8e0;
-    margin-right: 12px;
-    color: #fff;
+.td-problems-badge {
+    transition: 0.5s;
 }
 
-.details{
+.td-problems-badge:hover {
+    transition: 0.5s;
+    color: #ffff91;
+}
+
+.details {
     font-size: 10px;
     border: 1px solid #ff7473;
     padding: 2px 6px;
@@ -441,28 +471,38 @@ footer {
     margin-left: 12px;
 }
 
-
-.filters-table-container{
-    width:99%;
-}
-
-.tags-table-container{
+.filters-table-container {
     width: 99%;
 }
+
+.filters-table-container h4 {
+    margin-top: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.filters-checkbox-div {
+    display: inline-block;
+}
+
+.tags-table-container {
+    width: 99%;
+}
+
 /*New search*/
-#custom-search-input{
+#custom-search-input {
     padding: 3px;
     border: solid 1px #E4E4E4;
     border-radius: 6px;
     background-color: #fff;
 }
 
-#custom-search-input input{
+#custom-search-input input {
     border: 0;
     box-shadow: none;
 }
 
-#custom-search-input button{
+#custom-search-input button {
     margin: 2px 0 0 0;
     background: none;
     box-shadow: none;
@@ -472,14 +512,106 @@ footer {
     border-left: solid 1px #ccc;
 }
 
-#custom-search-input button:hover{
+#custom-search-input button:hover {
     border: 0;
     box-shadow: none;
     border-left: solid 1px #ccc;
 }
 
-#custom-search-input .glyphicon-search{
+#custom-search-input .glyphicon-search {
     font-size: 23px;
 }
+
+/**************************************/
+/*</editor-fold>*/
+
+/*<editor-fold desc="VisibilityRadioGroup">*/
+/*====================================*/
+/*==== Visibility RADIO BUTTONS ======*/
+/*====================================*/
+
+.visibility-div ul {
+    list-style: none;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.visibility-div ul li {
+    color: #AAAAAA;
+    display: inline;
+    position: relative;
+    float: left;
+    width: 49%;
+    height: auto;
+}
+
+.visibility-div ul li input[type=radio] {
+    position: absolute;
+    visibility: hidden;
+}
+
+.visibility-div ul li label {
+    display: block;
+    position: relative;
+    font-weight: 400;
+    font-size: 1em;
+    padding: 0 25px 0px 40px;
+    margin: 8px auto 0 auto;
+    height: 20px;
+    z-index: 9;
+    cursor: pointer;
+    -webkit-transition: all 0.25s linear;
+}
+
+.visibility-div ul li:hover label {
+    color: #222222;
+}
+
+.visibility-div ul li .check {
+    display: block;
+    position: absolute;
+    border: 5px solid #AAAAAA;
+    border-radius: 100%;
+    height: 21px;
+    width: 21px;
+    top: 7px;
+    left: 0;
+    z-index: 5;
+    transition: border .25s linear;
+    -webkit-transition: border .25s linear;
+}
+
+.visibility-div ul li:hover .check {
+    border: 5px solid #222222;
+}
+
+.visibility-div ul li .check::before {
+    display: block;
+    position: absolute;
+    content: '';
+    border-radius: 100%;
+    height: 7px;
+    width: 7px;
+    top: 2px;
+    left: 2px;
+    margin: auto;
+    transition: background 0.25s linear;
+    -webkit-transition: background 0.25s linear;
+}
+
+.visibility-div input[type=radio]:checked ~ .check {
+    border: 5px solid #0D964B;
+}
+
+.visibility-div input[type=radio]:checked ~ .check::before {
+    background: #0D964B;
+}
+
+.visibility-div input[type=radio]:checked ~ label {
+    color: #0D964B;
+}
+
 /**************************************/
 /*</editor-fold>*/

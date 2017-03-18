@@ -8,6 +8,7 @@ use App\Utilities\Constants;
 use App\Exceptions\UnknownJudgeException;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
+use Auth;
 
 class Problem extends Model
 {
@@ -87,19 +88,73 @@ class Problem extends Model
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
+        $problems = Problem::prepareBasicProblemsCollection();
+        return Problem::prepareProblemsOutput($problems, $sortBy);
+    }
+
+    /**
+     * This function prepares the basic collection of problems with the join of
+     * judges table and submissions table in case of signed in user
+     * @return problems collection
+     */
+    public static function prepareBasicProblemsCollection()
+    {
+        // Selected columns
+        $cols = array(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
+            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
+            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
+            Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge'
+        );
+        if (Auth::check()) {
+            array_push($cols, Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT);
+        }
         // Set columns and count
         $problems = DB::table(Constants::TBL_PROBLEMS)
-            ->select(
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge')
+            ->distinct()
+            ->select($cols)
             ->join(Constants::TBL_JUDGES,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
                 '=',
                 Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID);
-        return Problem::prepareProblemsOutput($problems, $sortBy);
+        if (Auth::check()) {
+            $problems->leftJoin(Constants::TBL_SUBMISSIONS, function ($join) {
+                $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID),
+                    DB::raw('='),
+                    DB::raw(Auth::user()->id));
+
+                $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID),
+                    DB::raw('='),
+                    DB::raw(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID));
+
+                $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT),
+                    '=',
+                    DB::raw('\'' . Constants::SUBMISSION_VERDICT["OK"] . '\''))->orOn(
+                    function ($join) {
+                        $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID),
+                            DB::raw('='),
+                            DB::raw(Auth::user()->id));
+
+                        $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID),
+                            DB::raw('='),
+                            DB::raw(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID));
+
+                        $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT),
+                            '<>',
+                            DB::raw('\'' . Constants::SUBMISSION_VERDICT["OK"] . '\''));
+                        $join->whereNotNull(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT);
+                        $join->whereNotExists((function ($query) {
+                            $query->selectRaw('1 from `' . Constants::TBL_SUBMISSIONS . '` `s2` 
+                            where ((`' . Constants::TBL_PROBLEMS . '`.`' . Constants::FLD_PROBLEMS_ID . '` = 
+                            `s2`.`' . Constants::FLD_SUBMISSIONS_PROBLEM_ID . '`) and 
+                            (`s2`.`' . Constants::FLD_SUBMISSIONS_VERDICT . '` =
+                             \'' . Constants::SUBMISSION_VERDICT["OK"] . '\'))');
+                        }));
+                    });
+            });
+        }
+        $problems->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
+        return $problems;
     }
 
     /**
@@ -120,25 +175,16 @@ class Problem extends Model
             return $page;
         });
         // Set columns and count
-        $problems = DB::table(Constants::TBL_PROBLEMS)
-            ->select(
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge')
-            ->join(Constants::TBL_JUDGES,
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
-                '=',
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID)
-            ->join(Constants::TBL_PROBLEM_TAGS,
+        $problems = self::prepareBasicProblemsCollection()
+            ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%");
+        if($judgesIDs != [])
+            $problems = $problems ->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs);
+        if($tagsIDs != [])
+            $problems = $problems->join(Constants::TBL_PROBLEM_TAGS,
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
                 '=',
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
-            ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs)
-            ->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs)
-            ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%");
-
+            ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs);
         return Problem::prepareProblemsOutput($problems, $sortBy);
     }
 
@@ -180,7 +226,7 @@ class Problem extends Model
         $problems = $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
         // Assign data
         $ret = [
-            "headings" => ["ID", "Name", "Difficulty", "# Accepted submissions", "Judge"],
+            "headings" => ["ID", "Name", "Difficulty", "# Accepted", "Judge"],
             "problems" => $problems,
             "extra" => [
                 "checkbox" => "no",

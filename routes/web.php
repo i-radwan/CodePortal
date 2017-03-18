@@ -13,7 +13,13 @@
 // Navbar routes...
 Route::get('/', 'HomeController@index');
 Route::get('profile/{user}', 'UserController@index');
+// Contest routing
 Route::get('contests', 'ContestController@index');
+Route::get('contest/add', 'ContestController@addEdit');
+Route::post('contest/add', 'ContestController@addContest');
+Route::get('contest/edit', 'ContestController@addEdit');
+Route::post('contest/edit', 'ContestController@editContest');
+// Problems routing
 Route::get('problems', 'ProblemController@index');
 Route::get('blogs', 'BlogController@index');
 Route::get('groups', 'GroupController@index');
