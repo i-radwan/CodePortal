@@ -30,7 +30,7 @@ class ProblemController extends Controller
                 $sortByParameter = Constants::FLD_PROBLEMS_NAME;
             else if ($request->get('sortby') == "Difficulty")
                 $sortByParameter = Constants::FLD_PROBLEMS_DIFFICULTY;
-            else if ($request->get('sortby') == "# Accepted submissions")
+            else if ($request->get('sortby') == "# Accepted")
                 $sortByParameter = Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT;
             else if ($request->get('sortby') == "ID")
                 $sortByParameter = Constants::FLD_PROBLEMS_ID;
@@ -43,7 +43,7 @@ class ProblemController extends Controller
                     "column" => Constants::TBL_PROBLEMS . '.' .$sortByParameter ,
                     "mode" => "asc"
                 ]];
-                old('sortby', null);
+
                 redirect($request->fullUrl());
             } else {
                 $sortby = [[

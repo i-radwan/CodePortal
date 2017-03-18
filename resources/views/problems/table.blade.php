@@ -34,6 +34,7 @@
                 <th class = <?php echo($heading == 'Name' ? 'problems-table-name-head': 'problems-table-head'); ?> > <a class="problems-table-head-link" href=<?php echo(getURl("sortby",$heading,"/problems")) ?> >{{$heading}} </a>
                     @if( old('sortby') != null && old('sortby') == $heading)
                         <i class="fa fa-sort-desc" aria-hidden="true"></i>
+                        <?php old('sortby', null); ?>
                     @endif
                 </th>
             @endforeach
@@ -74,15 +75,20 @@
         </tbody>
     </table>
     {{--Pagination--}}
+<!--    --><?php //dd($data); ?>
     <nav aria-label="Page navigation example">
-        <ul class="pagination">
+        <ul class="pagination" max-size='12'>
             <li class="page-item <?php echo((isset($data->problems->prev_page_url)  ? (""): ("disabled"))); ?>">
                 <a class="page-link" href="<?php echo(isset($data->problems->prev_page_url) ? getURl("page",$data->problems->current_page-1,"/problems") : ""); ?>" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Previous</span>
                 </a>
             </li>
-            @for ($i = 1; $i <= $data->problems->last_page; $i++)
+             <?php $j = $data->problems->current_page;
+             $i = ($j < 7 ? 1: $j-6);
+             $limit = ( (($j+6) > $data->problems->last_page) ? ($data->problems->last_page - $j) : ($j+6));
+             ?>
+            @for (; $i <= (($i < 7) ? 12:$limit ); $i++)
                 <li  class = <?php echo($data->problems->current_page == $i ? "active" : "");?>><a class="page-link" href= <?php echo(getURl("page", $i, "/problems")); ?>>{{$i}}</a></li>
             @endfor
             <li class="page-item <?php echo((isset($data->problems->next_page_url)  ? (""): ("disabled"))); ?>">
