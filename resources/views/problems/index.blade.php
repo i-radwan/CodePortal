@@ -7,9 +7,12 @@
                 <div class="panel panel-default">
 
                     <div class="panel-heading">Problems</div>
-
                     <div class="panel-body">
-                        @include('problems.table')
+                        @if(count($data->problems->data) > 0)
+                            @include('problems.table')
+                        @else
+                            <p>No problems!</p>
+                        @endif
                     </div>
                 </div>
             </div>
