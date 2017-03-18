@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script> src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js" </script>
+    <script> src = "https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js" </script>
     <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script>
-        $(document).ready(function(){
-            $(".search-wrapper input").mouseenter(function(){
+        $(document).ready(function () {
+            $(".search-wrapper input").mouseenter(function () {
                 $(".search-wrapper button").css("background-color", "#4aba10");
 
 
             });
-            $(".search-wrapper input").mouseout(function(){
-                $(".search-wrapper button").css("background-color", "" );
+            $(".search-wrapper input").mouseout(function () {
+                $(".search-wrapper button").css("background-color", "");
             });
         });
         // to be separated later
@@ -38,20 +38,21 @@
     </script>
 </head>
 <body>
-<div class = "container problems-table-container">
+<div class="container problems-table-container">
     <div>
             <span>
                <form>
-                  <input class="filterTable-input" data-type="search" onkeyup="myFunction()" placeholder="Search in this page by name..." id = "problem_search_box">
+                  <input class="filterTable-input" data-type="search" onkeyup="myFunction()"
+                         placeholder="Search in this page by name..." id="problem_search_box">
                </form>
             </span>
     </div>
     <br>
-    <table class = "table table-bordered  problems-table-hover " id = "problems_table">
+    <table class="table table-bordered  problems-table-hover " id="problems_table">
         <thead>
         <!-- We are gonna loop here for the head tags -->
         @foreach ($data->headings as $heading)
-            <th class = 'problems-table-head'> {{$heading}}</th>
+            <th class='problems-table-head'> {{$heading}}</th>
         @endforeach
         </thead>
         <tbody>
@@ -60,25 +61,20 @@
         @foreach ( $data->problems->data as $problem)
             <!-- We may here get the colour from a specific constant table -->
             @if(isset($problem->verdict ))
-                @if($problem->verdict == "Accepted")
-                    <tr  class = "success"  >
-                @elseif($problem->verdict ==  "TLE")
-                    <tr class = "warning"  >
-                @elseif($problem->verdict == "Run-Time-Error")
-                    <tr class = "tr-runtimeerror" >
-                @elseif($problem->verdict == "CompilationError")
-                    <tr class = "info" >
-                @elseif($problem->verdict == "WrongAnswer")
-                    <tr class = "success" >
+                @if($problem->verdict == \App\Utilities\Constants::SUBMISSION_VERDICT["OK"])
+                    <tr class="success">
+                @elseif($problem->verdict == \App\Utilities\Constants::SUBMISSION_VERDICT["FAILED"])
+                    <tr class="warning">
                 @else
-                    <tr class = "tr-notsolved" >
+                    <tr class="tr-notsolved">
                 @endif
             @else
-                <tr >
+                <tr>
                     @endif
                     @foreach ($problem as $key => $value)
                         @if($key == "name")
-                            <td class = "td-problems" ><a href = "http://codeforces.com/problemset/problem/782/B">  {{$value}} </a>
+                            <td class="td-problems"><a
+                                        href="http://codeforces.com/problemset/problem/782/B">  {{$value}} </a>
                             </td>
                         @elseif( $key ==  "tags")
                             <?php $tags = explode(',', $value); ?>
@@ -87,8 +83,8 @@
                                     <span class="td-problems-badge"> {{$tag}} </span>
                                 @endforeach
                             </td>
-                        @else
-                            <td class = "td-problems" >  {{$value}} </td>
+                        @elseif($key != "verdict")
+                            <td class="td-problems">  {{$value}} </td>
                         @endif
                     @endforeach
                 </tr>
