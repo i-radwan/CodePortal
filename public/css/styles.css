@@ -382,7 +382,7 @@ footer {
 /*====================================*/
 
 .problems-table-container{
-    width: 90%
+    width: 99%
 }
 
 .problems-table-hover>tbody>tr:hover {
@@ -441,6 +441,14 @@ footer {
     margin-left: 12px;
 }
 
+
+.filters-table-container{
+    width:99%;
+}
+
+.tags-table-container{
+    width: 99%;
+}
 /*New search*/
 #custom-search-input{
     padding: 3px;
