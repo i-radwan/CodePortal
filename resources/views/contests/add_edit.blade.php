@@ -31,7 +31,7 @@
                                 <label for="time" class="col-md-4 control-label">Time</label>
 
                                 <div class="col-md-6">
-                                    <input id="time" type="datetime" class="form-control" name="time"
+                                    <input id="time" type="datetime" class="form-control datetimepicker" name="time"
                                            value="{{ old('time') }}" placeholder="Time" required>
 
                                     @if ($errors->has('time'))

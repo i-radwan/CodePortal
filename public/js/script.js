@@ -32,4 +32,8 @@ $(document).ready(function () {
 
     /**************************************/
     /*</editor-fold>*/
+
+    $('.datetimepicker').datetimepicker({
+        format:'Y-m-d H:i:s'
+    });
 });

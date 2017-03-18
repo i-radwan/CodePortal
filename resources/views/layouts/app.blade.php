@@ -14,6 +14,7 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
     <link href="/css/animate.css" rel="stylesheet">
+    <link href="/css/jquery.datetimepicker.min.css" rel="stylesheet">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet">
@@ -38,6 +39,7 @@
     <script src="/js/jquery-3.1.1.min.js"></script>
     <script src="/js/jquery.waypoints.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.datetimepicker.full.min.js"></script>
     <script src="/js/script.js"></script>
 </body>
 </html>
