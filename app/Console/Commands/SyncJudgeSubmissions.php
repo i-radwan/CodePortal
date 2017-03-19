@@ -18,8 +18,8 @@ class SyncJudgeSubmissions extends Command
      */
     // TODO: fix option missing
     protected $signature = 'sync-judge:submissions
-                            {user-id : the id of the user to fetch submissions for}';
-                            //{--judge=codeforces : the name of the online judge to be synced (codeforces, uva, live-archive)';
+                            {user-id : the id of the user to fetch submissions for}
+                            {--judge=codeforces : the name of the online judge to be synced (codeforces, uva, live-archive)}';
 
     /**
      * The console command description.
