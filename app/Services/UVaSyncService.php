@@ -48,7 +48,7 @@ class UVaSyncService extends UHuntSyncService
      *
      * @var string
      */
-    protected $apiBaseSubmissionsUrl;
+    protected $apiBaseSubmissionsUrl = "http://uhunt.felix-halim.net/api/subs-user/";
 
     /**
      * The submissions API's url parameters

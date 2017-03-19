@@ -157,10 +157,12 @@ abstract class JudgeSyncService
         $ch = curl_init();
 
         // Build request url
-        $requestUrl = $url . "?" . http_build_query($params);
+        if ($params) {
+            $url = $url . "?" . http_build_query($params);
+        }
 
         // Set URL and other appropriate options
-        curl_setopt($ch, CURLOPT_URL, $requestUrl);
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 

@@ -48,7 +48,7 @@ class LiveArchiveSyncService extends UHuntSyncService
      *
      * @var string
      */
-    protected $apiBaseSubmissionsUrl;
+    protected $apiBaseSubmissionsUrl = "https://icpcarchive.ecs.baylor.edu/uhunt/api/subs-user/";
 
     /**
      * The submissions API's url parameters

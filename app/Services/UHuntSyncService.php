@@ -29,6 +29,30 @@ abstract class UHuntSyncService extends JudgeSyncService
     const PROBLEM_TLE_COUNT = 14;   // Time limit exceeded
     const PROBLEM_MLE_COUNT = 15;   // Memory limit exceeded
 
+    // Submission object
+    const SUBMISSION_ID = 0;
+    const SUBMISSION_PROBLEM_ID = 1;
+    const SUBMISSION_LANGUAGE = 5;          // 1=ANSI C, 2=Java, 3=C++, 4=Pascal, 5=C++11
+    const SUBMISSION_TIME = 4;              // In seconds unix-format
+    const SUBMISSION_VERDICT = 2;
+    const SUBMISSION_EXECUTION_TIME = 3;    // In milliseconds
+
+    /*
+        10 : Submission error
+        15 : Can't be judged
+        20 : In queue
+        30 : Compile error
+        35 : Restricted function
+        40 : Runtime error
+        45 : Output limit
+        50 : Time limit
+        60 : Memory limit
+        70 : Wrong answer
+        80 : PresentationE
+        90 : Accepted
+     */
+    //const SUBMISSION_CONSUMED_MEMORY = 10;  // In bytes (missing in uHunt)
+
 
     /**
      * Parse the fetched raw problems data from the online judge's api and sync
@@ -114,6 +138,41 @@ abstract class UHuntSyncService extends JudgeSyncService
     }
 
     /**
+     * Fetch submissions data from the online judge's API
+     * and synchronize them with our local database
+     *
+     * @param User $user
+     * @return bool whether the submissions synchronization process completed successfully
+     */
+    public function syncSubmissions(User $user)
+    {
+        $judgeHandle = $user
+            ->handles()
+            ->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $this->judge->id)
+            ->first();
+
+        if (!$judgeHandle) {
+            Log::warning("$user->username has no handle on $this->judgeName.");
+            return false;
+        }
+
+        $this->apiBaseSubmissionsUrl = $this->apiBaseSubmissionsUrl . $this->getJudgeUserId($judgeHandle->pivot->handle);
+
+        return parent::syncSubmissions($user);
+    }
+
+    /**
+     * Fetch the user id used in uHunt online judge in order to be able to fetch the submissions
+     *
+     * @param string $handle
+     * @return string the fetched user id
+     */
+    protected function getJudgeUserId($handle)
+    {
+
+    }
+
+    /**
      * Parse the fetched raw submissions data from the online judge's api and sync
      * them with our local database
      *
@@ -123,5 +182,18 @@ abstract class UHuntSyncService extends JudgeSyncService
     protected function syncSubmissionsWithDatabase(User $user)
     {
         return true;
+    }
+
+    /**
+     * Parse the given submission data and save it into the database, if it is already exists then
+     * update its info
+     *
+     * @param User $user
+     * @param array $submissionData
+     * @return void
+     */
+    protected function saveSubmission(User $user, $submissionData)
+    {
+
     }
 }

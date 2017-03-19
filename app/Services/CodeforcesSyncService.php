@@ -64,14 +64,18 @@ class CodeforcesSyncService extends JudgeSyncService
      * @var array
      */
     protected $apiSubmissionsParams = [
-        //"handle" => "Momentum",
-        //"from" => "1",
-        //"count" => "100"
+        "handle" => "Momentum",
+        "from" => "1",
+        "count" => "1000000"
     ];
 
     //
     // Codeforces response constants
     //
+
+    // Request constants
+    const REQUEST_PROBLEM_TAG_PARAM = "tag";
+    const REQUEST_SUBMISSION_HANDLE_PARAM = "handle";
 
     // Response detail
     const RESPONSE_STATUS = "status";
@@ -212,19 +216,17 @@ class CodeforcesSyncService extends JudgeSyncService
      */
     public function syncSubmissions(User $user)
     {
-        $handle = $user
+        $judgeHandle = $user
             ->handles()
             ->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $this->judge->id)
             ->first();
 
-        if (!$handle) {
+        if (!$judgeHandle) {
             Log::warning("$user->username has no handle on $this->judgeName.");
             return false;
         }
 
-        $this->apiSubmissionsParams["handle"] = $handle->pivot->handle;
-        $this->apiSubmissionsParams["from"] = '1';
-        $this->apiSubmissionsParams["count"] = '1000000';
+        $this->apiSubmissionsParams[Codeforces::REQUEST_SUBMISSION_HANDLE_PARAM] = $judgeHandle->pivot->handle;
 
         return parent::syncSubmissions($user);
     }
@@ -289,6 +291,7 @@ class CodeforcesSyncService extends JudgeSyncService
                 Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => $submissionConsumedMemory,
                 Constants::FLD_SUBMISSIONS_VERDICT => $submissionVerdict
             ]);
+
             return;
         }
 
