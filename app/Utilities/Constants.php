@@ -6,64 +6,73 @@ class Constants
 {
     const PROBLEMS_COUNT_PER_PAGE = 30;
 
+    //
     // Judges constants
+    //
+
+    // Codeforces
+    const CODEFORCES_ID = 1;
     const CODEFORCES_NAME = "Codeforces";
     const CODEFORCES_LINK = "http://codeforces.com/";
     const CODEFORCES_PROBLEM_LINK = "http://codeforces.com/problemset/problem/{contestId}/{contestIndex}";
 
+    // UVa
+    const UVA_ID = 2;
     const UVA_NAME = "UVa Online Judge";
     const UVA_LINK = "https://uva.onlinejudge.org/";
     const UVA_PROBLEM_LINK = "https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}";
 
+    // Live Archive
+    const LIVE_ARCHIVE_ID = 3;
     const LIVE_ARCHIVE_NAME = "Live Archive";
     const LIVE_ARCHIVE_LINK = "https://icpcarchive.ecs.baylor.edu/";
     const LIVE_ARCHIVE_PROBLEM_LINK = "https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}";
 
+    const JUDGE_NAME_KEY = "name";
+    const JUDGE_LINK_KEY = "link";
+    const JUDGE_PROBLEM_LINK_KEY = "problemLink";
 
-    // Judges array corresponding to database data
-    // allows access to judge info using judge id from db
-    // @IMPORTANT: The 1,2,3 keys are corresponding to the DB version
     const JUDGES = [
-        1 => [
+        self::CODEFORCES_ID => [
             "name" => self::CODEFORCES_NAME,
             "link" => self::CODEFORCES_LINK,
             "problemLink" => self::CODEFORCES_PROBLEM_LINK,
             "toBeReplaced" => [
-                "{contestId}" => "judge_first_key",
-                "{contestIndex}" => "judge_second_key",
+                "{contestId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+                "{contestIndex}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY,
             ]
         ],
-        2 => [
+        self::UVA_ID => [
             "name" => self::LIVE_ARCHIVE_NAME,
             "link" => self::LIVE_ARCHIVE_LINK,
             "problemLink" => self::LIVE_ARCHIVE_PROBLEM_LINK,
             "toBeReplaced" => [
-                "{problemId}" => "judge_first_key",
+                "{problemId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
             ]
         ],
-        3 => [
+        self::LIVE_ARCHIVE_ID => [
             "name" => self::UVA_NAME,
             "link" => self::UVA_LINK,
             "problemLink" => self::UVA_PROBLEM_LINK,
             "toBeReplaced" => [
-                "{problemId}" => "judge_first_key",
+                "{problemId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
             ]
         ]
     ];
 
     const USER_ROLE = [
-        "USER" => 0,
-        "ADMIN" => 1
+        "USER" => '0',
+        "ADMIN" => '1'
     ];
 
     const PARTICIPANT_ROLE = [
-        "USER" => 0,
-        "ORGANIZER" => 1
+        "USER" => '0',
+        "ORGANIZER" => '1'
     ];
 
     const USER_GENDER = [
-        "MALE" => 0,
-        "FEMALE" => 1
+        "MALE" => '0',
+        "FEMALE" => '1'
     ];
 
     const CONTEST_VISIBILITY = [
@@ -72,8 +81,8 @@ class Constants
     ];
 
     const QUESTION_STATUS = [
-        "NORMAL" => 0,
-        "ANNOUNCEMENT" => 1
+        "NORMAL" => '0',
+        "ANNOUNCEMENT" => '1'
     ];
 
     const SUBMISSION_VERDICT = [
@@ -161,7 +170,7 @@ class Constants
     const FLD_PROBLEMS_JUDGE_SECOND_KEY = "judge_second_key";
     const FLD_PROBLEMS_NAME = "name";
     const FLD_PROBLEMS_DIFFICULTY = "difficulty";
-    const FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT = "accepted_submissions_count";
+    const FLD_PROBLEMS_SOLVED_COUNT = "solved_count";
     const FLD_PROBLEMS_JUDGE_NAME = "judge"; // used for the problems table
 
     // Submissions
@@ -189,7 +198,6 @@ class Constants
     const FLD_JUDGES_ID = "id";
     const FLD_JUDGES_NAME = "name";
     const FLD_JUDGES_LINK = "link";
-    const FLD_JUDGES_API_LINK = "api_link";
 
     // Tags
     const FLD_TAGS_ID = "id";

@@ -15,8 +15,8 @@ class CreateUserHandlesTable extends Migration
     public function up()
     {
         Schema::create(Constants::TBL_USER_HANDLES, function (Blueprint $table) {
-            $table->integer(Constants::FLD_USER_HANDLES_USER_ID);
-            $table->integer(Constants::FLD_USER_HANDLES_JUDGE_ID);
+            $table->unsignedInteger(Constants::FLD_USER_HANDLES_USER_ID);
+            $table->unsignedInteger(Constants::FLD_USER_HANDLES_JUDGE_ID);
             $table->string(Constants::FLD_USER_HANDLES_HANDLE, 50);
             $table->primary(array(
                     Constants::FLD_USER_HANDLES_USER_ID,

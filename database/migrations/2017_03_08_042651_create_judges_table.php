@@ -18,8 +18,7 @@ class CreateJudgesTable extends Migration
             $table->increments(Constants::FLD_JUDGES_ID);
             $table->string(Constants::FLD_JUDGES_NAME, 100)->unique();
             $table->string(Constants::FLD_JUDGES_LINK, 100)->unique();
-            $table->string(Constants::FLD_JUDGES_API_LINK);
-            $table->timestamps();
+//            $table->primary(Constants::FLD_JUDGES_ID);
         });
     }
 

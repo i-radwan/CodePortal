@@ -15,8 +15,8 @@ class CreateContestAdminsTable extends Migration
     public function up()
     {
         Schema::create(Constants::TBL_CONTEST_ADMINS, function (Blueprint $table) {
-            $table->integer(Constants::FLD_CONTEST_ADMINS_CONTEST_ID);
-            $table->integer(Constants::FLD_CONTEST_ADMINS_ADMIN_ID);
+            $table->unsignedInteger(Constants::FLD_CONTEST_ADMINS_CONTEST_ID);
+            $table->unsignedInteger(Constants::FLD_CONTEST_ADMINS_ADMIN_ID);
             $table->primary(array(
                     Constants::FLD_CONTEST_ADMINS_CONTEST_ID,
                     Constants::FLD_CONTEST_ADMINS_ADMIN_ID

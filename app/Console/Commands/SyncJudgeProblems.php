@@ -47,27 +47,27 @@ class SyncJudgeProblems extends Command
         switch ($judgeName) {
             case 'codeforces':
                 if ((new CodeforcesSyncService())->syncProblems())
-                    $this->info(Constants::CODEFORCES_NAME . ' problems synced successfully.');
+                    $this->info(Constants::CODEFORCES_NAME . " problems synced successfully.");
                 else
-                    $this->error('Failed to sync ' . Constants::CODEFORCES_NAME . ' problems.');
+                    $this->error("Failed to sync " . Constants::CODEFORCES_NAME . " problems.");
                 break;
 
             case 'uva':
                 if ((new UVaSyncService())->syncProblems())
-                    $this->info(Constants::UVA_NAME . ' problems synced successfully.');
+                    $this->info(Constants::UVA_NAME . " problems synced successfully.");
                 else
-                    $this->error('Failed to sync ' . Constants::UVA_NAME . ' problems.');
+                    $this->error("Failed to sync " . Constants::UVA_NAME . " problems.");
                 break;
 
             case 'live-archive':
                 if ((new LiveArchiveSyncService())->syncProblems())
-                    $this->info(Constants::LIVE_ARCHIVE_NAME . ' problems synced successfully.');
+                    $this->info(Constants::LIVE_ARCHIVE_NAME . " problems synced successfully.");
                 else
-                    $this->error('Failed to sync ' . Constants::LIVE_ARCHIVE_NAME . ' problems.');
+                    $this->error("Failed to sync " . Constants::LIVE_ARCHIVE_NAME . " problems.");
                 break;
 
             default:
-                $this->error($judgeName . ' is not one of the supported online judges by ' . config('app.name') . '.');
+                $this->error($judgeName . " is not one of the supported online judges by " . config('app.name') . ".");
                 break;
         }
     }

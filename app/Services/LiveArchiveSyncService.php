@@ -7,6 +7,13 @@ use App\Utilities\Constants;
 class LiveArchiveSyncService extends UHuntSyncService
 {
     /**
+     * The id of the online judge
+     *
+     * @var string
+     */
+    protected $judgeId = Constants::LIVE_ARCHIVE_ID;
+
+    /**
      * The name of the online judge
      *
      * @var string
@@ -19,13 +26,6 @@ class LiveArchiveSyncService extends UHuntSyncService
      * @var string
      */
     protected $judgeLink = Constants::LIVE_ARCHIVE_LINK;
-
-    /**
-     * The base url link of the online judge's API
-     *
-     * @var string
-     */
-    protected $judgeApiLink = "https://icpcarchive.ecs.baylor.edu/uhunt/api/";
 
     /**
      * The problems API's url link
@@ -48,7 +48,7 @@ class LiveArchiveSyncService extends UHuntSyncService
      *
      * @var string
      */
-    protected $apiBaseSubmissionsUrl;
+    protected $apiBaseSubmissionsUrl = "https://icpcarchive.ecs.baylor.edu/uhunt/api/subs-user/";
 
     /**
      * The submissions API's url parameters
@@ -58,4 +58,11 @@ class LiveArchiveSyncService extends UHuntSyncService
     protected $apiSubmissionsParams = [
 
     ];
+
+    /**
+     * The API's url link from which we can get the user id used in uHunt online judge
+     *
+     * @var string
+     */
+    protected $apiBaseUsernameToIdUrl = "https://icpcarchive.ecs.baylor.edu/uhunt/api/uname2uid/";
 }

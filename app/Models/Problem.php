@@ -36,7 +36,7 @@ class Problem extends Model
         Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
         Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
         Constants::FLD_PROBLEMS_DIFFICULTY,
-        Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT
+        Constants::FLD_PROBLEMS_SOLVED_COUNT
     ];
     /**
      * The attributes that are displayable in the problems table.
@@ -47,7 +47,7 @@ class Problem extends Model
         Constants::FLD_PROBLEMS_ID,
         Constants::FLD_PROBLEMS_NAME,
         Constants::FLD_PROBLEMS_DIFFICULTY,
-        Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
+        Constants::FLD_PROBLEMS_SOLVED_COUNT,
         Constants::FLD_PROBLEMS_JUDGE_NAME
     ];
 
@@ -117,7 +117,7 @@ class Problem extends Model
             Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
             Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
             Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
-            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT,
+            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_SOLVED_COUNT,
             Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge',
             Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID . ' as judge_id'
         );

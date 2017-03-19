@@ -7,6 +7,13 @@ use App\Utilities\Constants;
 class UVaSyncService extends UHuntSyncService
 {
     /**
+     * The id of the online judge
+     *
+     * @var string
+     */
+    protected $judgeId = Constants::UVA_ID;
+
+    /**
      * The name of the online judge
      *
      * @var string
@@ -19,13 +26,6 @@ class UVaSyncService extends UHuntSyncService
      * @var string
      */
     protected $judgeLink = Constants::UVA_LINK;
-
-    /**
-     * The base url link of the online judge's API
-     *
-     * @var string
-     */
-    protected $judgeApiLink = "http://uhunt.felix-halim.net/api/";
 
     /**
      * The problems API's url link
@@ -48,7 +48,7 @@ class UVaSyncService extends UHuntSyncService
      *
      * @var string
      */
-    protected $apiBaseSubmissionsUrl;
+    protected $apiBaseSubmissionsUrl = "http://uhunt.felix-halim.net/api/subs-user/";
 
     /**
      * The submissions API's url parameters
@@ -58,4 +58,11 @@ class UVaSyncService extends UHuntSyncService
     protected $apiSubmissionsParams = [
 
     ];
+
+    /**
+     * The API's url link from which we can get the user id used in uHunt online judge
+     *
+     * @var string
+     */
+    protected $apiBaseUsernameToIdUrl = "http://uhunt.felix-halim.net/api/uname2uid/";
 }

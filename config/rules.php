@@ -28,8 +28,8 @@ return [
             Constants::FLD_PROBLEMS_JUDGE_ID => 'integer|required',
             Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => 'required',
             Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => 'required',
-            Constants::FLD_PROBLEMS_DIFFICULTY => 'integer|required|greater_than:0',
-            Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => 'integer|required|greater_than:0',
+            Constants::FLD_PROBLEMS_DIFFICULTY => 'integer|required|min:0',
+            Constants::FLD_PROBLEMS_SOLVED_COUNT => 'integer|required|min:0',
         ]
     ],
     "submission" => [
@@ -41,7 +41,7 @@ return [
             Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => 'required|integer',
             Constants::FLD_SUBMISSIONS_EXECUTION_TIME => 'required|integer',
             Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => 'required|integer',
-            Constants::FLD_SUBMISSIONS_VERDICT => 'integer|required|greater_than:-1|less_than:' . count(\App\Utilities\Constants::SUBMISSION_VERDICT),
+            Constants::FLD_SUBMISSIONS_VERDICT => 'integer|required|min:0|max:' . count(\App\Utilities\Constants::SUBMISSION_VERDICT),
         ]
     ],
     "question" => [
@@ -66,7 +66,6 @@ return [
         "store_validation_rules" => [
             Constants::FLD_JUDGES_NAME => 'required|unique:judges|max:100',
             Constants::FLD_JUDGES_LINK => 'required|unique:judges|max:100|url',
-            Constants::FLD_JUDGES_API_LINK => 'required|max:255|url',
         ]
     ],
     "tag" => [

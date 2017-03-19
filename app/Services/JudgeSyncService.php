@@ -12,6 +12,20 @@ use Illuminate\Http\Response;
 abstract class JudgeSyncService
 {
     /**
+     * The model of the online judge needed to associate data with
+     *
+     * @var Judge
+     */
+    protected $judge;
+
+    /**
+     * The id of the online judge
+     *
+     * @var string
+     */
+    protected $judgeId;
+
+    /**
      * The name of the online judge
      *
      * @var string
@@ -24,13 +38,6 @@ abstract class JudgeSyncService
      * @var string
      */
     protected $judgeLink;
-
-    /**
-     * The base url link of the online judge's API
-     *
-     * @var string
-     */
-    protected $judgeApiLink;
 
     /**
      * The problems API's url link
@@ -67,13 +74,6 @@ abstract class JudgeSyncService
      */
     protected $rawDataString;
 
-    /**
-     * The model of the online judge needed to associate data with
-     *
-     * @var Judge
-     */
-    protected $judge;
-
 
     /**
      * Initialize the online judge model
@@ -89,7 +89,7 @@ abstract class JudgeSyncService
      * Fetch problems data from the online judge's API
      * and synchronize them with our local database
      *
-     * @return bool whether the problems synchronization process completed successfully
+     * @return bool Whether the problems synchronization process completed successfully
      */
     public function syncProblems()
     {
@@ -118,7 +118,7 @@ abstract class JudgeSyncService
      * and synchronize them with our local database
      *
      * @param User $user
-     * @return bool whether the submissions synchronization process completed successfully
+     * @return bool Whether the submissions synchronization process completed successfully
      */
     public function syncSubmissions(User $user)
     {
@@ -149,18 +149,20 @@ abstract class JudgeSyncService
      *
      * @param string $url
      * @param array $params
-     * @return bool whether the request was handled successfully by the online judge's API
+     * @return bool Whether the request was handled successfully by the online judge's API
      */
-    protected function fetchDataFromApi($url, $params)
+    protected function fetchDataFromApi($url, $params = null)
     {
         // Create a new cURL resource handler
         $ch = curl_init();
 
         // Build request url
-        $requestUrl = $url . "?" . http_build_query($params);
+        if ($params) {
+            $url = $url . "?" . http_build_query($params);
+        }
 
         // Set URL and other appropriate options
-        curl_setopt($ch, CURLOPT_URL, $requestUrl);
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -179,7 +181,7 @@ abstract class JudgeSyncService
     /**
      * Request and fetch problems data from the online judge's API
      *
-     * @return int the HTTP request status code
+     * @return bool Whether the problems were fetched successfully
      */
     protected function fetchProblems()
     {
@@ -189,7 +191,7 @@ abstract class JudgeSyncService
     /**
      * Request and fetch submissions data from the online judge's API
      *
-     * @return int the HTTP request status code
+     * @return bool Whether the submissions were fetched successfully
      */
     protected function fetchSubmissions()
     {
@@ -200,7 +202,7 @@ abstract class JudgeSyncService
      * Parse the fetched raw problems data from the online judge's api and sync
      * them with our local database
      *
-     * @return bool whether the synchronization process completed successfully or not
+     * @return bool Whether the synchronization process completed successfully or not
      */
     abstract protected function syncProblemsWithDatabase();
 
@@ -209,7 +211,7 @@ abstract class JudgeSyncService
      * them with our local database
      *
      * @param User $user
-     * @return bool whether the synchronization process completed successfully or not
+     * @return bool Whether the synchronization process completed successfully or not
      */
     abstract protected function syncSubmissionsWithDatabase(User $user);
 
@@ -220,14 +222,20 @@ abstract class JudgeSyncService
      */
     protected function getJudgeModel()
     {
+//        \DB::enableQueryLog();
+
         $judge = Judge::firstOrNew([Constants::FLD_JUDGES_NAME => $this->judgeName]);
+
+//        dump(\DB::getQueryLog());
 
         if (!$judge->exists) {
             $judge->fill([
-                Constants::FLD_JUDGES_LINK => $this->judgeLink,
-                Constants::FLD_JUDGES_API_LINK => $this->judgeApiLink
+                Constants::FLD_JUDGES_ID => $this->judgeId,
+                Constants::FLD_JUDGES_LINK => $this->judgeLink
             ])->store();
         }
+
+//        dd(\DB::getQueryLog());
 
         return $judge;
     }

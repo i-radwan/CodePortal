@@ -18,7 +18,7 @@ class CreateContestsTable extends Migration
             $table->increments(Constants::FLD_CONTESTS_ID);
             $table->string(Constants::FLD_CONTESTS_NAME, 100);
             $table->dateTime(Constants::FLD_CONTESTS_TIME);
-            $table->integer(Constants::FLD_CONTESTS_DURATION)->unsigned();
+            $table->unsignedInteger(Constants::FLD_CONTESTS_DURATION);
             $table->enum(Constants::FLD_CONTESTS_VISIBILITY, Constants::CONTEST_VISIBILITY);
             $table->timestamps();
         });
