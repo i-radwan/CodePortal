@@ -74,6 +74,7 @@ class CodeforcesSyncService extends JudgeSyncService
     //
 
     // Request constants
+    const REQUEST_RECENT_SUBMISSIONS = "http://codeforces.com/api/problemset.recentStatus?count=1000";
     const REQUEST_PROBLEM_TAG_PARAM = "tag";
     const REQUEST_SUBMISSION_HANDLE_PARAM = "handle";
     const REQUEST_SUBMISSION_FROM_PARAM = "from";
@@ -99,6 +100,9 @@ class CodeforcesSyncService extends JudgeSyncService
     // Submission object
     const SUBMISSION_ID = "id";
     const SUBMISSION_PROBLEM = "problem";
+    const SUBMISSION_AUTHOR = "author";
+    const SUBMISSION_AUTHOR_MEMBERS = "members";
+    const SUBMISSION_AUTHOR_MEMBERS_HANDLE = "handle";
     const SUBMISSION_LANGUAGE = "programmingLanguage";
     const SUBMISSION_TIME = "creationTimeSeconds";              // In seconds unix-format
     const SUBMISSION_VERDICT = "verdict";
@@ -184,22 +188,28 @@ class CodeforcesSyncService extends JudgeSyncService
      * Fetch submissions data from the online judge's API
      * and synchronize them with our local database
      *
-     * @param User $user
+     * @param User $user The user to fetch his submissions, null to fetch last 1000 recent submissions from Codeforces
      * @return bool Whether the submissions synchronization process completed successfully
      */
-    public function syncSubmissions(User $user)
+    public function syncSubmissions(User $user = null)
     {
-        $judgeHandle = $user
-            ->handles()
-            ->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $this->judge->id)
-            ->first();
+        if ($user) {
+            $judgeHandle = $user
+                ->handles()
+                ->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $this->judge->id)
+                ->first();
 
-        if (!$judgeHandle) {
-            Log::warning("$user->username has no handle on $this->judgeName.");
-            return false;
+            if (!$judgeHandle) {
+                Log::warning("$user->username has no handle on $this->judgeName.");
+                return false;
+            }
+
+            $this->apiSubmissionsParams[Codeforces::REQUEST_SUBMISSION_HANDLE_PARAM] = $judgeHandle->pivot->handle;
         }
-
-        $this->apiSubmissionsParams[Codeforces::REQUEST_SUBMISSION_HANDLE_PARAM] = $judgeHandle->pivot->handle;
+        else {
+            $this->apiBaseSubmissionsUrl = Codeforces::REQUEST_RECENT_SUBMISSIONS;
+            $this->apiSubmissionsParams = null;
+        }
 
         return parent::syncSubmissions($user);
     }
@@ -208,10 +218,10 @@ class CodeforcesSyncService extends JudgeSyncService
      * Parse the fetched raw submissions data from the online judge's api and sync
      * them with our local database
      *
-     * @param User $user
+     * @param User $user null to sync last 1000 recent submissions from Codeforces
      * @return bool Whether the synchronization process completed successfully or not
      */
-    protected function syncSubmissionsWithDatabase(User $user)
+    protected function syncSubmissionsWithDatabase(User $user = null)
     {
         $data = json_decode($this->rawDataString, true);
 
@@ -224,9 +234,25 @@ class CodeforcesSyncService extends JudgeSyncService
         // Get the main object from the response data
         $result = $data[Codeforces::RESPONSE_RESULT];
 
-        // Loop through each submission in the return data
-        for ($i = sizeof($result) - 1; $i >= 0; --$i) {
-            $this->saveSubmission($user, $result[$i]);
+        if ($user) {
+            // Loop through each submission in the return data
+            for ($i = sizeof($result) - 1; $i >= 0; --$i) {
+                $this->saveSubmission($user, $result[$i]);
+            }
+        }
+        else {
+            // Loop through each submission in the return data trying to match the user
+            for ($i = sizeof($result) - 1; $i >= 0; --$i) {
+                $members = $result[$i][Codeforces::SUBMISSION_AUTHOR][Codeforces::SUBMISSION_AUTHOR_MEMBERS];
+
+                for ($j = sizeof($members) - 1; $j >= 0; --$j) {
+                    $user = $this->judge->user($members[$j][Codeforces::SUBMISSION_AUTHOR_MEMBERS_HANDLE]);
+
+                    if ($user) {
+                        $this->saveSubmission($user, $result[$i]);
+                    }
+                }
+            }
         }
 
         return true;

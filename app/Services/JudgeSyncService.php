@@ -120,7 +120,7 @@ abstract class JudgeSyncService
      * @param User $user
      * @return bool Whether the submissions synchronization process completed successfully
      */
-    public function syncSubmissions(User $user)
+    public function syncSubmissions(User $user = null)
     {
         try {
             if (!$this->fetchSubmissions()) {
@@ -222,20 +222,14 @@ abstract class JudgeSyncService
      */
     protected function getJudgeModel()
     {
-//        \DB::enableQueryLog();
-
-        $judge = Judge::firstOrNew([Constants::FLD_JUDGES_NAME => $this->judgeName]);
-
-//        dump(\DB::getQueryLog());
+        $judge = Judge::firstOrNew([Constants::FLD_JUDGES_ID => $this->judgeId]);
 
         if (!$judge->exists) {
             $judge->fill([
-                Constants::FLD_JUDGES_ID => $this->judgeId,
+                Constants::FLD_JUDGES_NAME => $this->judgeName,
                 Constants::FLD_JUDGES_LINK => $this->judgeLink
             ])->store();
         }
-
-//        dd(\DB::getQueryLog());
 
         return $judge;
     }

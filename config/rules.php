@@ -64,6 +64,7 @@ return [
     ],
     "judge" => [
         "store_validation_rules" => [
+            Constants::FLD_JUDGES_ID => 'required|unique:judges|integer|min:0',
             Constants::FLD_JUDGES_NAME => 'required|unique:judges|max:100',
             Constants::FLD_JUDGES_LINK => 'required|unique:judges|max:100|url',
         ]

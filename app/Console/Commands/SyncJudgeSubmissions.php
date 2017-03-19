@@ -17,7 +17,7 @@ class SyncJudgeSubmissions extends Command
      * @var string
      */
     protected $signature = 'sync-judge:submissions
-                            {user-id : the id of the user to fetch submissions for}
+                            {user-id : the id of the user to fetch submissions for, * to fetch all recent submissions for Codeforces}
                             {--judge=codeforces : the name of the online judge to be synced (codeforces, uva, live-archive)}';
 
     /**
@@ -44,21 +44,35 @@ class SyncJudgeSubmissions extends Command
      */
     public function handle()
     {
-        $user = User::find($this->argument('user-id'));
+        $userId = $this->argument('user-id');
         $judgeName = $this->option('judge');
+        $user = null;
 
-        if(!$user) {
-            $this->error("No user with such id was found.");
-            return;
+        if ($userId != '*' || $judgeName != 'codeforces') {
+            $user = User::find($userId);
+
+            if(!$user) {
+                $this->error("No user with such id was found.");
+                return;
+            }
         }
 
         switch ($judgeName) {
             case 'codeforces':
-                if ((new CodeforcesSyncService())->syncSubmissions($user))
-                    $this->info(Constants::CODEFORCES_NAME . " submissions for $user->username were synced successfully.");
-                else
-                    $this->error("Failed to sync $user->username's " . Constants::CODEFORCES_NAME . " submissions.");
-                break;
+                if ($user) {
+                    if ((new CodeforcesSyncService())->syncSubmissions($user))
+                        $this->info(Constants::CODEFORCES_NAME . " submissions for $user->username were synced successfully.");
+                    else
+                        $this->error("Failed to sync $user->username's " . Constants::CODEFORCES_NAME . " submissions.");
+                    break;
+                }
+                else {
+                    if ((new CodeforcesSyncService())->syncSubmissions())
+                        $this->info(Constants::CODEFORCES_NAME . " submissions were synced successfully.");
+                    else
+                        $this->error("Failed to sync " . Constants::CODEFORCES_NAME . " submissions.");
+                    break;
+                }
 
             case 'uva':
                 if ((new UVaSyncService())->syncSubmissions($user))

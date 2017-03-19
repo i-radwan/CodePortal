@@ -29,7 +29,7 @@ class Judge extends Model
      *
      * @var bool
      */
-    //public $incrementing = false;
+    public $incrementing = false;
 
     /**
      * Indicates if the model should be timestamped.
@@ -44,6 +44,7 @@ class Judge extends Model
      * @var array
      */
     protected $fillable = [
+        Constants::FLD_JUDGES_ID,
         Constants::FLD_JUDGES_NAME,
         Constants::FLD_JUDGES_LINK
     ];
@@ -62,6 +63,27 @@ class Judge extends Model
             Constants::FLD_SUBMISSIONS_PROBLEM_ID,
             Constants::FLD_JUDGES_ID
         );
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(
+            User::class,
+            Constants::TBL_USER_HANDLES,
+            Constants::FLD_USER_HANDLES_JUDGE_ID,
+            Constants::FLD_USER_HANDLES_USER_ID
+        )->withPivot(Constants::FLD_USER_HANDLES_HANDLE);
+    }
+
+    /**
+     * Return user model corresponding to the given handle, if not found then null is returned
+     *
+     * @param string $handle
+     * @return User|null
+     */
+    public function user($handle)
+    {
+        return $this->users()->wherePivot(Constants::FLD_USER_HANDLES_HANDLE, $handle)->first();
     }
 
     public function store()
