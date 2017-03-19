@@ -22,8 +22,8 @@
 
                                     @if ($errors->has('name'))
                                         <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
+                                            <strong>{{ $errors->first('name') }}</strong>
+                                        </span>
                                     @endif
                                 </div>
                             </div>
@@ -77,8 +77,8 @@
                                     </ul>
                                     @if ($errors->has('visibility'))
                                         <span class="help-block">
-                                        <strong>{{ $errors->first('visibility') }}</strong>
-                                    </span>
+                                            <strong>{{ $errors->first('visibility') }}</strong>
+                                        </span>
                                     @endif
                                 </div>
                             </div>
@@ -89,8 +89,8 @@
 
                                     @if ($errors->has('problems'))
                                         <span class="help-block">
-                                        <strong>{{ $errors->first('problems') }}</strong>
-                                    </span>
+                                            <strong>{{ $errors->first('problems') }}</strong>
+                                        </span>
                                     @endif
                                 </div>
                             </div>
