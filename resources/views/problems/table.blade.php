@@ -49,7 +49,7 @@
                         @endif
                     @endforeach
                     <td class="td-problems">
-                        @if(count(explode(',', $problem->tags_ids)) > 1)
+                        @if(count(explode(',', $problem->tags_ids)) > 0 && strlen(trim(explode(',', $problem->tags_ids)[0]))>0)
                             @foreach(explode(',', $problem->tags_ids) as $tagID)
                                 <a href="/problems/?tag={{$tagID}}" class="problems-table-tags-links"><span>
                                 {{ ((App\Models\Tag::find($tagID))?(App\Models\Tag::find($tagID)->getAttributes()[Constants::FLD_TAGS_NAME]):'')}}
