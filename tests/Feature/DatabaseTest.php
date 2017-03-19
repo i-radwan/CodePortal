@@ -92,9 +92,10 @@ abstract class DatabaseTest extends BaseTestCase
         return $question;
     }
 
-    public function insertJudge($name, $link, $api_link)
+    public function insertJudge($id, $name, $link, $api_link)
     {
         $judge = new Judge([
+            Constants::FLD_JUDGES_ID => $id,
             Constants::FLD_JUDGES_NAME => $name,
             Constants::FLD_JUDGES_LINK => $link,
             Constants::FLD_JUDGES_API_LINK => $api_link
