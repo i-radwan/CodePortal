@@ -15,8 +15,8 @@ class CreateProblemTagsTable extends Migration
     public function up()
     {
         Schema::create(Constants::TBL_PROBLEM_TAGS, function (Blueprint $table) {
-            $table->integer(Constants::FLD_PROBLEM_TAGS_PROBLEM_ID);
-            $table->integer(Constants::FLD_PROBLEM_TAGS_TAG_ID);
+            $table->unsignedInteger(Constants::FLD_PROBLEM_TAGS_PROBLEM_ID);
+            $table->unsignedInteger(Constants::FLD_PROBLEM_TAGS_TAG_ID);
             $table->primary(array(
                     Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
                     Constants::FLD_PROBLEM_TAGS_TAG_ID

@@ -16,10 +16,9 @@ class SyncJudgeSubmissions extends Command
      *
      * @var string
      */
-    // TODO: fix option missing
     protected $signature = 'sync-judge:submissions
-                            {user-id : the id of the user to fetch submissions for}';
-                            //{--judge=codeforces : the name of the online judge to be synced (codeforces, uva, live-archive)';
+                            {user-id : the id of the user to fetch submissions for}
+                            {--judge=codeforces : the name of the online judge to be synced (codeforces, uva, live-archive)}';
 
     /**
      * The console command description.
@@ -46,7 +45,7 @@ class SyncJudgeSubmissions extends Command
     public function handle()
     {
         $user = User::find($this->argument('user-id'));
-        $judgeName = 'codeforces';//$this->option('judge');
+        $judgeName = $this->option('judge');
 
         if(!$user) {
             $this->error("No user with such id was found.");
@@ -76,7 +75,7 @@ class SyncJudgeSubmissions extends Command
                 break;
 
             default:
-                $this->error($judgeName . ' is not one of the supported online judges by ' . config('app.name') . '.');
+                $this->error($judgeName . " is not one of the supported online judges by " . config('app.name') . ".");
                 break;
         }
     }

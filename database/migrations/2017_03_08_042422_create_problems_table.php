@@ -16,12 +16,12 @@ class CreateProblemsTable extends Migration
     {
         Schema::create(Constants::TBL_PROBLEMS, function (Blueprint $table) {
             $table->increments(Constants::FLD_PROBLEMS_ID);
-            $table->integer(Constants::FLD_PROBLEMS_JUDGE_ID);
-            $table->integer(Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY);
+            $table->unsignedInteger(Constants::FLD_PROBLEMS_JUDGE_ID);
+            $table->unsignedInteger(Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY);
             $table->string(Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY, 10);
             $table->string(Constants::FLD_PROBLEMS_NAME, 100);
             $table->integer(Constants::FLD_PROBLEMS_DIFFICULTY);
-            $table->integer(Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT);
+            $table->integer(Constants::FLD_PROBLEMS_SOLVED_COUNT);
             $table->timestamps();
             $table->unique(array(
                 Constants::FLD_PROBLEMS_JUDGE_ID,

@@ -56,7 +56,7 @@ abstract class DatabaseTest extends BaseTestCase
         $problem = new Problem([
             Constants::FLD_PROBLEMS_NAME => $name,
             Constants::FLD_PROBLEMS_DIFFICULTY => $difficulty,
-            Constants::FLD_PROBLEMS_ACCEPTED_SUBMISSIONS_COUNT => $acceptedSubmissionsCount
+            Constants::FLD_PROBLEMS_SOLVED_COUNT => $acceptedSubmissionsCount
         ]);
         $problem->judge()->associate($judge);
         $problem->store();

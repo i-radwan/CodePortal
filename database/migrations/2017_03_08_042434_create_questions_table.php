@@ -20,9 +20,9 @@ class CreateQuestionsTable extends Migration
             $table->longText(Constants::FLD_QUESTIONS_CONTENT);
             $table->longText(Constants::FLD_QUESTIONS_ANSWER)->nullable();
             $table->enum(Constants::FLD_QUESTIONS_STATUS, Constants::QUESTION_STATUS);
-            $table->integer(Constants::FLD_QUESTIONS_ADMIN_ID)->nullable();
-            $table->integer(Constants::FLD_QUESTIONS_CONTEST_ID);
-            $table->integer(Constants::FLD_QUESTIONS_USER_ID);
+            $table->unsignedInteger(Constants::FLD_QUESTIONS_ADMIN_ID)->nullable();
+            $table->unsignedInteger(Constants::FLD_QUESTIONS_CONTEST_ID);
+            $table->unsignedInteger(Constants::FLD_QUESTIONS_USER_ID);
             $table->timestamps();
         });
     }

@@ -15,8 +15,8 @@ class CreateContestProblemsTable extends Migration
     public function up()
     {
         Schema::create(Constants::TBL_CONTEST_PROBLEMS, function (Blueprint $table) {
-            $table->integer(Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID);
-            $table->integer(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID);
+            $table->unsignedInteger(Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID);
+            $table->unsignedInteger(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID);
             $table->primary(array(
                     Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
                     Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID

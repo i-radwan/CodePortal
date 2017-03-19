@@ -2,10 +2,13 @@
 
 namespace App\Utilities;
 
+use App\Models\Problem;
+
 class Utilities
 {
     /**
      * This function adds a new query to the saved ones and overwrites if needed
+     *
      * @param $key the query key to be replaced/added
      * @param $value the query value
      * @param $defaultURL
@@ -30,8 +33,9 @@ class Utilities
     /**
      * This function takes the problem object and returns the problem link
      * depending on the specified judge
+     *
      * @param $problem problem model object
-     * @return url the problem link to the online judge
+     * @return string url the problem link to the online judge
      */
     public static function generateProblemLink($problem)
     {
@@ -40,9 +44,11 @@ class Utilities
 
         $link = $judge['problemLink'];
         $replacingArray = $judge['toBeReplaced'];
+
         foreach ($replacingArray as $key => $value) {
             $link = str_replace($key, $problem->$value, $link);
         }
+
         return $link;
     }
 }
