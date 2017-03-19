@@ -61,6 +61,23 @@ class User extends Authenticatable
         )->withPivot(Constants::FLD_USER_HANDLES_HANDLE);
     }
 
+    /**
+     * Return user's handle corresponding to the given judge, if not found then null is returned
+     *
+     * @param Judge $judge
+     * @return string|null
+     */
+    public function handle(Judge $judge)
+    {
+        $judgeHandle = $this->handles()->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $judge->id)->first();
+
+        if (!$judgeHandle) {
+            return null;
+        }
+
+        return $judgeHandle->pivot->handle;
+    }
+
     public function submissions()
     {
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_USER_ID);

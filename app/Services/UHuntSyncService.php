@@ -116,26 +116,29 @@ abstract class UHuntSyncService extends JudgeSyncService
      * @param User $user
      * @return bool Whether the submissions synchronization process completed successfully
      */
-    public function syncSubmissions(User $user)
+    public function syncSubmissions(User $user = null)
     {
-        $judgeHandle = $user
-            ->handles()
-            ->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $this->judge->id)
-            ->first();
+        try {
+            $handle = $user->handle($this->judge);
 
-        if (!$judgeHandle) {
-            Log::warning("$user->username has no handle on $this->judgeName.");
+            if (!$handle) {
+                Log::warning("$user->username has no handle on $this->judgeName.");
+                return false;
+            }
+
+            if (!$this->getJudgeUserId($handle)) {
+                Log::alert("Failed to fetch user id from $this->judgeName.");
+                return false;
+            }
+
+            $this->apiBaseSubmissionsUrl = $this->apiBaseSubmissionsUrl . $this->rawDataString;
+
+            return parent::syncSubmissions($user);
+        }
+        catch (Exception $ex) {
+            Log::error("Exception occurred while syncing $this->judgeName submissions: " . $ex->getMessage());
             return false;
         }
-
-        if (!$this->getJudgeUserId($judgeHandle->pivot->handle)) {
-            Log::alert("Failed to fetch user id from $this->judgeName.");
-            return false;
-        }
-
-        $this->apiBaseSubmissionsUrl = $this->apiBaseSubmissionsUrl . $this->rawDataString;
-
-        return parent::syncSubmissions($user);
     }
 
     /**
@@ -216,7 +219,7 @@ abstract class UHuntSyncService extends JudgeSyncService
             Constants::FLD_SUBMISSIONS_LANGUAGE_ID => $language->id,
             Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => $submissionData[UHunt::SUBMISSION_TIME],
             Constants::FLD_SUBMISSIONS_EXECUTION_TIME => $submissionExecutionTime,
-            Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => '-1',
+            Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => '0',  //TODO:
             Constants::FLD_SUBMISSIONS_VERDICT => $submissionVerdict
         ]);
         $submission->store();

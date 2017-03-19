@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Log;
+use Exception;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Submission;
@@ -193,25 +194,28 @@ class CodeforcesSyncService extends JudgeSyncService
      */
     public function syncSubmissions(User $user = null)
     {
-        if ($user) {
-            $judgeHandle = $user
-                ->handles()
-                ->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $this->judge->id)
-                ->first();
+        try {
+            if ($user) {
+                $handle = $user->handle($this->judge);
 
-            if (!$judgeHandle) {
-                Log::warning("$user->username has no handle on $this->judgeName.");
-                return false;
+                if (!$handle) {
+                    Log::warning("$user->username has no handle on $this->judgeName.");
+                    return false;
+                }
+
+                $this->apiSubmissionsParams[Codeforces::REQUEST_SUBMISSION_HANDLE_PARAM] = $handle;
+            }
+            else {
+                $this->apiBaseSubmissionsUrl = Codeforces::REQUEST_RECENT_SUBMISSIONS;
+                $this->apiSubmissionsParams = null;
             }
 
-            $this->apiSubmissionsParams[Codeforces::REQUEST_SUBMISSION_HANDLE_PARAM] = $judgeHandle->pivot->handle;
+            return parent::syncSubmissions($user);
         }
-        else {
-            $this->apiBaseSubmissionsUrl = Codeforces::REQUEST_RECENT_SUBMISSIONS;
-            $this->apiSubmissionsParams = null;
+        catch (Exception $ex) {
+            Log::error("Exception occurred while syncing $this->judgeName submissions: " . $ex->getMessage());
+            return false;
         }
-
-        return parent::syncSubmissions($user);
     }
 
     /**
@@ -376,7 +380,7 @@ class CodeforcesSyncService extends JudgeSyncService
      */
     protected function getTagName($tagName)
     {
-
+        //TODO:
     }
 
     /**
@@ -387,7 +391,7 @@ class CodeforcesSyncService extends JudgeSyncService
      */
     protected function getVerdict($verdictName)
     {
-
+        //TODO:
     }
 
     /**
