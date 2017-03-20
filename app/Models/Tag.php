@@ -33,6 +33,11 @@ class Tag extends Model
         Constants::FLD_TAGS_NAME
     ];
 
+    /**
+     * Return all problems having the current tag as one of their tags
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function problems()
     {
         return $this->belongsToMany(

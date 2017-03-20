@@ -31,6 +31,11 @@ class Language extends Model
         Constants::FLD_LANGUAGES_NAME
     ];
 
+    /**
+     * Return all submissions written by the current programming language
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function submissions()
     {
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_LANGUAGE_ID);

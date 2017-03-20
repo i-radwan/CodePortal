@@ -49,11 +49,21 @@ class Judge extends Model
         Constants::FLD_JUDGES_LINK
     ];
 
+    /**
+     * Return all problems of the current online judge
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function problems()
     {
         return $this->hasMany(Problem::class, Constants::FLD_PROBLEMS_JUDGE_ID);
     }
 
+    /**
+     * Return all submissions on the current online judge
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
     public function submissions()
     {
         return $this->hasManyThrough(
@@ -65,6 +75,11 @@ class Judge extends Model
         );
     }
 
+    /**
+     * Return all users who have handles on the current online judge
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users()
     {
         return $this->belongsToMany(
