@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\JudgeSyncService;
 use App\Utilities\Constants;
 use App\Services\CodeforcesSyncService;
 use App\Services\UVaSyncService;
@@ -35,6 +36,14 @@ class SyncJudgeProblems extends Command
         parent::__construct();
     }
 
+    //
+    // Constants
+    //
+    const OPT_JUDGE_NAME = 'judge';
+    const JUDGE_CODEFORCES = 'codeforces';
+    const JUDGE_UVA = 'uva';
+    const JUDGE_LIVE_ARCHIVE = 'live-archive';
+
     /**
      * Execute the console command.
      *
@@ -42,33 +51,27 @@ class SyncJudgeProblems extends Command
      */
     public function handle()
     {
-        $judgeName = $this->option('judge');
+        $judgeName = $this->option(self::OPT_JUDGE_NAME);
+        $syncService = null;
 
         switch ($judgeName) {
-            case 'codeforces':
-                if ((new CodeforcesSyncService())->syncProblems())
-                    $this->info(Constants::CODEFORCES_NAME . " problems synced successfully.");
-                else
-                    $this->error("Failed to sync " . Constants::CODEFORCES_NAME . " problems.");
+            case self::JUDGE_CODEFORCES:
+                $syncService = new CodeforcesSyncService();
                 break;
-
-            case 'uva':
-                if ((new UVaSyncService())->syncProblems())
-                    $this->info(Constants::UVA_NAME . " problems synced successfully.");
-                else
-                    $this->error("Failed to sync " . Constants::UVA_NAME . " problems.");
+            case self::JUDGE_UVA:
+                $syncService = new UVaSyncService();
                 break;
-
-            case 'live-archive':
-                if ((new LiveArchiveSyncService())->syncProblems())
-                    $this->info(Constants::LIVE_ARCHIVE_NAME . " problems synced successfully.");
-                else
-                    $this->error("Failed to sync " . Constants::LIVE_ARCHIVE_NAME . " problems.");
+            case self::JUDGE_LIVE_ARCHIVE:
+                $syncService = new LiveArchiveSyncService();
                 break;
-
             default:
-                $this->error($judgeName . " is not one of the supported online judges by " . config('app.name') . ".");
-                break;
+                $this->warn("$judgeName is not one of the supported online judges by " . config('app.name') . ".");
+                return;
         }
+
+        if ($syncService->syncProblems())
+            $this->info("$judgeName problems synced successfully.");
+        else
+            $this->error("Failed to sync $judgeName problems.");
     }
 }
