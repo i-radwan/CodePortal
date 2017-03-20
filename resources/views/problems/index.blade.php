@@ -4,10 +4,10 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8">
-                <div class="panel panel-default">
+                <div class="panel panel-default problems-panel">
 
-                    <div class="panel-heading">Problems</div>
-                    <div class="panel-body">
+                    <div class="panel-heading problems-panel-head">Problems</div>
+                    <div class="panel-body problems-panel-body">
                         @if(count($data->problems->data) > 0)
                             @include('problems.table')
                         @else

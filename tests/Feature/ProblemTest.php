@@ -50,7 +50,7 @@ class ProblemTest extends DatabaseTest
 
         // Test pagination
         for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge);
-        $problems = Problem::index(2);
+        $problems = Problem::getAllProblems(2);
         $this->assertEquals(count(json_decode($problems, true)['problems']['data']), Constants::PROBLEMS_COUNT_PER_PAGE);
 
         // Test problems filtering

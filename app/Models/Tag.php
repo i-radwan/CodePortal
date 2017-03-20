@@ -7,6 +7,7 @@ use Validator;
 use App\Utilities\Constants;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
+use App\Utilities\Utilities;
 
 class Tag extends Model
 {
@@ -50,7 +51,7 @@ class Tag extends Model
         $this->save();
     }
 
-    public static function index()
+    public static function getAllTags()
     {
         return json_encode(
             DB::table(Constants::TBL_TAGS)
@@ -69,12 +70,15 @@ class Tag extends Model
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
-        $problems = Problem::prepareBasicProblemsCollection();
+        // Get all problems
+        $problems = Problem::getAllProblemsForTable();
+
+        // Join with problems tags
         $problems = $problems->join(Constants::TBL_PROBLEM_TAGS,
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
                 '=',
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
             ->where(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, '=', $tagID);
-        return Problem::prepareProblemsOutput($problems, $sortBy);
+        return Utilities::prepareProblemsOutput($problems, $sortBy);
     }
 }

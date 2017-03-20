@@ -7,6 +7,7 @@ use Validator;
 use App\Utilities\Constants;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
+use App\Utilities\Utilities;
 
 class Judge extends Model
 {
@@ -93,7 +94,7 @@ class Judge extends Model
         $this->save();
     }
 
-    public static function index()
+    public static function getAllJudges()
     {
         return json_encode(
             DB::table(Constants::TBL_JUDGES)
@@ -113,8 +114,8 @@ class Judge extends Model
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
-        $problems = Problem::prepareBasicProblemsCollection();
+        $problems = Problem::getAllProblemsForTable();
         $problems = $problems->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, '=', $judgeID);
-        return Problem::prepareProblemsOutput($problems, $sortBy);
+        return Utilities::prepareProblemsOutput($problems, $sortBy);
     }
 }

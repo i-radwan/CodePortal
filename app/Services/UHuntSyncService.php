@@ -112,11 +112,11 @@ abstract class UHuntSyncService extends JudgeSyncService
     /**
      * Fetch submissions data from the online judge's API
      * and synchronize them with our local database
-     *
+     * @Wael (Check $user = NULL -gave me error while not there when syncing uva problems-)
      * @param User $user
      * @return bool Whether the submissions synchronization process completed successfully
      */
-    public function syncSubmissions(User $user)
+    public function syncSubmissions(User $user = NULL)
     {
         $judgeHandle = $user
             ->handles()

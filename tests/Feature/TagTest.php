@@ -46,7 +46,7 @@ class TagTest extends DatabaseTest
         $this->assertTrue(Tag::count() == $initialCount); // not inserted
 
         for ($i = 0; $i < 100; $i++) $this->insertTag('Tag' . $i);
-        $tags = Tag::index(20);
+        $tags = Tag::getAllTags(20);
         $this->assertEquals(count(json_decode($tags, true)), 20);
         \Log::info('Tags:: ' . $tags);
 

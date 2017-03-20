@@ -9,6 +9,7 @@ use App\Utilities\Constants;
 use App\Exceptions\UnknownJudgeException;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
+use App\Utilities\Utilities;
 
 class Problem extends Model
 {
@@ -49,6 +50,20 @@ class Problem extends Model
         Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::FLD_PROBLEMS_SOLVED_COUNT,
         Constants::FLD_PROBLEMS_JUDGE_NAME
+    ];
+
+
+    /**
+     * This array contains the basic cols to be selected when getting the problems
+     * @var array
+     */
+    private static $basicPorblemsQueryCols = [
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_SOLVED_COUNT
     ];
 
     public function judge()
@@ -93,89 +108,127 @@ class Problem extends Model
         $this->save();
     }
 
-    public static function index($page = 1, $sortBy = [])
+    /**
+     * This function returns all the problems paginated
+     * @param int $page
+     * @param array $sortBy
+     * @return string
+     */
+    public static function getAllProblems($page = 1, $sortBy = [])
     {
         $sortBy = Problem::initializeProblemsSortByArray($sortBy);
         // Set page
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
-        $problems = Problem::prepareBasicProblemsCollection();
-        return Problem::prepareProblemsOutput($problems, $sortBy);
+        $problems = Problem::getAllProblemsForTable();
+        return Utilities::prepareProblemsOutput($problems, $sortBy);
     }
 
     /**
-     * This function prepares the basic collection of problems with the join of
-     * judges table and submissions table in case of signed in user
-     * @return problems collection
+     * This function returns all the raw problems query
+     * (not executed yet to allow for query cascading)
+     * @return $this
      */
-    public static function prepareBasicProblemsCollection()
+
+    public static function getRawProblems()
     {
-        // Selected columns
-        $cols = array(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
-            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
-            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
-            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
-            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
-            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_SOLVED_COUNT,
-            Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge',
-            Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID . ' as judge_id'
-        );
-        if (Auth::check()) {
-            array_push($cols, Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT);
-        }
-        // Set columns and count
+        $cols = self::$basicPorblemsQueryCols;
+
+        // Get raw problems
         $problems = DB::table(Constants::TBL_PROBLEMS)
             ->distinct()
+            ->select($cols);
+        $problems->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
+        return $problems;
+    }
+
+    /**
+     * This function takes the $problems query and attach the judges to the query
+     * @param $problems
+     * @return mixed
+     */
+    public static function addJudgeDataToProblems($problems)
+    {
+        // The new columns to be selected
+        $cols = $problems->columns;
+        array_push($cols, Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge');
+        array_push($cols, Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID . ' as judge_id');
+
+        // Select and join with judges table
+        $problems
             ->select($cols)
             ->join(Constants::TBL_JUDGES,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
                 '=',
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID)
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID);
+        return $problems;
+    }
+
+    /**
+     * This function takes the $problems query and attach the tags to the query
+     * @param $problems
+     * @return mixed
+     */
+    public static function addTagsDataToProblems($problems)
+    {
+        // Join the tags table
+        $problems
+            ->select($problems->columns)
             ->leftJoin(Constants::TBL_PROBLEM_TAGS . ' as  pt',
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
                 '=',
-                'pt.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID);
-        if (Auth::check()) {
-            $problems->leftJoin(Constants::TBL_SUBMISSIONS, function ($join) {
-                $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID),
-                    DB::raw('='),
-                    DB::raw(Auth::user()->id));
+                'pt.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID)
+            ->selectRaw('GROUP_CONCAT(DISTINCT (pt.' . Constants::FLD_PROBLEM_TAGS_TAG_ID . ')) as tags_ids');
 
-                $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID),
-                    DB::raw('='),
-                    DB::raw(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID));
-
-                $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT),
-                    '=',
-                    DB::raw('\'' . Constants::SUBMISSION_VERDICT["OK"] . '\''))->orOn(
-                    function ($join) {
-                        $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID),
-                            DB::raw('='),
-                            DB::raw(Auth::user()->id));
-
-                        $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID),
-                            DB::raw('='),
-                            DB::raw(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID));
-
-                        $join->on(DB::raw(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT),
-                            '<>',
-                            DB::raw('\'' . Constants::SUBMISSION_VERDICT["OK"] . '\''));
-                        $join->whereNotNull(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT);
-                        $join->whereNotExists((function ($query) {
-                            $query->selectRaw('1 from `' . Constants::TBL_SUBMISSIONS . '` `s2` 
-                            where ((`' . Constants::TBL_PROBLEMS . '`.`' . Constants::FLD_PROBLEMS_ID . '` = 
-                            `s2`.`' . Constants::FLD_SUBMISSIONS_PROBLEM_ID . '`) and 
-                            (`s2`.`' . Constants::FLD_SUBMISSIONS_VERDICT . '` =
-                             \'' . Constants::SUBMISSION_VERDICT["OK"] . '\'))');
-                        }));
-                    });
-            });
-        }
-        $problems->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
-        // get the problem tags
-        $problems->selectRaw('GROUP_CONCAT(DISTINCT (pt.'.Constants::FLD_PROBLEM_TAGS_TAG_ID.')) as tags_ids');
         return $problems;
+    }
+
+    /**
+     * This function takes the $problems query and attach the submissions to the query
+     * @param $problems
+     * @return mixed
+     */
+    public static function addSubmissionsDataToProblems($problems)
+    {
+        // If use isn't signed in this process must not execute
+        if (Auth::check()) {
+            // Get original columns, add the submissions verdict to them
+            $cols = $problems->columns;
+            array_push($cols, Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT);
+
+            // Get new cols and join with submissions tbl
+            $problems
+                ->select($problems->columns)
+                ->leftJoin(Constants::TBL_SUBMISSIONS . ' as  s', function ($join) {
+                    // Join with submissions tbl on user_id = Authenticated used id
+                    // && Join on problems id match condition
+                    $join->on(DB::raw('s.' . Constants::FLD_SUBMISSIONS_USER_ID),
+                        DB::raw('='),
+                        DB::raw(Auth::user()->id));
+                    $join->on(DB::raw(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID),
+                        DB::raw('='),
+                        DB::raw('s.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID));
+
+                })
+                // Merge distinct verdicts of the problem
+                ->selectRaw('GROUP_CONCAT(DISTINCT (s.' . Constants::FLD_SUBMISSIONS_VERDICT . ')) as verdict');
+        }
+        return $problems;
+    }
+
+    /**
+     * This function gets the problems for the problems table using the cascaded functions calls
+     * for the problems decoration functions
+     * @return problems collection
+     */
+    public static function getAllProblemsForTable()
+    {
+        return
+            Problem::addSubmissionsDataToProblems(
+                Problem::addTagsDataToProblems(
+                    Problem::addJudgeDataToProblems(
+                        Problem::getRawProblems())));
     }
 
     /**
@@ -190,23 +243,29 @@ class Problem extends Model
      */
     public static function filter($name, $tagsIDs, $judgesIDs, $page = 1, $sortBy = [])
     {
+        // Set up the sort by array
         $sortBy = Problem::initializeProblemsSortByArray($sortBy);
         // Set page
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
         // Set columns and count
-        $problems = self::prepareBasicProblemsCollection()
+        $problems = self::getAllProblemsForTable()
             ->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME, 'LIKE', "%$name%");
+
+        // If there's any judge in the judgesIDs array, add the condition
         if ($judgesIDs != [])
             $problems = $problems->whereIn(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, $judgesIDs);
+
+        // If there's any tag in the tagsIDs array, join with problems_tags table, then add the condition
         if ($tagsIDs != [])
             $problems = $problems->join(Constants::TBL_PROBLEM_TAGS,
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
                 '=',
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
                 ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs);
-        return Problem::prepareProblemsOutput($problems, $sortBy);
+
+        return Utilities::prepareProblemsOutput($problems, $sortBy);
     }
 
     /**
@@ -229,31 +288,4 @@ class Problem extends Model
         return $sortBy;
     }
 
-    /**
-     * This function applies the sortBy array to the problems collection and paginate it
-     * then it adds the extra info like headings and return the json encoded string
-     *
-     * @param $problems
-     * @param $sortBy
-     * @return string
-     */
-    public static function prepareProblemsOutput($problems, $sortBy)
-    {
-        // Apply sorting
-        foreach ($sortBy as $sortField) {
-            $problems->orderBy($sortField["column"], $sortField["mode"]);
-        }
-        // Paginate
-        $problems = $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
-        // Assign data
-        $ret = [
-            "headings" => ["ID", "Name", "Difficulty", "# Acc.", "Judge", "Tags"],
-            "problems" => $problems,
-            "extra" => [
-                "checkbox" => "no",
-                "checkboxPosition" => "-1",
-            ]
-        ];
-        return json_encode($ret);
-    }
 }

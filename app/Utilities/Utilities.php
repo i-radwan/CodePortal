@@ -51,4 +51,32 @@ class Utilities
 
         return $link;
     }
+
+
+    /**
+     * This function applies the sortBy array to the problems collection and paginate it
+     * then it adds the extra info like headings and return the json encoded string
+     * @param $problems
+     * @param $sortBy
+     * @return string
+     */
+    public static function prepareProblemsOutput($problems, $sortBy)
+    {
+        // Apply sorting
+        foreach ($sortBy as $sortField) {
+            $problems->orderBy($sortField["column"], $sortField["mode"]);
+        }
+        // Paginate
+        $problems = $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
+        // Assign data
+        $ret = [
+            "headings" => ["ID", "Name", "Difficulty", "# Acc.", "Judge", "Tags"],
+            "problems" => $problems,
+            "extra" => [
+                "checkbox" => "no",
+                "checkboxPosition" => "-1",
+            ]
+        ];
+        return json_encode($ret);
+    }
 }

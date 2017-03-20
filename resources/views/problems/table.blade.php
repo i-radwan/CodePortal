@@ -1,5 +1,5 @@
 <div class="container problems-table-container">
-    <table class="table table-bordered  problems-table-hover " id="problems_table">
+    <table class="table table-bordered  problems-table-hover problems-talbe" id="problems_table">
         <thead>
         <tr>
             <!-- We are gonna loop here for the head tags -->
@@ -28,13 +28,11 @@
         <!-- we are going to display the fetched problems -->
         @foreach ( $data->problems->data as $problem)
             <!-- We may here get the colour from a specific constant table -->
-            @if(isset($problem->verdict ))
-                @if($problem->verdict == Constants::SUBMISSION_VERDICT["OK"])
-                    <tr class="light-warning">
-                @elseif($problem->verdict != Constants::SUBMISSION_VERDICT["OK"])
-                    <tr class="light-danger">
-                @else
-                    <tr class="tr-notsolved">
+            @if(isset($problem->verdict) && count(explode(',', $problem->verdict ))>0)
+                @if(in_array(Constants::SUBMISSION_VERDICT["OK"], explode(',', $problem->verdict)))
+                    <tr class="bg-success">
+                @else($problem->verdict != Constants::SUBMISSION_VERDICT["OK"])
+                    <tr class="bg-warning">
                 @endif
             @else
                 <tr>
