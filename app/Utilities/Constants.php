@@ -40,7 +40,9 @@ class Constants
             "toBeReplaced" => [
                 "{contestId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY,
                 "{contestIndex}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY,
-            ]
+            ],
+            "problemNumberFormula" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY . ", " . self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+
         ],
         self::LIVE_ARCHIVE_ID => [
             "name" => self::LIVE_ARCHIVE_NAME,
@@ -48,7 +50,9 @@ class Constants
             "problemLink" => self::LIVE_ARCHIVE_PROBLEM_LINK,
             "toBeReplaced" => [
                 "{problemId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
-            ]
+            ],
+            "problemNumberFormula" => "P" . self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+
         ],
         self::UVA_ID => [
             "name" => self::UVA_NAME,
@@ -56,7 +60,8 @@ class Constants
             "problemLink" => self::UVA_PROBLEM_LINK,
             "toBeReplaced" => [
                 "{problemId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
-            ]
+            ],
+            "problemNumberFormula" => "P" . self::FLD_PROBLEMS_JUDGE_SECOND_KEY
         ]
     ];
 

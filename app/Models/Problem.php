@@ -45,7 +45,6 @@ class Problem extends Model
      * @var array
      */
     public static $displayable = [
-        Constants::FLD_PROBLEMS_ID,
         Constants::FLD_PROBLEMS_NAME,
         Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::FLD_PROBLEMS_SOLVED_COUNT,

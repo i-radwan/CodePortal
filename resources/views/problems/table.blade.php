@@ -38,7 +38,20 @@
                 <tr>
                     @endif
                     @foreach ($problem as $key => $value)
-                        @if($key == "name")
+                        @if($key == Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY)
+                            <td class="td-problems">
+                                {{
+                                str_replace(
+                                    Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+                                    ((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY],
+                                        str_replace(
+                                            Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
+                                            ((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY],
+                                            Constants::JUDGES[((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_ID]]['problemNumberFormula'])
+                                )
+                                }}
+                            </td>
+                        @elseif($key == "name")
                             <td class="td-problems">
                                 <a target="_blank" href="{{Utilities::generateProblemLink($problem)}}">  {{$value}} </a>
                             </td>
