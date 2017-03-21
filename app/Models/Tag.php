@@ -56,19 +56,6 @@ class Tag extends Model
         $this->save();
     }
 
-    // ToDo to be removed
-    public static function getAllTags()
-    {
-        return json_encode(
-            DB::table(Constants::TBL_TAGS)
-                ->select(
-                    Constants::FLD_TAGS_ID,
-                    Constants::FLD_TAGS_NAME
-                )
-                ->get()
-        );
-    }
-
     public static function getTagProblems($tagID, $page = 1, $sortBy = [])
     {
         $sortBy = Utilities::initializeProblemsSortByArray($sortBy);

@@ -109,20 +109,6 @@ class Judge extends Model
         $this->save();
     }
 
-
-    // ToDo to be removed
-    public static function getAllJudges()
-    {
-        return json_encode(
-            DB::table(Constants::TBL_JUDGES)
-                ->select(
-                    Constants::FLD_JUDGES_ID,
-                    Constants::FLD_JUDGES_NAME
-                )
-                ->get()
-        );
-    }
-
     public static function getJudgeProblems($judgeID, $page = 1, $sortBy = [])
     {
         $sortBy = Utilities::initializeProblemsSortByArray($sortBy);

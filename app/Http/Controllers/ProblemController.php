@@ -61,8 +61,8 @@ class ProblemController extends Controller
             $data = $this->getProblemsPagination($request->get('page'), $sortby);
         }
         $data = (json_decode($data));
-        $data->tags = json_decode(Tag::getAllTags());
-        $data->judges = json_decode(Judge::getAllJudges());
+        $data->tags = json_decode(Tag::all());
+        $data->judges = json_decode(Judge::all());
         $data->sortbyMode = $sortbyMode;
         $data->sortbyParam = $request->get('sortby');
         // Set pagination limits
