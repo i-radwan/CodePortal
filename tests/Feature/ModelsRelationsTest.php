@@ -22,7 +22,7 @@ class ModelsRelationsTest extends DatabaseTest
         $language = new Language([Constants::FLD_LANGUAGES_NAME => 'C+++1']);
         $language->store();
         $judge = $this->insertJudge('1', 'Codeforces3', 'http://www.judge3.com');
-        $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0', $user);
+        $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0', $admin);
         $problem1 = $this->insertProblem('Problem1', '10', '20', $judge, '123', '213');
         $question = $this->insertQuestion('Question1', "Hello", 'Answer1', $contest, $user);
         $question->saveAnswer("Ansert1", $admin);
@@ -86,6 +86,9 @@ class ModelsRelationsTest extends DatabaseTest
         $this->assertEquals(count($admin->organizingContests()), 1);
         Log::info($contest->organizingUsers()->getResults());
         Log::info($contest->participatingUsers()->getResults());
+
+        // Contest + Owner
+        $this->assertEquals(count($admin->owningContests()), 1);
     }
 
 }

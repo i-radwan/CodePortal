@@ -46,6 +46,14 @@ class ProblemTest extends DatabaseTest
         } catch (ValidationException $e) {
         }
 
+        // Test judge keys uniqueness
+        $this->insertProblem('Problem1', 10, 20, $judge, '123', '213');
+        try {
+            $this->insertProblem('Problem1', 10, 20, $judge, '123', '213');
+            $this->fail("Shouldn't reach here w/out throwing Validation Exception - duplicated judge keys");
+        } catch (ValidationException $e) {
+        }
+
         $this->assertTrue(Problem::count() == $initialCount); // not inserted
 
         // Test pagination

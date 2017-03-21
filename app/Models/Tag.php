@@ -56,6 +56,7 @@ class Tag extends Model
         $this->save();
     }
 
+    // ToDo to be removed
     public static function getAllTags()
     {
         return json_encode(

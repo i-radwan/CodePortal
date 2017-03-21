@@ -54,7 +54,13 @@ class ContestTest extends DatabaseTest
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - before date");
         } catch (ValidationException $e) {
         }
-        $this->assertTrue(Contest::count() == $initialCount); // not inserted
+        try {
+            $this->insertContest('Contest1', '2017-10-10 12:12:12', 100, Constants::CONTEST_VISIBILITY["PUBLIC"], null);
+            $this->fail("Shouldn't reach here w/out throwing Validation Exception - no owner");
+        } catch (ValidationException $e) {
+        }
+        // Recheck that nothing is inserted
+        $this->assertTrue(Contest::count() == $initialCount);
 
     }
 

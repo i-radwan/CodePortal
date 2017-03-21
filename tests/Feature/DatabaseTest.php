@@ -66,13 +66,13 @@ abstract class DatabaseTest extends BaseTestCase
         return $problem;
     }
 
-    public function insertSubmission($submission_id, $execution_time, $used_memory, $verdict, $problem, $user, $language)
+    public function insertSubmission($submissionID, $executionTime, $usedMemory, $verdict, $problem, $user, $language)
     {
         $submission = new Submission([
-            Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => $submission_id,
+            Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => $submissionID,
             Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => 123,
-            Constants::FLD_SUBMISSIONS_EXECUTION_TIME => $execution_time,
-            Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => $used_memory,
+            Constants::FLD_SUBMISSIONS_EXECUTION_TIME => $executionTime,
+            Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => $usedMemory,
             Constants::FLD_SUBMISSIONS_VERDICT => $verdict
         ]);
         $submission->user()->associate($user);

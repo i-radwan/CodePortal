@@ -103,6 +103,14 @@ class User extends Authenticatable
         );
     }
 
+    public function owningContests()
+    {
+        return $this->hasMany(
+            Contest::class,
+            Constants::FLD_CONTESTS_OWNER_ID
+        );
+    }
+
     public function questions()
     {
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID);

@@ -109,6 +109,8 @@ class Judge extends Model
         $this->save();
     }
 
+
+    // ToDo to be removed
     public static function getAllJudges()
     {
         return json_encode(

@@ -32,6 +32,7 @@ class LanguageTest extends DatabaseTest
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - name too long");
         } catch (ValidationException $e){
         }
+
         //Duplicate languages
         $validLanguage = $this->insertLanguage('Lang1');
 

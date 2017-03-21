@@ -53,14 +53,17 @@ class JudgeTest extends DatabaseTest
         $judge1 = $this->insertJudge('1', 'Judge1', 'http://www.link.com');
         $judge2 = $this->insertJudge('2', 'Judge2', 'http://www.link2.com');
 
+        // Insert a lot of problems for counting statistics
         for ($i = 0; $i < 100; $i++) {
             if ($i % 2 == 0)
                 $this->insertProblem('Problem' . $i, 10, 20, $judge1, '12' . $i, '21' . $i);
             else
                 $this->insertProblem('Problem' . $i, 10, 20, $judge2, '2' . $i, '2' . $i);
         }
+        // Get problems of judge 1 and check if the count = 50
         $problems = Judge::getJudgeProblems($judge1->id);
         $this->assertEquals(json_decode($problems, true)['problems']['total'], 50);
+
         \Log::info("Judge's Problems :: " . $problems);
     }
 }

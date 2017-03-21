@@ -46,15 +46,15 @@ class TagTest extends DatabaseTest
         $this->assertTrue(Tag::count() == $initialCount); // not inserted
 
         for ($i = 0; $i < 100; $i++) $this->insertTag('Tag' . $i);
-        $tags = Tag::getAllTags(20);
-        $this->assertEquals(count(json_decode($tags, true)), 20);
+        $tags = Tag::getAllTags();
+        $this->assertEquals(count(json_decode($tags, true)), 100);
         \Log::info('Tags:: ' . $tags);
 
         // Get tag problems paginated
         $validTag = $this->insertTag("NewTag");
         $judge = $this->insertJudge('1', 'Codeforces', 'http://www.judge.com');
         for ($i = 0; $i < 100; $i++) {
-            $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge, '123', '312');
+            $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge, '123' . $i, '312' . $i);
             if ($i % 2 == 0)
                 $problem->tags()->sync([$validTag->id], false);
         }
