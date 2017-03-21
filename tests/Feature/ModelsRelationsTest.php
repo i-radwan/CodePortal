@@ -21,9 +21,9 @@ class ModelsRelationsTest extends DatabaseTest
         $admin = $this->insertUser('use12r121', 'a1312@a.a', 'aaaaaa', 'aa131a', '1');
         $language = new Language([Constants::FLD_LANGUAGES_NAME => 'C+++1']);
         $language->store();
-        $judge = $this->insertJudge('Codeforces3', 'http://www.judge3.com', 'http://www.judge.com');
-        $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0');
-        $problem1 = $this->insertProblem('Problem1', '10', '20', $judge);
+        $judge = $this->insertJudge('1', 'Codeforces3', 'http://www.judge3.com');
+        $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0', $user);
+        $problem1 = $this->insertProblem('Problem1', '10', '20', $judge, '123', '213');
         $question = $this->insertQuestion('Question1', "Hello", 'Answer1', $contest, $user);
         $question->saveAnswer("Ansert1", $admin);
         $submission = $this->insertSubmission('123', 100, 200, '1', $problem1, $user, $language);
@@ -35,7 +35,7 @@ class ModelsRelationsTest extends DatabaseTest
         $tag = new Tag([Constants::FLD_TAGS_NAME => 'Tag01232']);
         $tag->store();
         $problem1->tags()->sync([$tag->id], false);
-        $problem = $this->insertProblem('Problem1', '10', '20', $judge);
+        $problem = $this->insertProblem('Problem1', '10', '20', $judge, '22', '33');
         $problem->tags()->sync([$tag->id], false);
         $problem->tags()->sync([$tag->id], false);
         $problem->tags()->sync([$tag->id], false);

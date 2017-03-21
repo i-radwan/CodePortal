@@ -70,7 +70,7 @@ class Tag extends Model
 
     public static function getTagProblems($tagID, $page = 1, $sortBy = [])
     {
-        $sortBy = Problem::initializeProblemsSortByArray($sortBy);
+        $sortBy = Utilities::initializeProblemsSortByArray($sortBy);
         // Set page
         Paginator::currentPageResolver(function () use ($page) {
             return $page;

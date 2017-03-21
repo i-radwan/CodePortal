@@ -52,9 +52,9 @@ class TagTest extends DatabaseTest
 
         // Get tag problems paginated
         $validTag = $this->insertTag("NewTag");
-        $judge = $this->insertJudge('Codeforces', 'http://www.judge.com', 'http://www.judge.com');
+        $judge = $this->insertJudge('1', 'Codeforces', 'http://www.judge.com');
         for ($i = 0; $i < 100; $i++) {
-            $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge);
+            $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge, '123', '312');
             if ($i % 2 == 0)
                 $problem->tags()->sync([$validTag->id], false);
         }

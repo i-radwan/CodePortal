@@ -79,4 +79,25 @@ class Utilities
         ];
         return json_encode($ret);
     }
+
+
+    /**
+     * This function takes the given sortBy array and if it's empty it generates the
+     * basic sort by condition
+     *
+     * @param $sortBy
+     * @return array
+     */
+    public static function initializeProblemsSortByArray($sortBy)
+    {
+        if (count($sortBy) == 0) {
+            $sortBy = [
+                [
+                    "column" => Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+                    "mode" => "asc"
+                ]
+            ];
+        }
+        return $sortBy;
+    }
 }

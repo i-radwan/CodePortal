@@ -16,32 +16,32 @@ class ProblemTest extends DatabaseTest
      */
     public function testProblem()
     {
-        $judge = $this->insertJudge('Codeforces', 'http://www.judge.com', 'http://www.judge.com');
+        $judge = $this->insertJudge('1', 'Codeforces', 'http://www.judge.com');
         $initialCount = Problem::count();
         // insert valid contest and check for count
-        $validProblem = $this->insertProblem('Problem1', 10, 20, $judge);
+        $validProblem = $this->insertProblem('Problem1', 10, 20, $judge, '123', '213');
         $this->assertTrue(Problem::count() == $initialCount + 1);
         $validProblem->delete();
         $this->assertTrue(Problem::count() == $initialCount); // test deleting
 
         // insert invalid models
         try {
-            $this->insertProblem('', 10, 20, $judge);
+            $this->insertProblem('', 10, 20, $judge, '1233', '2132');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - missing data");
         } catch (ValidationException $e) {
         }
         try {
-            $this->insertProblem('Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1', 10, 20, $judge);
+            $this->insertProblem('Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1', 10, 20, $judge, '123', '213');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - name too long");
         } catch (ValidationException $e) {
         }
         try {
-            $this->insertProblem('Problem 1', -10, 20, $judge);
+            $this->insertProblem('Problem 1', -10, 20, $judge, '123', '213');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - diff -ve");
         } catch (ValidationException $e) {
         }
         try {
-            $this->insertProblem('Problem2', 10, -20, $judge);
+            $this->insertProblem('Problem2', 10, -20, $judge, '123', '213');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - accepted count -ve");
         } catch (ValidationException $e) {
         }
@@ -49,13 +49,13 @@ class ProblemTest extends DatabaseTest
         $this->assertTrue(Problem::count() == $initialCount); // not inserted
 
         // Test pagination
-        for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge);
+        for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge, '123' . $i, '213' . $i);
         $problems = Problem::getAllProblems(2);
         $this->assertEquals(count(json_decode($problems, true)['problems']['data']), Constants::PROBLEMS_COUNT_PER_PAGE);
 
         // Test problems filtering
-        $judge1 = $this->insertJudge('Judge1', 'http://www.link.com', 'http://www.apilink.com');
-        $judge2 = $this->insertJudge('Judge2', 'http://www.link2.com', 'http://www.apilink2.com');
+        $judge1 = $this->insertJudge('2', 'Judge1', 'http://www.link.com');
+        $judge2 = $this->insertJudge('3', 'Judge2', 'http://www.link2.com');
         $validTag1 = $this->insertTag("NewTag1");
         $validTag2 = $this->insertTag("NewTag2");
 
@@ -69,10 +69,10 @@ class ProblemTest extends DatabaseTest
         for ($i = 0; $i < 100; $i++) {
             if ($i % 2 == 0) {
                 $judge1Count++;
-                $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge1);
+                $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge1, '123' . $i, '213' . $i);
             } else {
                 $judge2Count++;
-                $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge2);
+                $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge2, '123' . $i, '213' . $i);
             }
             if ($i % 5 == 0) {
                 $tag1Count++;

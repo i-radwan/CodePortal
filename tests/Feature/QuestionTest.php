@@ -15,7 +15,7 @@ class QuestionTest extends DatabaseTest
     public function testQuestion()
     {
         $user = $this->insertUser('user1', 'a@a.a', 'aaaaaa', 'aaa', '1');
-        $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0');
+        $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0', $user);
         $initialCount = Question::count();
         // insert valid question and check for count
         $validQuestion = $this->insertQuestion('Question1', 'Hello', '', $contest, $user);

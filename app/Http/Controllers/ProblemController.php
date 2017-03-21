@@ -17,7 +17,6 @@ class ProblemController extends Controller
      */
     public function getProblemsPagination($page = 1, $sortby = [])
     {
-        // ToDo remove testing
         $problems = Problem::getAllProblems($page, $sortby);
         return $problems;
     }

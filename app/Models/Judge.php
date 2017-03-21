@@ -123,7 +123,7 @@ class Judge extends Model
 
     public static function getJudgeProblems($judgeID, $page = 1, $sortBy = [])
     {
-        $sortBy = Problem::initializeProblemsSortByArray($sortBy);
+        $sortBy = Utilities::initializeProblemsSortByArray($sortBy);
 
         // Set page
         Paginator::currentPageResolver(function () use ($page) {

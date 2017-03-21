@@ -16,6 +16,7 @@ class CreateContestsTable extends Migration
     {
         Schema::create(Constants::TBL_CONTESTS, function (Blueprint $table) {
             $table->increments(Constants::FLD_CONTESTS_ID);
+            $table->integer(Constants::FLD_CONTESTS_OWNER_ID);
             $table->string(Constants::FLD_CONTESTS_NAME, 100);
             $table->dateTime(Constants::FLD_CONTESTS_TIME);
             $table->unsignedInteger(Constants::FLD_CONTESTS_DURATION);

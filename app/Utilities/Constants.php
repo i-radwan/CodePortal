@@ -158,6 +158,7 @@ class Constants
 
     // Contests
     const FLD_CONTESTS_ID = "id";
+    const FLD_CONTESTS_OWNER_ID = "owner_id";
     const FLD_CONTESTS_NAME = "name";
     const FLD_CONTESTS_TIME = "time";
     const FLD_CONTESTS_DURATION = "duration";

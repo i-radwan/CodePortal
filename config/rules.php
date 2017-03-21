@@ -16,6 +16,7 @@ return [
     ],
     "contest" => [
         "store_validation_rules" => [
+            Constants::FLD_CONTESTS_OWNER_ID => 'required',
             Constants::FLD_CONTESTS_NAME => 'required|max:100',
             Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:today',
             Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1',

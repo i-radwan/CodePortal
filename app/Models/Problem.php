@@ -116,7 +116,7 @@ class Problem extends Model
      */
     public static function getAllProblems($page = 1, $sortBy = [])
     {
-        $sortBy = Problem::initializeProblemsSortByArray($sortBy);
+        $sortBy = Utilities::initializeProblemsSortByArray($sortBy);
         // Set page
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
@@ -244,7 +244,7 @@ class Problem extends Model
     public static function filter($name, $tagsIDs, $judgesIDs, $page = 1, $sortBy = [])
     {
         // Set up the sort by array
-        $sortBy = Problem::initializeProblemsSortByArray($sortBy);
+        $sortBy = Utilities::initializeProblemsSortByArray($sortBy);
         // Set page
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
@@ -266,26 +266,6 @@ class Problem extends Model
                 ->whereIn(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, $tagsIDs);
 
         return Utilities::prepareProblemsOutput($problems, $sortBy);
-    }
-
-    /**
-     * This function takes the given sortBy array and if it's empty it generates the
-     * basic sort by condition
-     *
-     * @param $sortBy
-     * @return array
-     */
-    public static function initializeProblemsSortByArray($sortBy)
-    {
-        if (count($sortBy) == 0) {
-            $sortBy = [
-                [
-                    "column" => Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
-                    "mode" => "asc"
-                ]
-            ];
-        }
-        return $sortBy;
     }
 
 }

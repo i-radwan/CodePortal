@@ -54,6 +54,11 @@ class Contest extends Model
         )->withTimestamps();
     }
 
+    public function owner()
+    {
+        return $this->belongsTo(User::class, Constants::FLD_CONTESTS_OWNER_ID);
+    }
+
     public function organizingUsers()
     {
         return $this->belongsToMany(

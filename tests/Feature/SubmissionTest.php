@@ -18,8 +18,8 @@ class SubmissionTest extends DatabaseTest
      */
     public function testSubmission()
     {
-        $judge = $this->insertJudge('Codeforces1', 'http://www.judge2.com', 'http://www.judge.com');
-        $problem = $this->insertProblem('Problem1', '10', '20', $judge);
+        $judge = $this->insertJudge('1', 'Codeforces1', 'http://www.judge2.com');
+        $problem = $this->insertProblem('Problem1', '10', '20', $judge, '123', '312');
         $user = $this->insertUser('user12', 'a2@a.a', 'aaaaaa', 'aaa2');
         $language = new Language([Constants::FLD_LANGUAGES_NAME => 'C+++']);
         $language->save();

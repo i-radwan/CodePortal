@@ -39,7 +39,7 @@ abstract class DatabaseTest extends BaseTestCase
         return $user;
     }
 
-    public function insertContest($name, $time, $duration, $visibility)
+    public function insertContest($name, $time, $duration, $visibility, $owner)
     {
         $contest = new Contest([
             Constants::FLD_CONTESTS_NAME => $name,
@@ -47,14 +47,17 @@ abstract class DatabaseTest extends BaseTestCase
             Constants::FLD_CONTESTS_DURATION => $duration,
             Constants::FLD_CONTESTS_VISIBILITY => $visibility
         ]);
+        $contest->owner()->associate($owner);
         $contest->store();
         return $contest;
     }
 
-    public function insertProblem($name, $difficulty, $acceptedSubmissionsCount, $judge)
+    public function insertProblem($name, $difficulty, $acceptedSubmissionsCount, $judge, $judgeFirstKey, $judgeSecondKey)
     {
         $problem = new Problem([
             Constants::FLD_PROBLEMS_NAME => $name,
+            Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $judgeFirstKey,
+            Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $judgeSecondKey,
             Constants::FLD_PROBLEMS_DIFFICULTY => $difficulty,
             Constants::FLD_PROBLEMS_SOLVED_COUNT => $acceptedSubmissionsCount
         ]);
@@ -66,7 +69,8 @@ abstract class DatabaseTest extends BaseTestCase
     public function insertSubmission($submission_id, $execution_time, $used_memory, $verdict, $problem, $user, $language)
     {
         $submission = new Submission([
-            Constants::FLD_SUBMISSIONS_ID => $submission_id,
+            Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => $submission_id,
+            Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => 123,
             Constants::FLD_SUBMISSIONS_EXECUTION_TIME => $execution_time,
             Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => $used_memory,
             Constants::FLD_SUBMISSIONS_VERDICT => $verdict
@@ -92,13 +96,12 @@ abstract class DatabaseTest extends BaseTestCase
         return $question;
     }
 
-    public function insertJudge($id, $name, $link, $api_link)
+    public function insertJudge($id, $name, $link)
     {
         $judge = new Judge([
             Constants::FLD_JUDGES_ID => $id,
             Constants::FLD_JUDGES_NAME => $name,
-            Constants::FLD_JUDGES_LINK => $link,
-            Constants::FLD_JUDGES_API_LINK => $api_link
+            Constants::FLD_JUDGES_LINK => $link
         ]);
         $judge->store();
         return $judge;

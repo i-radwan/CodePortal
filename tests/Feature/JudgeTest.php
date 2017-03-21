@@ -16,7 +16,7 @@ class JudgeTest extends DatabaseTest
     {
         $initialCount = Judge::count();
         // insert valid contest and check for count
-        $validJudge = $this->insertJudge('1', 'Judge1', 'http://www.link.com', 'http://www.apilink.com');
+        $validJudge = $this->insertJudge('1', 'Judge1', 'http://www.link.com');
         $this->assertTrue(Judge::count() == $initialCount + 1);
         $validJudge->delete();
         $this->assertTrue(Judge::count() == $initialCount); // test deleting
@@ -24,28 +24,23 @@ class JudgeTest extends DatabaseTest
 
         // insert invalid models
         try {
-            $this->insertJudge('1', '', 'http://www.link.com', 'http://www.apilink.com');
+            $this->insertJudge('1', '', 'http://www.link.com');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - missing data");
         } catch (ValidationException $e) {
         }
         try {
-            $this->insertJudge('1', 'Judge1', 'link.com', 'http://www.apilink.com');
+            $this->insertJudge('1', 'Judge1', 'link.com');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid link");
         } catch (ValidationException $e) {
         }
+        $validJudge = $this->insertJudge('1', 'Judge1', 'http://www.link.com');
         try {
-            $this->insertJudge('1', 'Judge1', 'http://www.link.com', 'http://');
-            $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid api link");
-        } catch (ValidationException $e) {
-        }
-        $validJudge = $this->insertJudge('1', 'Judge1', 'http://www.link.com', 'http://www.apilink.com');
-        try {
-            $this->insertJudge('1', 'Judge1', 'http://www.link2.com', 'http://www.apilink.com');
+            $this->insertJudge('1', 'Judge1', 'http://www.link2.com');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - name duplicate");
         } catch (ValidationException $e) {
         }
         try {
-            $this->insertJudge('2', 'Judge2', 'http://www.link.com', 'http://www.apilink.com');
+            $this->insertJudge('2', 'Judge2', 'http://www.link.com');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - link duplicate");
         } catch (ValidationException $e) {
         }
@@ -55,14 +50,14 @@ class JudgeTest extends DatabaseTest
         $this->assertTrue(Judge::count() == $initialCount); // not inserted
 
         // Get jduge problems paginated
-        $judge1 = $this->insertJudge('1', 'Judge1', 'http://www.link.com', 'http://www.apilink.com');
-        $judge2 = $this->insertJudge('2', 'Judge2', 'http://www.link2.com', 'http://www.apilink2.com');
+        $judge1 = $this->insertJudge('1', 'Judge1', 'http://www.link.com');
+        $judge2 = $this->insertJudge('2', 'Judge2', 'http://www.link2.com');
 
         for ($i = 0; $i < 100; $i++) {
             if ($i % 2 == 0)
-                $this->insertProblem('Problem' . $i, 10, 20, $judge1);
+                $this->insertProblem('Problem' . $i, 10, 20, $judge1, '12' . $i, '21' . $i);
             else
-                $this->insertProblem('Problem' . $i, 10, 20, $judge2);
+                $this->insertProblem('Problem' . $i, 10, 20, $judge2, '2' . $i, '2' . $i);
         }
         $problems = Judge::getJudgeProblems($judge1->id);
         $this->assertEquals(json_decode($problems, true)['problems']['total'], 50);
