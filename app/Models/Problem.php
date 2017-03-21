@@ -57,7 +57,7 @@ class Problem extends Model
      * This array contains the basic cols to be selected when getting the problems
      * @var array
      */
-    private static $basicPorblemsQueryCols = [
+    private static $basicProblemsQueryCols = [
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
@@ -133,7 +133,7 @@ class Problem extends Model
 
     public static function getRawProblems()
     {
-        $cols = self::$basicPorblemsQueryCols;
+        $cols = self::$basicProblemsQueryCols;
 
         // Get raw problems
         $problems = DB::table(Constants::TBL_PROBLEMS)
