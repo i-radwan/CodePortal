@@ -50,9 +50,13 @@ class User extends Authenticatable
         Constants::FLD_USERS_REMEMBER_TOKEN
     ];
 
+    /**
+     * Return the handles on different online judges of the current user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function handles()
     {
-        // ToDo: should it be hasMany?
         return $this->belongsToMany(
             Judge::class,
             Constants::TBL_USER_HANDLES,
@@ -78,11 +82,21 @@ class User extends Authenticatable
         return $judgeHandle->pivot->handle;
     }
 
+    /**
+     * Return all the submission of the current user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function submissions()
     {
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_USER_ID);
     }
 
+    /**
+     * Return the contests that the current user participated in
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function participatingContests()
     {
         return $this->belongsToMany(
@@ -93,6 +107,11 @@ class User extends Authenticatable
         )->withTimestamps();
     }
 
+    /**
+     * Return the contests that the current user organized as admin
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function organizingContests()
     {
         return $this->belongsToMany(
@@ -103,14 +122,21 @@ class User extends Authenticatable
         );
     }
 
+    /**
+     * Return the contests that the current owned
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function owningContests()
     {
-        return $this->hasMany(
-            Contest::class,
-            Constants::FLD_CONTESTS_OWNER_ID
-        );
+        return $this->hasMany(Contest::class, Constants::FLD_CONTESTS_OWNER_ID);
     }
 
+    /**
+     * Return all questions asked by the current user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function questions()
     {
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID);

@@ -4,14 +4,12 @@ namespace App\Models;
 
 use DB;
 use Auth;
-use Validator;
 use App\Utilities\Constants;
 use App\Exceptions\UnknownJudgeException;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Model;
 use App\Utilities\Utilities;
 
-class Problem extends Model
+class Problem extends ValidatorModel
 {
     /**
      * The table associated with the model.
@@ -39,6 +37,22 @@ class Problem extends Model
         Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::FLD_PROBLEMS_SOLVED_COUNT
     ];
+
+    /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    protected $rules = [
+        // ToDo: validating super unique key
+        Constants::FLD_PROBLEMS_NAME => 'required|max:255',
+        Constants::FLD_PROBLEMS_JUDGE_ID => 'integer|required|exists:' . Constants::TBL_JUDGES . ',' . Constants::FLD_JUDGES_ID,
+        Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => 'required',
+        Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => 'required',
+        Constants::FLD_PROBLEMS_DIFFICULTY => 'integer|required|min:0',
+        Constants::FLD_PROBLEMS_SOLVED_COUNT => 'integer|required|min:0'
+    ];
+
     /**
      * The attributes that are displayable in the problems table.
      *
@@ -51,9 +65,9 @@ class Problem extends Model
         Constants::FLD_PROBLEMS_JUDGE_NAME
     ];
 
-
     /**
-     * This array contains the basic cols to be selected when getting the problems
+     * The basic database columns to be selected when getting the problems
+     *
      * @var array
      */
     private static $basicProblemsQueryCols = [
@@ -65,11 +79,21 @@ class Problem extends Model
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_SOLVED_COUNT
     ];
 
+    /**
+     * Return the hosting online judge of the current problem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function judge()
     {
         return $this->belongsTo(Judge::class, Constants::FLD_PROBLEMS_JUDGE_ID);
     }
 
+    /**
+     * Return the tags of the current problem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function tags()
     {
         return $this->belongsToMany(
@@ -80,6 +104,11 @@ class Problem extends Model
         );
     }
 
+    /**
+     * Return the contests having the current problem as one of their problems list
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function contests()
     {
         return $this->belongsToMany(
@@ -90,25 +119,28 @@ class Problem extends Model
         );
     }
 
+    /**
+     * Return the submissions current problem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function submissions()
     {
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_PROBLEM_ID);
     }
 
-    public function store()
+    public function save(array $options = [])
     {
-        $v = Validator::make($this->attributes, config('rules.problem.store_validation_rules'));
-        $v->validate();
-
         if (!$this->judge()) {
             throw new UnknownJudgeException;
         }
 
-        $this->save();
+        return parent::save($options);
     }
 
     /**
      * This function returns all the problems paginated
+     *
      * @param int $page
      * @param array $sortBy
      * @return string
@@ -127,9 +159,9 @@ class Problem extends Model
     /**
      * This function returns all the raw problems query
      * (not executed yet to allow for query cascading)
+     *
      * @return $this
      */
-
     public static function getRawProblems()
     {
         $cols = self::$basicProblemsQueryCols;
@@ -144,6 +176,7 @@ class Problem extends Model
 
     /**
      * This function takes the $problems query and attach the judges to the query
+     *
      * @param $problems
      * @return mixed
      */
@@ -166,6 +199,7 @@ class Problem extends Model
 
     /**
      * This function takes the $problems query and attach the tags to the query
+     *
      * @param $problems
      * @return mixed
      */
@@ -185,6 +219,7 @@ class Problem extends Model
 
     /**
      * This function takes the $problems query and attach the submissions to the query
+     *
      * @param $problems
      * @return mixed
      */
@@ -219,6 +254,7 @@ class Problem extends Model
     /**
      * This function gets the problems for the problems table using the cascaded functions calls
      * for the problems decoration functions
+     *
      * @return problems collection
      */
     public static function getAllProblemsForTable()
@@ -266,5 +302,4 @@ class Problem extends Model
 
         return Utilities::prepareProblemsOutput($problems, $sortBy);
     }
-
 }

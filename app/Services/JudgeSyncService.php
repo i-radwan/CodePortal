@@ -228,7 +228,7 @@ abstract class JudgeSyncService
             $judge->fill([
                 Constants::FLD_JUDGES_NAME => $this->judgeName,
                 Constants::FLD_JUDGES_LINK => $this->judgeLink
-            ])->store();
+            ])->save();
         }
 
         return $judge;

@@ -8,9 +8,8 @@ use App\Utilities\Constants;
 use App\Exceptions\UnknownContestException;
 use App\Exceptions\UnknownAdminException;
 use App\Exceptions\UnknownUserException;
-use Illuminate\Database\Eloquent\Model;
 
-class Question extends Model
+class Question extends ValidatorModel
 {
     /**
      * The table associated with the model.
@@ -38,36 +37,62 @@ class Question extends Model
         Constants::FLD_QUESTIONS_STATUS
     ];
 
+    /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    protected $rules = [
+        Constants::FLD_QUESTIONS_TITLE => 'required|max:255',
+        Constants::FLD_QUESTIONS_CONTENT => 'required|min:50',
+        Constants::FLD_QUESTIONS_CONTEST_ID => 'required|integer|exists:' . Constants::TBL_CONTESTS . ',' . Constants::FLD_USERS_ID,
+        Constants::FLD_QUESTIONS_USER_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
+        Constants::FLD_QUESTIONS_STATUS => 'Regex:/([01])/'
+    ];
+
+    /**
+     * Return the user who asked the current question
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class, Constants::FLD_QUESTIONS_USER_ID);
     }
 
+    /**
+     * Return the admin who answered the current question
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function admin()
     {
         return $this->belongsTo(User::class, Constants::FLD_QUESTIONS_ADMIN_ID);
     }
 
+    /**
+     * Return the contest at which the current question was asked
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function contest()
     {
         return $this->belongsTo(Contest::class, Constants::FLD_QUESTIONS_CONTEST_ID);
     }
 
-    public function store()
+    public function save(array $options = [])
     {
-        $v = Validator::make($this->attributes, config('rules.question.store_validation_rules'));
-        $v->validate();
-
         if (!$this->contest()) {
             throw new UnknownContestException;
         }
-        if ($this->attributes[Constants::FLD_QUESTIONS_USER_ID] && !$this->user()) {
+        if (array_key_exists(Constants::FLD_QUESTIONS_USER_ID, $this->attributes) && !$this->user()) {
             throw new UnknownUserException();
         }
 
-        $this->save();
+        return parent::save($options);
     }
 
+    // ToDo: recheck function logic @IAR
     public function saveAnswer($newAnswer, $admin, $status = '0')
     {
         if ($admin->attributes[Constants::FLD_USERS_ROLE] == Constants::USER_ROLE["ADMIN"]) {

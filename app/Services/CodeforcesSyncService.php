@@ -160,7 +160,7 @@ class CodeforcesSyncService extends JudgeSyncService
         // Extract problem info
         $problemSolvedCount = $problemData[Codeforces::PROBLEM_SOLVED_COUNT];
         $problemDifficulty = $this->calculateProblemDifficulty(
-            array_key_exists(Codeforces::PROBLEM_POINTS, $problemData) ? $problemData[Codeforces::PROBLEM_POINTS] : -1,
+            array_key_exists(Codeforces::PROBLEM_POINTS, $problemData) ? $problemData[Codeforces::PROBLEM_POINTS] : 0,
             $problemSolvedCount
         );
 
@@ -180,7 +180,6 @@ class CodeforcesSyncService extends JudgeSyncService
             Constants::FLD_PROBLEMS_SOLVED_COUNT => $problemSolvedCount
         ]);
 
-        // TODO: need to find a way to call store method for input validation
         $this->judge->problems()->save($problem);
         $this->attachProblemTags($problem, $problemData[Codeforces::PROBLEM_TAGS]);
     }
@@ -308,7 +307,7 @@ class CodeforcesSyncService extends JudgeSyncService
             Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => $submissionConsumedMemory,
             Constants::FLD_SUBMISSIONS_VERDICT => $submissionVerdict
         ]);
-        $submission->store();
+        $submission->save();
     }
 
     /**
@@ -335,7 +334,6 @@ class CodeforcesSyncService extends JudgeSyncService
                 Constants::FLD_PROBLEMS_SOLVED_COUNT => 1
             ]);
 
-            // TODO: need to find a way to call store method for input validation
             $this->judge->problems()->save($problem);
             $this->attachProblemTags($problem, $problemData[Codeforces::PROBLEM_TAGS]);
         }
@@ -402,6 +400,6 @@ class CodeforcesSyncService extends JudgeSyncService
      */
     protected function getLanguageName($languageName)
     {
-
+        //TODO:
     }
 }

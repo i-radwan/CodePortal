@@ -25,7 +25,7 @@ class ContestController extends Controller
     public function addContest(Request $request)
     {
         $contest = new Contest($request->all());
-        $contest->store();
+        $contest->save();
     }
 
     public function editContest(Request $request)

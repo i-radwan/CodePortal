@@ -19,7 +19,7 @@ class CreateProblemsTable extends Migration
             $table->unsignedInteger(Constants::FLD_PROBLEMS_JUDGE_ID);
             $table->unsignedInteger(Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY);
             $table->string(Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY, 10);
-            $table->string(Constants::FLD_PROBLEMS_NAME, 100);
+            $table->string(Constants::FLD_PROBLEMS_NAME);
             $table->integer(Constants::FLD_PROBLEMS_DIFFICULTY);
             $table->integer(Constants::FLD_PROBLEMS_SOLVED_COUNT);
             $table->timestamps();

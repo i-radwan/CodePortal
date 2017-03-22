@@ -48,7 +48,7 @@ abstract class DatabaseTest extends BaseTestCase
             Constants::FLD_CONTESTS_VISIBILITY => $visibility
         ]);
         $contest->owner()->associate($owner);
-        $contest->store();
+        $contest->save();
         return $contest;
     }
 
@@ -62,7 +62,7 @@ abstract class DatabaseTest extends BaseTestCase
             Constants::FLD_PROBLEMS_SOLVED_COUNT => $acceptedSubmissionsCount
         ]);
         $problem->judge()->associate($judge);
-        $problem->store();
+        $problem->save();
         return $problem;
     }
 
@@ -78,7 +78,7 @@ abstract class DatabaseTest extends BaseTestCase
         $submission->user()->associate($user);
         $submission->problem()->associate($problem);
         $submission->language()->associate($language);
-        $submission->store();
+        $submission->save();
         return $submission;
     }
 
@@ -92,7 +92,7 @@ abstract class DatabaseTest extends BaseTestCase
         ]);
         $question->contest()->associate($contest);
         $question->user()->associate($user);
-        $question->store();
+        $question->save();
         return $question;
     }
 
@@ -103,21 +103,21 @@ abstract class DatabaseTest extends BaseTestCase
             Constants::FLD_JUDGES_NAME => $name,
             Constants::FLD_JUDGES_LINK => $link
         ]);
-        $judge->store();
+        $judge->save();
         return $judge;
     }
 
     public function insertTag($name)
     {
         $tag = new Tag([Constants::FLD_TAGS_NAME => $name]);
-        $tag->store();
+        $tag->save();
         return $tag;
     }
 
     public function insertLanguage($name)
     {
         $language = new Language([Constants::FLD_LANGUAGES_NAME => $name]);
-        $language->store();
+        $language->save();
         return $language;
     }
 

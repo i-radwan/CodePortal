@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use DB;
-use Validator;
 use App\Utilities\Constants;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Model;
 use App\Utilities\Utilities;
 
-class Tag extends Model
+class Tag extends ValidatorModel
 {
     /**
      * The table associated with the model.
@@ -35,6 +32,15 @@ class Tag extends Model
     ];
 
     /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    protected $rules = [
+        Constants::FLD_TAGS_NAME => 'required|unique:' . Constants::TBL_TAGS . '|max:50'
+    ];
+
+    /**
      * Return all problems having the current tag as one of their tags
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -47,13 +53,6 @@ class Tag extends Model
             Constants::FLD_PROBLEM_TAGS_TAG_ID,
             Constants::FLD_PROBLEM_TAGS_PROBLEM_ID
         );
-    }
-
-    public function store()
-    {
-        $v = Validator::make($this->attributes, config('rules.tag.store_validation_rules'));
-        $v->validate();
-        $this->save();
     }
 
     public static function getTagProblems($tagID, $page = 1, $sortBy = [])

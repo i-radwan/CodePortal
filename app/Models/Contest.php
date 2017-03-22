@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use Validator;
 use App\Utilities\Constants;
-use Illuminate\Database\Eloquent\Model;
 
-class Contest extends Model
+class Contest extends ValidatorModel
 {
     /**
      * The table associated with the model.
@@ -34,6 +32,24 @@ class Contest extends Model
         Constants::FLD_CONTESTS_VISIBILITY
     ];
 
+    /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    protected $rules = [
+        Constants::FLD_CONTESTS_NAME => 'required|max:100',
+        Constants::FLD_CONTESTS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
+        Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:today',
+        Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1',
+        Constants::FLD_CONTESTS_VISIBILITY => 'required|Regex:/([01])/'
+    ];
+
+    /**
+     * Return all problems of the current contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function problems()
     {
         return $this->belongsToMany(
@@ -44,6 +60,11 @@ class Contest extends Model
         );
     }
 
+    /**
+     * Return all participating users of the current contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function participatingUsers()
     {
         return $this->belongsToMany(
@@ -54,11 +75,21 @@ class Contest extends Model
         )->withTimestamps();
     }
 
+    /**
+     * Return the owner user of the current contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function owner()
     {
         return $this->belongsTo(User::class, Constants::FLD_CONTESTS_OWNER_ID);
     }
 
+    /**
+     * Return the organizing admins of the current contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function organizingUsers()
     {
         return $this->belongsToMany(
@@ -69,15 +100,13 @@ class Contest extends Model
         );
     }
 
+    /**
+     * Return the asked questions of the current contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function questions()
     {
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_CONTEST_ID);
-    }
-
-    public function store()
-    {
-        $v = Validator::make($this->attributes, config('rules.contest.store_validation_rules'));
-        $v->validate();
-        $this->save();
     }
 }

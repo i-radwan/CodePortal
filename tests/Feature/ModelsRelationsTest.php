@@ -20,7 +20,7 @@ class ModelsRelationsTest extends DatabaseTest
         $user = $this->insertUser('user121', 'a12@a.a', 'aaaaaa', 'aa31a');
         $admin = $this->insertUser('use12r121', 'a1312@a.a', 'aaaaaa', 'aa131a', '1');
         $language = new Language([Constants::FLD_LANGUAGES_NAME => 'C+++1']);
-        $language->store();
+        $language->save();
         $judge = $this->insertJudge('1', 'Codeforces3', 'http://www.judge3.com');
         $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0', $admin);
         $problem1 = $this->insertProblem('Problem1', '10', '20', $judge, '123', '213');
@@ -28,12 +28,12 @@ class ModelsRelationsTest extends DatabaseTest
         $question->saveAnswer("Ansert1", $admin);
         $submission = $this->insertSubmission('123', 100, 200, '1', $problem1, $user, $language);
         $tag = new Tag([Constants::FLD_TAGS_NAME => 'Tag0123']);
-        $tag->store();
+        $tag->save();
 
         // Tags + problems
         $problem1->tags()->sync([$tag->id], false);
         $tag = new Tag([Constants::FLD_TAGS_NAME => 'Tag01232']);
-        $tag->store();
+        $tag->save();
         $problem1->tags()->sync([$tag->id], false);
         $problem = $this->insertProblem('Problem1', '10', '20', $judge, '22', '33');
         $problem->tags()->sync([$tag->id], false);

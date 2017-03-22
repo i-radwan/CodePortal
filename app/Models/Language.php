@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use Validator;
 use App\Utilities\Constants;
-use Illuminate\Database\Eloquent\Model;
 
-class Language extends Model
+class Language extends ValidatorModel
 {
     /**
      * The table associated with the model.
@@ -32,6 +30,15 @@ class Language extends Model
     ];
 
     /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    protected $rules = [
+        Constants::FLD_LANGUAGES_NAME => 'required|unique:' . Constants::TBL_LANGUAGES . '|max:50'
+    ];
+
+    /**
      * Return all submissions written by the current programming language
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -39,12 +46,5 @@ class Language extends Model
     public function submissions()
     {
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_LANGUAGE_ID);
-    }
-
-    public function store()
-    {
-        $v = Validator::make($this->attributes, config('rules.language.store_validation_rules'));
-        $v->validate();
-        $this->save();
     }
 }

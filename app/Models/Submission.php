@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use Validator;
 use App\Utilities\Constants;
-use Illuminate\Database\Eloquent\Model;
 
-class Submission extends Model
+class Submission extends ValidatorModel
 {
     /**
      * The table associated with the model.
@@ -38,25 +36,49 @@ class Submission extends Model
         Constants::FLD_SUBMISSIONS_VERDICT
     ];
 
+    /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    protected $rules = [
+        Constants::FLD_SUBMISSIONS_USER_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
+        Constants::FLD_SUBMISSIONS_PROBLEM_ID => 'required|integer|exists:' . Constants::TBL_PROBLEMS . ',' . Constants::FLD_PROBLEMS_ID,
+        Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => 'required|integer|unique:' . Constants::TBL_SUBMISSIONS,
+        Constants::FLD_SUBMISSIONS_LANGUAGE_ID => 'required|integer|exists:' . Constants::TBL_LANGUAGES . ',' . Constants::FLD_LANGUAGES_ID,
+        Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => 'required|integer|min:0',
+        Constants::FLD_SUBMISSIONS_EXECUTION_TIME => 'required|integer|min:0',
+        Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => 'required|integer|min:0',
+        Constants::FLD_SUBMISSIONS_VERDICT => 'integer|required|min:0|max:18'   //ToDo: 18 should be calculated
+    ];
+
+    /**
+     * Return the owner user of the current submission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class, Constants::FLD_SUBMISSIONS_USER_ID);
     }
 
+    /**
+     * Return the problem related to the current submission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function problem()
     {
         return $this->belongsTo(Problem::class, Constants::FLD_SUBMISSIONS_PROBLEM_ID);
     }
 
+    /**
+     * Return the programming language of the current submission
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function language()
     {
         return $this->belongsTo(Language::class, Constants::FLD_SUBMISSIONS_LANGUAGE_ID);
-    }
-
-    public function store()
-    {
-        $v = Validator::make($this->attributes, config('rules.submission.store_validation_rules'));
-        $v->validate();
-        $this->save();
     }
 }

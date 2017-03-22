@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use DB;
-use Validator;
 use App\Utilities\Constants;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Model;
 use App\Utilities\Utilities;
 
-class Judge extends Model
+class Judge extends ValidatorModel
 {
     /**
      * The table associated with the model.
@@ -48,6 +45,17 @@ class Judge extends Model
         Constants::FLD_JUDGES_ID,
         Constants::FLD_JUDGES_NAME,
         Constants::FLD_JUDGES_LINK
+    ];
+
+    /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    protected $rules = [
+        Constants::FLD_JUDGES_ID => 'required|unique:' . Constants::TBL_JUDGES . '|integer|min:0',
+        Constants::FLD_JUDGES_NAME => 'required|unique:' . Constants::TBL_JUDGES . '|max:100',
+        Constants::FLD_JUDGES_LINK => 'required|unique:' . Constants::TBL_JUDGES . '|max:100|url'
     ];
 
     /**
@@ -92,7 +100,7 @@ class Judge extends Model
     }
 
     /**
-     * Return user model corresponding to the given handle, if not found then null is returned
+     * Return the user model corresponding to the given handle, if not found then null is returned
      *
      * @param string $handle
      * @return User|null
@@ -100,13 +108,6 @@ class Judge extends Model
     public function user($handle)
     {
         return $this->users()->wherePivot(Constants::FLD_USER_HANDLES_HANDLE, $handle)->first();
-    }
-
-    public function store()
-    {
-        $v = Validator::make($this->attributes, config('rules.judge.store_validation_rules'));
-        $v->validate();
-        $this->save();
     }
 
     public static function getJudgeProblems($judgeID, $page = 1, $sortBy = [])

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use Log;
 use App\Models\User;
 use App\Models\Problem;
@@ -105,7 +106,6 @@ abstract class UHuntSyncService extends JudgeSyncService
             Constants::FLD_PROBLEMS_SOLVED_COUNT => $problemSolvedCount
         ]);
 
-        // TODO: need to find a way to call store method for input validation
         $this->judge->problems()->save($problem);
     }
 
@@ -221,7 +221,7 @@ abstract class UHuntSyncService extends JudgeSyncService
             Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => '0',  //TODO:
             Constants::FLD_SUBMISSIONS_VERDICT => $submissionVerdict
         ]);
-        $submission->store();
+        $submission->save();
     }
 
     /**
@@ -237,7 +237,8 @@ abstract class UHuntSyncService extends JudgeSyncService
      */
     protected function calculateProblemDifficulty($distinctSolvedCount, $wrongAnswerCount, $runtimeErrorCount, $timeLimitExceededCount, $memoryLimitExceededCount)
     {
-        return -1;
+        //TODO:
+        return 0;
     }
 
     /**
@@ -248,6 +249,7 @@ abstract class UHuntSyncService extends JudgeSyncService
      */
     protected function getVerdict($verdictId)
     {
+        //TODO:
         /*
             10 : Submission error       #?!
             15 : Can't be judged        #?!
@@ -301,6 +303,7 @@ abstract class UHuntSyncService extends JudgeSyncService
      */
     protected function getLanguageName($languageId)
     {
+        //TODO:
         // 1=ANSI C, 2=Java, 3=C++, 4=Pascal, 5=C++11
         switch ($languageId) {
             case '1':
