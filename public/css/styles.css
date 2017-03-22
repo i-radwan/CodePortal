@@ -460,6 +460,10 @@ footer {
     position: relative;
 }
 
+.no-problems-msg {
+    margin: 30px;
+}
+
 .problems-table-sorting-arrow-desc {
     position: absolute;
     right: 10%;
@@ -497,13 +501,13 @@ footer {
     background-color: #f8f7f9;
 }
 
-.td-problems-badge {
+.problems-badge {
     transition: 0.5s;
 }
 
-.td-problems-badge:hover {
+.problems-badge:hover {
     transition: 0.5s;
-    color: #ffff91;
+    background: rgb(41, 101, 168);
 }
 
 .details {

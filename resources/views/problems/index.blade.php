@@ -11,7 +11,7 @@
                         @if(count($data->problems->data) > 0)
                             @include('problems.table')
                         @else
-                            <p>No
+                            <p class="no-problems-msg">No
                                 problems! {{(count($data->tagsIDs) > 0 || count($data->judgesIDs) > 0 ||strlen($data->q) > 0)?' please change the applied filters':''}}</p>
                         @endif
                     </div>
