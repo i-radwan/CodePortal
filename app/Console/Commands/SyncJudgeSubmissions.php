@@ -62,15 +62,15 @@ class SyncJudgeSubmissions extends Command
         switch ($judgeName) {
             case self::JUDGE_CODEFORCES:
                 $syncService = new CodeforcesSyncService();
-                $judgeId = Constants::CODEFORCES_ID;
+                $judgeId = Constants::JUDGE_CODEFORCES_ID;
                 break;
             case self::JUDGE_UVA:
                 $syncService = new UVaSyncService();
-                $judgeId = Constants::UVA_ID;
+                $judgeId = Constants::JUDGE_UVA_ID;
                 break;
             case self::JUDGE_LIVE_ARCHIVE:
                 $syncService = new LiveArchiveSyncService();
-                $judgeId = Constants::LIVE_ARCHIVE_ID;
+                $judgeId = Constants::JUDGE_LIVE_ARCHIVE_ID;
                 break;
             default:
                 $this->warn("$judgeName is not one of the supported online judges by " . config('app.name') . ".");

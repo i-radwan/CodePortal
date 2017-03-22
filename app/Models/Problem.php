@@ -47,9 +47,8 @@ class Problem extends ValidatorModel
         // ToDo: validating super unique key
         Constants::FLD_PROBLEMS_NAME => 'required|max:255',
         Constants::FLD_PROBLEMS_JUDGE_ID => 'integer|required|exists:' . Constants::TBL_JUDGES . ',' . Constants::FLD_JUDGES_ID,
-        Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => 'required',
-        Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => 'required',
-        Constants::FLD_PROBLEMS_DIFFICULTY => 'integer|required|min:0',
+        Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => 'required|min:0',
+        Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => 'required|max:10',
         Constants::FLD_PROBLEMS_SOLVED_COUNT => 'integer|required|min:0'
     ];
 
@@ -60,7 +59,7 @@ class Problem extends ValidatorModel
      */
     public static $displayable = [
         Constants::FLD_PROBLEMS_NAME,
-        Constants::FLD_PROBLEMS_DIFFICULTY,
+        //Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::FLD_PROBLEMS_SOLVED_COUNT,
         Constants::FLD_PROBLEMS_JUDGE_NAME
     ];
@@ -75,7 +74,7 @@ class Problem extends ValidatorModel
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
+        //Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_SOLVED_COUNT
     ];
 

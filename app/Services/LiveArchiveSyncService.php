@@ -11,21 +11,7 @@ class LiveArchiveSyncService extends UHuntSyncService
      *
      * @var string
      */
-    protected $judgeId = Constants::LIVE_ARCHIVE_ID;
-
-    /**
-     * The name of the online judge
-     *
-     * @var string
-     */
-    protected $judgeName = Constants::LIVE_ARCHIVE_NAME;
-
-    /**
-     * The base url link of the online judge
-     *
-     * @var string
-     */
-    protected $judgeLink = Constants::LIVE_ARCHIVE_LINK;
+    protected $judgeId = Constants::JUDGE_LIVE_ARCHIVE_ID;
 
     /**
      * The problems API's url link

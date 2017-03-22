@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Validator;
 use App\Models\User;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Utilities\Constants;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\RegistersUsers;
+
 class RegisterController extends Controller
 {
     /*
@@ -59,10 +60,10 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            Constants::FLD_USERS_NAME => $data['name'],
-            Constants::FLD_USERS_EMAIL => $data['email'],
-            Constants::FLD_USERS_USERNAME => $data['username'],
-            Constants::FLD_USERS_PASSWORD => bcrypt($data['password']),
+            Constants::FLD_USERS_NAME => $data[Constants::FLD_USERS_NAME],
+            Constants::FLD_USERS_USERNAME => $data[Constants::FLD_USERS_USERNAME],
+            Constants::FLD_USERS_EMAIL => $data[Constants::FLD_USERS_EMAIL],
+            Constants::FLD_USERS_PASSWORD => bcrypt($data[Constants::FLD_USERS_PASSWORD]),
         ]);
     }
 }

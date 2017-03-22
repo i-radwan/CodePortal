@@ -49,7 +49,7 @@ class Submission extends ValidatorModel
         Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => 'required|integer|min:0',
         Constants::FLD_SUBMISSIONS_EXECUTION_TIME => 'required|integer|min:0',
         Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => 'required|integer|min:0',
-        Constants::FLD_SUBMISSIONS_VERDICT => 'integer|required|min:0|max:18'   //ToDo: 18 should be calculated
+        Constants::FLD_SUBMISSIONS_VERDICT => 'integer|required|min:0|max:' . Constants::VERDICT_COUNT
     ];
 
     /**

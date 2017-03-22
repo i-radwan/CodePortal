@@ -35,8 +35,8 @@ class User extends Authenticatable
         Constants::FLD_USERS_PASSWORD,
         Constants::FLD_USERS_USERNAME,
         Constants::FLD_USERS_GENDER,
-        Constants::FLD_USERS_AGE,
-        Constants::FLD_USERS_PROFILE_PIC,
+        Constants::FLD_USERS_BIRTHDATE,
+        Constants::FLD_USERS_PROFILE_PICTURE,
         Constants::FLD_USERS_COUNTRY
     ];
 

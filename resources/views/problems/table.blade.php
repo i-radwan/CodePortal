@@ -29,9 +29,9 @@
         @foreach ( $data->problems->data as $problem)
             <!-- We may here get the colour from a specific constant table -->
             @if(isset($problem->verdict) && count(explode(',', $problem->verdict ))>0)
-                @if(in_array(Constants::SUBMISSION_VERDICT["OK"], explode(',', $problem->verdict)))
+                @if(in_array(Constants::CODEFORCES_SUBMISSION_VERDICTS["OK"], explode(',', $problem->verdict)))
                     <tr class="bg-success">
-                @else($problem->verdict != Constants::SUBMISSION_VERDICT["OK"])
+                @else($problem->verdict != Constants::CODEFORCES_SUBMISSION_VERDICTS["OK"])
                     <tr class="bg-warning">
                 @endif
             @else
@@ -47,7 +47,7 @@
                                         str_replace(
                                             Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
                                             ((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY],
-                                            Constants::JUDGES[((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_ID]]['problemNumberFormula'])
+                                            Constants::JUDGES[((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_ID]]['problemNumberFormat'])
                                 )
                                 }}
                             </td>
@@ -62,7 +62,7 @@
                     <td class="td-problems">
                         @if(count(explode(',', $problem->tags_ids)) > 0 && strlen(trim(explode(',', $problem->tags_ids)[0]))>0)
                             @foreach(explode(',', $problem->tags_ids) as $tagID)
-                                <a href="/problems/?tag={{$tagID}}" class="problems-table-tags-links"><span>
+                                <a href="/problems?tag={{$tagID}}" class="problems-table-tags-links"><span>
                                 {{ ((App\Models\Tag::find($tagID))?(App\Models\Tag::find($tagID)->getAttributes()[Constants::FLD_TAGS_NAME]):'')}}
                                 </span>
                                 </a>

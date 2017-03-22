@@ -11,21 +11,7 @@ class UVaSyncService extends UHuntSyncService
      *
      * @var string
      */
-    protected $judgeId = Constants::UVA_ID;
-
-    /**
-     * The name of the online judge
-     *
-     * @var string
-     */
-    protected $judgeName = Constants::UVA_NAME;
-
-    /**
-     * The base url link of the online judge
-     *
-     * @var string
-     */
-    protected $judgeLink = Constants::UVA_LINK;
+    protected $judgeId = Constants::JUDGE_UVA_ID;
 
     /**
      * The problems API's url link

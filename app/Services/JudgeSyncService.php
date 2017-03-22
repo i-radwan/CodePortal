@@ -33,13 +33,6 @@ abstract class JudgeSyncService
     protected $judgeName;
 
     /**
-     * The base url link of the online judge
-     *
-     * @var string
-     */
-    protected $judgeLink;
-
-    /**
      * The problems API's url link
      *
      * @var string
@@ -82,6 +75,7 @@ abstract class JudgeSyncService
      */
     public function __construct()
     {
+        $this->judgeName = Constants::JUDGES[$this->judgeId][Constants::JUDGE_NAME_KEY];
         $this->judge = $this->getJudgeModel();
     }
 
@@ -227,7 +221,7 @@ abstract class JudgeSyncService
         if (!$judge->exists) {
             $judge->fill([
                 Constants::FLD_JUDGES_NAME => $this->judgeName,
-                Constants::FLD_JUDGES_LINK => $this->judgeLink
+                Constants::FLD_JUDGES_LINK => Constants::JUDGES[$this->judgeId][Constants::JUDGE_LINK_KEY]
             ])->save();
         }
 

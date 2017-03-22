@@ -42,8 +42,8 @@ class Utilities
         // Get judge data from constants file
         $judge = Constants::JUDGES[$problem->judge_id];
 
-        $link = $judge['problemLink'];
-        $replacingArray = $judge['toBeReplaced'];
+        $link = $judge[Constants::JUDGE_PROBLEM_LINK_KEY];
+        $replacingArray = $judge[Constants::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY];
 
         foreach ($replacingArray as $key => $value) {
             $link = str_replace($key, $problem->$value, $link);
@@ -52,10 +52,10 @@ class Utilities
         return $link;
     }
 
-
     /**
      * This function applies the sortBy array to the problems collection and paginate it
      * then it adds the extra info like headings and return the json encoded string
+     *
      * @param $problems
      * @param $sortBy
      * @return string
@@ -70,7 +70,7 @@ class Utilities
         $problems = $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
         // Assign data
         $ret = [
-            "headings" => ["ID", "Name", "Difficulty", "# Acc.", "Judge", "Tags"],
+            "headings" => ["ID", "Name", /*"Difficulty",*/ "# Acc.", "Judge", "Tags"],
             "problems" => $problems,
             "extra" => [
                 "checkbox" => "no",

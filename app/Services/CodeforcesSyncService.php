@@ -20,21 +20,7 @@ class CodeforcesSyncService extends JudgeSyncService
      *
      * @var string
      */
-    protected $judgeId = Constants::CODEFORCES_ID;
-
-    /**
-     * The name of the online judge
-     *
-     * @var string
-     */
-    protected $judgeName = Constants::CODEFORCES_NAME;
-
-    /**
-     * The base url link of the online judge
-     *
-     * @var string
-     */
-    protected $judgeLink = Constants::CODEFORCES_LINK;
+    protected $judgeId = Constants::JUDGE_CODEFORCES_ID;
 
     /**
      * The problems API's url link
@@ -159,15 +145,10 @@ class CodeforcesSyncService extends JudgeSyncService
 
         // Extract problem info
         $problemSolvedCount = $problemData[Codeforces::PROBLEM_SOLVED_COUNT];
-        $problemDifficulty = $this->calculateProblemDifficulty(
-            array_key_exists(Codeforces::PROBLEM_POINTS, $problemData) ? $problemData[Codeforces::PROBLEM_POINTS] : 0,
-            $problemSolvedCount
-        );
 
         // If the problem already exists then just update its solved count and difficulty
         if ($problem->exists) {
             $problem->update([
-                Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
                 Constants::FLD_PROBLEMS_SOLVED_COUNT => $problemSolvedCount
             ]);
             return;
@@ -176,7 +157,6 @@ class CodeforcesSyncService extends JudgeSyncService
         // Fill the problem's data and save it to our local database
         $problem->fill([
             Constants::FLD_PROBLEMS_NAME => $problemData[Codeforces::PROBLEM_NAME],
-            Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
             Constants::FLD_PROBLEMS_SOLVED_COUNT => $problemSolvedCount
         ]);
 
@@ -280,7 +260,9 @@ class CodeforcesSyncService extends JudgeSyncService
         // Extract submission info
         $submissionExecutionTime = $submissionData[Codeforces::SUBMISSION_EXECUTION_TIME];
         $submissionConsumedMemory = $submissionData[Codeforces::SUBMISSION_CONSUMED_MEMORY];
-        $submissionVerdict = Constants::SUBMISSION_VERDICT[array_key_exists(Codeforces::SUBMISSION_VERDICT, $submissionData) ? $submissionData[Codeforces::SUBMISSION_VERDICT] : "UNKNOWN"];
+        $submissionVerdict = $this->getVerdict(
+            array_key_exists(Codeforces::SUBMISSION_VERDICT, $submissionData) ? $submissionData[Codeforces::SUBMISSION_VERDICT] : "UNKNOWN"
+        );
 
         // If submission already exists then just update its verdict, execution time and memory
         if ($submission->exists) {
@@ -296,7 +278,9 @@ class CodeforcesSyncService extends JudgeSyncService
         $problem = $this->getSubmissionProblem($submissionData[Codeforces::SUBMISSION_PROBLEM]);
 
         // Get language model or create it if it does not exist
-        $language = Language::firstOrCreate([Constants::FLD_LANGUAGES_NAME => $submissionData[Codeforces::SUBMISSION_LANGUAGE]]);
+        $language = Language::firstOrCreate([
+            Constants::FLD_LANGUAGES_NAME => $this->getLanguageName($submissionData[Codeforces::SUBMISSION_LANGUAGE])
+        ]);
 
         // Fill in submission data and store it in our local database
         $submission->fill([
@@ -326,11 +310,8 @@ class CodeforcesSyncService extends JudgeSyncService
 
         // If the problem was not found then save it to our database
         if (!$problem->exists) {
-            $problemDifficulty = $this->calculateProblemDifficulty(array_key_exists(Codeforces::PROBLEM_POINTS, $problemData) ? $problemData[Codeforces::PROBLEM_POINTS] : -1);
-
             $problem->fill([
                 Constants::FLD_PROBLEMS_NAME => $problemData[Codeforces::PROBLEM_NAME],
-                Constants::FLD_PROBLEMS_DIFFICULTY => $problemDifficulty,
                 Constants::FLD_PROBLEMS_SOLVED_COUNT => 1
             ]);
 
@@ -351,23 +332,9 @@ class CodeforcesSyncService extends JudgeSyncService
     protected function attachProblemTags(Problem $problem, $problemTags)
     {
         foreach ($problemTags as $tagName) {
-            $tag = Tag::firstOrCreate([Constants::FLD_TAGS_NAME => $tagName]);
+            $tag = Tag::firstOrCreate([Constants::FLD_TAGS_NAME => $this->getTagName($tagName)]);
             $problem->tags()->attach($tag->id);
         }
-    }
-
-    /**
-     * Calculate the difficulty of the problem based on the number of
-     * accepted submissions
-     *
-     * @oaram int $problemPoints Problem points given by Codeforces, -1 if not present
-     * @param int $solvedCount Number of accepted submissions, -1 if not present
-     * @return int The calculated difficulty
-     */
-    protected function calculateProblemDifficulty($problemPoints = -1, $solvedCount = -1)
-    {
-        // TODO:
-        return $problemPoints;
     }
 
     /**
@@ -379,6 +346,7 @@ class CodeforcesSyncService extends JudgeSyncService
     protected function getTagName($tagName)
     {
         //TODO:
+        return $tagName;
     }
 
     /**
@@ -389,7 +357,11 @@ class CodeforcesSyncService extends JudgeSyncService
      */
     protected function getVerdict($verdictName)
     {
-        //TODO:
+        if (!array_key_exists($verdictName, Constants::CODEFORCES_SUBMISSION_VERDICTS)) {
+            return Constants::VERDICT_UNKNOWN;
+        }
+
+        return Constants::CODEFORCES_SUBMISSION_VERDICTS[$verdictName];
     }
 
     /**
@@ -401,5 +373,6 @@ class CodeforcesSyncService extends JudgeSyncService
     protected function getLanguageName($languageName)
     {
         //TODO:
+        return $languageName;
     }
 }
