@@ -9,10 +9,6 @@ html, body {
     font-family: 'Raleway', sans-serif;
 }
 
-.animated {
-    opacity: 1 !important;
-}
-
 .space-wrapper {
     /*min-width: 100vw;*/
     min-height: 100%;
@@ -23,6 +19,10 @@ html, body {
 .flex-center {
     display: flex;
     align-items: center;
+}
+
+.animated {
+    opacity: 1 !important;
 }
 
 .text-dark {
@@ -45,12 +45,8 @@ html, body {
 /*</editor-fold>*/
 
 /*<editor-fold desc="Header & Footer Styles">*/
-/* Navigation bar styles */
-.navbar-default {
 
-}
-
-/* Small devices and above */
+/* Navigation bar styles for small devices and above */
 @media (min-width: 768px) {
     .navbar-default .navbar-nav > li {
         height: 50px;
@@ -94,7 +90,7 @@ footer {
 /*====================================*/
 
 /* Cover photo styles*/
-.jumbotron {
+.home-cover {
     margin-top: -20px; /* to negate the navbar margin */
     min-height: 90vh;
     background-size: cover;
@@ -102,28 +98,29 @@ footer {
     background-position: center center;
 }
 
-.jumbotron .container > h1, .jumbotron .container > h3 {
+.home-cover .container > h1,
+.home-cover .container > h3 {
     color: #e5e5e5;
     text-shadow: 3px 3px 5px #000;
 }
 
-.jumbotron .container > h1 > strong {
+.home-cover .container > h1 > strong {
     font-size: 150%;
 }
 
-.jumbotron .container > h3 {
+.home-cover .container > h3 {
     margin-bottom: 60px;
 }
 
-.jumbotron .has-feedback .form-control {
-    padding-left: 42.5px;
-    padding-right: 16px;
-}
+/*.home-cover .has-feedback .form-control {*/
+    /*padding-left: 42.5px;*/
+    /*padding-right: 16px;*/
+/*}*/
 
-.jumbotron .form-control-feedback {
-    left: 0;
-    z-index: 3;
-}
+/*.home-cover .form-control-feedback {*/
+    /*left: 0;*/
+    /*z-index: 3;*/
+/*}*/
 
 /**************************************/
 
@@ -235,14 +232,14 @@ footer {
 /**************************************/
 
 /* Sponsors styles */
+.js-wp-4 {
+    opacity: 0;
+}
+
 .sponsors-section {
     padding-top: 60px;
     padding-bottom: 60px;
     background-color: #eeeeee;
-}
-
-.js-wp-4 {
-    opacity: 0;
 }
 
 .sponsors-section h1 {
@@ -265,27 +262,90 @@ footer {
 /*============ LOGIN PAGE ============*/
 /*====================================*/
 
-.login-page {
+.login-cover {
+    margin-top: -20px;                  /* to negate the navbar margin */
+    margin-bottom: 0;
+    min-height: calc(100vh - 101px);    /* full height - navbar height - navbar border height - footer height */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
 }
 
-.login-page .panel-default {
+.login-cover .panel-default {
     background: rgba(255, 255, 255, 0.85);
 }
 
-.login-page .container h1, .login-page .container h3 {
-    color: #e5e5e5;
+.login-cover .container h1,
+.login-cover .container h3 {
+    color: #fff;
     text-shadow: 3px 3px 5px #000;
 }
 
-.login-page .container h1 {
-    /*margin-top: 0;*/
+.login-cover .container h1 > strong {
+    font-size: 125%;
 }
 
-.login-page .container h1 > strong {
-    /*font-size: 250%;*/
+/* Small devices */
+@media (min-width: 768px) and (max-width: 991px) {
+
+    .login-cover .container h1 {
+        margin-top: 0;
+    }
+
+    .login-cover .container h1 > strong {
+        font-size: 90%;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 767px) {
+
+    .login-cover .container h3 {
+        margin-bottom: 30px;
+    }
+
+    .login-cover-text-center-xs {
+        text-align: center;
+    }
+}
+
+/**************************************/
+/*</editor-fold>*/
+
+/*<editor-fold desc="Sign up Page">*/
+/*====================================*/
+/*=========== SIGN UP PAGE ===========*/
+/*====================================*/
+
+.signup-cover {
+    margin-top: -20px;                  /* to negate the navbar margin */
+    margin-bottom: 0;
+    min-height: calc(100vh - 101px);    /* full height - navbar height - navbar border height - footer height */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.signup-cover .panel-default {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+.signup-cover .container h1,
+.signup-cover .container h3 {
+    color: #fff;
+    text-shadow: 3px 3px 5px #000;
+}
+
+.signup-cover .container h1 > strong {
+    font-size: 125%;
+}
+
+.signup-cover .container h1 {
+    margin-top: 0;
+}
+
+.signup-cover .container h3 {
+    margin-bottom: 30px;
 }
 
 /**************************************/
@@ -300,13 +360,18 @@ footer {
 @media (min-width: 2000px) {
 
     /* Home page cover photo styles*/
-    .jumbotron {
+    .home-cover {
         background-image: url("/images/cover/1/xxlg.jpg");
     }
 
     /* Login page cover photo styles*/
-    .login-page {
+    .login-cover {
         background-image: url("/images/cover/2/xxlg.jpg");
+    }
+
+    /* Sign up up page cover photo styles*/
+    .signup-cover {
+        background-image: url("/images/cover/3/xxlg.jpg");
     }
 }
 
@@ -316,13 +381,18 @@ footer {
 @media (min-width: 1500px) and (max-width: 1999px) {
 
     /* Home page cover photo styles*/
-    .jumbotron {
+    .home-cover {
         background-image: url("/images/cover/1/xlg.jpg");
     }
 
     /* Login page cover photo styles*/
-    .login-page {
+    .login-cover {
         background-image: url("/images/cover/2/xlg.jpg");
+    }
+
+    /* Sign up page cover photo styles*/
+    .signup-cover {
+        background-image: url("/images/cover/3/xlg.jpg");
     }
 }
 
@@ -332,13 +402,18 @@ footer {
 @media (min-width: 1200px) and (max-width: 1499px) {
 
     /* Home page cover photo styles*/
-    .jumbotron {
+    .home-cover {
         background-image: url("/images/cover/1/lg.jpg");
     }
 
     /* Login page cover photo styles*/
-    .login-page {
+    .login-cover {
         background-image: url("/images/cover/2/lg.jpg");
+    }
+
+    /* Sign up page cover photo styles*/
+    .signup-cover {
+        background-image: url("/images/cover/3/lg.jpg");
     }
 }
 
@@ -348,13 +423,18 @@ footer {
 @media (min-width: 992px) and (max-width: 1199px) {
 
     /* Home page cover photo styles*/
-    .jumbotron {
+    .home-cover {
         background-image: url("/images/cover/1/md.jpg");
     }
 
     /* Login page cover photo styles*/
-    .login-page {
+    .login-cover {
         background-image: url("/images/cover/2/md.jpg");
+    }
+
+    /* Sign up page cover photo styles*/
+    .signup-cover {
+        background-image: url("/images/cover/3/md.jpg");
     }
 }
 
@@ -364,13 +444,18 @@ footer {
 @media (min-width: 768px) and (max-width: 991px) {
 
     /* Home page cover photo styles*/
-    .jumbotron {
+    .home-cover {
         background-image: url("/images/cover/1/sm.jpg");
     }
 
     /* Login page cover photo styles*/
-    .login-page {
+    .login-cover {
         background-image: url("/images/cover/2/sm.jpg");
+    }
+
+    /* Sign up page cover photo styles*/
+    .signup-cover {
+        background-image: url("/images/cover/3/sm.jpg");
     }
 }
 
@@ -380,13 +465,18 @@ footer {
 @media (min-width: 480px) and (max-width: 767px) {
 
     /* Home page cover photo styles*/
-    .jumbotron {
+    .home-cover {
         background-image: url("/images/cover/1/xs.jpg");
     }
 
     /* Login page cover photo styles*/
-    .login-page {
+    .login-cover {
         background-image: url("/images/cover/2/xs.jpg");
+    }
+
+    /* Sign up page cover photo styles*/
+    .signup-cover {
+        background-image: url("/images/cover/3/xs.jpg");
     }
 }
 
@@ -396,13 +486,18 @@ footer {
 @media (max-width: 479px) {
 
     /* Home page cover photo styles*/
-    .jumbotron {
+    .home-cover {
         background-image: url("/images/cover/1/xxs.jpg");
     }
 
     /* Login page cover photo styles*/
-    .login-page {
+    .login-cover {
         background-image: url("/images/cover/2/xxs.jpg");
+    }
+
+    /* Sign up page cover photo styles*/
+    .signup-cover {
+        background-image: url("/images/cover/3/xxs.jpg");
     }
 }
 
@@ -413,6 +508,7 @@ footer {
 /*====================================*/
 /*========== PROBLEMS PAGE ===========*/
 /*====================================*/
+
 .problems-panel {
     border: 0;
 }

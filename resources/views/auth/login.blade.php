@@ -1,12 +1,12 @@
 @extends('layouts.app_container')
 
 @section('content')
-    <div class="space-wrapper login-page">
-        @include('layouts.navbar')
+    @include('layouts.navbar')
 
+    <div class="jumbotron login-cover">
         <div class="container">
             <div class="row">
-                <div class="col-md-8 col-sm-6">
+                <div class="col-md-8 col-sm-6 login-cover-text-center-xs">
                     <h1><strong>{{ config('app.name') }}</strong></h1>
                     <h3>Practise Competitive Programming</h3>
                 </div>
@@ -18,24 +18,26 @@
                             <form role="form" method="POST" action="{{ route('login') }}">
                                 {{ csrf_field() }}
 
-                                <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }} has-feedback">
-                                    <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" placeholder="E-Mail Address" required autofocus>
+                                {{-- Username --}}
+                                <div class="form-group{{ $errors->has(Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
+                                    <input id="username" type="text" class="form-control" name="{{ Constants::FLD_USERS_USERNAME }}" value="{{ old(Constants::FLD_USERS_USERNAME) }}" placeholder="Username" required autofocus>
                                     <span class="glyphicon glyphicon-user form-control-feedback" aria-hidden="true"></span>
 
-                                    @if ($errors->has('email'))
+                                    @if ($errors->has(Constants::FLD_USERS_USERNAME))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first('email') }}</strong>
+                                            <strong>{{ $errors->first(Constants::FLD_USERS_USERNAME) }}</strong>
                                         </span>
                                     @endif
                                 </div>
 
-                                <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }} has-feedback">
-                                    <input id="password" type="password" class="form-control" name="password" placeholder="Password" required>
+                                {{-- Password --}}
+                                <div class="form-group{{ $errors->has(Constants::FLD_USERS_PASSWORD) ? ' has-error' : '' }} has-feedback">
+                                    <input id="password" type="password" class="form-control" name="{{ Constants::FLD_USERS_PASSWORD }}" placeholder="Password" required>
                                     <span class="glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></span>
 
-                                    @if ($errors->has('password'))
+                                    @if ($errors->has(Constants::FLD_USERS_PASSWORD))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first('password') }}</strong>
+                                            <strong>{{ $errors->first(Constants::FLD_USERS_PASSWORD) }}</strong>
                                         </span>
                                     @endif
                                 </div>

@@ -1,4 +1,4 @@
-<div class="jumbotron flex-center">
+<div class="jumbotron home-cover flex-center">
     <div class="container text-center">
         <h1 class="js-wp-1"><strong>{{ config('app.name') }}</strong></h1>
         <h3 class="js-wp-1">Practise Competitive Programming</h3>

@@ -107,7 +107,7 @@ class Question extends ValidatorModel
     // ToDo: recheck function logic @IAR
     public function saveAnswer($newAnswer, $admin, $status = '0')
     {
-        if ($admin->attributes[Constants::FLD_USERS_ROLE] == Constants::USER_ROLE["ADMIN"]) {
+        if ($admin->attributes[Constants::FLD_USERS_ROLE] == Constants::ACCOUNT_ROLE["ADMIN"]) {
             $this->admin()->associate($admin);
             $this->attributes[Constants::FLD_QUESTIONS_ANSWER] = $newAnswer;
             $this->attributes[Constants::FLD_QUESTIONS_STATUS] = $status;

@@ -16,7 +16,7 @@ class ContestTest extends DatabaseTest
     public function testContestModel()
     {
         $initialCount = Contest::count();
-        $user = $this->insertUser('user121', 'a12@a.a', 'aaaaaa', 'aa31a');
+        $user = $this->insertUser('user121', 'a12@a.a', 'aaaaaa');
         // insert valid contest and check for count
         $validContest = $this->insertContest('Contest1', '2017-10-10 12:12:12', 100, Constants::CONTEST_VISIBILITY["PUBLIC"], $user);
         $this->assertTrue(Contest::count() == $initialCount + 1);

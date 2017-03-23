@@ -30,7 +30,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        Constants::FLD_USERS_NAME,
         Constants::FLD_USERS_EMAIL,
         Constants::FLD_USERS_PASSWORD,
         Constants::FLD_USERS_USERNAME,

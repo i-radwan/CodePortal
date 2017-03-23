@@ -121,10 +121,12 @@ class Constants
 
     const ACCOUNT_ROLE_USER_KEY = "USER";
     const ACCOUNT_ROLE_ADMIN_KEY = "ADMIN";
+    const ACCOUNT_ROLE_SUPER_ADMIN_KEY = "SUPER_ADMIN";
 
-    const USER_ROLE = [
+    const ACCOUNT_ROLE = [
         self::ACCOUNT_ROLE_USER_KEY => '0',
-        self::ACCOUNT_ROLE_ADMIN_KEY => '1'
+        self::ACCOUNT_ROLE_ADMIN_KEY => '1',
+        self::ACCOUNT_ROLE_SUPER_ADMIN_KEY => '2'
     ];
 
     const GENDER_MALE_KEY = "MALE";
@@ -198,7 +200,6 @@ class Constants
     const FLD_USERS_USERNAME = "username";
     const FLD_USERS_EMAIL = "email";
     const FLD_USERS_PASSWORD = "password";
-    const FLD_USERS_NAME = "name";
     const FLD_USERS_FIRST_NAME = "first_name";
     const FLD_USERS_LAST_NAME = "last_name";
     const FLD_USERS_GENDER = "gender";
@@ -207,6 +208,9 @@ class Constants
     const FLD_USERS_PROFILE_PICTURE = "profile_picture";
     const FLD_USERS_ROLE = "role";
     const FLD_USERS_REMEMBER_TOKEN = "remember_token";
+    const FLD_USERS_CODEFORCES_HANDLE = "codeforces_handle";        // Used in sign up & profile pages
+    const FLD_USERS_UVA_HANDLE = "uva_handle";                      // Used in sign up & profile pages
+    const FLD_USERS_LIVE_ARCHIVE_HANDLE = "live_archive_handle";    // Used in sign up & profile pages
 
     // Password resets
     const FLD_PASSWORD_RESETS_EMAIL = "email";

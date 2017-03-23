@@ -59,11 +59,32 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            Constants::FLD_USERS_NAME => $data[Constants::FLD_USERS_NAME],
+        $user = User::create([
             Constants::FLD_USERS_USERNAME => $data[Constants::FLD_USERS_USERNAME],
             Constants::FLD_USERS_EMAIL => $data[Constants::FLD_USERS_EMAIL],
             Constants::FLD_USERS_PASSWORD => bcrypt($data[Constants::FLD_USERS_PASSWORD]),
         ]);
+
+        // TODO: add these handles in a queue to fetch their submissions
+
+        if ($data[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
+            $user->handles()->attach(Constants::JUDGE_CODEFORCES_ID, [
+                Constants::FLD_USER_HANDLES_HANDLE => $data[Constants::FLD_USERS_CODEFORCES_HANDLE]
+            ]);
+        }
+
+        if ($data[Constants::FLD_USERS_UVA_HANDLE]) {
+            $user->handles()->attach(Constants::JUDGE_UVA_ID, [
+                Constants::FLD_USER_HANDLES_HANDLE => $data[Constants::FLD_USERS_UVA_HANDLE]
+            ]);
+        }
+
+        if ($data[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]) {
+            $user->handles()->attach(Constants::JUDGE_LIVE_ARCHIVE_ID, [
+                Constants::FLD_USER_HANDLES_HANDLE => $data[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]
+            ]);
+        }
+
+        return $user;
     }
 }

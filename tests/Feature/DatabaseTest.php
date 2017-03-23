@@ -26,13 +26,12 @@ abstract class DatabaseTest extends BaseTestCase
         Artisan::call('migrate');
     }
 
-    public function insertUser($name, $email, $password, $username, $role = '0')
+    public function insertUser($username, $email, $password, $role = '0')
     {
         $user = new User([
-            Constants::FLD_USERS_NAME => $name,
+            Constants::FLD_USERS_USERNAME => $username,
             Constants::FLD_USERS_EMAIL => $email,
-            Constants::FLD_USERS_PASSWORD => $password,
-            Constants::FLD_USERS_USERNAME => $username
+            Constants::FLD_USERS_PASSWORD => $password
         ]);
         $user->role = $role;
         $user->save();

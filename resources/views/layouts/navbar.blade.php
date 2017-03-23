@@ -21,31 +21,19 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li class="{{ Request::is('contests') ? 'active' : '' }}">
-                        <a href="{{ url('contests') }}">
-                            Contests
-                            {!! Request::is('contests') ? '<span class="sr-only">(current)</span>' : '' !!}
-                        </a>
+                        <a href="{{ url('contests') }}">Contests</a>
                     </li>
 
                     <li class="{{ Request::is('problems') ? 'active' : '' }}">
-                        <a href="{{ url('problems') }}">
-                            Problems
-                            {!! Request::is('problems') ? '<span class="sr-only">(current)</span>' : '' !!}
-                        </a>
+                        <a href="{{ url('problems') }}">Problems</a>
                     </li>
 
                     <li class="{{ Request::is('blogs') ? 'active' : '' }}">
-                        <a href="{{ url('blogs') }}">
-                            Blogs
-                            {!! Request::is('blogs') ? '<span class="sr-only">(current)</span>' : '' !!}
-                        </a>
+                        <a href="{{ url('blogs') }}">Blogs</a>
                     </li>
 
                     <li class="{{ Request::is('groups') ? 'active' : '' }}">
-                        <a href="{{ url('groups') }}">
-                            Groups
-                            {!! Request::is('groups') ? '<span class="sr-only">(current)</span>' : '' !!}
-                        </a>
+                        <a href="{{ url('groups') }}">Groups</a>
                     </li>
                 </ul>
 
@@ -53,27 +41,21 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
-                        <li class="{{ Request::url() == route('login') ? 'active' : '' }}">
-                            <a href="{{ route('login') }}">
-                                Log In
-                                {!! Request::url() == route('login') ? '<span class="sr-only">(current)</span>' : '' !!}
-                            </a>
+                        <li class="{{ Request::is('login') ? 'active' : '' }}">
+                            <a href="{{ route('login') }}">Log In</a>
                         </li>
-                        <li class="{{ Request::url() == route('register') ? 'active' : '' }}">
-                            <a href="{{ route('register') }}">
-                                Sign Up
-                                {!! Request::url() == route('register') ? '<span class="sr-only">(current)</span>' : '' !!}
-                            </a>
+                        <li class="{{ Request::is('register') ? 'active' : '' }}">
+                            <a href="{{ route('register') }}">Sign Up</a>
                         </li>
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->name }} <span class="caret"></span>
+                                {{ Auth::user()->username }} <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="{{ url('profile/' . Auth::user()->name) }}">Profile</a>
+                                    <a href="{{ url('profile/' . Auth::user()->username) }}">Profile</a>
                                 </li>
                                 <li role="separator" class="divider">
                                 <li>
