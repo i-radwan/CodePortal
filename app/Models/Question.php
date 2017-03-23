@@ -5,12 +5,13 @@ namespace App\Models;
 use Log;
 use Validator;
 use App\Utilities\Constants;
-use App\Exceptions\UnknownContestException;
 use App\Exceptions\UnknownAdminException;
-use App\Exceptions\UnknownUserException;
+use Illuminate\Database\Eloquent\Model;
 
-class Question extends ValidatorModel
+class Question extends Model
 {
+    use ValidateModelData;
+
     /**
      * The table associated with the model.
      *
@@ -90,18 +91,6 @@ class Question extends ValidatorModel
     public function problem()
     {
         return $this->belongsTo(Problem::class, Constants::FLD_QUESTIONS_PROBLEM_ID);
-    }
-
-    public function save(array $options = [])
-    {
-        if (!$this->contest()) {
-            throw new UnknownContestException;
-        }
-        if (array_key_exists(Constants::FLD_QUESTIONS_USER_ID, $this->attributes) && !$this->user()) {
-            throw new UnknownUserException();
-        }
-
-        return parent::save($options);
     }
 
     // ToDo: recheck function logic @IAR

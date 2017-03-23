@@ -5,12 +5,14 @@ namespace App\Models;
 use DB;
 use Auth;
 use App\Utilities\Constants;
-use App\Exceptions\UnknownJudgeException;
-use Illuminate\Pagination\Paginator;
 use App\Utilities\Utilities;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Model;
 
-class Problem extends ValidatorModel
+class Problem extends Model
 {
+    use ValidateModelData;
+
     /**
      * The table associated with the model.
      *
@@ -59,7 +61,6 @@ class Problem extends ValidatorModel
      */
     public static $displayable = [
         Constants::FLD_PROBLEMS_NAME,
-        //Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::FLD_PROBLEMS_SOLVED_COUNT,
         Constants::FLD_PROBLEMS_JUDGE_NAME
     ];
@@ -74,7 +75,6 @@ class Problem extends ValidatorModel
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
-        //Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_SOLVED_COUNT
     ];
 
@@ -126,15 +126,6 @@ class Problem extends ValidatorModel
     public function submissions()
     {
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_PROBLEM_ID);
-    }
-
-    public function save(array $options = [])
-    {
-        if (!$this->judge()) {
-            throw new UnknownJudgeException;
-        }
-
-        return parent::save($options);
     }
 
     /**

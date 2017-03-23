@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use App\Utilities\Constants;
+use Illuminate\Database\Eloquent\Model;
 
-class Submission extends ValidatorModel
+class Submission extends Model
 {
+    use ValidateModelData;
+
     /**
      * The table associated with the model.
      *

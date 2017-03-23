@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Utilities\Constants;
-use Illuminate\Pagination\Paginator;
 use App\Utilities\Utilities;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Model;
 
-class Judge extends ValidatorModel
+class Judge extends Model
 {
+    use ValidateModelData;
+
     /**
      * The table associated with the model.
      *

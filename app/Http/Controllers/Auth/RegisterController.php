@@ -65,24 +65,16 @@ class RegisterController extends Controller
             Constants::FLD_USERS_PASSWORD => bcrypt($data[Constants::FLD_USERS_PASSWORD]),
         ]);
 
-        // TODO: add these handles in a queue to fetch their submissions
-
         if ($data[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
-            $user->handles()->attach(Constants::JUDGE_CODEFORCES_ID, [
-                Constants::FLD_USER_HANDLES_HANDLE => $data[Constants::FLD_USERS_CODEFORCES_HANDLE]
-            ]);
+            $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $data[Constants::FLD_USERS_CODEFORCES_HANDLE]);
         }
 
         if ($data[Constants::FLD_USERS_UVA_HANDLE]) {
-            $user->handles()->attach(Constants::JUDGE_UVA_ID, [
-                Constants::FLD_USER_HANDLES_HANDLE => $data[Constants::FLD_USERS_UVA_HANDLE]
-            ]);
+            $user->addHandle(Constants::JUDGE_UVA_ID, $data[Constants::FLD_USERS_UVA_HANDLE]);
         }
 
         if ($data[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]) {
-            $user->handles()->attach(Constants::JUDGE_LIVE_ARCHIVE_ID, [
-                Constants::FLD_USER_HANDLES_HANDLE => $data[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]
-            ]);
+            $user->addHandle(Constants::JUDGE_LIVE_ARCHIVE_ID, $data[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]);
         }
 
         return $user;

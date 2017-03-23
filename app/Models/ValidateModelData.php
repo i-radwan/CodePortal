@@ -3,19 +3,11 @@
 namespace App\Models;
 
 use Validator;
-use Illuminate\Database\Eloquent\Model;
 
-class ValidatorModel extends Model
+trait ValidateModelData
 {
     /**
-     * The rules to check against before saving the model
-     *
-     * @var array
-     */
-    protected $rules = [];
-
-    /**
-     * Validate the rule then save the model to the database
+     * Validate the rules then save the model to the database
      *
      * @param array $options
      * @return bool

@@ -82,6 +82,19 @@ class User extends Authenticatable
     }
 
     /**
+     * Attach the given online judge handle to the current user
+     *
+     * @param int $judgeId
+     * @param string $handle
+     */
+    public function addHandle($judgeId, $handle)
+    {
+        // TODO: add these handles in a queue to fetch their submissions
+        // TODO: update handle
+        $this->handles()->attach($judgeId, [Constants::FLD_USER_HANDLES_HANDLE => $handle]);
+    }
+
+    /**
      * Return all the submission of the current user
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
