@@ -293,10 +293,10 @@ class Constants
 }
 //Problems sortBy Constants
 const PROBLEMS_SORT_BY = [
-    "Name" => self::FLD_PROBLEMS_NAME,
-    "Difficulty" => self::FLD_PROBLEMS_DIFFICULTY,
-    "# Acc." => self::FLD_PROBLEMS_SOLVED_COUNT,
-    "ID" => self::FLD_PROBLEMS_ID,
-    "Judge" => self::FLD_PROBLEMS_JUDGE_ID
+    "Name" => FLD_PROBLEMS_NAME,
+    "Difficulty" => FLD_PROBLEMS_DIFFICULTY,
+    "# Acc." => FLD_PROBLEMS_SOLVED_COUNT,
+    "ID" => FLD_PROBLEMS_ID,
+    "Judge" => FLD_PROBLEMS_JUDGE_ID
 ];
 // ============================================================
