@@ -290,13 +290,14 @@ class Constants
     // Problem tags
     const FLD_PROBLEM_TAGS_PROBLEM_ID = "problem_id";
     const FLD_PROBLEM_TAGS_TAG_ID = "tag_id";
+    //Problems sortBy Constants
+    const PROBLEMS_SORT_BY = [
+        "Name" => self::FLD_PROBLEMS_NAME,
+        "Difficulty" => self::FLD_PROBLEMS_DIFFICULTY,
+        "# Acc." => self::FLD_PROBLEMS_SOLVED_COUNT,
+        "ID" => self::FLD_PROBLEMS_ID,
+        "Judge" => self::FLD_PROBLEMS_JUDGE_ID
+    ];
 }
-//Problems sortBy Constants
-const PROBLEMS_SORT_BY = [
-    "Name" => FLD_PROBLEMS_NAME,
-    "Difficulty" => FLD_PROBLEMS_DIFFICULTY,
-    "# Acc." => FLD_PROBLEMS_SOLVED_COUNT,
-    "ID" => FLD_PROBLEMS_ID,
-    "Judge" => FLD_PROBLEMS_JUDGE_ID
-];
 // ============================================================
+
