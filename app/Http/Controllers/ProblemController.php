@@ -11,77 +11,123 @@ use App\Utilities\Constants;
 class ProblemController extends Controller
 {
     /**
-     * Show the problems page.
-     *
-     * @return \Illuminate\Http\Response
+     * @param int $page problems table page
+     * @param array $sortBy sort by parameter
+     * @return string
      */
-    public function getProblemsPagination($page = 1, $sortby = [])
+    public function getProblemsWithPagination($page = 1, $sortBy = [])
     {
-        $problems = Problem::getAllProblems($page, $sortby);
+        $problems = Problem::getAllProblems($page, $sortBy);
         return $problems;
     }
 
+    /**
+     * @param $data the problems response
+     * @param $startPage The start page to be calculated in the pagination bar
+     * @param $endPage  The end page to be calculated in the pagination bar
+     * @param $currentPage The current page in the request
+     * @param $lastPage The last page of the problems list in the request
+     */
+    public function getPaginationLimits(&$data, &$startPage, &$endPage, $currentPage, $lastPage){
+        if ($currentPage < 7) {
+            $endPage = 13;
+            $startPage = 1;
+        } else {
+            $startPage = $currentPage - 6;
+            $endPage = $currentPage + 6;
+        }
+        $endPage = ($endPage > $lastPage) ? $lastPage : $endPage;
+        $data->initialPage = $startPage;
+        $data->pagesLimit = $endPage;
+    }
+
+    /**
+     * @param $sortByParameter The SortBy parameter in the request body
+     * @param $sortByMode The SortBy mode (asc or dsc) in the request body
+     * @param $sortBy The array to be returned after the end of the function having the right format
+     */
+    public function applySortByParameter($sortByParameter, &$sortByMode,  &$sortBy){
+        //Validation of SortByMode if it's not assigned
+        if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') $sortByMode = 'desc';
+        if ($sortByParameter) {
+            if (Constants::PROBLEMS_SORT_BY[$sortByParameter])
+                $sortByType = Constants::PROBLEMS_SORT_BY[$sortByParameter];
+            else
+                $sortByType = Constants::PROBLEMS_SORT_BY['Name'];
+            $sortBy = [[ "column" => Constants::TBL_PROBLEMS . '.' . $sortByType, "mode" => $sortByMode ]];
+        } else $sortBy = [];
+    }
+
+    /**
+     * @param $tag single selected tag
+     * @param $q the problem search string
+     * @param $tags the checked tags
+     * @param $judges the checked judges
+     * @param $page the selected page
+     * @param $sortBy the sort by parameter
+     * @return string
+     */
+    public function applyFilters($tag, $q, $tags, $judges, $page, $sortBy){
+        //If tags are checked / judges are checked / problemSearch is found
+        if (($tags || $q || $judges))
+            $data = Problem::filter($q, $tags, $judges, $page, $sortBy);
+        //If a single Tag is applied
+        else if ($tag != "")
+            $data = Tag::getTagProblems($tag, $page, $sortBy);
+        //Nothing is applied
+        else
+            $data = $this->getProblemsWithPagination($page, $sortBy);
+        return $data;
+    }
+
+    /**
+     * @param $data
+     */
+    public function supplyTagsAndJudges(&$data){
+        //Add All Tags
+        $data->tags = json_decode(Tag::all());
+        //Add All Judges
+        $data->judges = json_decode(Judge::all());
+    }
+
+    /**
+     * @param $data the problems data
+     * @param $sortByMode sort Mode (asc/ dsc)
+     * @param $sortByParameter sort by what
+     * @param $setJudges the current checked judges
+     * @param $setProblemSearchString
+     * @param $setTags the current checked tags
+     */
+    public function supplyMetaData(&$data, $sortByMode, $sortByParameter, $setJudges, $setProblemSearchString, $setTags){
+        //Add SortByMode
+        $data->sortbyMode = $sortByMode;
+        $data->sortbyParam = $sortByParameter;
+        // Set pagination limits
+        $this->getPaginationLimits($data, $startPage, $endPage ,$data->problems->current_page ,$data->problems->last_page);
+        // Send query filters data to view (to maintain selected filters status as selected)
+        $data->judgesIDs = ($setJudges) ? $setJudges : [];
+        $data->tagsIDs = ($setTags) ? $setTags : [];
+        $data->q = $setProblemSearchString;
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return $this
+     */
     public function index(Request $request)
     {
-        // Get problems sorting mode and check validity
-        $sortbyMode = $request->get('order');
-        if ($sortbyMode && $sortbyMode != 'asc' && $sortbyMode != 'desc') {
-            $sortbyMode = 'desc';
-        }
-        if ($request->get('sortby')) {
-
-            // ToDo THIS MUST NOT BE HARDCODED LIKE THAT
-            if ($request->get('sortby') == "Name")
-                $sortByParameter = Constants::FLD_PROBLEMS_NAME;
-            else if ($request->get('sortby') == "Difficulty")
-                $sortByParameter = Constants::FLD_PROBLEMS_DIFFICULTY;
-            else if ($request->get('sortby') == "# Acc.")
-                $sortByParameter = Constants::FLD_PROBLEMS_SOLVED_COUNT;
-            else if ($request->get('sortby') == "ID")
-                $sortByParameter = Constants::FLD_PROBLEMS_ID;
-            else if ($request->get('sortby') == "Judge")
-                $sortByParameter = Constants::FLD_PROBLEMS_JUDGE_ID;
-            else
-                $sortByParameter = Constants::FLD_PROBLEMS_NAME;
-            $sortby = [[
-                "column" => Constants::TBL_PROBLEMS . '.' . $sortByParameter,
-                "mode" => $sortbyMode
-            ]];
-        } else {
-            $sortby = [];
-        }
-        //If search or filters are applied
-        if (($request->get('tags') || $request->get('q') || $request->get('judges'))) {
-            $data = Problem::filter($request->get('q'), (($request->get('tags')) ? $request->get('tags') : []), (($request->get('judges')) ? $request->get('judges') : []), $request->get('page'), $sortby);
-        } //If a single Tag is applied
-        else if ($request->get('tag') != "") {
-            $data = Tag::getTagProblems($request->get('tag'), $request->get('page'), $sortby);
-        } //No Filters are applied
-        else {
-            $data = $this->getProblemsPagination($request->get('page'), $sortby);
-        }
-        $data = (json_decode($data));
-        $data->tags = json_decode(Tag::all());
-        $data->judges = json_decode(Judge::all());
-        $data->sortbyMode = $sortbyMode;
-        $data->sortbyParam = $request->get('sortby');
-        // Set pagination limits
-        $j = $data->problems->current_page;
-        if ($j < 7) {
-            $forcedLimit = 12;
-            $forcedLimit = ($forcedLimit > $data->problems->last_page) ? $data->problems->last_page : $forcedLimit;
-            $i = 1;
-        } else {
-            $i = $j - 6;
-            $forcedLimit = $j + 6;
-            $forcedLimit = ($forcedLimit > $data->problems->last_page) ? $data->problems->last_page : $forcedLimit;
-        }
-        $data->initialPage = $i;
-        $data->pagesLimit = $forcedLimit;
-        // Send query filters data to view (to maintain selected filters status as selected)
-        $data->judgesIDs = ($request->get('judges')) ? $request->get('judges') : [];
-        $data->tagsIDs = ($request->get('tags')) ? $request->get('tags') : [];
-        $data->q = $request->get('q');
+        //Get SortBy Parameters
+        $sortByMode = $request->get('order');
+        $sortByParameter = $request->get('sortby');
+        //Add Sort
+        $this->applySortByParameter($sortByParameter, $sortByMode, $sortBy);
+        //Get problems Data
+        $data = json_decode($this->applyFilters($request->get('tag'), $request->get('q'), $request->get('tags'), $request->get('judges'),$request->get('page'), $sortBy));
+        //Supply Tags and Judges
+        $this->supplyTagsAndJudges($data);
+        //Supply MetaData
+        $this->supplyMetaData($data, $sortByMode, $sortByParameter, $request->get('judges'), $request->get('q'), $request->get('tags'));
+        //Return result
         return view('problems.index')->with('data', $data);
     }
 }
