@@ -7,7 +7,7 @@
                 <th class={{($heading == 'Name')?"problems-table-name-head" : (($heading == 'Tags')?"problems-table-tags-head":"problems-table-head")}}>
                     @if($heading != "Tags")
                         <a class="problems-table-head-link"
-                           href="{{(Utilities::getURL("sortby", $heading, "/problems", Request::fullUrl()))}}&order={{($data->sortbyMode == 'desc')?'asc':'desc'}}">{{$heading}}
+                           href="{{(Utilities::getURL("sortby", $heading, url()->current(), Request::fullUrl()))}}&order={{($data->sortbyMode == 'desc')?'asc':'desc'}}">{{$heading}}
                         </a>
                     @else
                         <span class="table-head">{{$heading}}</span>
@@ -25,6 +25,11 @@
         </tr>
         </thead>
         <tbody>
+        <?php
+        //TODO (Samir) Adding CheckBoxes to be used in Adding New Contest
+        //ToDO Removing any php code here from the view if applicable
+        //ToDo (Samir) ReCheck for any field specific for the problem page
+        ?>
         <!-- we are going to display the fetched problems -->
         @foreach ( $data->problems->data as $problem)
             <!-- We may here get the colour from a specific constant table -->
@@ -62,7 +67,7 @@
                     <td class="td-problems">
                         @if(count(explode(',', $problem->tags_ids)) > 0 && strlen(trim(explode(',', $problem->tags_ids)[0]))>0)
                             @foreach(explode(',', $problem->tags_ids) as $tagID)
-                                <a href="/problems?tag={{$tagID}}" class="problems-table-tags-links"><span>
+                                <a href="{{url()->current()}}?tag={{$tagID}}" class="problems-table-tags-links"><span>
                                 {{ ((App\Models\Tag::find($tagID))?(App\Models\Tag::find($tagID)->getAttributes()[Constants::FLD_TAGS_NAME]):'')}}
                                 </span>
                                 </a>
@@ -80,7 +85,7 @@
         <ul class="pagination" max-size='12'>
             <li class="page-item {{isset($data->problems->prev_page_url)? "":"disabled"}}">
                 <a class="page-link"
-                   href="{{isset($data->problems->prev_page_url) ? Utilities::getURL("page", $data->problems->current_page-1, "/problems", Request::fullUrl(), false) : ""}}"
+                   href="{{isset($data->problems->prev_page_url) ? Utilities::getURL("page", $data->problems->current_page-1, url()->current(), Request::fullUrl(), false) : ""}}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Previous</span>
@@ -89,12 +94,12 @@
             @for ($i = $data->initialPage; ($i <= $data->pagesLimit) ; $i++)
                 <li class= {{($data->problems->current_page == $i ? "active" : "")}}>
                     <a class="page-link"
-                       href={{Utilities::getURL("page", $i, "/problems", Request::fullUrl(), false)}}>{{$i}}</a>
+                       href={{Utilities::getURL("page", $i, url()->current(), Request::fullUrl(), false)}}>{{$i}}</a>
                 </li>
             @endfor
             <li class="page-item {{(isset($data->problems->next_page_url) ? ("") : ("disabled"))}}">
                 <a class="page-link"
-                   href="{{(isset($data->problems->next_page_url) ? Utilities::getURL("page", $data->problems->current_page + 1, "/problems", Request::fullUrl(), false) : "")}}"
+                   href="{{(isset($data->problems->next_page_url) ? Utilities::getURL("page", $data->problems->current_page + 1, url()->current(), Request::fullUrl(), false) : "")}}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                     <span class="sr-only">Next</span>
