@@ -249,9 +249,32 @@ footer {
 .sponsors-section img {
     max-width: 150px;
     max-height: 150px;
+
+    /* Transition time */
+    -webkit-transition: 0.2s;
+    -moz-transition: 0.2s;
+    -ms-transition: 0.2s;
+    -o-transition: 0.2s;
+    transition: 0.2s;
+
+    /* Shadow */
     -moz-box-shadow: 0 0 1px 1px #757575;
     -webkit-box-shadow: 0 0 1px 1px #757575;
     box-shadow: 0 0 1px 1px #757575;
+}
+
+.sponsors-section img:hover {
+    /* Transition time */
+    -webkit-transition: 0.3s;
+    -moz-transition: 0.3s;
+    -ms-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s;
+
+    /* Shadow */
+    -moz-box-shadow: 0 0 10px 3px #757575;
+    -webkit-box-shadow: 0 0 10px 3px #757575;
+    box-shadow: 0 0 10px 3px #757575;
 }
 
 /**************************************/
