@@ -29,6 +29,7 @@
         //TODO (Samir) Adding CheckBoxes to be used in Adding New Contest
         //ToDO Removing any php code here from the view if applicable
         //ToDo (Samir) ReCheck for any field specific for the problem page
+        // array key exists TABLE_CELL_LINK
         ?>
         <!-- we are going to display the fetched problems -->
         @foreach ( $data->problems->data as $problem)
