@@ -7,7 +7,7 @@ use App\Models\Problem;
 class Utilities
 {
     /**
-     * This function adds a new query to the saved ones and overwrites if needed
+     * Add a new query to the saved ones and overwrites if needed
      *
      * @param $key the query key to be replaced/added
      * @param $value the query value
@@ -31,17 +31,35 @@ class Utilities
     }
 
     /**
-     * This function takes the problem object and returns the problem link
-     * depending on the specified judge
+     * Generate the number of the problem based on the hosting judge
      *
-     * @param $problem problem model object
+     * @param Problem $problem problem model object
+     * @return string the id of the problem
+     */
+    public static function generateProblemNumber($problem)
+    {
+        // Get judge data from constants file
+        $judge = Constants::JUDGES[$problem->judge_id];
+        $number = $judge[Constants::JUDGE_PROBLEM_NUMBER_FORMAT_KEY];
+        $replacingArray = $judge[Constants::JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY];
+
+        foreach ($replacingArray as $key => $value) {
+            $number = str_replace($key, $problem->$value, $number);
+        }
+
+        return $number;
+    }
+
+    /**
+     * Generate the link of the problem based on the hosting judge
+     *
+     * @param Problem $problem problem model object
      * @return string url the problem link to the online judge
      */
     public static function generateProblemLink($problem)
     {
         // Get judge data from constants file
         $judge = Constants::JUDGES[$problem->judge_id];
-
         $link = $judge[Constants::JUDGE_PROBLEM_LINK_KEY];
         $replacingArray = $judge[Constants::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY];
 

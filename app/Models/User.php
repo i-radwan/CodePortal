@@ -89,8 +89,10 @@ class User extends Authenticatable
      */
     public function addHandle($judgeId, $handle)
     {
+        // TODO: Omar Wael
         // TODO: add these handles in a queue to fetch their submissions
         // TODO: update handle
+        // TODO: validate
         $this->handles()->attach($judgeId, [Constants::FLD_USER_HANDLES_HANDLE => $handle]);
     }
 
@@ -156,14 +158,14 @@ class User extends Authenticatable
 
     public function contest_questions($contestId)
     {
-        // ToDo: rename function name
+        // ToDo: rename function to camel case
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID)
             ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }
 
     public function answered_questions()
     {
-        // ToDo: rename function name + recheck the logic of this function
+        // ToDo: rename function to camel + recheck the logic of this function
         return $this->hasMany(Question::class)->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
     }
 }

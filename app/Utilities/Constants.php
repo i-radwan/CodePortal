@@ -4,7 +4,80 @@ namespace App\Utilities;
 
 class Constants
 {
+    //region Problems page
+
+    //
+    // Problems page constants
+    //
+
     const PROBLEMS_COUNT_PER_PAGE = 30;
+
+    // TODO: add links
+    const PROBLEMS_TABLE_HEADINGS = [
+        [
+            Constants::TABLE_DATA_KEY => "ID",
+            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
+            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
+        ],
+        [
+            Constants::TABLE_DATA_KEY => "Name",
+            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
+            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
+        ],
+        [
+            Constants::TABLE_DATA_KEY => "# Acc.",
+            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
+            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
+        ],
+        [
+            Constants::TABLE_DATA_KEY => "Judge",
+            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
+            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
+        ],
+        [
+            Constants::TABLE_DATA_KEY => "Tags",
+            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
+            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
+        ],
+    ];
+
+    const PROBLEMS_SORT_BY = [
+        "Name" => self::FLD_PROBLEMS_NAME,
+        "Difficulty" => self::FLD_PROBLEMS_DIFFICULTY,
+        "# Acc." => self::FLD_PROBLEMS_SOLVED_COUNT,
+        "ID" => self::FLD_PROBLEMS_ID,
+        "Judge" => self::FLD_PROBLEMS_JUDGE_ID
+    ];
+    // ============================================================
+    //endregion
+
+    //region Table protocol
+
+    //
+    // Table Protocol constants
+    //
+
+    // Keys
+    const TABLE_HEADINGS_KEY = "headings";
+    const TABLE_ROWS_KEY = "rows";
+    const TABLE_DATA_KEY = "data";
+    const TABLE_META_DATA_KEY = "meta_data";
+    const TABLE_LINK_KEY = "link";
+    const TABLE_EXTERNAL_LINK_KEY = "external_link";
+    const TABLE_HEADINGS_LINK_UP_KEY = "link_up";
+    const TABLE_HEADINGS_LINK_DOWN_KEY = "link_down";
+    const TABLE_ROW_STATE_KEY = "state";
+    const TABLE_ROW_DISABLED_KEY = "disabled";
+    const TABLE_ROW_CHECKBOX_KEY = "checkbox";
+
+    // Values
+    const TABLE_ROW_STATE_NORMAL = 0;
+    const TABLE_ROW_STATE_SUCCESS = 1;
+    const TABLE_ROW_STATE_DANGER = 2;
+    // ============================================================
+    //endregion
+
+    //region Judges
 
     //
     // Judges constants
@@ -18,17 +91,22 @@ class Constants
     const JUDGE_PROBLEM_LINK_KEY = "problemLink";
     const JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY = "problemLinkAttr";
     const JUDGE_PROBLEM_NUMBER_FORMAT_KEY = "problemNumberFormat";
+    const JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY = "problemNumberFormatAttr";
 
     const JUDGES = [
         self::JUDGE_CODEFORCES_ID => [
             self::JUDGE_NAME_KEY => "Codeforces",
             self::JUDGE_LINK_KEY => "http://codeforces.com/",
-            self::JUDGE_PROBLEM_LINK_KEY => "http://codeforces.com/problemset/problem/{contestId}/{contestIndex}",
+            self::JUDGE_PROBLEM_LINK_KEY => "http://codeforces.com/problemset/problem/{contestId}/{problemIndex}",
             self::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY => [
                 "{contestId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY,
-                "{contestIndex}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY,
+                "{problemIndex}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
             ],
-            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => self::FLD_PROBLEMS_JUDGE_FIRST_KEY . self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "{contestId}{problemIndex}",
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY => [
+                "{contestId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+                "{problemIndex}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+            ]
         ],
         self::JUDGE_UVA_ID => [
             self::JUDGE_NAME_KEY => "UVa Online Judge",
@@ -37,7 +115,10 @@ class Constants
             self::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY => [
                 "{problemId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
             ],
-            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "P" . self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "P{problemNumber}",
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY => [
+                "{problemNumber}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+            ]
         ],
         self::JUDGE_LIVE_ARCHIVE_ID => [
             self::JUDGE_NAME_KEY => "Live Archive",
@@ -46,14 +127,18 @@ class Constants
             self::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY => [
                 "{problemId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
             ],
-            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "P" . self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "P{problemNumber}",
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY => [
+                "{problemNumber}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+            ]
         ]
     ];
-    // ============================================================
 
     //
     // Submission verdicts & languages
     //
+
+    // Full list verdicts
     const VERDICT_FAILED = '0';
     const VERDICT_ACCEPTED = '1';
     const VERDICT_PARTIAL_ACCEPTED = '2';
@@ -73,6 +158,12 @@ class Constants
     const VERDICT_REJECTED = '16';
     const VERDICT_UNKNOWN = '17';
     const VERDICT_COUNT = 18;   // To be incremented manually
+
+    // Simple list of verdicts
+    const SIMPLE_VERDICT_NOT_SOLVED = 0;
+    const SIMPLE_VERDICT_ACCEPTED = 1;
+    const SIMPLE_VERDICT_WRONG_SUBMISSION = 2;
+
 
     const CODEFORCES_SUBMISSION_VERDICTS = [
         "FAILED" => self::VERDICT_FAILED,
@@ -118,11 +209,17 @@ class Constants
         "5" => "C++11"
     ];
     // ============================================================
+    //endregion
+
+    //region Database
+
+    //
+    // Database constants
+    //
 
     const ACCOUNT_ROLE_USER_KEY = "USER";
     const ACCOUNT_ROLE_ADMIN_KEY = "ADMIN";
     const ACCOUNT_ROLE_SUPER_ADMIN_KEY = "SUPER_ADMIN";
-
     const ACCOUNT_ROLE = [
         self::ACCOUNT_ROLE_USER_KEY => '0',
         self::ACCOUNT_ROLE_ADMIN_KEY => '1',
@@ -131,7 +228,6 @@ class Constants
 
     const GENDER_MALE_KEY = "MALE";
     const GENDER_FEMALE_KEY = "FEMALE";
-
     const USER_GENDER = [
         self::GENDER_MALE_KEY => '0',
         self::GENDER_FEMALE_KEY => '1'
@@ -140,7 +236,6 @@ class Constants
     const CONTEST_PARTICIPANT_ROLE_USER_KEY = "USER";
     const CONTEST_PARTICIPANT_ROLE_OWNER_KEY = "OWNER";
     const CONTEST_PARTICIPANT_ROLE_ADMIN_KEY = "ADMIN";
-
     const CONTEST_PARTICIPANT_ROLE = [
         self::CONTEST_PARTICIPANT_ROLE_USER_KEY => '0',
         self::CONTEST_PARTICIPANT_ROLE_OWNER_KEY => '1',
@@ -149,7 +244,6 @@ class Constants
 
     const CONTEST_VISIBILITY_PUBLIC_KEY = "PUBLIC";
     const CONTEST_VISIBILITY_PRIVATE_KEY = "PRIVATE";
-
     const CONTEST_VISIBILITY = [
         self::CONTEST_VISIBILITY_PUBLIC_KEY => '0',
         self::CONTEST_VISIBILITY_PRIVATE_KEY => '1'
@@ -157,16 +251,11 @@ class Constants
 
     const QUESTION_STATUS_NORMAL_KEY = "NORMAL";
     const QUESTION_STATUS_ANNOUNCEMENT_KEY = "ANNOUNCEMENT";
-
     const QUESTION_STATUS = [
         self::QUESTION_STATUS_NORMAL_KEY => '0',
         self::QUESTION_STATUS_ANNOUNCEMENT_KEY => '1'
     ];
 
-    //
-    // Database constants
-    //
-    // ==================
 
     //
     // Tables
@@ -233,7 +322,8 @@ class Constants
     const FLD_PROBLEMS_NAME = "name";
     const FLD_PROBLEMS_DIFFICULTY = "difficulty";
     const FLD_PROBLEMS_SOLVED_COUNT = "solved_count";
-    const FLD_PROBLEMS_JUDGE_NAME = "judge"; // used for the problems table
+    const FLD_PROBLEMS_JUDGE_NAME = "judge_name";                   // Derived attribute
+    const FLD_PROBLEMS_TAGS = "tag_names";                          // Derived attribute
 
     // Submissions
     const FLD_SUBMISSIONS_ID = "id";
@@ -290,14 +380,6 @@ class Constants
     // Problem tags
     const FLD_PROBLEM_TAGS_PROBLEM_ID = "problem_id";
     const FLD_PROBLEM_TAGS_TAG_ID = "tag_id";
-    //Problems sortBy Constants
-    const PROBLEMS_SORT_BY = [
-        "Name" => self::FLD_PROBLEMS_NAME,
-        "Difficulty" => self::FLD_PROBLEMS_DIFFICULTY,
-        "# Acc." => self::FLD_PROBLEMS_SOLVED_COUNT,
-        "ID" => self::FLD_PROBLEMS_ID,
-        "Judge" => self::FLD_PROBLEMS_JUDGE_ID
-    ];
+    // ============================================================
+    //endregion
 }
-// ============================================================
-

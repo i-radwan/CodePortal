@@ -6,6 +6,7 @@ use DB;
 use Auth;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,7 +47,7 @@ class Problem extends Model
      * @var array
      */
     protected $rules = [
-        // ToDo: validating super unique key
+        // TODO: validating super unique key
         Constants::FLD_PROBLEMS_NAME => 'required|max:255',
         Constants::FLD_PROBLEMS_JUDGE_ID => 'integer|required|exists:' . Constants::TBL_JUDGES . ',' . Constants::FLD_JUDGES_ID,
         Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => 'required|min:0',
@@ -72,6 +73,7 @@ class Problem extends Model
      */
     private static $basicProblemsQueryCols = [
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
@@ -129,6 +131,125 @@ class Problem extends Model
     }
 
     /**
+     * Return the simple verdict of the current problem for the given user,
+     * if no user is passed then not solved verdict is returned
+     *
+     * @param User|null $user
+     * @return int the simple verdict of the problem: 0 not solved, 1 accepted, 2 wrong submission
+     */
+    public function simpleVerdict(User $user = null)
+    {
+        if ($user == null) {
+            return Constants::SIMPLE_VERDICT_NOT_SOLVED;
+        }
+
+        // Count the number of accepted submissions
+        $acceptedSubmissions = $this
+            ->submissions()
+            ->where([
+                [Constants::FLD_SUBMISSIONS_USER_ID, '=', $user->id],
+                [Constants::FLD_SUBMISSIONS_VERDICT, '=', Constants::VERDICT_ACCEPTED]
+            ])
+            ->count();
+
+        if ($acceptedSubmissions > 0) {
+            return Constants::SIMPLE_VERDICT_ACCEPTED;
+        }
+
+        // Count the total number of submissions
+        $submissions = $this
+            ->submissions()
+            ->where(Constants::FLD_SUBMISSIONS_USER_ID, '=', $user->id)
+            ->count();
+
+        if ($submissions > 0) {
+            return Constants::SIMPLE_VERDICT_WRONG_SUBMISSION;
+        }
+
+        return Constants::SIMPLE_VERDICT_NOT_SOLVED;
+    }
+
+    /**
+     * Scope a query to only include problems with the given name
+     *
+     * @param Builder $query
+     * @param string|null $name
+     * @return Builder
+     */
+    public function scopeOfName(Builder $query, $name = null)
+    {
+        $query->select(self::$basicProblemsQueryCols);
+
+        if ($name == null || $name == "") {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME,
+            'LIKE',
+            "%$name%"
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include problems that belong to one of the given judges
+     *
+     * @param Builder $query
+     * @param array|null $judgesIDs
+     * @return Builder
+     */
+    public function scopeOfJudges(Builder $query, $judgesIDs = null)
+    {
+        if ($judgesIDs == null || $judgesIDs == []) {
+            return $query;
+        }
+
+        $query->whereIn(
+            Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
+            $judgesIDs
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include problems having one or more of the given tags
+     *
+     * @param Builder $query
+     * @param array|null $tagsIDs
+     * @return Builder
+     */
+    public function scopeHasTags(Builder $query, $tagsIDs = null)
+    {
+        if ($tagsIDs == null || $tagsIDs == []) {
+            return $query;
+        }
+
+        $query
+            ->distinct()
+            ->join(
+                Constants::TBL_PROBLEM_TAGS,
+                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
+                '=',
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
+            )
+            ->whereIn(
+                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID,
+                $tagsIDs
+            );
+
+        return $query;
+    }
+
+
+
+    // ======================================================
+    // Below functions to be erased later
+    // ======================================================
+
+    /**
      * This function returns all the problems paginated
      *
      * @param int $page
@@ -174,16 +295,19 @@ class Problem extends Model
     {
         // The new columns to be selected
         $cols = $problems->columns;
-        array_push($cols, Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as judge');
-        array_push($cols, Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID . ' as judge_id');
+        array_push($cols, Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_NAME . ' as '. Constants::FLD_PROBLEMS_JUDGE_NAME);
+        array_push($cols, Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID . ' as ' . Constants::FLD_PROBLEMS_JUDGE_ID);
 
         // Select and join with judges table
         $problems
             ->select($cols)
-            ->join(Constants::TBL_JUDGES,
+            ->join(
+                Constants::TBL_JUDGES,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
                 '=',
-                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID);
+                Constants::TBL_JUDGES . '.' . Constants::FLD_JUDGES_ID
+            );
+
         return $problems;
     }
 
@@ -253,7 +377,10 @@ class Problem extends Model
             Problem::addSubmissionsDataToProblems(
                 Problem::addTagsDataToProblems(
                     Problem::addJudgeDataToProblems(
-                        Problem::getRawProblems())));
+                        Problem::getRawProblems()
+                    )
+                )
+            );
     }
 
     /**
