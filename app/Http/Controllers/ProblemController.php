@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use App\Models\User;
 use App\Models\Problem;
 use App\Models\Tag;
 use App\Models\Judge;
-use Illuminate\Http\Request;
+use App\Utilities\Utilities;
 use App\Utilities\Constants;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 
 class ProblemController extends Controller
 {
@@ -112,10 +116,12 @@ class ProblemController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @return $this
+     * @return mixed
      */
     public function index(Request $request)
     {
+        //dd(self::prepareProblemsTableData(self::filterProblems()));
+
         //Get SortBy Parameters
         $sortByMode = $request->get('order');
         $sortByParameter = $request->get('sortby');
@@ -129,5 +135,126 @@ class ProblemController extends Controller
         $this->supplyMetaData($data, $sortByMode, $sortByParameter, $request->get('judges'), $request->get('q'), $request->get('tags'));
         //Return result
         return view('problems.index')->with('data', $data);
+    }
+
+    /**
+     * Return paginated filtered problems according to the given filters.
+     * To skip a filter just pass null to the corresponding filter in the parameter list.
+     *
+     * @param string|null $name
+     * @param array|null $judgesIDs
+     * @param array|null $tagsIDs
+     * @param array|null $sortBy
+     * @return Collection list of problem models
+     */
+    public static function filterProblems($name = null, $judgesIDs = null, $tagsIDs = null, $sortBy = null)
+    {
+        // Filter the problems
+        $problems = Problem::ofName($name)->ofJudges($judgesIDs)->hasTags($tagsIDs);
+
+        // Sort the problems
+        if ($sortBy != null) {
+            foreach ($sortBy as $column => $mode) {
+                $problems->orderBy($column, $mode);
+            }
+        }
+
+        // Execute the problems paginated query
+        return $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
+    }
+
+    /**
+     * Prepare problems table output data in table protocol format
+     *
+     * @param Collection $problems
+     * @return array the formatted table data
+     */
+    public static function prepareProblemsTableData($problems)
+    {
+        // Get the currently logged in user
+        $user = Auth::user();
+
+        $rows = [];
+
+        // Prepare problems data for table according to the table protocol
+        foreach ($problems as $problem) {
+            $rows[] = [
+                Constants::TABLE_DATA_KEY => self::getProblemRowData($problem),
+                Constants::TABLE_META_DATA_KEY => self::getProblemRowMetaData($problem, $user)
+            ];
+        }
+
+        // Return problems table data: headings & rows
+        return [
+            Constants::TABLE_HEADINGS_KEY => Constants::PROBLEMS_TABLE_HEADINGS,
+            Constants::TABLE_ROWS_KEY => $rows
+        ];
+    }
+
+    /**
+     * Return table row data of the given problem in table protocol format
+     *
+     * @param Problem $problem
+     * @return array the formatted row data
+     */
+    public static function getProblemRowData($problem)
+    {
+        // Note that they should be in the same order of the headings
+        return [
+            [   // ID
+                Constants::TABLE_DATA_KEY => Utilities::generateProblemNumber($problem)
+            ],
+            [   // Name
+                Constants::TABLE_DATA_KEY => $problem->name,
+                Constants::TABLE_EXTERNAL_LINK_KEY => Utilities::generateProblemLink($problem)
+            ],
+            [   // # Accepted
+                Constants::TABLE_DATA_KEY => $problem->solved_count,
+            ],
+            [   // Judge
+                Constants::TABLE_DATA_KEY => Constants::JUDGES[$problem->judge_id][Constants::JUDGE_NAME_KEY],
+            ],
+            [   // Tags
+                Constants::TABLE_DATA_KEY => self::getProblemTagsRowData($problem),
+            ]
+        ];
+    }
+
+    /**
+     * Return the tags of the given problem in table protocol format
+     *
+     * @param Problem $problem
+     * @return array the formatted row data
+     */
+    public static function getProblemTagsRowData($problem)
+    {
+        $tags = $problem->tags()->get();
+
+        $ret = [];
+
+        foreach ($tags as $tag) {
+            $ret[] = [
+                Constants::TABLE_DATA_KEY => $tag->name,
+                Constants::TABLE_LINK_KEY => $tag->id      // TODO: add correct link
+            ];
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Return table row meta-data of the given problem in table protocol format
+     *
+     * @param Problem $problem
+     * @param User $user
+     * @return array the formatted row meta-data
+     */
+    public static function getProblemRowMetaData($problem, $user)
+    {
+        return [
+            Constants::TABLE_ROW_STATE_KEY => $problem->simpleVerdict($user),
+            Constants::TABLE_ROW_CHECKBOX_KEY => false,
+            Constants::TABLE_ROW_DISABLED_KEY => false
+        ];
     }
 }

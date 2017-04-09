@@ -46,16 +46,7 @@
                     @foreach ($problem as $key => $value)
                         @if($key == Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY)
                             <td class="td-problems">
-                                {{
-                                str_replace(
-                                    Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
-                                    ((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY],
-                                        str_replace(
-                                            Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
-                                            ((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY],
-                                            Constants::JUDGES[((array)$problem)[Constants::FLD_PROBLEMS_JUDGE_ID]]['problemNumberFormat'])
-                                )
-                                }}
+                                {{ Utilities::generateProblemNumber($problem) }}
                             </td>
                         @elseif($key == "name")
                             <td class="td-problems">
