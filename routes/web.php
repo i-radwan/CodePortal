@@ -21,7 +21,12 @@ Route::get('profile/{user}', 'UserController@index');
 Route::get('contests', 'ContestController@index');
 Route::get('contest/edit', 'ContestController@addEditContestView');
 Route::get('contest/add', 'ContestController@addEditContestView');
+Route::get('contest/delete/{contestID}', 'ContestController@deleteContest');
+Route::get('contest/leave/{contestID}', 'ContestController@leaveContest');
+
+
 Route::get('contest/{contestID}', 'ContestController@displayContest');
+
 
 Route::post('contest/add', 'ContestController@addContest');
 Route::post('contest/edit', 'ContestController@editContest');
