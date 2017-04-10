@@ -20,8 +20,31 @@ class ContestController extends Controller
         // Get all public contests from database
         $contestsData = $this->prepareContestsTableData();
 
+        return view('contests.index', compact('data', $contestsData))->with('pageTitle', config('app.name') . ' | Contests');
+    }
 
-        return view('contests.index', compact('data', $contestsData));
+    /**
+     * Show single contest page
+     * @param $contestID
+     * @return $this
+     */
+    public function displayContest($contestID)
+    {
+        $contest = Contest::find($contestID);
+
+        $data = [];
+
+        // Check if the user has joined this contest (to show leave link)
+
+        // Check if the user is the owner of this contest (to show delete link)
+
+        // Get participants data
+
+        // Get questions data
+
+
+
+        return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
 
     /**
@@ -30,7 +53,7 @@ class ContestController extends Controller
      */
     public function addEditContestView()
     {
-        return view('contests.add_edit');
+        return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
     }
 
     /**
@@ -67,7 +90,7 @@ class ContestController extends Controller
         // Prepare problems data for table according to the table protocol
         foreach ($contests as $contest) {
             $rows[] = [
-                Constants::TABLE_DATA_KEY => self::getContestRowData($contest)
+                Constants::TABLE_DATA_KEY => $this->getContestRowData($contest)
             ];
         }
         // Return problems table data: headings & rows

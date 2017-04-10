@@ -156,14 +156,14 @@ class User extends Authenticatable
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID);
     }
 
-    public function contest_questions($contestId)
+    public function contestQuestions($contestId)
     {
         // ToDo: rename function to camel case
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID)
             ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }
 
-    public function answered_questions()
+    public function answeredQuestions()
     {
         // ToDo: rename function to camel + recheck the logic of this function
         return $this->hasMany(Question::class)->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);

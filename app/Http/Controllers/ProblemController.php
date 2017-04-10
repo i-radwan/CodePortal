@@ -120,7 +120,7 @@ class ProblemController extends Controller
      */
     public function index(Request $request)
     {
-        dd(self::prepareProblemsTableData(self::filterProblems()));
+        //dd(self::prepareProblemsTableData(self::filterProblems()));
 
         //Get SortBy Parameters
         $sortByMode = $request->get('order');
@@ -134,7 +134,7 @@ class ProblemController extends Controller
         //Supply MetaData
         $this->supplyMetaData($data, $sortByMode, $sortByParameter, $request->get('judges'), $request->get('q'), $request->get('tags'));
         //Return result
-        return view('problems.index')->with('data', $data);
+        return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems');
     }
 
     /**

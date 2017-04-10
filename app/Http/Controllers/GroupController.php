@@ -13,6 +13,6 @@ class GroupController extends Controller
      */
     public function index()
     {
-        return view('groups.index');
+        return view('groups.index')->with('pageTitle', config('app.name'). ' | Groups');
     }
 }

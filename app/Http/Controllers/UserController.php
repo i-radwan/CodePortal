@@ -11,6 +11,6 @@ class UserController extends Controller
      */
     public function index($user)
     {
-        return view('profile.index', ['userName' => $user]);
+        return view('profile.index', ['userName' => $user])->with('pageTitle', config('app.name'). ' | '. $user);
     }
 }

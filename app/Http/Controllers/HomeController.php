@@ -100,6 +100,6 @@ class HomeController extends Controller
             'features' => $features,
             'quotes' => $quotes,
             'sponsors' => $sponsors
-        ]);
+        ])->with('pageTitle', config('app.name'));
     }
 }

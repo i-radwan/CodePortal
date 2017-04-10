@@ -72,7 +72,7 @@ class ModelsRelationsTest extends DatabaseTest
 
         // User + Question
         $this->assertEquals(count($user->questions()), 1);
-        $this->assertEquals(count($admin->answered_questions()), 1);
+        $this->assertEquals(count($admin->answeredQuestions()), 1);
         $this->assertEquals($question->user()->getResults()->id, $user->id);
         $this->assertEquals($question->admin()->getResults()->id, $admin->id);
 
