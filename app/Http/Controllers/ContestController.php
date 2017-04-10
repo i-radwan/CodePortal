@@ -7,6 +7,7 @@ use App\Utilities\Utilities;
 use Illuminate\Http\Request;
 use App\Models\Contest;
 use App\Models\User;
+use Auth;
 
 class ContestController extends Controller
 {
@@ -34,15 +35,15 @@ class ContestController extends Controller
 
         $data = [];
 
-        // Check if the user has joined this contest (to show leave link)
+        // Check if user is participating or owning the contest to show btns
+        $this->getLeaveAndDeleteButtonsVisibility(Auth::user(), $contest, $data);
 
-        // Check if the user is the owner of this contest (to show delete link)
+        // Get basic contest info
+        $this->getBasicContestInfo($contest, $data);
 
         // Get participants data
 
         // Get questions data
-
-
 
         return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
@@ -138,5 +139,68 @@ class ContestController extends Controller
     private function getContestOwnerName($ownerID)
     {
         return User::find($ownerID)->name;
+    }
+
+    /**
+     * Check if the user owns the contest, then set delete contest button to visible
+     * check if the user is participating in this contest, then set leave contest
+     * button to visible
+     * @param $user
+     * @param $contest
+     * @param $data
+     */
+    private function getLeaveAndDeleteButtonsVisibility($user, $contest, &$data)
+    {
+        $leaveBtnVisible = false;
+        $deleteBtnVisible = false;
+
+        if ($user) {
+            // Check if the user has joined this contest (to show leave link)
+            $leaveBtnVisible =
+                ($contest->participatingUsers()->find($user->id) != null);
+            // Check if the user is the owner of this contest (to show delete link)
+            $deleteBtnVisible =
+                ($contest->owner->id == $user->id);
+        }
+
+        // Set btns visibility values
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
+        [Constants::SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY] = $leaveBtnVisible;
+
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
+        [Constants::SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY] = $deleteBtnVisible;
+    }
+
+    /**
+     * Get contest basic info (owner, organizers, time, duration)
+     * @param $contest
+     * @param $data
+     */
+    private function getBasicContestInfo($contest, &$data)
+    {
+        $contestInfo = [];
+        // Get contest id
+        $contestInfo[Constants::SINGLE_CONTEST_ID_KEY] = $contest->id;
+
+        // Get contest name
+        $contestInfo[Constants::SINGLE_CONTEST_NAME_KEY] = $contest->name;
+
+        // Get owner name
+        $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY] = $contest->owner->name;
+
+        // Get organizers array
+        $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY] =
+            $contest->organizingUsers()->pluck('name')->toArray();
+
+        // Get duration
+        $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY] =
+            Utilities::convertMinsToHoursMins($contest->duration);
+
+        // Get time and convert to familiar format
+        $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY] =
+            date('D M y, H:i', strtotime($contest->time));
+
+        // Set contest info
+        $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;
     }
 }

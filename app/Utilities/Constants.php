@@ -97,6 +97,37 @@ class Constants
     // ============================================================
     //endregion
 
+    //region SingleContest page
+
+    //
+    // SingleContest page constants
+    //
+
+    // Keys
+    // Main keys
+    const SINGLE_CONTEST_CONTEST_KEY = "contest";
+    const SINGLE_CONTEST_PARTICIPANTS_KEY = "participants";
+    const SINGLE_CONTEST_EXTRA_KEY = "extra";
+
+    // Details keys
+
+    // contest
+    const SINGLE_CONTEST_ID_KEY = "id";
+    const SINGLE_CONTEST_NAME_KEY = "name";
+    const SINGLE_CONTEST_OWNER_KEY = "owner";
+    const SINGLE_CONTEST_ORGANIZERS_KEY = "organizers";
+    const SINGLE_CONTEST_TIME_KEY = "time";
+    const SINGLE_CONTEST_DURATION_KEY = "duration";
+
+    // participants
+
+    // extra
+    const SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY = "leave_btn_visible";
+    const SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY = "delete_btn_visible";
+
+    // ============================================================
+    //endregion
+
 
     //region Table protocol
 

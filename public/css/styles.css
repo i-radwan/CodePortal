@@ -113,13 +113,13 @@ footer {
 }
 
 /*.home-cover .has-feedback .form-control {*/
-    /*padding-left: 42.5px;*/
-    /*padding-right: 16px;*/
+/*padding-left: 42.5px;*/
+/*padding-right: 16px;*/
 /*}*/
 
 /*.home-cover .form-control-feedback {*/
-    /*left: 0;*/
-    /*z-index: 3;*/
+/*left: 0;*/
+/*z-index: 3;*/
 /*}*/
 
 /**************************************/
@@ -286,9 +286,9 @@ footer {
 /*====================================*/
 
 .login-cover {
-    margin-top: -20px;                  /* to negate the navbar margin */
+    margin-top: -20px; /* to negate the navbar margin */
     margin-bottom: 0;
-    min-height: calc(100vh - 101px);    /* full height - navbar height - navbar border height - footer height */
+    min-height: calc(100vh - 101px); /* full height - navbar height - navbar border height - footer height */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
@@ -341,9 +341,9 @@ footer {
 /*====================================*/
 
 .signup-cover {
-    margin-top: -20px;                  /* to negate the navbar margin */
+    margin-top: -20px; /* to negate the navbar margin */
     margin-bottom: 0;
-    min-height: calc(100vh - 101px);    /* full height - navbar height - navbar border height - footer height */
+    min-height: calc(100vh - 101px); /* full height - navbar height - navbar border height - footer height */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
@@ -698,6 +698,33 @@ footer {
 
 #custom-search-input .glyphicon-search {
     font-size: 23px;
+}
+
+/**************************************/
+/*</editor-fold>*/
+
+/*<editor-fold desc="Problems Page">*/
+/*====================================*/
+/*========== CONTEST PAGE ===========*/
+/*====================================*/
+
+.contest-info {
+    margin: 20px;
+}
+
+.contest-details {
+    padding-top: 20px;
+    padding-left: 30px;
+}
+
+.contest-time {
+    text-align: left;
+    font-size: 50px;
+    font-weight: 100;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-right: 3px #eee solid;
 }
 
 /**************************************/
