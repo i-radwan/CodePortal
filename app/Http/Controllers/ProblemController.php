@@ -160,7 +160,7 @@ class ProblemController extends Controller
 //        $this->supplyMetaData($data, $sortByMode, $sortByParameter, $request->get('judges'), $request->get('q'), $request->get('tags'));
 
         //Return result
-        return view('problems.index')->with('data', $data);
+        return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems');
     }
 
     /**

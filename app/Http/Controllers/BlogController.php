@@ -13,6 +13,6 @@ class BlogController extends Controller
      */
     public function index()
     {
-        return view('blogs.index');
+        return view('blogs.index')->with('pageTitle', config('app.name'). ' | Blogs');
     }
 }

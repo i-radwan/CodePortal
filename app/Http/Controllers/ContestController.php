@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Utilities\Constants;
+use App\Utilities\Utilities;
 use Illuminate\Http\Request;
 use App\Models\Contest;
+use App\Models\User;
 
 class ContestController extends Controller
 {
@@ -14,13 +17,49 @@ class ContestController extends Controller
      */
     public function index()
     {
-        return view('contests.index');
+        // Get all public contests from database
+        $contestsData = $this->prepareContestsTableData();
+
+        return view('contests.index', compact('data', $contestsData))->with('pageTitle', config('app.name') . ' | Contests');
     }
 
-    public function addEdit()
+    /**
+     * Show single contest page
+     * @param $contestID
+     * @return $this
+     */
+    public function displayContest($contestID)
     {
-        return view('contests.add_edit');
+        $contest = Contest::find($contestID);
+
+        $data = [];
+
+        // Check if the user has joined this contest (to show leave link)
+
+        // Check if the user is the owner of this contest (to show delete link)
+
+        // Get participants data
+
+        // Get questions data
+
+
+
+        return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
+
+    /**
+     * Show add/edit contest page
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function addEditContestView()
+    {
+        return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
+    }
+
+    /**
+     * Add new contest to database
+     * @param Request $request
+     */
 
     public function addContest(Request $request)
     {
@@ -28,8 +67,76 @@ class ContestController extends Controller
         $contest->save();
     }
 
+    /**
+     * Update contest in database
+     * @param Request $request
+     */
     public function editContest(Request $request)
     {
 
+    }
+
+    /**
+     * Prepare contests to match contests table format by providing the required
+     * headers and data formatting
+     * @return array of data for view (contest table input)
+     */
+    private function prepareContestsTableData()
+    {
+        $contests = Contest::getPublicContests();
+
+        $rows = [];
+
+        // Prepare problems data for table according to the table protocol
+        foreach ($contests as $contest) {
+            $rows[] = [
+                Constants::TABLE_DATA_KEY => $this->getContestRowData($contest)
+            ];
+        }
+        // Return problems table data: headings & rows
+        return [
+            Constants::TABLE_HEADINGS_KEY => Constants::CONTESTS_TABLE_HEADINGS,
+            Constants::TABLE_ROWS_KEY => $rows
+        ];
+    }
+
+    /**
+     * Get specific contest data
+     * @param $contest
+     * @return array that holds contest data to be showm
+     */
+    private function getContestRowData($contest)
+    {
+        // Note that they should be in the same order of the headings
+        return [
+            [   // ID
+                Constants::TABLE_DATA_KEY => $contest->id
+            ],
+            [   // Name
+                Constants::TABLE_DATA_KEY => $contest->name,
+                Constants::TABLE_LINK_KEY => "" // ToDo add contest page link
+            ],
+            [   // Time
+                Constants::TABLE_DATA_KEY => $contest->time
+            ],
+            [   // Duration
+                Constants::TABLE_DATA_KEY => Utilities::convertMinsToHoursMins($contest->duration)
+            ],
+            [   // Owner name
+                Constants::TABLE_DATA_KEY => $this->getContestOwnerName($contest->owner_id),
+                Constants::TABLE_LINK_KEY => "" // ToDo add owner profile link
+            ]
+        ];
+    }
+
+    /**
+     * Get contest owner Name
+     * ToDo, if no more functionality, inline this function !
+     * @param $ownerID
+     * @return mixed
+     */
+    private function getContestOwnerName($ownerID)
+    {
+        return User::find($ownerID)->name;
     }
 }

@@ -19,9 +19,11 @@ Route::get('profile/{user}', 'UserController@index');
 
 // Contest routes...
 Route::get('contests', 'ContestController@index');
-Route::get('contest/add', 'ContestController@addEdit');
+Route::get('contest/edit', 'ContestController@addEditContestView');
+Route::get('contest/add', 'ContestController@addEditContestView');
+Route::get('contest/{contestID}', 'ContestController@displayContest');
+
 Route::post('contest/add', 'ContestController@addContest');
-Route::get('contest/edit', 'ContestController@addEdit');
 Route::post('contest/edit', 'ContestController@editContest');
 
 // Problems routes...
