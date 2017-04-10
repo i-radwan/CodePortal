@@ -120,7 +120,7 @@ class ProblemController extends Controller
      */
     public function index(Request $request)
     {
-        //dd(self::prepareProblemsTableData(self::filterProblems()));
+        dd(self::prepareProblemsTableData(self::filterProblems()));
 
         //Get SortBy Parameters
         $sortByMode = $request->get('order');

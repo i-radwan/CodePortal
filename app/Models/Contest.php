@@ -49,6 +49,21 @@ class Contest extends Model
     ];
 
     /**
+     * Return public visible contests only
+     * @return collection of public contests
+     */
+    public static function getPublicContests()
+    {
+        return
+            Contest::all()
+                ->where(
+                    Constants::FLD_CONTESTS_VISIBILITY,
+                    '=',
+                    Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]
+                );
+    }
+
+    /**
      * Return all problems of the current contest
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

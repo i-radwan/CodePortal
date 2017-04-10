@@ -3,7 +3,8 @@
 namespace App\Utilities;
 
 use App\Models\Problem;
-
+use Symfony\Component\VarDumper\Cloner\Data;
+use \DateTime;
 class Utilities
 {
     /**
@@ -88,7 +89,8 @@ class Utilities
         $problems = $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
         // Assign data
         $ret = [
-            "headings" => ["ID", "Name", /*"Difficulty",*/ "# Acc.", "Judge", "Tags"],
+            "headings" => ["ID", "Name", /*"Difficulty",*/
+                "# Acc.", "Judge", "Tags"],
             "problems" => $problems,
             "extra" => [
                 "checkbox" => "no",
@@ -118,4 +120,21 @@ class Utilities
         }
         return $sortBy;
     }
+
+    /**
+     * Convert given minutes count to hours:minutes format
+     * @param $time
+     * @param string $format
+     * @return string|void
+     */
+    public static function convertMinsToHoursMins($time, $format = '%02d:%02d')
+    {
+        if ($time < 1) {
+            return;
+        }
+        $hours = floor($time / 60);
+        $minutes = ($time % 60);
+        return sprintf($format, $hours, $minutes);
+    }
+
 }
