@@ -118,4 +118,16 @@ class Utilities
         }
         return $sortBy;
     }
+
+    public static function getPaginatorData($LengthAwarePaginatorObject){
+        return([
+            "total" => $LengthAwarePaginatorObject->total(),
+            "lastPage" => $LengthAwarePaginatorObject->lastPage(),
+            "perPage" => $LengthAwarePaginatorObject->perPage(),
+            "currentPage" => $LengthAwarePaginatorObject->currentPage(),
+            "path" => $LengthAwarePaginatorObject->resolveCurrentPath(),
+            "nextPageURL" => $LengthAwarePaginatorObject->nextPageUrl(),
+            "prevPageURL" => $LengthAwarePaginatorObject->previousPageUrl(),
+        ]);
+    }
 }

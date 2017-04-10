@@ -569,12 +569,12 @@ footer {
     width: 25%;
 }
 
-.problems-table-tags-head {
+.gtable-tags-head {
     text-align: center;
     width: 20%;
 }
 
-.problems-table-head,
+.gtable-head,
 .problems-table-name-head {
     position: relative;
 }

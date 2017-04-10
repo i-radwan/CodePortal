@@ -13,6 +13,7 @@ class Constants
     const PROBLEMS_COUNT_PER_PAGE = 30;
 
     // TODO: add links
+
     const PROBLEMS_TABLE_HEADINGS = [
         [
             Constants::TABLE_DATA_KEY => "ID",
@@ -69,6 +70,10 @@ class Constants
     const TABLE_ROW_STATE_KEY = "state";
     const TABLE_ROW_DISABLED_KEY = "disabled";
     const TABLE_ROW_CHECKBOX_KEY = "checkbox";
+    //Pagination In Generic Table
+    const TABLE_PAGINATION_KEY = "paginator";
+    //Previous Filters Accompanied with the the Generic Table
+    const PREVIOUS_TABLE_FILTERS = "applied_filters";
 
     // Values
     const TABLE_ROW_STATE_NORMAL = 0;
