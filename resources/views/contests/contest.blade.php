@@ -9,17 +9,21 @@
 
                     @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY])
                         <a onclick="return confirm('Are you sure?')"
-                           href="{{url('/contest/delete/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}"><span
-                                    class="pull-right text-dark btn btn-link margin-5px">Delete</span></a>
+                           href="{{url('/contest/delete/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}">
+                            <span class="pull-right text-dark btn btn-link margin-5px">Delete</span>
+                        </a>
                     @endif
 
                     @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY])
                         <a onclick="return confirm('Are you sure?')"
-                           href="{{url('/contest/leave/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}"><span
-                                    class="pull-right text-dark btn btn-link margin-5px">Leave</span></a>
-                    @elseif(Auth::user())
-                        <a href="{{url('/contest/join/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}"><span
-                                    class="pull-right text-dark btn btn-link margin-5px">Join</span></a>
+                           href="{{url('/contest/leave/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}">
+                            <span class="pull-right text-dark btn btn-link margin-5px">Leave</span>
+                        </a>
+
+                    @elseif(Auth::user() && !$data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY])
+                        <a href="{{url('/contest/join/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}">
+                            <span class="pull-right text-dark btn btn-link margin-5px">Join</span>
+                        </a>
                     @endif
 
 

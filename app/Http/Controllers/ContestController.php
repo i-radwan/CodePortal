@@ -44,6 +44,7 @@ class ContestController extends Controller
         $this->getParticipantsInfo($contest, $data);
 
         // Get questions data
+
         //dd($data);
         return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
