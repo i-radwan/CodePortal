@@ -1,13 +1,12 @@
 <div class="container filters-table-container">
-    {{--{{ TODO: NOT YET MADE GENERIC}}--}}
     <div class="row">
         <div class="col-md-12">
-            <form action="/problems" method="get">
+            <form action="{{Request::fullUrl()}}" method="get">
                 <!-- Search Bar -->
                 <div id="custom-search-input">
                     <div class="input-group col-md-12">
                         <input type="text" class="form-control" placeholder="Problem Name"
-                               action="/problem/show" name="q" value="{{$data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SEARCH_STRING]}}">
+                                name="q" value="{{$data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SEARCH_STRING]}}">
                         <span class="input-group-btn">
                             <button class="btn btn-info btn-lg" type="submit">
                                 <i class="glyphicon glyphicon-search"></i>
@@ -40,11 +39,10 @@
                     <hr/>
                     <p>
                         <input type="submit" value="Apply Filters" class="btn btn-default"/>
-                        <a href="/problems/{{Constants::PREVIOUS_TABLE_FILTERS}}" class="btn text-dark btn-link text-muted pull-right">Clear</a>
+                        <a href="{{Utilities::removeAppliedFilters(Request::fullUrl(),1)}}" class="btn text-dark btn-link text-muted pull-right">Clear</a>
                     </p>
                 </div>
             </form>
-            <!-- Tags by autocomplete since it's the best here -->
         </div>
     </div>
 </div>

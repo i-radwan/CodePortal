@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
     <div class="container">
         <div class="row">
@@ -7,11 +6,11 @@
                 <div class="panel panel-default problems-panel">
                     <div class="panel-heading problems-panel-head">Problems</div>
                     <div class="panel-body problems-panel-body">
-                        @if(count($data[Constants::TABLE_ROWS_KEY]) > 0)
+                        @if($data[Constants::TABLE_ROWS_KEY])
                             @include('gtable.table')
                         @else
                             <p class="no-problems-msg">No
-                                problems! {{(count($data->tagsIDs) > 0 || count($data->judgesIDs) > 0 ||strlen($data->q) > 0)?' please change the applied filters':''}}</p>
+                                problems! {{(count($data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_JUDGES_IDS]) > 0 || count($data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_TAGS_IDS]) > 0 ||strlen($data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SEARCH_STRING]) > 0)?' please change the applied filters':''}}</p>
                         @endif
                     </div>
                 </div>

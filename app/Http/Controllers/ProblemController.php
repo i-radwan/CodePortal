@@ -100,16 +100,24 @@ class ProblemController extends Controller
      * @param $request
      * @param $appliedFilters
      * @param $sortBy
+     * @param $tagsIds
      *
      * @return array
      */
-    public function getMetaData(&$request,&$appliedFilters, &$sortBy){
+    public function getMetaData(&$request,&$appliedFilters, &$sortBy, &$tagsIds){
+        //Get Tags
+        if($request->get(Constants::APPLIED_FILTERS_TAG_ID))
+            $tagsIds = array($request->get(Constants::APPLIED_FILTERS_TAG_ID));
+        else if($request->get(Constants::APPLIED_FILTERS_TAGS_IDS))
+            $tagsIds = $request->get(Constants::APPLIED_FILTERS_TAGS_IDS);
+        else
+            $tagsIds = null;
         //Get SortBy Parameters And Applied Filters
-        $sortByMode = $request->get('order');
+        $sortByMode = $request->get(Constants::APPLIED_FILTERS_SORT_BY_MODE);
         if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') $sortByMode = 'desc';
-        $sortByParameter = $request->get('sortby');
-        $sortByParameter = Constants::PROBLEMS_SORT_BY[$sortByParameter];
-        $sortBy = [$sortByParameter => $sortByMode];
+        $sortByParameter = $request->get(Constants::APPLIED_FILTERS_SORT_BY_PARAMETER);
+//        dd($sortByParameter, $sortByMode);
+        $sortBy = [Constants::PROBLEMS_SORT_BY[$sortByParameter] => $sortByMode];
         $appliedJudgesIDS = $request->get(Constants::APPLIED_FILTERS_JUDGES_IDS);
         $appliedTagsIDS = $request->get(Constants::APPLIED_FILTERS_TAGS_IDS);
         $appliedSearchString =$request->get(Constants::APPLIED_FILTERS_SEARCH_STRING);
@@ -129,10 +137,8 @@ class ProblemController extends Controller
     public function index(Request $request)
     {
        //GetMetadata
-       self::getMetaData($request, $appliedFilters , $sortBy);
-       $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, null, $sortBy), $appliedFilters );
-//       dd($tags);
-       //And Supply Tags and Judges
+       self::getMetaData($request, $appliedFilters , $sortBy, $tagsIds);
+       $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, $tagsIds, $sortBy), $appliedFilters );
        return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems');
     }
 
@@ -161,6 +167,7 @@ class ProblemController extends Controller
             }
         }
         // Execute the problems paginated query
+
         return  $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
     }
 
@@ -242,7 +249,7 @@ class ProblemController extends Controller
         foreach ($tags as $tag) {
             $ret[] = [
                 Constants::TABLE_DATA_KEY => $tag->name,
-                Constants::TABLE_LINK_KEY =>  Utilities::getURL(Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY],$tag->id,"/problems","")       // TODO: Make it More Generic
+                Constants::TABLE_LINK_KEY =>  Utilities::getURL(Constants::APPLIED_FILTERS_TAG_ID,$tag->id,"/problems","")       // TODO: Make it More Generic
             ];
         }
         return $ret;
