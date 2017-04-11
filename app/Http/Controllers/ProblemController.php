@@ -32,26 +32,7 @@ class ProblemController extends Controller
         $problems = Problem::getAllProblems($page, $sortBy);
         return $problems;
     }
-    /**
-     * @param array $data the problems response
-     * @param int $startPage The start page to be calculated in the pagination bar
-     * @param int $endPage  The end page to be calculated in the pagination bar
-     * @param int $currentPage The current page in the request
-     * @param int $lastPage The last page of the problems list in the request
-     */
 
-    public function getPaginationLimits(&$data, &$startPage, &$endPage, $currentPage, $lastPage){
-        if ($currentPage < 7) {
-            $endPage = 13;
-            $startPage = 1;
-        } else {
-            $startPage = $currentPage - 6;
-            $endPage = $currentPage + 6;
-        }
-        $endPage = ($endPage > $lastPage) ? $lastPage : $endPage;
-        $data->initialPage = $startPage;
-        $data->pagesLimit = $endPage;
-    }
 
     /**
      * @param $sortByParameter The SortBy parameter in the request body
@@ -115,7 +96,6 @@ class ProblemController extends Controller
     }
 
     /**
-     * @param $data the problems data
      * @param $sortByMode sort Mode (asc/ dsc)
      * @param $sortByParameter sort by what
      * @param $setJudges the current checked judges

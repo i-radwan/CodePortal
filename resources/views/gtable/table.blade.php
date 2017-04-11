@@ -32,7 +32,7 @@
         //ToDO Removing any php code here from the view if applicable
         //ToDo (Samir) ReCheck for any field specific for the problem page
         // array key exists TABLE_CELL_LINK
-        dd($data);
+//        dd($data);
         ?>
         <!-- we are going to display the fetched rows -->
         @foreach ( $data[Constants::TABLE_ROWS_KEY] as $row)
@@ -78,57 +78,28 @@
                     @endforeach
                 </tr>
                 @endforeach
-
-
-                    {{--@foreach ($problem[TABLE_DATA_KEY] as $key => $value)--}}
-                        {{--@if($key == Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY)--}}
-                            {{--<td class="td-problems">--}}
-                                {{--{{ Utilities::generateProblemNumber($problem) }}--}}
-                            {{--</td>--}}
-                        {{--@elseif($key == "name")--}}
-                            {{--<td class="td-problems">--}}
-                                {{--<a target="_blank" href="{{Utilities::generateProblemLink($problem)}}">  {{$value}} </a>--}}
-                            {{--</td>--}}
-                        {{--@elseif(in_array($key, \App\Models\Problem::$displayable))--}}
-                            {{--<td class="td-problems">  {{$value}} </td>--}}
-                        {{--@endif--}}
-                    {{--@endforeach--}}
-                    {{--<td class="td-problems">--}}
-                        {{--@if(count(explode(',', $problem->tags_ids)) > 0 && strlen(trim(explode(',', $problem->tags_ids)[0]))>0)--}}
-                            {{--@foreach(explode(',', $problem->tags_ids) as $tagID)--}}
-                                {{--<a href="{{url()->current()}}?tag={{$tagID}}" class="problems-table-tags-links"><span>--}}
-                                {{--{{ ((App\Models\Tag::find($tagID))?(App\Models\Tag::find($tagID)->getAttributes()[Constants::FLD_TAGS_NAME]):'')}}--}}
-                                {{--</span>--}}
-                                {{--</a>--}}
-                            {{--@endforeach--}}
-                        {{--@else--}}
-                            {{--<p class="text-center">-</p>--}}
-                        {{--@endif--}}
-                    {{--</td>--}}
-                {{--</tr>--}}
-                {{--@endforeach--}}
         </tbody>
     </table>
     {{--Pagination--}}
     <nav aria-label="Page navigation example">
         <ul class="pagination" max-size='12'>
-            <li class="page-item {{isset($data[TABLE_PAGINATION_KEY][])? "":"disabled"}}">
+            <li class="page-item {{isset($data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_PREV_URL])? "":"disabled"}}">
                 <a class="page-link"
-                   href="{{isset($data->rows->prev_page_url) ? Utilities::getURL("page", $data->rows->current_page-1, url()->current(), Request::fullUrl(), false) : ""}}"
+                   href="{{isset($data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_PREV_URL]) ? $data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_PREV_URL] : ""}}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Previous</span>
                 </a>
             </li>
-            @for ($i = $data->initialPage; ($i <= $data->pagesLimit) ; $i++)
-                <li class= {{($data->rows->current_page == $i ? "active" : "")}}>
+            @for ($i = $data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_START_LIMIT]; ($i <= $data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_END_LIMIT]) ; $i++)
+                <li class= {{($data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_CURRENT_PAGE] == $i ? "active" : "")}}>
                     <a class="page-link"
                        href={{Utilities::getURL("page", $i, url()->current(), Request::fullUrl(), false)}}>{{$i}}</a>
                 </li>
             @endfor
-            <li class="page-item {{(isset($data->rows->next_page_url) ? ("") : ("disabled"))}}">
+            <li class="page-item {{(isset($data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_NEXT_URL]) ? ("") : ("disabled"))}}">
                 <a class="page-link"
-                   href="{{(isset($data->rows->next_page_url) ? Utilities::getURL("page", $data->rows->current_page + 1, url()->current(), Request::fullUrl(), false) : "")}}"
+                   href="{{(isset($data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_NEXT_URL]) ? $data[Constants::TABLE_PAGINATION_KEY][Constants::PAGINATOR_NEXT_URL] : "")}}"
                    aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                     <span class="sr-only">Next</span>

@@ -162,6 +162,8 @@ class Constants
     const PAGINATOR_PATH= "path";
     const PAGINATOR_NEXT_URL= "next_page_url";
     const PAGINATOR_PREV_URL= "prev_page_url";
+    const PAGINATOR_START_LIMIT= "initialPage";
+    const PAGINATOR_END_LIMIT= "pagesLimit";
     //Previous Filters Accompanied with the the Generic Table
     const PREVIOUS_TABLE_FILTERS = "applied_filters";
     // Values
