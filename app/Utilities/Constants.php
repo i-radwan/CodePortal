@@ -109,6 +109,7 @@ class Constants
     // Main keys
     const SINGLE_CONTEST_CONTEST_KEY = "contest";
     const SINGLE_CONTEST_PARTICIPANTS_KEY = "participants";
+    const SINGLE_CONTEST_QUESTIONS_KEY = "questions";
     const SINGLE_CONTEST_EXTRA_KEY = "extra";
 
     // Details keys

@@ -31,11 +31,13 @@ class ContestController extends Controller
     public function displayContest($contestID)
     {
         $contest = Contest::find($contestID);
+        $currentUser = Auth::user();
+
         if (!$contest) return redirect('contests/');
         $data = [];
 
         // Check if user is participating or owning the contest to show btns
-        $this->getLeaveAndDeleteButtonsVisibility(Auth::user(), $contest, $data);
+        $this->getLeaveAndDeleteButtonsVisibility($currentUser, $contest, $data);
 
         // Get basic contest info
         $this->getBasicContestInfo($contest, $data);
@@ -44,8 +46,8 @@ class ContestController extends Controller
         $this->getParticipantsInfo($contest, $data);
 
         // Get questions data
+        $this->getQuestionsInfo($currentUser, $contest, $data);
 
-        //dd($data);
         return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
 
@@ -246,6 +248,23 @@ class ContestController extends Controller
 
         // Set contest participants
         $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;
+    }
+
+    /**
+     * Get contest questions related to currently signed in user
+     * @param $user
+     * @param $contest
+     * @param $data
+     */
+    private function getQuestionsInfo($user, $contest, &$data)
+    {
+        if (!$user) return;
+
+        $questions = $user->contestQuestions($contest->id)
+            ->get()->toArray();
+
+        // Set contest questions
+        $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $questions;
     }
 
 }
