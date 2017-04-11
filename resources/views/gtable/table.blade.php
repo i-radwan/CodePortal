@@ -54,11 +54,11 @@
                                     @foreach($columnData[Constants::TABLE_DATA_KEY] as $ColumnMiniData)
                                         @if(array_key_exists(Constants::TABLE_LINK_KEY, $ColumnMiniData ))
                                             <a class = {{ $data[Constants::TABLE_HEADINGS_KEY][$loop->parent->iteration-1][Constants::TABLE_DATA_KEY] == Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY] ? "problems-table-tags-links" : ""}}
-                                                    href= {{$ColumnMiniData[Constants::TABLE_LINK_KEY]}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}
+                                                    href= {{$ColumnMiniData[Constants::TABLE_LINK_KEY]}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY].( $loop->remaining >= 1 ?  ', ' :"")}}
                                             </a>
                                         @elseif(array_key_exists(Constants::TABLE_EXTERNAL_LINK_KEY, $ColumnMiniData))
                                             <a class = {{ $data[Constants::TABLE_HEADINGS_KEY][$loop->parent->iteration-1][Constants::TABLE_DATA_KEY] == Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY] ? "problems-table-tags-links" : ""}}
-                                                    href={{$ColumnMiniData[Constants::TABLE_EXTERNAL_LINK_KEY]}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}
+                                                    href={{$ColumnMiniData[Constants::TABLE_EXTERNAL_LINK_KEY]}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY].( $loop->remaining >= 1 ?  ', ' :"")}}
                                             </a>
                                         @else
                                             {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}

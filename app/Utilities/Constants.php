@@ -170,6 +170,7 @@ class Constants
     const PREVIOUS_TABLE_FILTERS = "applied_filters";
     const APPLIED_FILTERS_JUDGES_IDS = "judges";
     const APPLIED_FILTERS_TAGS_IDS = "tags";
+    const APPLIED_FILTERS_TAG_ID = "tag";
     const APPLIED_FILTERS_SEARCH_STRING = "q";
     const APPLIED_FILTERS_SORT_BY_PARAMETER = "sortBy";
     const APPLIED_FILTERS_SORT_BY_MODE = "order";

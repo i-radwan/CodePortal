@@ -129,6 +129,7 @@ class ProblemController extends Controller
     {
        //GetMetadata
        self::getMetaData($request, $appliedFilters , $sortBy);
+
        $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, null, $sortBy), $appliedFilters );
 //       dd($tags);
        //And Supply Tags and Judges
@@ -160,6 +161,7 @@ class ProblemController extends Controller
             }
         }
         // Execute the problems paginated query
+
         return  $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
     }
 

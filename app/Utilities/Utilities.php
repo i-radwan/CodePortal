@@ -18,6 +18,7 @@ class Utilities
      */
     public static function getURL($key, $value, $defaultURL, $fullUrl, $unsetOrder = true)
     {
+        if($key == Constants::APPLIED_FILTERS_TAGS_IDS)
         $url_parts = parse_url($fullUrl);
         if (isset($url_parts['query'])) {
             parse_str($url_parts['query'], $params);
@@ -57,6 +58,8 @@ class Utilities
                     $params[Constants::APPLIED_FILTERS_SORT_BY_PARAMETER] = null;
                 if(isset($params[Constants::APPLIED_FILTERS_SORT_BY_MODE]))
                     $params[Constants::APPLIED_FILTERS_SORT_BY_MODE] = null;
+                if(isset($params["page"]))
+                    $params["page"] = null;
             }
             $url_parts['query'] = http_build_query($params);
             $url = $url_parts['scheme'] . '://' . $url_parts['host'] . ':' . $url_parts['port'] . $url_parts['path'] . '?' . $url_parts['query'];
