@@ -80,21 +80,26 @@ class ContestController extends Controller
     public function deleteContest($contestID)
     {
         $user = Auth::user();
-        $user->owningContests()->find($contestID)->delete();
+        $contest = $user->owningContests()->find($contestID);
+        if ($contest) $contest->delete();
         return redirect('contests/');
     }
 
     public function leaveContest($contestID)
     {
         $user = Auth::user();
-        $user->participatingContests()->detach($contestID);
+        $contest = $user->owningContests()->find($contestID);
+        if ($contest)
+            $user->participatingContests()->detach($contestID);
         return back();
     }
 
     public function joinContest($contestID)
     {
         $user = Auth::user();
-        $user->participatingContests()->save(Contest::find($contestID));
+        $contest = $user->owningContests()->find($contestID);
+        if ($contest)
+            $user->participatingContests()->save(Contest::find($contestID));
         return back();
     }
 
