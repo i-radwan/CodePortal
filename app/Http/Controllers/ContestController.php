@@ -20,7 +20,6 @@ class ContestController extends Controller
     {
         // Get all public contests from database
         $contestsData = $this->prepareContestsTableData();
-
         return view('contests.index', compact('data', $contestsData))->with('pageTitle', config('app.name') . ' | Contests');
     }
 
@@ -42,9 +41,10 @@ class ContestController extends Controller
         $this->getBasicContestInfo($contest, $data);
 
         // Get participants data
+        $this->getParticipantsInfo($contest, $data);
 
         // Get questions data
-
+        dd($data);
         return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
 
@@ -115,7 +115,7 @@ class ContestController extends Controller
             ],
             [   // Name
                 Constants::TABLE_DATA_KEY => $contest->name,
-                Constants::TABLE_LINK_KEY => "" // ToDo add contest page link
+                Constants::TABLE_LINK_KEY => url('contest/'.$contest->id) // ToDo add contest page link
             ],
             [   // Time
                 Constants::TABLE_DATA_KEY => $contest->time
@@ -186,13 +186,13 @@ class ContestController extends Controller
         $contestInfo[Constants::SINGLE_CONTEST_NAME_KEY] = $contest->name;
 
         // Get owner name
-        $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY] = $contest->owner->name;
+        $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY] = $contest->owner->username;
 
         // Get organizers array
         $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY] =
-            $contest->organizingUsers()->pluck('name')->toArray();
+            $contest->organizingUsers()->pluck(Constants::FLD_USERS_USERNAME)->toArray();
 
-        // Get duration
+        // Get duration in hrs:mins format
         $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY] =
             Utilities::convertMinsToHoursMins($contest->duration);
 
@@ -202,5 +202,22 @@ class ContestController extends Controller
 
         // Set contest info
         $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;
+    }
+
+    /**
+     * Get contest participants specific data
+     * @param $contest
+     * @param $data
+     */
+    private function getParticipantsInfo($contest, &$data)
+    {
+        $participants =
+            $contest
+                ->participatingUsers()
+                ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
+                ->get()->toArray();
+
+        // Set contest participants
+        $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;
     }
 }

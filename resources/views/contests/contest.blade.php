@@ -36,16 +36,60 @@
                                     <strong>Owner:</strong> {{$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_OWNER_KEY]}}
                                 </p>
                                 <p>
-                                    <strong>Oragnizers:</strong>
+                                    <strong>Organizers:</strong>
                                     @foreach($data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ORGANIZERS_KEY] as $organizer)
                                         {{$organizer}}@if(!$loop->last),@endif
                                     @endforeach
                                 </p>
                                 <p><strong>Duration:</strong>
                                     {{$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_DURATION_KEY]}}
+                                    hrs
                                 </p>
 
                             </div>
+                        </div>
+                        <div class="row contest-tabs">
+                            <div class="col-md-12">
+                                <!-- Nav tabs -->
+                                <div class="card">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active">
+                                            <a href="#problems" aria-controls="problems" role="tab" data-toggle="tab">Problems</a>
+                                        </li>
+                                        <li role="presentation">
+                                            <a href="#standings" aria-controls="standings" role="tab" data-toggle="tab">Standings</a>
+                                        </li>
+                                        <li role="presentation">
+                                            <a href="#status" aria-controls="status" role="tab" data-toggle="tab">Status</a>
+                                        </li>
+                                        <li role="presentation">
+                                            <a href="#participants" aria-controls="participants" role="tab" data-toggle="tab">Paricipants</a>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" id="problems">Lorem Ipsum is simply
+                                            dummy text of the printing and typesetting industry.
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane" id="standings">Lorem Ipsum is simply dummy
+                                            text of the printing and typesetting industry.
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane" id="status">Lorem Ipsum is simply dummy
+                                            text of the printing and typesetting industry.
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane" id="participants">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                        </div>
+                        <div class="row">
+
                         </div>
                     </div>
                 </div>

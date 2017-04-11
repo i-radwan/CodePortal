@@ -46,7 +46,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         Constants::FLD_USERS_PASSWORD,
-        Constants::FLD_USERS_REMEMBER_TOKEN
+        Constants::FLD_USERS_REMEMBER_TOKEN,
     ];
 
     /**
@@ -168,4 +168,5 @@ class User extends Authenticatable
         // ToDo: rename function to camel + recheck the logic of this function
         return $this->hasMany(Question::class)->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
     }
+
 }
