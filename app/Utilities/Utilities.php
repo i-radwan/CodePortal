@@ -122,6 +122,45 @@ class Utilities
     }
 
     /**
+     * @param $LengthAwarePaginatorObject
+     *
+     * @return array
+     */
+    public static function getPaginatorData($LengthAwarePaginatorObject){
+        self::getPaginationLimits($startPage, $endPage, $LengthAwarePaginatorObject->currentPage(), $LengthAwarePaginatorObject->lastPage() );
+        return([
+            Constants::PAGINATOR_TOTAL => $LengthAwarePaginatorObject->total(),
+            Constants::PAGINATOR_LAST_PAGE => $LengthAwarePaginatorObject->lastPage(),
+            Constants::PAGINATOR_PER_PAGE => $LengthAwarePaginatorObject->perPage(),
+            Constants::PAGINATOR_CURRENT_PAGE => $LengthAwarePaginatorObject->currentPage(),
+            Constants::PAGINATOR_PATH => $LengthAwarePaginatorObject->resolveCurrentPath(),
+            Constants::PAGINATOR_NEXT_URL => $LengthAwarePaginatorObject->nextPageUrl(),
+            Constants::PAGINATOR_PREV_URL => $LengthAwarePaginatorObject->previousPageUrl(),
+            Constants::PAGINATOR_START_LIMIT => $startPage,
+            Constants::PAGINATOR_END_LIMIT => $endPage,
+        ]);
+    }
+
+    /**
+     * @param array $data the problems response
+     * @param int $startPage The start page to be calculated in the pagination bar
+     * @param int $endPage  The end page to be calculated in the pagination bar
+     * @param int $currentPage The current page in the request
+     * @param int $lastPage The last page of the problems list in the request
+     */
+    public static function getPaginationLimits( &$startPage, &$endPage, $currentPage, $lastPage){
+        if ($currentPage < 7) {
+            $endPage = 13;
+            $startPage = 1;
+        } else {
+            $startPage = $currentPage - 6;
+            $endPage = $currentPage + 6;
+        }
+        $endPage = ($endPage > $lastPage) ? $lastPage : $endPage;
+    }
+
+
+    /**
      * Convert given minutes count to hours:minutes format
      * @param $time
      * @param string $format

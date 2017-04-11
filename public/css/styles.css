@@ -415,7 +415,7 @@ footer {
 
     /* Sign up page cover photo styles*/
     .signup-cover {
-        background-image: url("/images/cover/3/xlg.jpg");
+        background-image: url("/images/cover/4/xlg.jpg");
     }
 }
 
@@ -436,7 +436,7 @@ footer {
 
     /* Sign up page cover photo styles*/
     .signup-cover {
-        background-image: url("/images/cover/3/lg.jpg");
+        background-image: url("/images/cover/4/lg.jpg");
     }
 }
 
@@ -457,7 +457,7 @@ footer {
 
     /* Sign up page cover photo styles*/
     .signup-cover {
-        background-image: url("/images/cover/3/md.jpg");
+        background-image: url("/images/cover/4/md.jpg");
     }
 }
 
@@ -569,14 +569,14 @@ footer {
     width: 25%;
 }
 
-.problems-table-tags-head {
+.gtable-tags-head {
     text-align: center;
     width: 20%;
 }
 
-.problems-table-head,
-.problems-table-name-head {
+.gtable-head{
     position: relative;
+    text-align: center ;
 }
 
 .no-problems-msg {

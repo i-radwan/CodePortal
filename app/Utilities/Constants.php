@@ -13,6 +13,7 @@ class Constants
     const PROBLEMS_COUNT_PER_PAGE = 30;
 
     // TODO: add links
+
     const PROBLEMS_TABLE_HEADINGS = [
         [
             Constants::TABLE_DATA_KEY => "ID",
@@ -46,7 +47,8 @@ class Constants
         "Difficulty" => self::FLD_PROBLEMS_DIFFICULTY,
         "# Acc." => self::FLD_PROBLEMS_SOLVED_COUNT,
         "ID" => self::FLD_PROBLEMS_ID,
-        "Judge" => self::FLD_PROBLEMS_JUDGE_ID
+        "Judge" => self::FLD_PROBLEMS_JUDGE_ID,
+        "" => self::FLD_PROBLEMS_NAME
     ];
     // ============================================================
     //endregion
@@ -151,6 +153,27 @@ class Constants
     const TABLE_ROW_STATE_KEY = "state";
     const TABLE_ROW_DISABLED_KEY = "disabled";
     const TABLE_ROW_CHECKBOX_KEY = "checkbox";
+
+    //Pagination In Generic Table
+    const TABLE_PAGINATION_KEY = "paginator";
+    const PAGINATOR_TOTAL = "total";
+    const PAGINATOR_LAST_PAGE= "lastPage";
+    const PAGINATOR_PER_PAGE= "perPage";
+    const PAGINATOR_CURRENT_PAGE= "currentPage";
+    const PAGINATOR_PATH= "path";
+    const PAGINATOR_NEXT_URL= "next_page_url";
+    const PAGINATOR_PREV_URL= "prev_page_url";
+    const PAGINATOR_START_LIMIT= "initialPage";
+    const PAGINATOR_END_LIMIT= "pagesLimit";
+    //Previous Filters Accompanied with the the Generic Table
+    const PREVIOUS_TABLE_FILTERS = "applied_filters";
+    const APPLIED_FILTERS_JUDGES_IDS = "judges";
+    const APPLIED_FILTERS_TAGS_IDS = "tags";
+    const APPLIED_FILTERS_SEARCH_STRING = "q";
+    const APPLIED_FILTERS_SORT_BY_PARAMETER = "sortBy";
+    const APPLIED_FILTERS_SORT_BY_MODE = "order";
+    const FILTERS_TAGS = "tags";
+    const FILTERS_JUDGES = "judges";
 
     // Values
     const TABLE_ROW_STATE_NORMAL = 0;
