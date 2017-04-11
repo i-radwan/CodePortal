@@ -105,11 +105,10 @@ class ProblemController extends Controller
      */
     public function getMetaData(&$request,&$appliedFilters, &$sortBy){
         //Get SortBy Parameters And Applied Filters
-        $sortByMode = $request->get('order');
+        $sortByMode = $request->get(Constants::APPLIED_FILTERS_SORT_BY_MODE);
         if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') $sortByMode = 'desc';
-        $sortByParameter = $request->get('sortby');
-        $sortByParameter = Constants::PROBLEMS_SORT_BY[$sortByParameter];
-        $sortBy = [$sortByParameter => $sortByMode];
+        $sortByParameter = $request->get(Constants::APPLIED_FILTERS_SORT_BY_PARAMETER);
+        $sortBy = [Constants::PROBLEMS_SORT_BY[$sortByParameter] => $sortByMode];
         $appliedJudgesIDS = $request->get(Constants::APPLIED_FILTERS_JUDGES_IDS);
         $appliedTagsIDS = $request->get(Constants::APPLIED_FILTERS_TAGS_IDS);
         $appliedSearchString =$request->get(Constants::APPLIED_FILTERS_SEARCH_STRING);

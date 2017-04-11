@@ -13,7 +13,7 @@
                     @else
                         <span class="table-head">{{$heading[Constants::TABLE_DATA_KEY]}}</span>
                     @endif
-                    @if( $data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_PARAMETER] != null && $data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_PARAMETER]== strtolower($heading[Constants::TABLE_DATA_KEY]))
+                    @if( $data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_PARAMETER] != null && strtolower($data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_PARAMETER])== strtolower($heading[Constants::TABLE_DATA_KEY]))
                         <i class="fa
                             {{($data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_MODE] == 'desc') ?
                              'fa-sort-desc problems-table-sorting-arrow-desc' :
