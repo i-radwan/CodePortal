@@ -8,12 +8,12 @@
                     {{-- Check if it's a tags heading or not to add the sortby option to that heading--}}
                     @if($heading[Constants::TABLE_DATA_KEY] != Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY])
                         <a class="problems-table-head-link"
-                           href="{{(Utilities::getURL("sortby", $heading[Constants::TABLE_DATA_KEY], url()->current(), Request::fullUrl()))}}&order={{($data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_MODE] == 'desc') ? 'asc':'desc'}}"> {{$heading[Constants::TABLE_DATA_KEY]}}
+                           href="{{(Utilities::getURL(Constants::APPLIED_FILTERS_SORT_BY_PARAMETER, $heading[Constants::TABLE_DATA_KEY], url()->current(), Request::fullUrl()))}}&{{Constants::APPLIED_FILTERS_SORT_BY_MODE}}={{($data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_MODE] == 'desc') ? 'asc':'desc'}}"> {{$heading[Constants::TABLE_DATA_KEY]}}
                         </a>
                     @else
                         <span class="table-head">{{$heading[Constants::TABLE_DATA_KEY]}}</span>
                     @endif
-                    @if( $data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_PARAMETER] != null && $data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_PARAMETER]== $heading[Constants::TABLE_DATA_KEY])
+                    @if( $data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_PARAMETER] != null && $data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_PARAMETER]== strtolower($heading[Constants::TABLE_DATA_KEY]))
                         <i class="fa
                             {{($data[Constants::PREVIOUS_TABLE_FILTERS][Constants::APPLIED_FILTERS_SORT_BY_MODE] == 'desc') ?
                              'fa-sort-desc problems-table-sorting-arrow-desc' :

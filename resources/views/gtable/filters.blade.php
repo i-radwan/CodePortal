@@ -1,7 +1,7 @@
 <div class="container filters-table-container">
     <div class="row">
         <div class="col-md-12">
-            <form action="{{url()->current()}}" method="get">
+            <form action="{{Request::fullUrl()}}" method="get">
                 <!-- Search Bar -->
                 <div id="custom-search-input">
                     <div class="input-group col-md-12">
@@ -39,7 +39,7 @@
                     <hr/>
                     <p>
                         <input type="submit" value="Apply Filters" class="btn btn-default"/>
-                        <a href="{{Utilities::removeAppliedFilters(Request::fullUrl())}}" class="btn text-dark btn-link text-muted pull-right">Clear</a>
+                        <a href="{{Utilities::removeAppliedFilters(Request::fullUrl(),1)}}" class="btn text-dark btn-link text-muted pull-right">Clear</a>
                     </p>
                 </div>
             </form>
