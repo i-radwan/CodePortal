@@ -31,6 +31,31 @@ class Utilities
         return $url;
     }
 
+    /** Remove the filters from the request
+    Constants::APPLIED_FILTERS_JUDGES_IDS ,
+    Constants::APPLIED_FILTERS_TAGS_IDS ,
+    Constants::APPLIED_FILTERS_SEARCH_STRING
+     * @param $fullURL
+     *
+     * @return string
+     */
+    public static function removeAppliedFilters($fullURL){
+        $url_parts = parse_url($fullURL);
+        if (isset($url_parts['query'])) {
+            parse_str($url_parts['query'], $params);
+            if( isset($params[Constants::APPLIED_FILTERS_JUDGES_IDS]))
+                $params[Constants::APPLIED_FILTERS_JUDGES_IDS] = []; //overwriting if page parameter exists
+            if( isset($params[Constants::APPLIED_FILTERS_TAGS_IDS]))
+                $params[Constants::APPLIED_FILTERS_TAGS_IDS] = []; //overwriting if page parameter exists
+            if( isset($params[Constants::APPLIED_FILTERS_SEARCH_STRING]))
+                $params[Constants::APPLIED_FILTERS_SEARCH_STRING] = null; //overwriting if page parameter exists
+            $url_parts['query'] = http_build_query($params);
+            $url = $url_parts['scheme'] . '://' . $url_parts['host'] . ':' . $url_parts['port'] . $url_parts['path'] . '?' . $url_parts['query'];
+            return $url;
+        }
+        else
+            return $fullURL;
+    }
     /**
      * Generate the number of the problem based on the hosting judge
      *
