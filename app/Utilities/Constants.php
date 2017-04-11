@@ -120,10 +120,14 @@ class Constants
     const SINGLE_CONTEST_DURATION_KEY = "duration";
 
     // participants
-
+    const PARTICIPANTS_DISPLAYED_FIELDS = [
+        self::FLD_USERS_USERNAME,
+        self::FLD_USERS_COUNTRY
+    ];
     // extra
     const SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY = "leave_btn_visible";
     const SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY = "delete_btn_visible";
+
 
     // ============================================================
     //endregion
