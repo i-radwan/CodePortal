@@ -121,6 +121,11 @@ class Utilities
         return $sortBy;
     }
 
+    /**
+     * @param $LengthAwarePaginatorObject
+     *
+     * @return array
+     */
     public static function getPaginatorData($LengthAwarePaginatorObject){
         self::getPaginationLimits($startPage, $endPage, $LengthAwarePaginatorObject->currentPage(), $LengthAwarePaginatorObject->lastPage() );
         return([
@@ -143,7 +148,6 @@ class Utilities
      * @param int $currentPage The current page in the request
      * @param int $lastPage The last page of the problems list in the request
      */
-
     public static function getPaginationLimits( &$startPage, &$endPage, $currentPage, $lastPage){
         if ($currentPage < 7) {
             $endPage = 13;

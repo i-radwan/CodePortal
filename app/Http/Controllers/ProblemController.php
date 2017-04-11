@@ -95,23 +95,21 @@ class ProblemController extends Controller
         $data->judges = json_decode(Judge::all());
     }
 
-    /**
-     * @param $sortByMode sort Mode (asc/ dsc)
-     * @param $sortByParameter sort by what
-     * @param $setJudges the current checked judges
-     * @param $setProblemSearchString
-     * @param $setTags the current checked tags
-     */
-    public function getMetaData( $sortByMode, $sortByParameter, $setJudges, $setProblemSearchString, $setTags){
-        //Add SortByMode
-        $data->sortbyMode = $sortByMode;
-        $data->sortbyParam = $sortByParameter;
-        // Set pagination limits
-//        $this->getPaginationLimits($data, $startPage, $endPage ,$data->rows->current_page ,$data->rows->last_page);
-        // Send query filters data to view (to maintain selected filters status as selected)
-//        $data->judgesIDs = ($setJudges) ? $setJudges : [];
-//        $data->tagsIDs = ($setTags) ? $setTags : [];
-//        $data->q = $setProblemSearchString;
+
+    public function getMetaData(&$request,&$appliedFilters, &$sortBy){
+        //Get SortBy Parameters And Applied Filters
+        $sortByMode = $request->get('order');
+        $sortByParameter = $request->get('sortby');
+        $sortBy = [$sortByMode => $sortByParameter ];
+        $appliedJudgesIDS = $request->get(Constants::APPLIED_FILTERS_JUDGES_IDS);
+        $appliedTagsIDS = $request->get(Constants::APPLIED_FILTERS_TAGS_IDS);
+        $appliedSearchString =$request->get(Constants::APPLIED_FILTERS_SEARCH_STRING);
+        return ($appliedFilters =[
+            Constants::APPLIED_FILTERS_JUDGES_IDS => $appliedJudgesIDS ? $appliedJudgesIDS: [],
+            Constants::APPLIED_FILTERS_TAGS_IDS => $appliedTagsIDS ? $appliedTagsIDS: [],
+            Constants::APPLIED_FILTERS_SEARCH_STRING => $appliedSearchString
+
+        ]);
     }
 
     /**
@@ -120,26 +118,12 @@ class ProblemController extends Controller
      */
     public function index(Request $request)
     {
-        //Get SortBy Parameters
-        $sortByMode = $request->get('order');
-        $sortByParameter = $request->get('sortby');
-        $sortBy = [$sortByMode => $sortByParameter ];
-
-        $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, null, $sortBy) ); //this will get headings and data without pagination limits
-
-        //Add Sort //See What it does Now I've Forgotten
-//        $this->applySortByParameter($sortByParameter, $sortByMode, $sortBy);
-
-        //Get problems Data
-//        $data = json_decode($this->applyFilters($request->get('tag'), $request->get('q'), $request->get('tags'), $request->get('judges'),$request->get('page'), $sortBy));
+        //GetMetadata
+       self::getMetaData($request, $appliedFilters , $sortBy);
+       $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, null, $sortBy), $appliedFilters );
 
         //Supply Tags and Judges
 //        $this->supplyTagsAndJudges($data);
-
-        //Supply MetaData
-//        $this->supplyMetaData($data, $sortByMode, $sortByParameter, $request->get('judges'), $request->get('q'), $request->get('tags'));
-
-        //Return result
         return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems');
     }
 
@@ -171,12 +155,13 @@ class ProblemController extends Controller
     }
 
     /**
-     * Prepare problems table output data in table protocol format
+     *  * Prepare problems table output data in table protocol format
+     * @param       $problems
+     * @param array $appliedFilters
      *
-     * @param Collection $problems
-     * @return array the formatted table data
+     * @return array
      */
-    public static function prepareProblemsTableData($problems)
+    public static function prepareProblemsTableData($problems, $appliedFilters = [])
     {
         // Get the currently logged in user
         $user = Auth::user();
@@ -184,7 +169,6 @@ class ProblemController extends Controller
         $rows = [];
         //Get Paginator Data
         $paginatorData = Utilities::getPaginatorData($problems);
-
         // Prepare problems data for table according to the table protocol
         foreach ($problems as $problem) {
             $rows[] = [
@@ -198,6 +182,7 @@ class ProblemController extends Controller
             Constants::TABLE_HEADINGS_KEY => Constants::PROBLEMS_TABLE_HEADINGS,
             Constants::TABLE_ROWS_KEY => $rows,
             Constants::TABLE_PAGINATION_KEY => $paginatorData,
+            Constants::PREVIOUS_TABLE_FILTERS => $appliedFilters
         ];
     }
 

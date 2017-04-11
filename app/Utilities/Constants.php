@@ -166,6 +166,10 @@ class Constants
     const PAGINATOR_END_LIMIT= "pagesLimit";
     //Previous Filters Accompanied with the the Generic Table
     const PREVIOUS_TABLE_FILTERS = "applied_filters";
+    const APPLIED_FILTERS_JUDGES_IDS = "judgesIDs";
+    const APPLIED_FILTERS_TAGS_IDS = "tagsIDs";
+    const APPLIED_FILTERS_SEARCH_STRING = "q";
+
     // Values
     const TABLE_ROW_STATE_NORMAL = 0;
     const TABLE_ROW_STATE_SUCCESS = 1;

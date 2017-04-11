@@ -1,5 +1,5 @@
 <div class="container problems-table-container">
-    <table class="table table-bordered  problems-table-hover problems-talbe" id="problems_table">
+    <table class="table table-bordered " id="problems_table">
         <thead>
         <tr>
             <!-- We are gonna loop here for the head tags -->
@@ -8,7 +8,7 @@
                     {{-- Check if it's a tags heading or not to add the sortby option to that heading--}}
                     @if($heading != Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY])
                         <a class="problems-table-head-link" {{-- ToDO: getURL to be modified later --}}
-                           href=""> {{$heading[Constants::TABLE_DATA_KEY]}}
+                           href="{{(Utilities::getURL("sortby", $heading, url()->current(), Request::fullUrl()))}}&order={{($data->sortbyMode == 'desc')?'asc':'desc'}}">{{$heading}}"> {{$heading[Constants::TABLE_DATA_KEY]}}
                         </a>
                     @else
                         <span class="table-head">{{$heading[Constants::TABLE_DATA_KEY]}}</span>
