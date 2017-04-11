@@ -31,6 +31,7 @@ Route::get('contest/{contestID}', 'ContestController@displayContest');
 
 Route::post('contest/add', 'ContestController@addContest');
 Route::post('contest/edit', 'ContestController@editContest');
+Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');

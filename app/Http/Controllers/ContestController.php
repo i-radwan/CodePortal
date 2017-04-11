@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Question;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
 use App\Models\Contest;
 use App\Models\User;
 use Auth;
+use Session;
 
 class ContestController extends Controller
 {
@@ -103,6 +105,34 @@ class ContestController extends Controller
         $contest = $user->owningContests()->find($contestID);
         if ($contest)
             $user->participatingContests()->save(Contest::find($contestID));
+        return back();
+    }
+
+    /**
+     * Ask question related to the contest problems
+     * ToDo add problem id after @Wael gets problems
+     * @param Request $request
+     * @param $contestID
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addQuestion(Request $request, $contestID)
+    {
+        $user = Auth::user();
+
+        // Check if user is signed in
+        if ($user) {
+            $contest = $user->participatingContests()->find($contestID);
+
+            // Check if contest exists (user participating in it) and the contest is running now
+            if ($contest && $contest->isContestRunning()) {
+                $question = new Question($request->all());
+                $question->user()->associate($user);
+                $question->contest()->associate($contest);
+                $question->save();
+                return back();
+            }
+        }
+        Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
         return back();
     }
 
@@ -228,6 +258,10 @@ class ContestController extends Controller
         // Get time and convert to familiar format
         $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY] =
             date('D M y, H:i', strtotime($contest->time));
+
+        // Get contest running status
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
+        [Constants::SINGLE_CONTEST_RUNNING_STATUS] = $contest->isContestRunning();
 
         // Set contest info
         $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;

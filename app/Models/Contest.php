@@ -127,4 +127,21 @@ class Contest extends Model
     {
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_CONTEST_ID);
     }
+
+    /**
+     * Check if contest is currently running
+     * @return bool
+     */
+    public function isContestRunning()
+    {
+        // Get contest end time by adding its duration to its start time
+        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
+
+        // Check if contest in running
+        if (date("Y-m-d H:i:s") > $this->time
+            && date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime)
+        )
+            return true;
+        return false;
+    }
 }

@@ -574,9 +574,9 @@ footer {
     width: 20%;
 }
 
-.gtable-head{
+.gtable-head {
     position: relative;
-    text-align: center ;
+    text-align: center;
 }
 
 .no-problems-msg {
@@ -725,6 +725,56 @@ footer {
     padding-top: 20px;
     padding-bottom: 20px;
     border-right: 3px #eee solid;
+}
+
+.centered {
+    margin: auto;
+    max-width: 700px;
+}
+
+.contest-ask-question {
+    text-align: center;
+    margin: 0 auto;
+}
+
+.contest-ask-question-title {
+    font-weight: 300;
+    display: inline-block;
+    font-size: 26px;
+    width: 300px;
+    color: #757575;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.contest-ask-question form {
+    margin-top: 5px;
+}
+
+.contest-ask-question input[type=text] {
+    margin: 20px auto 10px auto;
+    font-size: 22px;
+    padding: 23px 10px;
+    font-weight: 300;
+}
+
+.contest-ask-question input[type=submit] {
+    margin: 5px auto;
+    font-size: 18px;
+    padding: auto 20px;
+    font-weight: 300;
+}
+
+.contest-ask-question textarea {
+    margin: 20px auto;
+    resize: vertical;
+    font-size: 18px;
+    font-weight: 300;
+}
+
+.contest-ask-question .error-msg {
+    color: darkred;
 }
 
 /*  Contest tabs    */

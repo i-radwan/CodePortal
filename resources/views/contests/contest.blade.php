@@ -95,9 +95,37 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        {{--Show questions section when contest is running only--}}
+                        @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS])
+                            <div class="centered">
+                                <div class="row">
+                                    <div class="contest-ask-question col-md-12 form-group">
+                                        <div><span class="contest-ask-question-title">Ask Question!</span></div>
+                                        <form class="form-horizontal"
+                                              action="{{url('contest/question/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}"
+                                              method="post">
+                                            {{csrf_field()}}
+                                            <input type="text" name="title" placeholder="Title..." class="form-control"
+                                                   required/>
+                                            <textarea name="content" cols="30" rows="5" class="form-control"
+                                                      placeholder="Question content..." required></textarea>
 
-                        </div>
+                                            {{--Display Errors--}}
+                                            @if(Session::has('question-error'))
+                                                <p class="error-msg">{{ Session::get('question-error') }}</p>
+                                            @endif
+                                            @if (count($errors) > 0)
+                                                @foreach ($errors->all() as $error)
+                                                    <p class="error-msg">{{ $error }}</p>
+                                                @endforeach
+                                            @endif
+
+                                            <input type="submit" value="Ask Question!" class="btn btn-primary"/>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         <div class="row">
 
                         </div>

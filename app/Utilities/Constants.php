@@ -130,6 +130,7 @@ class Constants
     // extra
     const SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY = "leave_btn_visible";
     const SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY = "delete_btn_visible";
+    const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
 
 
     // ============================================================
