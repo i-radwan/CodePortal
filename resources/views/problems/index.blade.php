@@ -16,23 +16,23 @@
                     </div>
                 </div>
             </div>
-            {{--<div class="col-md-4">--}}
-                {{--<div class="panel panel-default">--}}
-                    {{--<div class="panel-heading">Filters</div>--}}
-                    {{--<div class="panel-body">--}}
-                        {{--@include('gtable.filters')--}}
-                    {{--</div>--}}
-                {{--</div>--}}
-                {{--@if(isset($data->tags) && count($data->tags) > 0)--}}
-                    {{--<div class="panel panel-default">--}}
-                        {{--<div class="panel-heading">Tags</div>--}}
-                        {{--<div class="panel-body">--}}
-                            {{--@include('gtable.tags')--}}
-                        {{--</div>--}}
-                    {{--</div>--}}
-                {{--@endif--}}
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Filters</div>
+                    <div class="panel-body">
+                        @include('gtable.filters')
+                    </div>
+                </div>
+                @if(isset($data[Constants::FILTERS_TAGS]) && count($data[Constants::FILTERS_TAGS]) > 0)
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Tags</div>
+                        <div class="panel-body">
+                            @include('gtable.tags')
+                        </div>
+                    </div>
+                @endif
 
-            {{--</div>--}}
+            </div>
         </div>
     </div>
 @endsection

@@ -27,11 +27,7 @@
         </thead>
         <tbody>
         <?php
-        //TODO (Samir) Adding CheckBoxes to be used in Adding New Contest
-        //ToDO Removing any php code here from the view if applicable
-        //ToDo (Samir) ReCheck for any field specific for the problem page
-        // array key exists TABLE_CELL_LINK
-//        dd($data);
+        //TODO (Samir) Adding CheckBoxes When Adding New Contest View
         ?>
         <!-- we are going to display the fetched rows -->
         @foreach ( $data[Constants::TABLE_ROWS_KEY] as $row)

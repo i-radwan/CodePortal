@@ -172,6 +172,8 @@ class Constants
     const APPLIED_FILTERS_SEARCH_STRING = "q";
     const APPLIED_FILTERS_SORT_BY_PARAMETER = "sortBy";
     const APPLIED_FILTERS_SORT_BY_MODE = "order";
+    const FILTERS_TAGS = "tags";
+    const FILTERS_JUDGES = "judges";
 
     // Values
     const TABLE_ROW_STATE_NORMAL = 0;

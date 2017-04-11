@@ -131,8 +131,9 @@ class ProblemController extends Controller
        //GetMetadata
        self::getMetaData($request, $appliedFilters , $sortBy);
        $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, null, $sortBy), $appliedFilters );
+//       dd($tags);
        //And Supply Tags and Judges
-       return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems')->with('tags', Tag::all())->with('judges', Judge::all());
+       return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems');
     }
 
     /**
@@ -189,9 +190,11 @@ class ProblemController extends Controller
         // Return problems table data: headings & rows
         return [
             Constants::TABLE_HEADINGS_KEY => Constants::PROBLEMS_TABLE_HEADINGS,
-            Constants::TABLE_ROWS_KEY => $rows,
+            Constants::TABLE_ROWS_KEY => $rows ? $rows : [],
             Constants::TABLE_PAGINATION_KEY => $paginatorData,
-            Constants::PREVIOUS_TABLE_FILTERS => $appliedFilters
+            Constants::PREVIOUS_TABLE_FILTERS => $appliedFilters,
+            Constants::FILTERS_TAGS => json_decode(json_encode(Tag::all())), //ToDO: change That
+            Constants::FILTERS_JUDGES => json_decode(json_encode(Judge::all()))
         ];
     }
 
