@@ -18,7 +18,6 @@ class Utilities
      */
     public static function getURL($key, $value, $defaultURL, $fullUrl, $unsetOrder = true)
     {
-        if($key == Constants::APPLIED_FILTERS_TAGS_IDS)
         $url_parts = parse_url($fullUrl);
         if (isset($url_parts['query'])) {
             parse_str($url_parts['query'], $params);

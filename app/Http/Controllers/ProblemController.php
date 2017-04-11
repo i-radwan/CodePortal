@@ -108,6 +108,7 @@ class ProblemController extends Controller
         $sortByMode = $request->get(Constants::APPLIED_FILTERS_SORT_BY_MODE);
         if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') $sortByMode = 'desc';
         $sortByParameter = $request->get(Constants::APPLIED_FILTERS_SORT_BY_PARAMETER);
+//        dd($sortByParameter, $sortByMode);
         $sortBy = [Constants::PROBLEMS_SORT_BY[$sortByParameter] => $sortByMode];
         $appliedJudgesIDS = $request->get(Constants::APPLIED_FILTERS_JUDGES_IDS);
         $appliedTagsIDS = $request->get(Constants::APPLIED_FILTERS_TAGS_IDS);
