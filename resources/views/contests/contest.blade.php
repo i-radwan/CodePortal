@@ -17,6 +17,9 @@
                         <a onclick="return confirm('Are you sure?')"
                            href="{{url('/contest/leave/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}"><span
                                     class="pull-right text-dark btn btn-link margin-5px">Leave</span></a>
+                    @elseif(Auth::user())
+                        <a href="{{url('/contest/join/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}"><span
+                                    class="pull-right text-dark btn btn-link margin-5px">Join</span></a>
                     @endif
 
 
@@ -35,17 +38,18 @@
                                 <p>
                                     <strong>Owner:</strong> {{$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_OWNER_KEY]}}
                                 </p>
-                                <p>
-                                    <strong>Organizers:</strong>
-                                    @foreach($data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ORGANIZERS_KEY] as $organizer)
-                                        {{$organizer}}@if(!$loop->last),@endif
-                                    @endforeach
-                                </p>
+                                @if(count($data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ORGANIZERS_KEY])>0)
+                                    <p>
+                                        <strong>Organizers:</strong>
+                                        @foreach($data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ORGANIZERS_KEY] as $organizer)
+                                            {{$organizer}}@if(!$loop->last),@endif
+                                        @endforeach
+                                    </p>
+                                @endif
                                 <p><strong>Duration:</strong>
                                     {{$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_DURATION_KEY]}}
                                     hrs
                                 </p>
-
                             </div>
                         </div>
                         <div class="row contest-tabs">
@@ -60,10 +64,12 @@
                                             <a href="#standings" aria-controls="standings" role="tab" data-toggle="tab">Standings</a>
                                         </li>
                                         <li role="presentation">
-                                            <a href="#status" aria-controls="status" role="tab" data-toggle="tab">Status</a>
+                                            <a href="#status" aria-controls="status" role="tab"
+                                               data-toggle="tab">Status</a>
                                         </li>
                                         <li role="presentation">
-                                            <a href="#participants" aria-controls="participants" role="tab" data-toggle="tab">Paricipants</a>
+                                            <a href="#participants" aria-controls="participants" role="tab"
+                                               data-toggle="tab">Paricipants</a>
                                         </li>
                                     </ul>
 

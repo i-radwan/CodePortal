@@ -23,6 +23,7 @@ Route::get('contest/edit', 'ContestController@addEditContestView');
 Route::get('contest/add', 'ContestController@addEditContestView');
 Route::get('contest/delete/{contestID}', 'ContestController@deleteContest');
 Route::get('contest/leave/{contestID}', 'ContestController@leaveContest');
+Route::get('contest/join/{contestID}', 'ContestController@joinContest');
 
 
 Route::get('contest/{contestID}', 'ContestController@displayContest');
