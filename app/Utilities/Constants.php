@@ -47,7 +47,8 @@ class Constants
         "Difficulty" => self::FLD_PROBLEMS_DIFFICULTY,
         "# Acc." => self::FLD_PROBLEMS_SOLVED_COUNT,
         "ID" => self::FLD_PROBLEMS_ID,
-        "Judge" => self::FLD_PROBLEMS_JUDGE_ID
+        "Judge" => self::FLD_PROBLEMS_JUDGE_ID,
+        "" => self::FLD_PROBLEMS_NAME
     ];
     // ============================================================
     //endregion
@@ -169,6 +170,8 @@ class Constants
     const APPLIED_FILTERS_JUDGES_IDS = "judges";
     const APPLIED_FILTERS_TAGS_IDS = "tags";
     const APPLIED_FILTERS_SEARCH_STRING = "q";
+    const APPLIED_FILTERS_SORT_BY_PARAMETER = "sortBy";
+    const APPLIED_FILTERS_SORT_BY_MODE = "order";
 
     // Values
     const TABLE_ROW_STATE_NORMAL = 0;

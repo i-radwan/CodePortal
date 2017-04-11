@@ -39,7 +39,7 @@ class ProblemController extends Controller
      * @param $sortByMode The SortBy mode (asc or dsc) in the request body
      * @param $sortBy The array to be returned after the end of the function having the right format
      */
-    //Not USED
+    //Not USED To be Modified Later
     public function applySortByParameter($sortByParameter, &$sortByMode,  &$sortBy){
         //Validation of SortByMode if it's not assigned
         if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') $sortByMode = 'desc';
@@ -106,12 +106,16 @@ class ProblemController extends Controller
     public function getMetaData(&$request,&$appliedFilters, &$sortBy){
         //Get SortBy Parameters And Applied Filters
         $sortByMode = $request->get('order');
+        if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') $sortByMode = 'desc';
         $sortByParameter = $request->get('sortby');
-        $sortBy = [$sortByMode => $sortByParameter ];
+        $sortByParameter = Constants::PROBLEMS_SORT_BY[$sortByParameter];
+        $sortBy = [$sortByParameter => $sortByMode];
         $appliedJudgesIDS = $request->get(Constants::APPLIED_FILTERS_JUDGES_IDS);
         $appliedTagsIDS = $request->get(Constants::APPLIED_FILTERS_TAGS_IDS);
         $appliedSearchString =$request->get(Constants::APPLIED_FILTERS_SEARCH_STRING);
         return ($appliedFilters =[
+            Constants::APPLIED_FILTERS_SORT_BY_PARAMETER => $sortByParameter ? $sortByParameter: "",
+            Constants::APPLIED_FILTERS_SORT_BY_MODE => $sortByMode ? $sortByMode: "",
             Constants::APPLIED_FILTERS_JUDGES_IDS => $appliedJudgesIDS ? $appliedJudgesIDS: [],
             Constants::APPLIED_FILTERS_TAGS_IDS => $appliedTagsIDS ? $appliedTagsIDS: [],
             Constants::APPLIED_FILTERS_SEARCH_STRING => $appliedSearchString

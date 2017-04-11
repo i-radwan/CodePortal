@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <?php dd($data); ?>
     <div class="container">
         <div class="row">
             <div class="col-md-8">
