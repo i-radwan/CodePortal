@@ -31,6 +31,10 @@ Route::get('contest/{contestID}', 'ContestController@displayContest');
 
 Route::post('contest/add', 'ContestController@addContest');
 Route::post('contest/edit', 'ContestController@editContest');
+
+// Question routes...
+Route::get('contest/question/announce/{questionID}', 'ContestController@announceQuestion');
+Route::get('contest/question/renounce/{questionID}', 'ContestController@renounceQuestion');
 Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 
 // Problems routes...

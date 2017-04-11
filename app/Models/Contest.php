@@ -129,6 +129,16 @@ class Contest extends Model
     }
 
     /**
+     * Return contest announcments
+     * @return mixed
+     */
+    public function announcements()
+    {
+        return $this->questions()->where(Constants::FLD_QUESTIONS_STATUS, '=',
+            Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY]);
+    }
+
+    /**
      * Check if contest is currently running
      * @return bool
      */

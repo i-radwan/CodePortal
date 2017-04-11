@@ -131,7 +131,7 @@ class Constants
     const SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY = "leave_btn_visible";
     const SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY = "delete_btn_visible";
     const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
-
+    const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
 
     // ============================================================
     //endregion
@@ -159,14 +159,14 @@ class Constants
     //Pagination In Generic Table
     const TABLE_PAGINATION_KEY = "paginator";
     const PAGINATOR_TOTAL = "total";
-    const PAGINATOR_LAST_PAGE= "lastPage";
-    const PAGINATOR_PER_PAGE= "perPage";
-    const PAGINATOR_CURRENT_PAGE= "currentPage";
-    const PAGINATOR_PATH= "path";
-    const PAGINATOR_NEXT_URL= "next_page_url";
-    const PAGINATOR_PREV_URL= "prev_page_url";
-    const PAGINATOR_START_LIMIT= "initialPage";
-    const PAGINATOR_END_LIMIT= "pagesLimit";
+    const PAGINATOR_LAST_PAGE = "lastPage";
+    const PAGINATOR_PER_PAGE = "perPage";
+    const PAGINATOR_CURRENT_PAGE = "currentPage";
+    const PAGINATOR_PATH = "path";
+    const PAGINATOR_NEXT_URL = "next_page_url";
+    const PAGINATOR_PREV_URL = "prev_page_url";
+    const PAGINATOR_START_LIMIT = "initialPage";
+    const PAGINATOR_END_LIMIT = "pagesLimit";
     //Previous Filters Accompanied with the the Generic Table
     const PREVIOUS_TABLE_FILTERS = "applied_filters";
     const APPLIED_FILTERS_JUDGES_IDS = "judges";

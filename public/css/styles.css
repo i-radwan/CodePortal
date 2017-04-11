@@ -550,7 +550,7 @@ footer {
     padding: 0;
 }
 
-.problems-table-container {
+.problems-table-container, .questions-table-container {
     width: 100%;
     padding: 0;
     text-align: center;
@@ -777,6 +777,25 @@ footer {
     color: darkred;
 }
 
+.questions-table-container h4 {
+    padding: 0;
+    margin: 0;
+}
+
+.questions-table-container p {
+    padding-left: 2px;
+    word-break: break-all;
+    margin: 0;
+}
+
+.questions-table-container button {
+    width: 90%;
+    margin: 5px;
+    font-size: 12px;
+}
+.questions-table-container .announcement {
+    background: rgba(238, 255, 230, 0.38);
+}
 /*  Contest tabs    */
 .contest-tabs .nav-tabs {
     border-bottom: 2px solid #DDD;
@@ -823,7 +842,7 @@ footer {
 }
 
 .contest-tabs .tab-content {
-    padding: 10px
+    padding: 10px 0;
 }
 
 .contest-tabs .card {

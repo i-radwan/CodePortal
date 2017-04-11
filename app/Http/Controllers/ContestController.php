@@ -7,6 +7,7 @@ use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
 use App\Models\Contest;
+use App\Models\Problem;
 use App\Models\User;
 use Auth;
 use Session;
@@ -22,6 +23,7 @@ class ContestController extends Controller
     {
         // Get all public contests from database
         $contestsData = $this->prepareContestsTableData();
+
         return view('contests.index', compact('data', $contestsData))->with('pageTitle', config('app.name') . ' | Contests');
     }
 
@@ -133,6 +135,39 @@ class ContestController extends Controller
             }
         }
         Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
+        return back();
+    }
+
+    /**
+     * Mark question as announcement
+     * @param $questionID
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function announceQuestion($questionID)
+    {
+        // ToDo check if organizer and answer exists
+        $question = Question::find($questionID);
+        if ($question) {
+            $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
+            $question->save();
+        }
+        return back();
+    }
+
+    /**
+     * Un-mark question as announcement
+     * @param $questionID
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function renounceQuestion($questionID)
+    {
+        // ToDo check if organizer
+        $question = Question::find($questionID);
+        if ($question) {
+            $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
+            $question->save();
+        }
+
         return back();
     }
 
@@ -263,6 +298,11 @@ class ContestController extends Controller
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
         [Constants::SINGLE_CONTEST_RUNNING_STATUS] = $contest->isContestRunning();
 
+        // Is user an organizer?
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
+        [Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER] =
+            (Auth::user()->organizingContests()->find($contest->id) != null);
+
         // Set contest info
         $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;
     }
@@ -294,11 +334,30 @@ class ContestController extends Controller
     {
         if (!$user) return;
 
+        // Get user specific questions
         $questions = $user->contestQuestions($contest->id)
-            ->get()->toArray();
+            ->get();
+
+        // Get contest announcements ToDo check for better select required fields only
+        $announcements = $contest->announcements()
+            ->get();
+
+        // Merge announcements and user questions
+        $announcements = $announcements->merge($questions);
+
+        // Get extra data from foreign keys
+        foreach ($announcements as $announcement) {
+            // Get admin username from id
+            $announcement[Constants::FLD_QUESTIONS_ADMIN_ID] =
+                User::find($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])->username;
+
+            // Get problem number from id
+            $announcement[Constants::FLD_QUESTIONS_PROBLEM_ID] =
+                Utilities::generateProblemNumber(Problem::find($announcement[Constants::FLD_QUESTIONS_PROBLEM_ID]));
+        }
 
         // Set contest questions
-        $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $questions;
+        $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements->toArray();
     }
 
 }
