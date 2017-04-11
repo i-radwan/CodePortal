@@ -27,18 +27,19 @@ class ProblemController extends Controller
      * @param array $sortBy sort by parameter
      * @return string
      */
+    //Not USED
     public function getProblemsWithPagination($page = 1, $sortBy = [])
     {
         $problems = Problem::getAllProblems($page, $sortBy);
         return $problems;
     }
 
-
     /**
      * @param $sortByParameter The SortBy parameter in the request body
      * @param $sortByMode The SortBy mode (asc or dsc) in the request body
      * @param $sortBy The array to be returned after the end of the function having the right format
      */
+    //Not USED
     public function applySortByParameter($sortByParameter, &$sortByMode,  &$sortBy){
         //Validation of SortByMode if it's not assigned
         if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') $sortByMode = 'desc';
@@ -65,8 +66,7 @@ class ProblemController extends Controller
         Paginator::currentPageResolver(function () use ($page) {
             return $page;
         });
-        //ToDO: Fix the string to array comversion
-        //ToDo: Fix the Paginator
+        //ToDO: Fix the string to array comversion and the paginator page above
         //If tags are checked / judges are checked / problemSearch is found
         if (($tags || $q || $judges)){
             $data = self::prepareProblemsTableData(self::filterProblems($q,$judges,$tags,$sortBy));
@@ -88,6 +88,7 @@ class ProblemController extends Controller
     /**
      * @param $data
      */
+    //Not USED
     public function supplyTagsAndJudges(&$data){
         //Add All Tags
         $data->tags = json_encode(Tag::all());
@@ -95,7 +96,13 @@ class ProblemController extends Controller
         $data->judges = json_decode(Judge::all());
     }
 
-
+    /**
+     * @param $request
+     * @param $appliedFilters
+     * @param $sortBy
+     *
+     * @return array
+     */
     public function getMetaData(&$request,&$appliedFilters, &$sortBy){
         //Get SortBy Parameters And Applied Filters
         $sortByMode = $request->get('order');
@@ -108,7 +115,6 @@ class ProblemController extends Controller
             Constants::APPLIED_FILTERS_JUDGES_IDS => $appliedJudgesIDS ? $appliedJudgesIDS: [],
             Constants::APPLIED_FILTERS_TAGS_IDS => $appliedTagsIDS ? $appliedTagsIDS: [],
             Constants::APPLIED_FILTERS_SEARCH_STRING => $appliedSearchString
-
         ]);
     }
 
@@ -118,13 +124,11 @@ class ProblemController extends Controller
      */
     public function index(Request $request)
     {
-        //GetMetadata
+       //GetMetadata
        self::getMetaData($request, $appliedFilters , $sortBy);
        $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, null, $sortBy), $appliedFilters );
-
-        //Supply Tags and Judges
-//        $this->supplyTagsAndJudges($data);
-        return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems');
+       //And Supply Tags and Judges
+       return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems')->with('tags', Tag::all())->with('judges', Judge::all());
     }
 
     /**
@@ -137,6 +141,7 @@ class ProblemController extends Controller
      * @param array|null $sortBy
      * @return Collection list of problem models
      */
+    //Not USED
     public static function filterProblems($name = null, $judgesIDs = null, $tagsIDs = null, $sortBy = null)
     {
         // Filter the problems
