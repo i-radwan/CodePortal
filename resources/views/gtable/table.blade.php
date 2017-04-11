@@ -32,45 +32,85 @@
         //ToDO Removing any php code here from the view if applicable
         //ToDo (Samir) ReCheck for any field specific for the problem page
         // array key exists TABLE_CELL_LINK
-        dd($data);
+//        dd($data);
         ?>
         <!-- we are going to display the fetched rows -->
-        @foreach ( $data[Constants::TABLE_ROWS_KEY] as $problem)
+        @foreach ( $data[Constants::TABLE_ROWS_KEY] as $row)
             <!-- We may here get the colour from a specific constant table -->
-            @if($problem[Constants::TABLE_META_DATA_KEY][Constants::TABLE_ROW_STATE_KEY] == Constants::TABLE_ROW_STATE_SUCCESS)
+            @if($row[Constants::TABLE_META_DATA_KEY][Constants::TABLE_ROW_STATE_KEY] == Constants::TABLE_ROW_STATE_SUCCESS)
                 <tr class="bg-success">
-            @elseif ($problem[Constants::TABLE_META_DATA_KEY][Constants::TABLE_ROW_STATE_KEY] == Constants::TABLE_ROW_STATE_DANGER)
+            @elseif ($row[Constants::TABLE_META_DATA_KEY][Constants::TABLE_ROW_STATE_KEY] == Constants::TABLE_ROW_STATE_DANGER)
                 <tr class="bg-warning">
             @else
                 <tr>
             @endif
-                    @foreach ($problem[TABLE_DATA_KEY] as $key => $value)
-                        @if($key == Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY)
-                            <td class="td-problems">
-                                {{ Utilities::generateProblemNumber($problem) }}
-                            </td>
-                        @elseif($key == "name")
-                            <td class="td-problems">
-                                <a target="_blank" href="{{Utilities::generateProblemLink($problem)}}">  {{$value}} </a>
-                            </td>
-                        @elseif(in_array($key, \App\Models\Problem::$displayable))
-                            <td class="td-problems">  {{$value}} </td>
-                        @endif
-                    @endforeach
-                    <td class="td-problems">
-                        @if(count(explode(',', $problem->tags_ids)) > 0 && strlen(trim(explode(',', $problem->tags_ids)[0]))>0)
-                            @foreach(explode(',', $problem->tags_ids) as $tagID)
-                                <a href="{{url()->current()}}?tag={{$tagID}}" class="problems-table-tags-links"><span>
-                                {{ ((App\Models\Tag::find($tagID))?(App\Models\Tag::find($tagID)->getAttributes()[Constants::FLD_TAGS_NAME]):'')}}
-                                </span>
+                    @foreach($row[Constants::TABLE_DATA_KEY] as $columnData)
+                        <td>
+                            @if(array_key_exists(Constants::TABLE_LINK_KEY, $columnData ))
+                                <a
+                                        href= {{$columnData[Constants::TABLE_LINK_KEY]}}> {{$columnData[Constants::TABLE_DATA_KEY]}}
                                 </a>
-                            @endforeach
-                        @else
-                            <p class="text-center">-</p>
-                        @endif
-                    </td>
+                            @elseif(array_key_exists(Constants::TABLE_EXTERNAL_LINK_KEY, $columnData))
+                                <a
+                                        href={{$columnData[Constants::TABLE_EXTERNAL_LINK_KEY]}}> {{$columnData[Constants::TABLE_DATA_KEY]}}
+                                </a>
+                            @else
+                                @if (is_array($columnData[Constants::TABLE_DATA_KEY]))
+                                    @foreach($columnData[Constants::TABLE_DATA_KEY] as $ColumnMiniData)
+                                        @if(array_key_exists(Constants::TABLE_LINK_KEY, $ColumnMiniData ))
+                                            <a
+                                                    href= {{$ColumnMiniData[Constants::TABLE_LINK_KEY]}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}
+                                            </a>
+                                        @elseif(array_key_exists(Constants::TABLE_EXTERNAL_LINK_KEY, $ColumnMiniData))
+                                            <a
+                                                    href={{$ColumnMiniData[Constants::TABLE_EXTERNAL_LINK_KEY]}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}
+                                            </a>
+                                        @else
+                                            <a
+                                                    href={{""}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}
+                                            </a>
+                                        @endif
+                                    @endforeach
+                                @else
+                                        <a
+                                                href={{""}}> {{$columnData[Constants::TABLE_DATA_KEY]}}
+                                        </a>
+                                @endif
+                            @endif
+                        </td>
+
+                    @endforeach
                 </tr>
                 @endforeach
+
+
+                    {{--@foreach ($problem[TABLE_DATA_KEY] as $key => $value)--}}
+                        {{--@if($key == Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY)--}}
+                            {{--<td class="td-problems">--}}
+                                {{--{{ Utilities::generateProblemNumber($problem) }}--}}
+                            {{--</td>--}}
+                        {{--@elseif($key == "name")--}}
+                            {{--<td class="td-problems">--}}
+                                {{--<a target="_blank" href="{{Utilities::generateProblemLink($problem)}}">  {{$value}} </a>--}}
+                            {{--</td>--}}
+                        {{--@elseif(in_array($key, \App\Models\Problem::$displayable))--}}
+                            {{--<td class="td-problems">  {{$value}} </td>--}}
+                        {{--@endif--}}
+                    {{--@endforeach--}}
+                    {{--<td class="td-problems">--}}
+                        {{--@if(count(explode(',', $problem->tags_ids)) > 0 && strlen(trim(explode(',', $problem->tags_ids)[0]))>0)--}}
+                            {{--@foreach(explode(',', $problem->tags_ids) as $tagID)--}}
+                                {{--<a href="{{url()->current()}}?tag={{$tagID}}" class="problems-table-tags-links"><span>--}}
+                                {{--{{ ((App\Models\Tag::find($tagID))?(App\Models\Tag::find($tagID)->getAttributes()[Constants::FLD_TAGS_NAME]):'')}}--}}
+                                {{--</span>--}}
+                                {{--</a>--}}
+                            {{--@endforeach--}}
+                        {{--@else--}}
+                            {{--<p class="text-center">-</p>--}}
+                        {{--@endif--}}
+                    {{--</td>--}}
+                {{--</tr>--}}
+                {{--@endforeach--}}
         </tbody>
     </table>
     {{--Pagination--}}
