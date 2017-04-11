@@ -100,10 +100,18 @@ class ProblemController extends Controller
      * @param $request
      * @param $appliedFilters
      * @param $sortBy
+     * @param $tagsIds
      *
      * @return array
      */
-    public function getMetaData(&$request,&$appliedFilters, &$sortBy){
+    public function getMetaData(&$request,&$appliedFilters, &$sortBy, &$tagsIds){
+        //Get Tags
+        if($request->get(Constants::APPLIED_FILTERS_TAG_ID))
+            $tagsIds = array($request->get(Constants::APPLIED_FILTERS_TAG_ID));
+        else if($request->get(Constants::APPLIED_FILTERS_TAGS_IDS))
+            $tagsIds = $request->get(Constants::APPLIED_FILTERS_TAGS_IDS);
+        else
+            $tagsIds = null;
         //Get SortBy Parameters And Applied Filters
         $sortByMode = $request->get(Constants::APPLIED_FILTERS_SORT_BY_MODE);
         if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') $sortByMode = 'desc';
@@ -128,10 +136,9 @@ class ProblemController extends Controller
      */
     public function index(Request $request)
     {
-//        dd($request);
        //GetMetadata
-       self::getMetaData($request, $appliedFilters , $sortBy);
-       $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, null, $sortBy), $appliedFilters );
+       self::getMetaData($request, $appliedFilters , $sortBy, $tagsIds);
+       $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, $tagsIds, $sortBy), $appliedFilters );
        return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems');
     }
 
