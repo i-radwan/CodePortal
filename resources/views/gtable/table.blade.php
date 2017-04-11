@@ -32,7 +32,7 @@
         //ToDO Removing any php code here from the view if applicable
         //ToDo (Samir) ReCheck for any field specific for the problem page
         // array key exists TABLE_CELL_LINK
-//        dd($data);
+        dd($data);
         ?>
         <!-- we are going to display the fetched rows -->
         @foreach ( $data[Constants::TABLE_ROWS_KEY] as $row)
@@ -42,7 +42,7 @@
             @elseif ($row[Constants::TABLE_META_DATA_KEY][Constants::TABLE_ROW_STATE_KEY] == Constants::TABLE_ROW_STATE_DANGER)
                 <tr class="bg-warning">
             @else
-                <tr>
+                <tr >
             @endif
                     @foreach($row[Constants::TABLE_DATA_KEY] as $columnData)
                         <td>
@@ -66,15 +66,11 @@
                                                     href={{$ColumnMiniData[Constants::TABLE_EXTERNAL_LINK_KEY]}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}
                                             </a>
                                         @else
-                                            <a
-                                                    href={{""}}> {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}
-                                            </a>
+                                            {{$ColumnMiniData[Constants::TABLE_DATA_KEY]}}
                                         @endif
                                     @endforeach
                                 @else
-                                        <a
-                                                href={{""}}> {{$columnData[Constants::TABLE_DATA_KEY]}}
-                                        </a>
+                                    {{$columnData[Constants::TABLE_DATA_KEY]}}
                                 @endif
                             @endif
                         </td>
@@ -114,30 +110,30 @@
         </tbody>
     </table>
     {{--Pagination--}}
-    {{--<nav aria-label="Page navigation example">--}}
-        {{--<ul class="pagination" max-size='12'>--}}
-            {{--<li class="page-item {{isset($data->rows->prev_page_url)? "":"disabled"}}">--}}
-                {{--<a class="page-link"--}}
-                   {{--href="{{isset($data->rows->prev_page_url) ? Utilities::getURL("page", $data->rows->current_page-1, url()->current(), Request::fullUrl(), false) : ""}}"--}}
-                   {{--aria-label="Previous">--}}
-                    {{--<span aria-hidden="true">&laquo;</span>--}}
-                    {{--<span class="sr-only">Previous</span>--}}
-                {{--</a>--}}
-            {{--</li>--}}
-            {{--@for ($i = $data->initialPage; ($i <= $data->pagesLimit) ; $i++)--}}
-                {{--<li class= {{($data->rows->current_page == $i ? "active" : "")}}>--}}
-                    {{--<a class="page-link"--}}
-                       {{--href={{Utilities::getURL("page", $i, url()->current(), Request::fullUrl(), false)}}>{{$i}}</a>--}}
-                {{--</li>--}}
-            {{--@endfor--}}
-            {{--<li class="page-item {{(isset($data->rows->next_page_url) ? ("") : ("disabled"))}}">--}}
-                {{--<a class="page-link"--}}
-                   {{--href="{{(isset($data->rows->next_page_url) ? Utilities::getURL("page", $data->rows->current_page + 1, url()->current(), Request::fullUrl(), false) : "")}}"--}}
-                   {{--aria-label="Next">--}}
-                    {{--<span aria-hidden="true">&raquo;</span>--}}
-                    {{--<span class="sr-only">Next</span>--}}
-                {{--</a>--}}
-            {{--</li>--}}
-        {{--</ul>--}}
-    {{--</nav>--}}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination" max-size='12'>
+            <li class="page-item {{isset($data[TABLE_PAGINATION_KEY][])? "":"disabled"}}">
+                <a class="page-link"
+                   href="{{isset($data->rows->prev_page_url) ? Utilities::getURL("page", $data->rows->current_page-1, url()->current(), Request::fullUrl(), false) : ""}}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            @for ($i = $data->initialPage; ($i <= $data->pagesLimit) ; $i++)
+                <li class= {{($data->rows->current_page == $i ? "active" : "")}}>
+                    <a class="page-link"
+                       href={{Utilities::getURL("page", $i, url()->current(), Request::fullUrl(), false)}}>{{$i}}</a>
+                </li>
+            @endfor
+            <li class="page-item {{(isset($data->rows->next_page_url) ? ("") : ("disabled"))}}">
+                <a class="page-link"
+                   href="{{(isset($data->rows->next_page_url) ? Utilities::getURL("page", $data->rows->current_page + 1, url()->current(), Request::fullUrl(), false) : "")}}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>

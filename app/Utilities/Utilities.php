@@ -128,8 +128,8 @@ class Utilities
             "perPage" => $LengthAwarePaginatorObject->perPage(),
             "currentPage" => $LengthAwarePaginatorObject->currentPage(),
             "path" => $LengthAwarePaginatorObject->resolveCurrentPath(),
-            "nextPageURL" => $LengthAwarePaginatorObject->nextPageUrl(),
-            "prevPageURL" => $LengthAwarePaginatorObject->previousPageUrl(),
+            "next_page_url" => $LengthAwarePaginatorObject->nextPageUrl(),
+            "prev_page_url" => $LengthAwarePaginatorObject->previousPageUrl(),
         ]);
     }
 

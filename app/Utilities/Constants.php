@@ -152,11 +152,18 @@ class Constants
     const TABLE_ROW_STATE_KEY = "state";
     const TABLE_ROW_DISABLED_KEY = "disabled";
     const TABLE_ROW_CHECKBOX_KEY = "checkbox";
+
     //Pagination In Generic Table
     const TABLE_PAGINATION_KEY = "paginator";
+    const PAGINATOR_TOTAL = "total";
+    const PAGINATOR_LAST_PAGE= "lastPage";
+    const PAGINATOR_PER_PAGE= "perPage";
+    const PAGINATOR_CURRENT_PAGE= "currentPage";
+    const PAGINATOR_PATH= "path";
+    const PAGINATOR_NEXT_URL= "next_page_url";
+    const PAGINATOR_PREV_URL= "prev_page_url";
     //Previous Filters Accompanied with the the Generic Table
     const PREVIOUS_TABLE_FILTERS = "applied_filters";
-
     // Values
     const TABLE_ROW_STATE_NORMAL = 0;
     const TABLE_ROW_STATE_SUCCESS = 1;
