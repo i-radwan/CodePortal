@@ -31,7 +31,7 @@ class ContestController extends Controller
     public function displayContest($contestID)
     {
         $contest = Contest::find($contestID);
-
+        if (!$contest) return redirect('contests/');
         $data = [];
 
         // Check if user is participating or owning the contest to show btns
@@ -44,7 +44,7 @@ class ContestController extends Controller
         $this->getParticipantsInfo($contest, $data);
 
         // Get questions data
-        dd($data);
+        //dd($data);
         return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
 
@@ -75,6 +75,32 @@ class ContestController extends Controller
     public function editContest(Request $request)
     {
 
+    }
+
+    public function deleteContest($contestID)
+    {
+        $user = Auth::user();
+        $contest = $user->owningContests()->find($contestID);
+        if ($contest) $contest->delete();
+        return redirect('contests/');
+    }
+
+    public function leaveContest($contestID)
+    {
+        $user = Auth::user();
+        $contest = $user->owningContests()->find($contestID);
+        if ($contest)
+            $user->participatingContests()->detach($contestID);
+        return back();
+    }
+
+    public function joinContest($contestID)
+    {
+        $user = Auth::user();
+        $contest = $user->owningContests()->find($contestID);
+        if ($contest)
+            $user->participatingContests()->save(Contest::find($contestID));
+        return back();
     }
 
     /**
@@ -115,7 +141,7 @@ class ContestController extends Controller
             ],
             [   // Name
                 Constants::TABLE_DATA_KEY => $contest->name,
-                Constants::TABLE_LINK_KEY => url('contest/'.$contest->id) // ToDo add contest page link
+                Constants::TABLE_LINK_KEY => url('contest/' . $contest->id) // ToDo add contest page link
             ],
             [   // Time
                 Constants::TABLE_DATA_KEY => $contest->time
@@ -138,7 +164,7 @@ class ContestController extends Controller
      */
     private function getContestOwnerName($ownerID)
     {
-        return User::find($ownerID)->name;
+        return User::find($ownerID)->username;
     }
 
     /**
@@ -220,4 +246,5 @@ class ContestController extends Controller
         // Set contest participants
         $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;
     }
+
 }

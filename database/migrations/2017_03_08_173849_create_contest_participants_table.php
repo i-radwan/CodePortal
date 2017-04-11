@@ -18,10 +18,10 @@ class CreateContestParticipantsTable extends Migration
             $table->unsignedInteger(Constants::FLD_CONTEST_PARTICIPANTS_USER_ID);
             $table->unsignedInteger(Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID);
             $table->timestamps();
-            $table->primary(
+            $table->primary(array(
                 Constants::FLD_CONTEST_PARTICIPANTS_USER_ID,
                 Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID
-            );
+            ));
         });
     }
 
