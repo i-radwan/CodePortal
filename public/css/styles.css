@@ -574,9 +574,9 @@ footer {
     width: 20%;
 }
 
-.gtable-head,
-.problems-table-name-head {
+.gtable-head{
     position: relative;
+    text-align: center ;
 }
 
 .no-problems-msg {

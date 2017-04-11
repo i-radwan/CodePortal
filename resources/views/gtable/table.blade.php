@@ -4,7 +4,7 @@
         <tr>
             <!-- We are gonna loop here for the head tags -->
             @foreach ($data[Constants::TABLE_HEADINGS_KEY] as $heading) {{-- Change class of th if it's a tags heading--}}
-                <th class={{(($heading == Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY]) ? "gtable-tags-head":"gtable-head")}}>
+                <th class={{(($heading[Constants::TABLE_DATA_KEY] == Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY]) ? "gtable-tags-head":"gtable-head")}}>
                     {{-- Check if it's a tags heading or not to add the sortby option to that heading--}}
                     @if($heading != Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY])
                         <a class="problems-table-head-link" {{-- ToDO: getURL to be modified later --}}
