@@ -128,12 +128,10 @@ class ProblemController extends Controller
      */
     public function index(Request $request)
     {
+//        dd($request);
        //GetMetadata
        self::getMetaData($request, $appliedFilters , $sortBy);
-
        $data = self::prepareProblemsTableData(self::filterProblems($request->get(self::URL_QUERY_NAME_KEY), null, null, $sortBy), $appliedFilters );
-//       dd($tags);
-       //And Supply Tags and Judges
        return view('problems.index')->with('data', $data)->with('pageTitle', config('app.name'). ' | Problems');
     }
 
@@ -244,7 +242,7 @@ class ProblemController extends Controller
         foreach ($tags as $tag) {
             $ret[] = [
                 Constants::TABLE_DATA_KEY => $tag->name,
-                Constants::TABLE_LINK_KEY =>  Utilities::getURL(Constants::PROBLEMS_TABLE_HEADINGS[4][Constants::TABLE_DATA_KEY],$tag->id,"/problems","")       // TODO: Make it More Generic
+                Constants::TABLE_LINK_KEY =>  Utilities::getURL(Constants::APPLIED_FILTERS_TAG_ID,$tag->id,"/problems","")       // TODO: Make it More Generic
             ];
         }
         return $ret;

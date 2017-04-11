@@ -57,6 +57,8 @@ class Utilities
                     $params[Constants::APPLIED_FILTERS_SORT_BY_PARAMETER] = null;
                 if(isset($params[Constants::APPLIED_FILTERS_SORT_BY_MODE]))
                     $params[Constants::APPLIED_FILTERS_SORT_BY_MODE] = null;
+                if(isset($params[Constants::APPLIED_FILTERS_TAG_ID]))
+                    $params[Constants::APPLIED_FILTERS_TAG_ID] = null;
                 if(isset($params["page"]))
                     $params["page"] = null;
             }
