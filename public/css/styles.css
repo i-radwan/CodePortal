@@ -532,15 +532,15 @@ footer {
 /*========== PROBLEMS PAGE ===========*/
 /*====================================*/
 
-.problems-panel {
+.problems-panel, .contests-panel {
     border: 0;
 }
 
-.problems-panel-head {
+.problems-panel-head, .contests-panel-head {
     border: 1px solid #ddd;
 }
 
-.problems-panel-body {
+.problems-panel-body, .contests-panel-body {
     border: 0;
     padding: 0;
 }
@@ -550,7 +550,7 @@ footer {
     padding: 0;
 }
 
-.problems-table-container, .questions-table-container {
+.problems-table-container, .questions-table-container, .contests-table-container {
     width: 100%;
     padding: 0;
     text-align: center;
@@ -579,7 +579,7 @@ footer {
     text-align: center;
 }
 
-.no-problems-msg {
+.no-problems-msg, .no-contests-msg {
     margin: 30px;
 }
 

@@ -54,6 +54,7 @@ class Contest extends Model
      */
     public static function getPublicContests()
     {
+        // ToDo scope function, where
         return
             Contest::all()
                 ->where(

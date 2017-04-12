@@ -11,6 +11,7 @@ use App\Models\Problem;
 use App\Models\User;
 use Auth;
 use Session;
+use Illuminate\Pagination\Paginator;
 
 class ContestController extends Controller
 {
@@ -21,20 +22,23 @@ class ContestController extends Controller
      */
     public function index()
     {
+//        $items = Contest::getPublicContests();
+//        $paginator = new Paginator($items->forPage(1, 15), $items->count(), 15, [1]);
+//        dd($paginator->toArray());
         // Get all public contests from database
-        $contestsData = $this->prepareContestsTableData();
-
-        return view('contests.index', compact('data', $contestsData))->with('pageTitle', config('app.name') . ' | Contests');
+        return view('contests.index')
+            ->with('data', Contest::getPublicContests())
+            ->with('pageTitle', config('app.name') . ' | Contests');
     }
 
     /**
      * Show single contest page
-     * @param $contestID
-     * @return $this
+     *
+     * @param Contest $contest
+     * @return \Illuminate\View\View $this
      */
-    public function displayContest($contestID)
+    public function displayContest(Contest $contest)
     {
-        $contest = Contest::find($contestID);
         $currentUser = Auth::user();
 
         if (!$contest) return redirect('contests/');
@@ -71,7 +75,6 @@ class ContestController extends Controller
 
     public function addContest(Request $request)
     {
-        dd($request);
         $contest = new Contest($request->all());
         $contest->save();
     }
@@ -103,6 +106,8 @@ class ContestController extends Controller
      * @param $contestID
      * @return \Illuminate\Http\RedirectResponse
      */
+
+    // ToDo detach non participated-in contest
     public function leaveContest($contestID)
     {
         $user = Auth::user();
@@ -114,15 +119,15 @@ class ContestController extends Controller
 
     /**
      * Register user participation in a contest
-     * @param $contestID
+     * @param Contest $contest
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function joinContest($contestID)
+    // ToDo check re-participating
+    public function joinContest(Contest $contest)
     {
         $user = Auth::user();
-        $contest = Contest::find($contestID);
         if ($contest)
-            $user->participatingContests()->save(Contest::find($contestID));
+            $user->participatingContests()->save($contest);
         return back();
     }
 
@@ -143,6 +148,7 @@ class ContestController extends Controller
 
             // Check if contest exists (user participating in it) and the contest is running now
             if ($contest && $contest->isContestRunning()) {
+                // ToDo move to Question model
                 $question = new Question($request->all());
                 $question->user()->associate($user);
                 $question->contest()->associate($contest);
@@ -230,63 +236,10 @@ class ContestController extends Controller
      * headers and data formatting
      * @return array of data for view (contest table input)
      */
+    // ToDo to be removed
     private function prepareContestsTableData()
     {
-        $contests = Contest::getPublicContests();
-
-        $rows = [];
-
-        // Prepare problems data for table according to the table protocol
-        foreach ($contests as $contest) {
-            $rows[] = [
-                Constants::TABLE_DATA_KEY => $this->getContestRowData($contest)
-            ];
-        }
-        // Return problems table data: headings & rows
-        return [
-            Constants::TABLE_HEADINGS_KEY => Constants::CONTESTS_TABLE_HEADINGS,
-            Constants::TABLE_ROWS_KEY => $rows
-        ];
-    }
-
-    /**
-     * Get specific contest data
-     * @param $contest
-     * @return array that holds contest data to be showm
-     */
-    private function getContestRowData($contest)
-    {
-        // Note that they should be in the same order of the headings
-        return [
-            [   // ID
-                Constants::TABLE_DATA_KEY => $contest->id
-            ],
-            [   // Name
-                Constants::TABLE_DATA_KEY => $contest->name,
-                Constants::TABLE_LINK_KEY => url('contest/' . $contest->id) // ToDo add contest page link
-            ],
-            [   // Time
-                Constants::TABLE_DATA_KEY => $contest->time
-            ],
-            [   // Duration
-                Constants::TABLE_DATA_KEY => Utilities::convertMinsToHoursMins($contest->duration)
-            ],
-            [   // Owner name
-                Constants::TABLE_DATA_KEY => $this->getContestOwnerName($contest->owner_id),
-                Constants::TABLE_LINK_KEY => "" // ToDo add owner profile link
-            ]
-        ];
-    }
-
-    /**
-     * Get contest owner Name
-     * ToDo, if no more functionality, inline this function !
-     * @param $ownerID
-     * @return mixed
-     */
-    private function getContestOwnerName($ownerID)
-    {
-        return User::find($ownerID)->username;
+        return Contest::getPublicContests();
     }
 
     /**

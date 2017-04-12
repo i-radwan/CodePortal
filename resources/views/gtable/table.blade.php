@@ -1,5 +1,5 @@
 <div class="container problems-table-container">
-    <table class="table table-bordered " id="problems_table">
+    <table class="table table-bordered" id="problems_table">
         <thead>
         <tr>
             <!-- We are gonna loop here for the head tags -->
