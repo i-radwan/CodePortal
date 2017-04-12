@@ -61,6 +61,7 @@ class ProblemController extends Controller
      * @param $sortBy the sort by parameter
      * @return string
      */
+    //    NOTUSED
     public function applyFilters($tag, $q, $tags, $judges, $page, $sortBy){
         // Set page
         Paginator::currentPageResolver(function () use ($page) {
@@ -120,7 +121,7 @@ class ProblemController extends Controller
         $sortBy = [Constants::PROBLEMS_SORT_BY[$sortByParameter] => $sortByMode];
         $appliedJudgesIDS = $request->get(Constants::APPLIED_FILTERS_JUDGES_IDS);
         $appliedTagsIDS = $request->get(Constants::APPLIED_FILTERS_TAGS_IDS);
-        $appliedSearchString =$request->get(Constants::APPLIED_FILTERS_SEARCH_STRING);
+        $appliedSearchString =Utilities::makeInputSafe($request->get(Constants::APPLIED_FILTERS_SEARCH_STRING));
         return ($appliedFilters =[
             Constants::APPLIED_FILTERS_SORT_BY_PARAMETER => $sortByParameter ? $sortByParameter: "",
             Constants::APPLIED_FILTERS_SORT_BY_MODE => $sortByMode ? $sortByMode: "",
@@ -152,7 +153,6 @@ class ProblemController extends Controller
      * @param array|null $sortBy
      * @return Collection list of problem models
      */
-    //Not USED
     public static function filterProblems($name = null, $judgesIDs = null, $tagsIDs = null, $sortBy = null)
     {
         // Filter the problems

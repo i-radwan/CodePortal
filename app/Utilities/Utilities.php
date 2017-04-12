@@ -215,4 +215,12 @@ class Utilities
         return sprintf($format, $hours, $minutes);
     }
 
+    /**
+     * This function makes the input form data safe for SQL
+     * @param string $data : input data
+     * @return string output safe data
+     */
+    public static function makeInputSafe($data) {
+        return htmlspecialchars(stripslashes(trim($data)));
+    }
 }
