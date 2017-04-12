@@ -773,6 +773,12 @@ footer {
     font-weight: 300;
 }
 
+.question-answer-mode textarea {
+    resize: vertical;
+    font-size: 18px;
+    font-weight: 300;
+}
+
 .contest-ask-question .error-msg {
     color: darkred;
 }
@@ -793,9 +799,11 @@ footer {
     margin: 5px;
     font-size: 12px;
 }
+
 .questions-table-container .announcement {
     background: rgba(238, 255, 230, 0.38);
 }
+
 /*  Contest tabs    */
 .contest-tabs .nav-tabs {
     border-bottom: 2px solid #DDD;

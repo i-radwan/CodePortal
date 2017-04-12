@@ -1,5 +1,13 @@
 $(document).ready(function () {
 
+
+    /*<editor-fold desc="Single Contest Page">*/
+
+
+
+    /**************************************/
+    /*</editor-fold>*/
+
     /*<editor-fold desc="Animations">*/
     /*====================================*/
     /*========== animate.css   ===========*/
@@ -34,7 +42,7 @@ $(document).ready(function () {
     /*</editor-fold>*/
 
     $('.datetimepicker').datetimepicker({
-        format:'Y-m-d H:i:s',
+        format: 'Y-m-d H:i:s',
         minDate: 0 // for after today limitation
     });
 });

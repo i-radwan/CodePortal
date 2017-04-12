@@ -95,7 +95,7 @@ class ContestController extends Controller
     public function leaveContest($contestID)
     {
         $user = Auth::user();
-        $contest = $user->owningContests()->find($contestID);
+        $contest = $user->participatingContests()->find($contestID);
         if ($contest)
             $user->participatingContests()->detach($contestID);
         return back();
@@ -104,7 +104,7 @@ class ContestController extends Controller
     public function joinContest($contestID)
     {
         $user = Auth::user();
-        $contest = $user->owningContests()->find($contestID);
+        $contest = Contest::find($contestID);
         if ($contest)
             $user->participatingContests()->save(Contest::find($contestID));
         return back();
@@ -145,11 +145,18 @@ class ContestController extends Controller
      */
     public function announceQuestion($questionID)
     {
-        // ToDo check if organizer and answer exists
         $question = Question::find($questionID);
+        $user = Auth::user();
+
+        // Check if question exists
         if ($question) {
-            $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
-            $question->save();
+
+            // Check if organizer is the one who fired this request
+            $contest = $user->organizingContests()->find($question->contest_id);
+            if ($contest) {
+                $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
+                $question->save();
+            }
         }
         return back();
     }
@@ -161,13 +168,44 @@ class ContestController extends Controller
      */
     public function renounceQuestion($questionID)
     {
-        // ToDo check if organizer
         $question = Question::find($questionID);
-        if ($question) {
-            $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
-            $question->save();
-        }
+        $user = Auth::user();
 
+        // Check if question exists
+        if ($question) {
+
+            // Check if organizer is the one who fired this request
+            $contest = $user->organizingContests()->find($question->contest_id);
+            if ($contest) {
+                $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
+                $question->save();
+            }
+        }
+        return back();
+    }
+
+    /**
+     * Save question answer (provided by contest organizers)
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function answerQuestion(Request $request)
+    {
+        $questionID = $request->get('question_id');
+        $questionAnswer = $request->get('question_answer');
+
+        $question = Question::find($questionID);
+        $user = Auth::user();
+
+        // Check if question exists
+        if ($question) {
+
+            // Check if organizer is the one who fired this request
+            $contest = $user->organizingContests()->find($question->contest_id);
+            if ($contest) {
+                $question->saveAnswer($questionAnswer, $user);
+            }
+        }
         return back();
     }
 
@@ -245,24 +283,24 @@ class ContestController extends Controller
      */
     private function getLeaveAndDeleteButtonsVisibility($user, $contest, &$data)
     {
-        $leaveBtnVisible = false;
-        $deleteBtnVisible = false;
+        $isUserParticipating = false;
+        $isUserOwner = false;
 
-        if ($user) {
+        if ($user && $contest->owner) {
             // Check if the user has joined this contest (to show leave link)
-            $leaveBtnVisible =
+            $isUserParticipating =
                 ($contest->participatingUsers()->find($user->id) != null);
             // Check if the user is the owner of this contest (to show delete link)
-            $deleteBtnVisible =
+            $isUserOwner =
                 ($contest->owner->id == $user->id);
         }
 
         // Set btns visibility values
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY] = $leaveBtnVisible;
+        [Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING] = $isUserParticipating;
 
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY] = $deleteBtnVisible;
+        [Constants::SINGLE_CONTEST_IS_USER_OWNER] = $isUserOwner;
     }
 
     /**

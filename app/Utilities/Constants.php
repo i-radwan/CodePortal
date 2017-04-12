@@ -128,8 +128,8 @@ class Constants
         self::FLD_USERS_COUNTRY
     ];
     // extra
-    const SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY = "leave_btn_visible";
-    const SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY = "delete_btn_visible";
+    const SINGLE_CONTEST_IS_USER_PARTICIPATING = "leave_btn_visible";
+    const SINGLE_CONTEST_IS_USER_OWNER = "delete_btn_visible";
     const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
     const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
 

@@ -7,20 +7,20 @@
                 <div class="panel panel-default">
                     {{--Contest leave/delete links--}}
 
-                    @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY])
+                    @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_OWNER])
                         <a onclick="return confirm('Are you sure?')"
                            href="{{url('/contest/delete/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}">
                             <span class="pull-right text-dark btn btn-link margin-5px">Delete</span>
                         </a>
                     @endif
 
-                    @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY])
+                    @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING])
                         <a onclick="return confirm('Are you sure?')"
                            href="{{url('/contest/leave/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}">
                             <span class="pull-right text-dark btn btn-link margin-5px">Leave</span>
                         </a>
 
-                    @elseif(Auth::user() && !$data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY])
+                    @elseif(Auth::user() && !$data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_OWNER])
                         <a href="{{url('/contest/join/'.$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY])}}">
                             <span class="pull-right text-dark btn btn-link margin-5px">Join</span>
                         </a>
@@ -34,6 +34,20 @@
                     </div>
 
                     <div class="panel-body">
+                        {{--Alerts Part--}}
+                        @if (count($errors) > 0)
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger">
+                                        @foreach ($errors->all() as $error)
+                                            <p>• {{ $error }}</p>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="row contest-info">
                             <div class="col-md-6">
                                 <p class="contest-time pull-right">{{$data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_TIME_KEY]}}</p>
@@ -126,7 +140,12 @@
                                                             @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS])
                                                                 <td>
                                                                     @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER])
-                                                                        <button class="btn btn-primary">Answer</button>
+                                                                        <button class="btn btn-primary question-answer-button"
+                                                                                data-toggle="modal"
+                                                                                data-target="#question-answer-model"
+                                                                                onclick="$('#question-id').val('{{$question[Constants::FLD_QUESTIONS_ID]}}');$('#question-answer').val('{{$question[Constants::FLD_QUESTIONS_ANSWER]}}');">
+                                                                            Answer
+                                                                        </button>
                                                                     @endif
                                                                     @if($question[Constants::FLD_QUESTIONS_STATUS]==0
                                                                     && $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER]
@@ -155,8 +174,10 @@
                                 </div>
                             </div>
                         </div>
-                        {{--Show questions section when contest is running only--}}
-                        @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS])
+                        {{--Show questions section when contest is running only and when user is participant--}}
+                        @if($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS]
+                        && $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING])
+
                             <div class="centered">
                                 <div class="row">
                                     <div class="contest-ask-question col-md-12 form-group">
@@ -174,12 +195,6 @@
                                             @if(Session::has('question-error'))
                                                 <p class="error-msg">{{ Session::get('question-error') }}</p>
                                             @endif
-                                            @if (count($errors) > 0)
-                                                @foreach ($errors->all() as $error)
-                                                    <p class="error-msg">{{ $error }}</p>
-                                                @endforeach
-                                            @endif
-
                                             <input type="submit" value="Ask Question!" class="btn btn-primary"/>
                                         </form>
                                     </div>
@@ -193,5 +208,45 @@
                 </div>
             </div>
         </div>
+        @if ($data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER])
+            {{--Answer Question Modal--}}
+            <div id="question-answer-model" class="modal fade question-answer-mode" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <form method="post" action="{{url('contest/question/answer')}}" name="answerForm">
+                        {{csrf_field()}}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Answer Question</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="question_id" id="question-id"/>
+                                <div class="form-group">
+                                    <div class="cols-sm-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">
+                                                <i class="fa fa-info" aria-hidden="true"></i>
+                                            </span>
+                                            <textarea class="form-control" name="question_answer" id="question-answer"
+                                                      cols="5"
+                                                      rows="10" placeholder="Answer..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success" id="answer-model-submit-button">
+                                    Answer
+                                </button>
+                                <button type="button" class="btn btn-info" data-dismiss="modal">Close
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @endif
+
     </div>
 @endsection

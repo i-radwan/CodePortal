@@ -44,16 +44,6 @@ class QuestionTest extends DatabaseTest
         // Valid answer
         $validQuestion = $this->insertQuestion('Question1', 'Hello', '', $contest, $user);
         $validQuestion->saveAnswer("Answer to Q1", $user);
-        try {
-            $validQuestion->saveAnswer("Answer to Q1", $user, '3');
-            $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid status");
-        } catch (ValidationException $e) {
-        }
-        try {
-            $validQuestion->saveAnswer("", $user, '1');
-            $this->fail("Shouldn't reach here w/out throwing Validation Exception - invalid answer");
-        } catch (ValidationException $e) {
-        }
 
         // Remove question
         $validQuestion->delete();
