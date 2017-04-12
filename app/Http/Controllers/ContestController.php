@@ -41,7 +41,7 @@ class ContestController extends Controller
         $data = [];
 
         // Check if user is participating or owning the contest to show btns
-        $this->getLeaveAndDeleteButtonsVisibility($currentUser, $contest, $data);
+        $this->getUserOwnerOrParticipant($currentUser, $contest, $data);
 
         // Get basic contest info
         $this->getBasicContestInfo($contest, $data);
@@ -85,6 +85,11 @@ class ContestController extends Controller
 
     }
 
+    /**
+     * Delete a certain contest if you're organizer
+     * @param $contestID
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function deleteContest($contestID)
     {
         $user = Auth::user();
@@ -93,6 +98,11 @@ class ContestController extends Controller
         return redirect('contests/');
     }
 
+    /**
+     * Cancel user participation in a contest
+     * @param $contestID
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function leaveContest($contestID)
     {
         $user = Auth::user();
@@ -102,6 +112,11 @@ class ContestController extends Controller
         return back();
     }
 
+    /**
+     * Register user participation in a contest
+     * @param $contestID
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function joinContest($contestID)
     {
         $user = Auth::user();
@@ -275,28 +290,27 @@ class ContestController extends Controller
     }
 
     /**
-     * Check if the user owns the contest, then set delete contest button to visible
-     * check if the user is participating in this contest, then set leave contest
-     * button to visible
+     * Check if the user owns the contest and
+     * check if the user is participating in this contest
      * @param $user
      * @param $contest
      * @param $data
      */
-    private function getLeaveAndDeleteButtonsVisibility($user, $contest, &$data)
+    private function getUserOwnerOrParticipant($user, $contest, &$data)
     {
         $isUserParticipating = false;
         $isUserOwner = false;
 
         if ($user && $contest->owner) {
-            // Check if the user has joined this contest (to show leave link)
+            // Check if the user has joined this contest
             $isUserParticipating =
                 ($contest->participatingUsers()->find($user->id) != null);
-            // Check if the user is the owner of this contest (to show delete link)
+            // Check if the user is the owner of this contest
             $isUserOwner =
                 ($contest->owner->id == $user->id);
         }
 
-        // Set btns visibility values
+        // Set data values
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
         [Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING] = $isUserParticipating;
 

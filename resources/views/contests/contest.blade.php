@@ -97,17 +97,34 @@
 
                                     <!-- Tab panes -->
                                     <div class="tab-content">
-                                        <div role="tabpanel" class="tab-pane active" id="problems">Lorem Ipsum is simply
-                                            dummy text of the printing and typesetting industry.
+                                        <div role="tabpanel" class="tab-pane active" id="problems">
+                                            Problems
                                         </div>
-                                        <div role="tabpanel" class="tab-pane" id="standings">Lorem Ipsum is simply dummy
-                                            text of the printing and typesetting industry.
+                                        <div role="tabpanel" class="tab-pane" id="standings">
+                                            Standings
                                         </div>
-                                        <div role="tabpanel" class="tab-pane" id="status">Lorem Ipsum is simply dummy
-                                            text of the printing and typesetting industry.
+                                        <div role="tabpanel" class="tab-pane" id="status">
+                                            Status
                                         </div>
                                         <div role="tabpanel" class="tab-pane" id="participants">
-
+                                            <div class="container questions-table-container">
+                                                <table class="table table-bordered table-hover">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center" width="50%">Username</th>
+                                                        <th class="text-center">Country</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    @foreach ( $data['participants'] as $participant)
+                                                        <tr>
+                                                            <td>{{$participant[Constants::FLD_USERS_USERNAME]}}</td>
+                                                            <td>{{$participant[Constants::FLD_USERS_COUNTRY]}}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                         <div role="tabpanel" class="tab-pane" id="questions">
                                             <div class="container questions-table-container">
@@ -201,9 +218,6 @@
                                 </div>
                             </div>
                         @endif
-                        <div class="row">
-
-                        </div>
                     </div>
                 </div>
             </div>
