@@ -28,8 +28,8 @@
                                         <tr>
                                             <td>{{$contest->id}}</td>
                                             <td><a href="{{url('contest/'.$contest->id)}}">{{$contest->name}}</a></td>
-                                            <td>{{$contest->time}}</td>
-                                            <td>{{$contest->duration}}</td>
+                                            <td>{{date('D M y, H:i', strtotime($contest->time))}}</td>
+                                            <td>{{\App\Utilities\Utilities::convertMinsToHoursMins($contest->duration)}} hrs</td>
                                             <td>
                                                 <a href="{{url('profile/'.$contest->owner->username)}}">{{$contest->owner->username}}</a>
                                             </td>
