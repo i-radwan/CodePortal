@@ -22,7 +22,7 @@ class ProblemController extends Controller
         $searchStr = $this->getSearchStringFilter();
         $judgesIDs = $this->getJudgesFilter();
         $tagsIDs = $this->getTagsFilter();
-        $sortParams = $this->getSortByFilter();
+        $sortParams = $this->getSortFilter();
         $problems = $this->filterProblems($searchStr, $judgesIDs, $tagsIDs, $sortParams);
 
         return view('problems.index')
@@ -33,20 +33,30 @@ class ProblemController extends Controller
     }
 
     /**
-     * Parse search string from the url query and return it as safe string
+     * Parse search string from the url query and return it as safe string for SQL queries
      *
-     * @return String
+     * @return string
      */
     public function getSearchStringFilter()
     {
         return Utilities::makeInputSafe(request()->get(Constants::URL_QUERY_SEARCH_KEY));
     }
 
+    /**
+     * Return parsed judge filters from the url query
+     *
+     * @return array Array of judges ids
+     */
     public function getJudgesFilter()
     {
         return request()->get(Constants::URL_QUERY_JUDGES_KEY);
     }
 
+    /**
+     * Return parsed tag filters from the url query
+     *
+     * @return array Array of tags ids
+     */
     public function getTagsFilter()
     {
         if (request()->has(Constants::URL_QUERY_TAG_KEY)) {
@@ -56,17 +66,27 @@ class ProblemController extends Controller
         return request()->get(Constants::URL_QUERY_TAGS_KEY);
     }
 
-    public function getSortByFilter()
+    /**
+     * Return parsed sort filters from the url query
+     *
+     * @return array Array of sorting parameters where the array key represents the column to sort by
+     * and the value represents the sorting mode (asc, desc)
+     */
+    public function getSortFilter()
     {
-        $sortByMode = request()->get(Constants::URL_QUERY_SORT_ORDER_KEY);
+        $sortParam = request()->get(Constants::URL_QUERY_SORT_PARAM_KEY);
 
-        if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') {
-            $sortByMode = 'desc';
+        if ($sortParam && !array_key_exists($sortParam, Constants::PROBLEMS_SORT_PARAMS)) {
+            $sortParam = Constants::URL_QUERY_SORT_PARAM_ID_KEY;
         }
 
-        $sortByParameter = request()->get(Constants::URL_QUERY_SORT_PARAM_KEY, '');
+        $sortOrder = request()->get(Constants::URL_QUERY_SORT_ORDER_KEY);
 
-        return [Constants::PROBLEMS_SORT_PARAMS[$sortByParameter] => $sortByMode];
+        if ($sortOrder && $sortOrder != 'asc' && $sortOrder != 'desc') {
+            $sortOrder = 'asc';
+        }
+
+        return [Constants::PROBLEMS_SORT_PARAMS[$sortParam] => $sortOrder];
     }
 
     /**

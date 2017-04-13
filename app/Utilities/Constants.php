@@ -30,7 +30,7 @@ class Constants
         self::URL_QUERY_SORT_PARAM_NAME_KEY => self::FLD_PROBLEMS_NAME,
         self::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY => self::FLD_PROBLEMS_SOLVED_COUNT,
         self::URL_QUERY_SORT_PARAM_JUDGE_KEY => self::FLD_PROBLEMS_JUDGE_ID,
-        "" => self::FLD_PROBLEMS_ID
+        '' => self::FLD_PROBLEMS_ID
     ];
     // ============================================================
     //endregion

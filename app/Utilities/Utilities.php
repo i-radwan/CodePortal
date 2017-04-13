@@ -9,10 +9,11 @@ class Utilities
     /**
      * Add a new query to the saved ones and overwrites if needed
      *
-     * @param $key the query key to be replaced/added
-     * @param $value the query value
-     * @param $defaultURL
-     * @param $fullUrl request full url
+     * @param string $key the query key to be replaced/added
+     * @param string $value the query value
+     * @param string $defaultURL
+     * @param string $fullUrl request full url
+     * @param bool $unsetOrder
      * @return string
      */
     public static function getURL($key, $value, $defaultURL, $fullUrl, $unsetOrder = true)
@@ -30,16 +31,23 @@ class Utilities
         return $url;
     }
 
+    /**
+     * Generate table heading sorting url based on the current request url and
+     * the given sort parameter
+     *
+     * @param string $sortParam
+     * @return string The sorting url of the given sort parameter
+     */
     public static function getSortURL($sortParam)
     {
-        if ($sortParam != request()->get('sort'))
+        if ($sortParam != request()->get(Constants::URL_QUERY_SORT_PARAM_KEY))
             $order = 'asc';
         else
-            $order = request()->get('order', 'asc') == 'asc' ? 'desc' : 'asc';
+            $order = request()->get(Constants::URL_QUERY_SORT_ORDER_KEY, 'asc') == 'asc' ? 'desc' : 'asc';
 
         $params = request()->all();
-        $params['sort'] = $sortParam;
-        $params['order'] = $order;
+        $params[Constants::URL_QUERY_SORT_PARAM_KEY] = $sortParam;
+        $params[Constants::URL_QUERY_SORT_ORDER_KEY] = $order;
 
         return request()->url() . '?' . http_build_query($params);
     }
