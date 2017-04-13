@@ -1,4 +1,4 @@
-<div class="container filters-table-container">
+<div class="container problems-filters-container">
     <div class="row">
         <div class="col-md-12">
             <form action="{{ Request::url() }}" method="get">
@@ -8,7 +8,7 @@
                     <div class="col-md-12 input-group">
                         <input type="text" class="form-control" placeholder="Problem Name"
                                name="{{ Constants::URL_QUERY_SEARCH_KEY }}"
-                               value="{{ Request::get(Constants::URL_QUERY_SEARCH_KEY, '') }}">
+                               value="{{ Request::get(Constants::URL_QUERY_SEARCH_KEY) }}">
 
                         <span class="input-group-btn">
                             <button class="btn btn-info btn-lg" type="submit">
@@ -38,7 +38,7 @@
                 <div>
                     <h4>Tags:</h4>
                     @foreach ($tags as $tag)
-                        <div class="checkbox filters-checkbox-div">
+                        <div class="checkbox problems-filters-tags-checkboxes">
                             <label>
                                 <input type="checkbox" {{ in_array($tag->id, Request::get(Constants::URL_QUERY_TAGS_KEY, [])) ? 'checked' : '' }}
                                        name="{{ Constants::URL_QUERY_TAGS_KEY }}[]"
@@ -54,7 +54,7 @@
                 {{--Apply filters & Clear buttons--}}
                 <p>
                     <input class="btn btn-default" type="submit" value="Apply Filters"/>
-                    <a href="{{ Request::url() }}" class="btn text-dark btn-link text-muted pull-right">Clear</a>
+                    <a href="{{ Request::url() }}" class="btn btn-link text-dark pull-right">Clear</a>
                 </p>
             </form>
         </div>

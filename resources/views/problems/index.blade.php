@@ -6,7 +6,7 @@
             {{--Problems table--}}
             <div class="col-md-8">
                 <div class="panel panel-default problems-panel">
-                    <div class="panel-heading problems-panel-head">Problems</div>
+                    <div class="panel-heading problems-panel-heading">Problems</div>
                     <div class="panel-body problems-panel-body">
                         @if($problems->count())
                             @include('problems.table')

@@ -536,17 +536,11 @@ footer {
     border: 0;
 }
 
-.problems-panel-head, .contests-panel-head {
+.problems-panel-heading, .contests-panel-heading {
     border: 1px solid #ddd;
 }
 
 .problems-panel-body, .contests-panel-body {
-    border: 0;
-    padding: 0;
-}
-
-.problems-table {
-    margin: 0;
     padding: 0;
 }
 
@@ -560,33 +554,12 @@ footer {
     text-align: center;
 }
 
-.problems-table-head {
-    color: rgb(41, 101, 168);
-}
-
-.problems-table-name-head {
-    text-align: center;
-    width: 25%;
-}
-
-.problems-table-tags-head {
-    text-align: center;
-    width: 20%;
-}
-
-.problems-table-head {
+.problems-table-head-sortable {
     position: relative;
-    text-align: center;
 }
 
-.no-problems-msg, .no-contests-msg {
-    margin: 30px;
-}
-
-.problems-table-sorting-arrow-desc {
-    position: absolute;
-    right: 10%;
-    top: 25%;
+.problems-table-head-tags {
+    width: 20%;
 }
 
 .problems-table-sorting-arrow-asc {
@@ -595,56 +568,47 @@ footer {
     top: 40%;
 }
 
-.td-problems {
-    text-align: center;
+.problems-table-sorting-arrow-desc {
+    position: absolute;
+    right: 10%;
+    top: 25%;
 }
 
-.problems-badge {
-    /*transition: 0.5s;*/
+.problems-table-tag-link {
+    font-size: 11px;
+    font-weight: 300;
+    color: #000;
 }
 
-.problems-badge:hover {
-    transition: 0.1s;
-    background: #337ab7;
-    border-color: #2e6da4;
+.problems-table-tag-link:not(:last-child)::after {
+    content: ',';
+    margin-left: -2px;
 }
 
-.details {
-    font-size: 10px;
-    border: 1px solid #ff7473;
-    padding: 2px 6px;
-    border-radius: 5px;
-    background: #ff7473;
-    margin-left: 12px;
+.no-problems-msg, .no-contests-msg {
+    margin: 30px;
 }
 
-.filters-table-container {
-    width: 99%;
-}
-
-.filters-table-container h4 {
-    margin-top: 20px;
-    font-weight: 500;
-    margin-bottom: 10px;
-}
-
-.filters-checkbox-div {
-    display: inline-block;
-}
-
-.tags-table-container {
+.problems-filters-container, .problems-tags-container {
     width: 100%;
 }
 
-.problems-table-tags-links {
-    font-size: 11px;
-    color: #000;
-    font-weight: 300;
+.problems-filters-container h4 {
+    margin-top: 20px;
 }
 
-.problems-table-tags-links:not(:last-child) ::after {
-    content: ',';
-    margin-left: -2px;
+.problems-filters-tags-checkboxes {
+    display: inline-block;
+}
+
+.problems-tag-badge {
+    /*transition: 0.5s;*/
+}
+
+.problems-tag-badge:hover {
+    transition: 0.1s;
+    background: #337ab7;
+    border-color: #2e6da4;
 }
 
 /*New search*/

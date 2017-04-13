@@ -1,5 +1,5 @@
 <div class="container problems-table-container">
-    <table class="table table-bordered" id="problems_table">
+    <table class="table table-bordered">
         {{--Headings--}}
         <thead>
             <tr>
@@ -9,9 +9,7 @@
                 @include('problems.sortable_heading', ['title' => 'Judge', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_JUDGE_KEY])
 
                 {{--Tags--}}
-                <th class="problems-table-tags-head">
-                    <span class="table-head">Tags</span>
-                </th>
+                <th class="problems-table-head problems-table-head-tags">Tags</th>
             </tr>
         </thead>
 
@@ -22,7 +20,7 @@
         {{--Problems--}}
         <tbody>
             {{--TODO (Samir) Adding CheckBoxes When Adding New Contest View--}}
-            @foreach ($problems as $problem)
+            @foreach($problems as $problem)
                 @php
                     $verdict = $problem->simpleVerdict($user);
                 @endphp
@@ -51,9 +49,9 @@
                     {{--Tags--}}
                     <td>
                         @foreach($problem->tags()->get() as $tag)
-                            <a class="problems-table-tags-links"
-                               href="{{ Request::url() . '?' . http_build_query(['tag' => $tag->id]) }}">
-                                {{ $tag->name . ($loop->remaining >= 1 ?  ', ' : '') }}
+                            <a class="problems-table-tag-link"
+                               href="{{ Request::url() . '?' . http_build_query([Constants::URL_QUERY_TAG_KEY => $tag->id]) }}">
+                                {{ $tag->name }}
                             </a>
                         @endforeach
                     </td>

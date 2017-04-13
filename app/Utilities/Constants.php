@@ -48,10 +48,10 @@ class Constants
     // ============================================================
     //endregion
 
-    //region SingleContest page
+    //region Single contest page
 
     //
-    // SingleContest page constants
+    // Single contest page constants
     //
 
     // Keys
@@ -82,30 +82,6 @@ class Constants
     const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
     const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
 
-    // ============================================================
-    //endregion
-
-    //region Table protocol
-
-    //Pagination In Generic Table
-    const TABLE_PAGINATION_KEY = "paginator";
-    const PAGINATOR_TOTAL = "total";
-    const PAGINATOR_LAST_PAGE = "lastPage";
-    const PAGINATOR_PER_PAGE = "perPage";
-    const PAGINATOR_CURRENT_PAGE = "currentPage";
-    const PAGINATOR_PATH = "path";
-    const PAGINATOR_NEXT_URL = "next_page_url";
-    const PAGINATOR_PREV_URL = "prev_page_url";
-    const PAGINATOR_START_LIMIT = "initialPage";
-    const PAGINATOR_END_LIMIT = "pagesLimit";
-
-    //Previous Filters Accompanied with the the Generic Table
-
-
-    // Values
-    const TABLE_ROW_STATE_NORMAL = 0;
-    const TABLE_ROW_STATE_SUCCESS = 1;
-    const TABLE_ROW_STATE_DANGER = 2;
     // ============================================================
     //endregion
 
@@ -189,14 +165,14 @@ class Constants
     const VERDICT_TESTING = '15';
     const VERDICT_REJECTED = '16';
     const VERDICT_UNKNOWN = '17';
-    const VERDICT_COUNT = 18;   // To be incremented manually
+    const VERDICT_COUNT = 18;   // Note: To be incremented manually
 
     // Simple list of verdicts
     const SIMPLE_VERDICT_NOT_SOLVED = 0;
     const SIMPLE_VERDICT_ACCEPTED = 1;
     const SIMPLE_VERDICT_WRONG_SUBMISSION = 2;
 
-
+    // External judges submission verdicts
     const CODEFORCES_SUBMISSION_VERDICTS = [
         "FAILED" => self::VERDICT_FAILED,
         "OK" => self::VERDICT_ACCEPTED,
