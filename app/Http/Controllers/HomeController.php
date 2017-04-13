@@ -19,7 +19,7 @@ class HomeController extends Controller
     /**
      * Show the application home page.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
