@@ -3,46 +3,11 @@
         {{--Headings--}}
         <thead>
             <tr>
-                {{--ID--}}
-                <th class="problems-table-head">
-                    <a class="problems-table-head-link"
-                       href="{{ Utilities::getSortURL('id') }}">
-                        ID
-                        @if(Request::get('sort') == 'id')
-                            <i class="pull-right fa {{ Request::get('order', 'asc') == 'desc' ? 'fa-sort-desc problems-table-sorting-arrow-desc' : 'fa-sort-asc problems-table-sorting-arrow-asc' }}" aria-hidden="true"></i>
-                        @endif
-                    </a>
-                </th>
-                {{--Name--}}
-                <th class="problems-table-head">
-                    <a class="problems-table-head-link"
-                       href="{{ Utilities::getSortURL('name') }}">
-                        Name
-                        @if(Request::get('sort') == 'name')
-                            <i class="pull-right fa {{ Request::get('order', 'asc') == 'desc' ? 'fa-sort-desc problems-table-sorting-arrow-desc' : 'fa-sort-asc problems-table-sorting-arrow-asc' }}" aria-hidden="true"></i>
-                        @endif
-                    </a>
-                </th>
-                {{--# Accepted--}}
-                <th class="problems-table-head">
-                    <a class="problems-table-head-link"
-                       href="{{ Utilities::getSortURL('acceptedCount') }}">
-                        #Acc.
-                        @if(Request::get('sort') == 'acceptedCount')
-                            <i class="pull-right fa {{ Request::get('order', 'asc') == 'desc' ? 'fa-sort-desc problems-table-sorting-arrow-desc' : 'fa-sort-asc problems-table-sorting-arrow-asc' }}" aria-hidden="true"></i>
-                        @endif
-                    </a>
-                </th>
-                {{--Judge--}}
-                <th class="problems-table-head">
-                    <a class="problems-table-head-link"
-                       href="{{ Utilities::getSortURL('judge') }}">
-                        Judge
-                        @if(Request::get('sort') == 'judge')
-                            <i class="pull-right fa {{ Request::get('order', 'asc') == 'desc' ? 'fa-sort-desc problems-table-sorting-arrow-desc' : 'fa-sort-asc problems-table-sorting-arrow-asc' }}" aria-hidden="true"></i>
-                        @endif
-                    </a>
-                </th>
+                @include('problems.sortable_heading', ['title' => 'ID', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ID_KEY])
+                @include('problems.sortable_heading', ['title' => 'Name', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_NAME_KEY])
+                @include('problems.sortable_heading', ['title' => '#Acc.', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY])
+                @include('problems.sortable_heading', ['title' => 'Judge', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_JUDGE_KEY])
+
                 {{--Tags--}}
                 <th class="problems-table-tags-head">
                     <span class="table-head">Tags</span>
@@ -50,16 +15,21 @@
             </tr>
         </thead>
 
+        @php
+            $user = Auth::user();
+        @endphp
+
         {{--Problems--}}
         <tbody>
             {{--TODO (Samir) Adding CheckBoxes When Adding New Contest View--}}
             @foreach ($problems as $problem)
-                {{--TODO: enhance the below line--}}
-                <tr class="{{ $problem->simpleVerdict(Auth::user()) ==  Constants::TABLE_ROW_STATE_SUCCESS ? 'bg-success' : $problem->simpleVerdict(Auth::user()) == Constants::TABLE_ROW_STATE_DANGER ? 'bg-warning' : ''}}">
+                @php
+                    $verdict = $problem->simpleVerdict($user);
+                @endphp
+
+                <tr class="{{ $verdict == Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
                     {{--ID--}}
-                    <td>
-                        {{ Utilities::generateProblemNumber($problem) }}
-                    </td>
+                    <td>{{ Utilities::generateProblemNumber($problem) }}</td>
 
                     {{--Name--}}
                     <td>
@@ -69,9 +39,7 @@
                     </td>
 
                     {{--# Accepted--}}
-                    <td>
-                        {{ $problem->solved_count }}
-                    </td>
+                    <td>{{ $problem->solved_count }}</td>
 
                     {{--Judge--}}
                     <td>

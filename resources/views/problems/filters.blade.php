@@ -6,7 +6,10 @@
                 {{--Search Bar--}}
                 <div id="custom-search-input">
                     <div class="col-md-12 input-group">
-                        <input type="text" class="form-control" name="q" placeholder="Problem Name" value="{{ Request::get('q', '') }}">
+                        <input type="text" class="form-control" placeholder="Problem Name"
+                               name="{{ Constants::URL_QUERY_SEARCH_KEY }}"
+                               value="{{ Request::get(Constants::URL_QUERY_SEARCH_KEY, '') }}">
+
                         <span class="input-group-btn">
                             <button class="btn btn-info btn-lg" type="submit">
                                 <i class="glyphicon glyphicon-search"></i>
@@ -21,8 +24,8 @@
                     @foreach ($judges as $judge)
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" {{ in_array($judge->id, Request::get('judges', [])) ? 'checked' : '' }}
-                                       name="judges[]"
+                                <input type="checkbox" {{ in_array($judge->id, Request::get(Constants::URL_QUERY_JUDGES_KEY, [])) ? 'checked' : '' }}
+                                       name="{{ Constants::URL_QUERY_JUDGES_KEY }}[]"
                                        value="{{ $judge->id }}">
                                 {{ $judge->name }}
                             </label>
@@ -37,8 +40,8 @@
                     @foreach ($tags as $tag)
                         <div class="checkbox filters-checkbox-div">
                             <label>
-                                <input type="checkbox" {{ in_array($tag->id, Request::get('tags', [])) ? 'checked' : '' }}
-                                       name="{{ Constants::APPLIED_FILTERS_TAGS_IDS }}[]"
+                                <input type="checkbox" {{ in_array($tag->id, Request::get(Constants::URL_QUERY_TAGS_KEY, [])) ? 'checked' : '' }}
+                                       name="{{ Constants::URL_QUERY_TAGS_KEY }}[]"
                                        value="{{ $tag->id }}">
                                 {{ $tag->name }}
                             </label>
