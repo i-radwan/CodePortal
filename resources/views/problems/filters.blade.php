@@ -1,5 +1,7 @@
 <div class="panel panel-default problems-filters-panel">
     <div class="panel-heading">Filters</div>
+
+
     <div class="panel-body">
         <form action="{{ Request::url() }}" method="get" role="form">
 
@@ -33,23 +35,6 @@
                 @endforeach
             </div>
 
-            {{--Tags checkboxes--}}
-            {{--<div class="container" style="padding: 0">--}}
-                {{--<h4>Tags:</h4>--}}
-                {{--<div class="row">--}}
-                    {{--@foreach ($tags as $tag)--}}
-                        {{--<div class="col-sm-3 checkbox" style="margin-top: 0">--}}
-                            {{--<label>--}}
-                                {{--<input type="checkbox" {{ in_array($tag->id, Request::get(Constants::URL_QUERY_TAGS_KEY, [])) ? 'checked' : '' }}--}}
-                                       {{--name="{{ Constants::URL_QUERY_TAGS_KEY }}[]"--}}
-                                       {{--value="{{ $tag->id }}">--}}
-                                {{--{{ $tag->name }}--}}
-                            {{--</label>--}}
-                        {{--</div>--}}
-                    {{--@endforeach--}}
-                {{--</div>--}}
-            {{--</div>--}}
-
             {{--ToDo: Samir tags checkboxes but I will change this later isA to autocomplete--}}
             {{--Tags checkboxes--}}
             <div>
@@ -70,8 +55,8 @@
 
             {{--Apply filters & Clear buttons--}}
             <p>
-                <input class="btn btn-default pull-right" type="submit" value="Apply Filters"/>
-                <a href="{{ Request::url() }}" class="btn btn-link text-dark">Clear</a>
+                <input type="submit" class="btn btn-default" value="Apply Filters"/>
+                <a href="{{ Request::url() }}" class="btn btn-link text-dark pull-right">Clear</a>
             </p>
         </form>
     </div>

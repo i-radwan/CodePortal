@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
 
-            {{--@include('problems.filters')--}}
+            {{--@include('problems.collapsible-filters')--}}
             {{--@include('problems.problems')--}}
             {{--@include('problems.tags')--}}
 
