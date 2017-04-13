@@ -158,7 +158,6 @@ class User extends Authenticatable
 
     public function contestQuestions($contestId)
     {
-        // ToDo: rename function to camel case
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID)
             ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }

@@ -25,7 +25,7 @@ class ContestController extends Controller
     {
         $data = [];
         // Get public contests
-        $contests = Contest::getPublicContests();
+        $contests = Contest::ofPublic()->get();
 
         // Get request page number
         $page = $request->get('page');
@@ -360,7 +360,7 @@ class ContestController extends Controller
         $questions = $user->contestQuestions($contest->id)
             ->get();
 
-        // Get contest announcements ToDo check for better select required fields only
+        // Get contest announcements
         $announcements = $contest->announcements()
             ->get();
 

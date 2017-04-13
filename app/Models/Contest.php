@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Contest extends Model
 {
@@ -50,18 +51,18 @@ class Contest extends Model
 
     /**
      * Return public visible contests only
-     * @return collection of public contests
+     *
+     * @param Builder $query
+     * @return Builder
      */
-    public static function getPublicContests()
+    public function scopeOfPublic(Builder $query)
     {
-        // ToDo scope function, where
-        return
-            Contest::all()
-                ->where(
-                    Constants::FLD_CONTESTS_VISIBILITY,
-                    '=',
-                    Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]
-                );
+        $query->where(
+            Constants::FLD_CONTESTS_VISIBILITY,
+            '=',
+            Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]
+        );
+        return $query;
     }
 
     /**
