@@ -28,17 +28,23 @@ class ContestController extends Controller
 
         // Get request page number
         $page = $request->get('page');
-        if(!$page) $page = 1;
+        if (!$page) $page = 1;
 
         // Paginate the retrieved contests
-        $paginator = new LengthAwarePaginator($contests->forPage($page, Constants::CONTESTS_COUNT_PER_PAGE), $contests->count(), Constants::CONTESTS_COUNT_PER_PAGE,
+        $paginator = new LengthAwarePaginator(
+            $contests->forPage($page, Constants::CONTESTS_COUNT_PER_PAGE),
+            $contests->count(),
+            Constants::CONTESTS_COUNT_PER_PAGE,
             $page);
-        
+
+        $paginator->setPath(url("contests/"));
+
+
         // Save current page contests to data variable
         $data[Constants::CONTESTS_CONTESTS_KEY] = $paginator->getCollection();
 
         // Set pagination data
-        $data[Constants::CONTESTS_PAGINATOR_KEY] = Utilities::getPaginatorData($paginator);
+        $data[Constants::CONTESTS_PAGINATOR_KEY] = ($paginator);
 
         // Get all public contests from database
         return view('contests.index')
