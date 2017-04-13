@@ -13,7 +13,7 @@
                         @else
                             <p class="no-problems-msg">
                                 No problems!
-                                @if(count(Request::get('judges')) || count(Request::get('tags')) || strlen(Request::get('q')))
+                                @if(count(Request::get(Constants::URL_QUERY_JUDGES_KEY)) || count(Request::get(Constants::URL_QUERY_TAGS_KEY)) || strlen(Request::get(Constants::URL_QUERY_SEARCH_KEY)))
                                     <br/>
                                     please change the applied filters
                                 @endif

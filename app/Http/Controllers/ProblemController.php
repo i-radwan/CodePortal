@@ -12,27 +12,18 @@ use Illuminate\Http\Request;
 
 class ProblemController extends Controller
 {
-    //Constants
-    const URL_QUERY_NAME_KEY = 'q';
-    const URL_QUERY_TAG_KEY = 'tag';
-    const URL_QUERY_JUDGE_KEY = 'judge'; //To see how it's gonna be modified
-    const JUDGES_ID = [
-        "codeforces" => Constants::JUDGE_CODEFORCES_ID
-    ];
-
     /**
      * Show the problems page.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
-        $searchStr = self::getSearchStringFilter();
-        $judgesIDs = self::getJudgesFilter();
-        $tagsIDs = self::getTagsFilter();
-        $sortBy = self::getSortByFilter();
-        $problems = self::filterProblems($searchStr, $judgesIDs, $tagsIDs, $sortBy);
+        $searchStr = $this->getSearchStringFilter();
+        $judgesIDs = $this->getJudgesFilter();
+        $tagsIDs = $this->getTagsFilter();
+        $sortParams = $this->getSortByFilter();
+        $problems = $this->filterProblems($searchStr, $judgesIDs, $tagsIDs, $sortParams);
 
         return view('problems.index')
             ->with('problems', $problems)
@@ -41,36 +32,41 @@ class ProblemController extends Controller
             ->with('pageTitle', config('app.name') . ' | Problems');
     }
 
+    /**
+     * Parse search string from the url query and return it as safe string
+     *
+     * @return String
+     */
     public function getSearchStringFilter()
     {
-        return Utilities::makeInputSafe(request()->get(Constants::APPLIED_FILTERS_SEARCH_STRING));
+        return Utilities::makeInputSafe(request()->get(Constants::URL_QUERY_SEARCH_KEY));
     }
 
     public function getJudgesFilter()
     {
-        return request()->get(Constants::APPLIED_FILTERS_JUDGES_IDS);
+        return request()->get(Constants::URL_QUERY_JUDGES_KEY);
     }
 
     public function getTagsFilter()
     {
-        if (request()->has(Constants::APPLIED_FILTERS_TAG_ID)) {
-            return [request()->get(Constants::APPLIED_FILTERS_TAG_ID)];
+        if (request()->has(Constants::URL_QUERY_TAG_KEY)) {
+            return [request()->get(Constants::URL_QUERY_TAG_KEY)];
         }
 
-        return request()->get(Constants::APPLIED_FILTERS_TAGS_IDS);
+        return request()->get(Constants::URL_QUERY_TAGS_KEY);
     }
 
     public function getSortByFilter()
     {
-        $sortByMode = request()->get(Constants::APPLIED_FILTERS_SORT_BY_MODE);
+        $sortByMode = request()->get(Constants::URL_QUERY_SORT_ORDER_KEY);
 
         if ($sortByMode && $sortByMode != 'asc' && $sortByMode != 'desc') {
             $sortByMode = 'desc';
         }
 
-        $sortByParameter = request()->get(Constants::APPLIED_FILTERS_SORT_BY_PARAMETER, '');
+        $sortByParameter = request()->get(Constants::URL_QUERY_SORT_PARAM_KEY, '');
 
-        return [Constants::PROBLEMS_SORT_BY[$sortByParameter] => $sortByMode];
+        return [Constants::PROBLEMS_SORT_PARAMS[$sortByParameter] => $sortByMode];
     }
 
     /**
@@ -80,17 +76,17 @@ class ProblemController extends Controller
      * @param string|null $name
      * @param array|null $judgesIDs
      * @param array|null $tagsIDs
-     * @param array|null $sortBy
+     * @param array|null $sortParams
      * @return Collection list of problem models
      */
-    public static function filterProblems($name = null, $judgesIDs = null, $tagsIDs = null, $sortBy = null)
+    public static function filterProblems($name = null, $judgesIDs = null, $tagsIDs = null, $sortParams = null)
     {
         // Filter the problems
         $problems = Problem::ofName($name)->ofJudges($judgesIDs)->hasTags($tagsIDs);
 
         // Sort the problems
-        if ($sortBy != null) {
-            foreach ($sortBy as $column => $mode) {
+        if ($sortParams != null) {
+            foreach ($sortParams as $column => $mode) {
                 if ($column != "" && $mode != "") {
                     $problems->orderBy($column, $mode);
                 }
