@@ -542,9 +542,11 @@ footer {
 
 .problems-panel-body, .contests-panel-body {
     padding: 0;
+    text-align: center;
 }
 
-.problems-table-container, .questions-table-container, .contests-table-container {
+/*TODO: be removed, no need for the container*/
+.problems-table-container, .contests-table-container, .questions-table-container {
     width: 100%;
     padding: 0;
     text-align: center;
@@ -564,14 +566,14 @@ footer {
 
 .problems-table-sorting-arrow-asc {
     position: absolute;
-    right: 10%;
     top: 40%;
+    right: 10%;
 }
 
 .problems-table-sorting-arrow-desc {
     position: absolute;
-    right: 10%;
     top: 25%;
+    right: 10%;
 }
 
 .problems-table-tag-link {
@@ -589,11 +591,7 @@ footer {
     margin: 30px;
 }
 
-.problems-filters-container, .problems-tags-container {
-    width: 100%;
-}
-
-.problems-filters-container h4 {
+.problems-filters-panel h4 {
     margin-top: 20px;
 }
 
