@@ -59,13 +59,15 @@ class Question extends Model
      * @param array $attributes
      * @param User $user
      * @param Contest $contest
+     * @param Problem $problem
      */
-    public function __construct(array $attributes = [], $user = null, $contest = null)
+    public function __construct(array $attributes = [], $user = null, $contest = null, $problem = null)
     {
         parent::__construct($attributes);
         if ($user != null && $contest != null) {
             $this->user()->associate($user);
             $this->contest()->associate($contest);
+            $this->problem()->associate($problem);
             $this->save();
         }
     }

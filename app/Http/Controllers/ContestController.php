@@ -167,14 +167,14 @@ class ContestController extends Controller
     public function addQuestion(Request $request, $contestID)
     {
         $user = Auth::user();
-
+        $problem = 1; // ToDo get problem from request
         // Check if user is signed in
         if ($user) {
             $contest = $user->participatingContests()->find($contestID);
 
             // Check if contest exists (user participating in it) and the contest is running now
             if ($contest && $contest->isContestRunning()) {
-                new Question($request->all(), $user, $contest);
+                new Question($request->all(), $user, $contest, $problem);
                 return back();
             }
         }

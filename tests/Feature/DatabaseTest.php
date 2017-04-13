@@ -51,13 +51,12 @@ abstract class DatabaseTest extends BaseTestCase
         return $contest;
     }
 
-    public function insertProblem($name, $difficulty, $acceptedSubmissionsCount, $judge, $judgeFirstKey, $judgeSecondKey)
+    public function insertProblem($name, $acceptedSubmissionsCount, $judge, $judgeFirstKey, $judgeSecondKey)
     {
         $problem = new Problem([
             Constants::FLD_PROBLEMS_NAME => $name,
             Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $judgeFirstKey,
             Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $judgeSecondKey,
-            Constants::FLD_PROBLEMS_DIFFICULTY => $difficulty,
             Constants::FLD_PROBLEMS_SOLVED_COUNT => $acceptedSubmissionsCount
         ]);
         $problem->judge()->associate($judge);
@@ -81,17 +80,14 @@ abstract class DatabaseTest extends BaseTestCase
         return $submission;
     }
 
-    public function insertQuestion($title, $content, $answer, $contest, $user, $status = '0')
+    public function insertQuestion($title, $content, $answer, $contest, $user, $problem, $status = '0')
     {
         $question = new Question([
             Constants::FLD_QUESTIONS_TITLE => $title,
             Constants::FLD_QUESTIONS_CONTENT => $content,
             Constants::FLD_QUESTIONS_ANSWER => $answer,
             Constants::FLD_QUESTIONS_STATUS => $status
-        ]);
-        $question->contest()->associate($contest);
-        $question->user()->associate($user);
-        $question->save();
+        ], $user, $contest, $problem);
         return $question;
     }
 

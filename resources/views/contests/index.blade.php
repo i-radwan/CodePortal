@@ -13,7 +13,7 @@
                     <div class="panel-body contests-panel-body">
                         @if(count($data))
                             <div class="container contests-table-container">
-                                <table class="table table-bordered" id="contests_table">
+                                <table class="table table-bordered contests-table" id="contests_table">
                                     <thead>
                                     <tr>
                                         <th class="text-center">ID</th>

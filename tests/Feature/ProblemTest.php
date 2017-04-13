@@ -19,14 +19,14 @@ class ProblemTest extends DatabaseTest
         $judge = $this->insertJudge('1', 'Codeforces', 'http://www.judge.com');
         $initialCount = Problem::count();
         // insert valid contest and check for count
-        $validProblem = $this->insertProblem('Problem1', 10, 20, $judge, '123', '213');
+        $validProblem = $this->insertProblem('Problem1', 20, $judge, '123', '213');
         $this->assertTrue(Problem::count() == $initialCount + 1);
         $validProblem->delete();
         $this->assertTrue(Problem::count() == $initialCount); // test deleting
 
         // insert invalid models
         try {
-            $this->insertProblem('', 10, 20, $judge, '1233', '2132');
+            $this->insertProblem('', 20, $judge, '1233', '2132');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - missing data");
         } catch (ValidationException $e) {
         }
@@ -36,20 +36,15 @@ class ProblemTest extends DatabaseTest
         } catch (ValidationException $e) {
         }
         try {
-            $this->insertProblem('Problem 1', -10, 20, $judge, '123', '213');
-            $this->fail("Shouldn't reach here w/out throwing Validation Exception - diff -ve");
-        } catch (ValidationException $e) {
-        }
-        try {
-            $this->insertProblem('Problem2', 10, -20, $judge, '123', '213');
+            $this->insertProblem('Problem2', -20, $judge, '123', '213');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - accepted count -ve");
         } catch (ValidationException $e) {
         }
 
         // Test judge keys uniqueness
-        $this->insertProblem('Problem1', 10, 20, $judge, '123', '213');
+        $this->insertProblem('Problem1', 20, $judge, '123', '213');
         try {
-            $this->insertProblem('Problem1', 10, 20, $judge, '123', '213');
+            $this->insertProblem('Problem1', 20, $judge, '123', '213');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - duplicated judge keys");
         } catch (ValidationException $e) {
         }
@@ -57,7 +52,7 @@ class ProblemTest extends DatabaseTest
         $this->assertTrue(Problem::count() == $initialCount); // not inserted
 
         // Test pagination
-        for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge, '123' . $i, '213' . $i);
+        for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 20, $judge, '123' . $i, '213' . $i);
         $problems = Problem::getAllProblems(2);
         $this->assertEquals(count(json_decode($problems, true)['problems']['data']), Constants::PROBLEMS_COUNT_PER_PAGE);
 
@@ -77,10 +72,10 @@ class ProblemTest extends DatabaseTest
         for ($i = 0; $i < 100; $i++) {
             if ($i % 2 == 0) {
                 $judge1Count++;
-                $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge1, '123' . $i, '213' . $i);
+                $problem = $this->insertProblem('Problem' . $i, 20, $judge1, '123' . $i, '213' . $i);
             } else {
                 $judge2Count++;
-                $problem = $this->insertProblem('Problem' . $i, 10, 20, $judge2, '123' . $i, '213' . $i);
+                $problem = $this->insertProblem('Problem' . $i, 20, $judge2, '123' . $i, '213' . $i);
             }
             if ($i % 5 == 0) {
                 $tag1Count++;

@@ -545,11 +545,6 @@ footer {
     padding: 0;
 }
 
-.problems-table {
-    margin: 0;
-    padding: 0;
-}
-
 .problems-table-container, .questions-table-container, .contests-table-container {
     width: 100%;
     padding: 0;

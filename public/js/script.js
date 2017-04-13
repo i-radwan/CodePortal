@@ -4,7 +4,6 @@ $(document).ready(function () {
     /*<editor-fold desc="Single Contest Page">*/
 
 
-
     /**************************************/
     /*</editor-fold>*/
 
@@ -46,3 +45,24 @@ $(document).ready(function () {
         minDate: 0 // for after today limitation
     });
 });
+
+/*<editor-fold desc="Maintain selected bootstrap tab">*/
+
+// Used to keep bootstrap selected tab visible after refreshing the page
+$(document).ready(function () {
+    if (location.hash) {
+        $("a[href='" + location.hash + "']").tab("show");
+    }
+    $(document.body).on("click", "a[data-toggle]", function (event) {
+        location.hash = this.getAttribute("href");
+    });
+});
+
+$(window).on("popstate", function () {
+    var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+    $("a[href='" + anchor + "']").tab("show");
+});
+
+/**************************************/
+/*</editor-fold>*/
+
