@@ -1,17 +1,17 @@
 <div class="container problems-filters-container">
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ Request::url() }}" method="get">
+            <form action="{{ Request::url() }}" method="get" role="form">
 
                 {{--Search Bar--}}
                 <div id="custom-search-input">
-                    <div class="col-md-12 input-group">
+                    <div class="input-group">
                         <input type="text" class="form-control" placeholder="Problem Name"
                                name="{{ Constants::URL_QUERY_SEARCH_KEY }}"
                                value="{{ Request::get(Constants::URL_QUERY_SEARCH_KEY) }}">
 
                         <span class="input-group-btn">
-                            <button class="btn btn-info btn-lg" type="submit">
+                            <button class="btn btn-default btn-lg" type="submit">
                                 <i class="glyphicon glyphicon-search"></i>
                             </button>
                         </span>

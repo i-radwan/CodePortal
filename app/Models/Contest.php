@@ -57,12 +57,11 @@ class Contest extends Model
      */
     public function scopeOfPublic(Builder $query)
     {
-        $query->where(
+        return $query->where(
             Constants::FLD_CONTESTS_VISIBILITY,
             '=',
             Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]
         );
-        return $query;
     }
 
     /**
@@ -85,7 +84,7 @@ class Contest extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function participatingUsers()
+    public function participants()
     {
         return $this->belongsToMany(
             User::class,
@@ -110,7 +109,7 @@ class Contest extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function organizingUsers()
+    public function organizers()
     {
         return $this->belongsToMany(
             User::class,
@@ -131,29 +130,30 @@ class Contest extends Model
     }
 
     /**
-     * Return contest announcments
+     * Return contest announcements
+     *
      * @return mixed
      */
     public function announcements()
     {
-        return $this->questions()->where(Constants::FLD_QUESTIONS_STATUS, '=',
-            Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY]);
+        return $this->questions()->where(
+            Constants::FLD_QUESTIONS_STATUS,
+            '=',
+            Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY]
+        );
     }
 
     /**
      * Check if contest is currently running
+     *
      * @return bool
      */
-    public function isContestRunning()
+    public function isRunning()
     {
         // Get contest end time by adding its duration to its start time
         $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
 
-        // Check if contest in running
-        if (date("Y-m-d H:i:s") > $this->time
-            && date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime)
-        )
-            return true;
-        return false;
+        // Check if contest is running
+        return (date("Y-m-d H:i:s") > $this->time && date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime));
     }
 }
