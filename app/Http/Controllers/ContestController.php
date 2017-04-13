@@ -304,7 +304,7 @@ class ContestController extends Controller
 
         // Get organizers array
         $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY] =
-            $contest->organizingUsers()->pluck(Constants::FLD_USERS_USERNAME)->toArray();
+            $contest->organizingUsers()->pluck(Constants::FLD_USERS_USERNAME);
 
         // Get duration in hrs:mins format
         $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY] =
@@ -339,7 +339,7 @@ class ContestController extends Controller
             $contest
                 ->participatingUsers()
                 ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
-                ->get()->toArray();
+                ->get();
 
         // Set contest participants
         $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;
@@ -379,7 +379,7 @@ class ContestController extends Controller
         }
 
         // Set contest questions
-        $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements->toArray();
+        $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements;
     }
 
 }
