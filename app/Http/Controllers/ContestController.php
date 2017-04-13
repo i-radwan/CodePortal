@@ -17,8 +17,9 @@ class ContestController extends Controller
 {
     /**
      * Show all contests page
+     *
      * @param Request $request
-     * @return $this
+     * @return \Illuminate\View\View $this
      */
     public function index(Request $request)
     {
@@ -37,8 +38,7 @@ class ContestController extends Controller
             Constants::CONTESTS_COUNT_PER_PAGE,
             $page);
 
-        $paginator->setPath(url("contests/"));
-
+        $paginator->setPath(url("contests/")); // Path for pages buttons
 
         // Save current page contests to data variable
         $data[Constants::CONTESTS_CONTESTS_KEY] = $paginator->getCollection();
@@ -63,6 +63,7 @@ class ContestController extends Controller
         $currentUser = Auth::user();
 
         if (!$contest) return redirect('contests/');
+
         $data = [];
 
         // Check if user is participating or owning the contest to show btns
@@ -82,6 +83,7 @@ class ContestController extends Controller
 
     /**
      * Show add/edit contest page
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function addEditContestView()
@@ -91,6 +93,7 @@ class ContestController extends Controller
 
     /**
      * Add new contest to database
+     *
      * @param Request $request
      */
 
@@ -102,6 +105,7 @@ class ContestController extends Controller
 
     /**
      * Update contest in database
+     *
      * @param Request $request
      */
     public function editContest(Request $request)
@@ -110,51 +114,52 @@ class ContestController extends Controller
     }
 
     /**
-     * Delete a certain contest if you're organizer
-     * @param $contestID
+     * Delete a certain contest if you're owner
+     *
+     * @param Contest $contest
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function deleteContest($contestID)
+    public function deleteContest(Contest $contest)
     {
-        $user = Auth::user();
-        $contest = $user->owningContests()->find($contestID);
-        if ($contest) $contest->delete();
+        // Check if current auth. user is the owner
+        if ($contest->owner->id == Auth::user()->id) $contest->delete();
+
         return redirect('contests/');
     }
 
     /**
      * Cancel user participation in a contest
-     * @param $contestID
+     *
+     * @param Contest $contest
      * @return \Illuminate\Http\RedirectResponse
      */
-
-    // ToDo detach non participated-in contest
-    public function leaveContest($contestID)
+    public function leaveContest(Contest $contest)
     {
         $user = Auth::user();
-        $contest = $user->participatingContests()->find($contestID);
-        if ($contest)
-            $user->participatingContests()->detach($contestID);
+        $user->participatingContests()->detach($contest);
+
         return back();
     }
 
     /**
      * Register user participation in a contest
+     *
      * @param Contest $contest
      * @return \Illuminate\Http\RedirectResponse
      */
-    // ToDo check re-participating
     public function joinContest(Contest $contest)
     {
         $user = Auth::user();
-        if ($contest)
-            $user->participatingContests()->save($contest);
+        $user->participatingContests()->syncWithoutDetaching([$contest->id]);
+
         return back();
     }
 
     /**
      * Ask question related to the contest problems
+     *
      * ToDo add problem id after @Wael gets problems
+     *
      * @param Request $request
      * @param $contestID
      * @return \Illuminate\Http\RedirectResponse
@@ -169,11 +174,7 @@ class ContestController extends Controller
 
             // Check if contest exists (user participating in it) and the contest is running now
             if ($contest && $contest->isContestRunning()) {
-                // ToDo move to Question model
-                $question = new Question($request->all());
-                $question->user()->associate($user);
-                $question->contest()->associate($contest);
-                $question->save();
+                new Question($request->all(), $user, $contest);
                 return back();
             }
         }
@@ -183,12 +184,12 @@ class ContestController extends Controller
 
     /**
      * Mark question as announcement
-     * @param $questionID
+     *
+     * @param Question $question
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function announceQuestion($questionID)
+    public function announceQuestion(Question $question)
     {
-        $question = Question::find($questionID);
         $user = Auth::user();
 
         // Check if question exists
@@ -206,12 +207,12 @@ class ContestController extends Controller
 
     /**
      * Un-mark question as announcement
-     * @param $questionID
+     *
+     * @param Question $question
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function renounceQuestion($questionID)
+    public function renounceQuestion(Question $question)
     {
-        $question = Question::find($questionID);
         $user = Auth::user();
 
         // Check if question exists
@@ -229,6 +230,7 @@ class ContestController extends Controller
 
     /**
      * Save question answer (provided by contest organizers)
+     *
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -253,22 +255,12 @@ class ContestController extends Controller
     }
 
     /**
-     * Prepare contests to match contests table format by providing the required
-     * headers and data formatting
-     * @return array of data for view (contest table input)
-     */
-    // ToDo to be removed
-    private function prepareContestsTableData()
-    {
-        return Contest::getPublicContests();
-    }
-
-    /**
      * Check if the user owns the contest and
      * check if the user is participating in this contest
-     * @param $user
-     * @param $contest
-     * @param $data
+     *
+     * @param User $user
+     * @param Contest $contest
+     * @param array $data
      */
     private function getUserOwnerOrParticipant($user, $contest, &$data)
     {
@@ -294,8 +286,9 @@ class ContestController extends Controller
 
     /**
      * Get contest basic info (owner, organizers, time, duration)
-     * @param $contest
-     * @param $data
+     *
+     * @param Contest $contest
+     * @param array $data
      */
     private function getBasicContestInfo($contest, &$data)
     {
@@ -336,8 +329,9 @@ class ContestController extends Controller
 
     /**
      * Get contest participants specific data
-     * @param $contest
-     * @param $data
+     *
+     * @param Contest $contest
+     * @param array $data
      */
     private function getParticipantsInfo($contest, &$data)
     {
@@ -353,9 +347,10 @@ class ContestController extends Controller
 
     /**
      * Get contest questions related to currently signed in user
-     * @param $user
-     * @param $contest
-     * @param $data
+     *
+     * @param User $user
+     * @param Contest $contest
+     * @param array $data
      */
     private function getQuestionsInfo($user, $contest, &$data)
     {

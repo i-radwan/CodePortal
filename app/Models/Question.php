@@ -54,6 +54,23 @@ class Question extends Model
     ];
 
     /**
+     * Question constructor. Used to save question and associate user and contest to it
+     *
+     * @param array $attributes
+     * @param User $user
+     * @param Contest $contest
+     */
+    public function __construct(array $attributes = [], $user = null, $contest = null)
+    {
+        parent::__construct($attributes);
+        if ($user != null && $contest != null) {
+            $this->user()->associate($user);
+            $this->contest()->associate($contest);
+            $this->save();
+        }
+    }
+
+    /**
      * Return the user who asked the current question
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

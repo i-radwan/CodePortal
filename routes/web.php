@@ -21,8 +21,8 @@ Route::get('profile/{user}', 'UserController@index');
 Route::get('contests', 'ContestController@index');
 Route::get('contest/edit', 'ContestController@addEditContestView');
 Route::get('contest/add', 'ContestController@addEditContestView');
-Route::get('contest/delete/{contestID}', 'ContestController@deleteContest');
-Route::get('contest/leave/{contestID}', 'ContestController@leaveContest');
+Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
+Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
 Route::get('contest/join/{contest}', 'ContestController@joinContest');
 Route::get('contest/{contest}', 'ContestController@displayContest');
 
@@ -30,8 +30,8 @@ Route::post('contest/add', 'ContestController@addContest');
 Route::post('contest/edit', 'ContestController@editContest');
 
 // Question routes...
-Route::get('contest/question/announce/{questionID}', 'ContestController@announceQuestion');
-Route::get('contest/question/renounce/{questionID}', 'ContestController@renounceQuestion');
+Route::get('contest/question/announce/{question}', 'ContestController@announceQuestion');
+Route::get('contest/question/renounce/{question}', 'ContestController@renounceQuestion');
 Route::post('contest/question/answer', 'ContestController@answerQuestion');
 Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 

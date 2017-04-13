@@ -120,7 +120,7 @@
             </div>
         </div>
         @if ($isOrganizer)
-            @include('contests.contest_views.answer_question_model')
+            @include('contests.contest_views.answer_question_modal')
         @endif
 
     </div>
