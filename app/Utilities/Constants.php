@@ -61,41 +61,8 @@ class Constants
 
     const CONTESTS_COUNT_PER_PAGE = 30;
 
-    // TODO: add links
-    const CONTESTS_TABLE_HEADINGS = [
-        [
-            Constants::TABLE_DATA_KEY => "ID",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Name",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Time",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Duration",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Owner",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-    ];
-
-    const Contest_SORT_BY = [
-        "ID" => self::FLD_CONTESTS_ID,
-        "Name" => self::FLD_CONTESTS_NAME,
-        "Time" => self::FLD_CONTESTS_TIME,
-        "Owner" => self::FLD_CONTESTS_OWNER_ID
-    ];
+    const CONTESTS_CONTESTS_KEY = 'contests';
+    const CONTESTS_PAGINATOR_KEY = 'paginator';
     // ============================================================
     //endregion
 

@@ -11,23 +11,38 @@ use App\Models\Problem;
 use App\Models\User;
 use Auth;
 use Session;
-use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ContestController extends Controller
 {
     /**
-     * Show the contests page.
-     *
-     * @return \Illuminate\Http\Response
+     * Show all contests page
+     * @param Request $request
+     * @return $this
      */
-    public function index()
+    public function index(Request $request)
     {
-//        $items = Contest::getPublicContests();
-//        $paginator = new Paginator($items->forPage(1, 15), $items->count(), 15, [1]);
-//        dd($paginator->toArray());
+        $data = [];
+        // Get public contests
+        $contests = Contest::getPublicContests();
+
+        // Get request page number
+        $page = $request->get('page');
+        if(!$page) $page = 1;
+
+        // Paginate the retrieved contests
+        $paginator = new LengthAwarePaginator($contests->forPage($page, Constants::CONTESTS_COUNT_PER_PAGE), $contests->count(), Constants::CONTESTS_COUNT_PER_PAGE,
+            $page);
+        
+        // Save current page contests to data variable
+        $data[Constants::CONTESTS_CONTESTS_KEY] = $paginator->getCollection();
+
+        // Set pagination data
+        $data[Constants::CONTESTS_PAGINATOR_KEY] = Utilities::getPaginatorData($paginator);
+
         // Get all public contests from database
         return view('contests.index')
-            ->with('data', Contest::getPublicContests())
+            ->with('data', $data)
             ->with('pageTitle', config('app.name') . ' | Contests');
     }
 
