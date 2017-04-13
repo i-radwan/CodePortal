@@ -14,41 +14,12 @@ class Constants
 
     // TODO: add links
 
-    const PROBLEMS_TABLE_HEADINGS = [
-        [
-            Constants::TABLE_DATA_KEY => "ID",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Name",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "# Acc.",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Judge",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Tags",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-    ];
-
     const PROBLEMS_SORT_BY = [
-        "Name" => self::FLD_PROBLEMS_NAME,
-        "Difficulty" => self::FLD_PROBLEMS_DIFFICULTY,
-        "# Acc." => self::FLD_PROBLEMS_SOLVED_COUNT,
-        "ID" => self::FLD_PROBLEMS_ID,
-        "Judge" => self::FLD_PROBLEMS_JUDGE_ID,
-        "" => self::FLD_PROBLEMS_NAME
+        "id" => self::FLD_PROBLEMS_ID,
+        "name" => self::FLD_PROBLEMS_NAME,
+        "acceptedCount" => self::FLD_PROBLEMS_SOLVED_COUNT,
+        "judge" => self::FLD_PROBLEMS_JUDGE_ID,
+        "" => self::FLD_PROBLEMS_ID
     ];
     // ============================================================
     //endregion
@@ -103,7 +74,6 @@ class Constants
     // ============================================================
     //endregion
 
-
     //region Table protocol
 
     //
@@ -134,13 +104,14 @@ class Constants
     const PAGINATOR_PREV_URL = "prev_page_url";
     const PAGINATOR_START_LIMIT = "initialPage";
     const PAGINATOR_END_LIMIT = "pagesLimit";
+
     //Previous Filters Accompanied with the the Generic Table
     const PREVIOUS_TABLE_FILTERS = "applied_filters";
     const APPLIED_FILTERS_JUDGES_IDS = "judges";
     const APPLIED_FILTERS_TAGS_IDS = "tags";
     const APPLIED_FILTERS_TAG_ID = "tag";
     const APPLIED_FILTERS_SEARCH_STRING = "q";
-    const APPLIED_FILTERS_SORT_BY_PARAMETER = "sortBy";
+    const APPLIED_FILTERS_SORT_BY_PARAMETER = "sort";
     const APPLIED_FILTERS_SORT_BY_MODE = "order";
     const FILTERS_TAGS = "tags";
     const FILTERS_JUDGES = "judges";

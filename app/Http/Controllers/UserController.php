@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 class UserController extends Controller
 {
     /**
-     * Show the problems page.
+     * Show the user profile page.
+     *
      * @param $user
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index($user)
     {

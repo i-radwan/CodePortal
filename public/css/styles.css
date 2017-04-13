@@ -560,7 +560,7 @@ footer {
     text-align: center;
 }
 
-.table-head {
+.problems-table-head {
     color: rgb(41, 101, 168);
 }
 
@@ -569,12 +569,12 @@ footer {
     width: 25%;
 }
 
-.gtable-tags-head {
+.problems-table-tags-head {
     text-align: center;
     width: 20%;
 }
 
-.gtable-head {
+.problems-table-head {
     position: relative;
     text-align: center;
 }
@@ -599,34 +599,14 @@ footer {
     text-align: center;
 }
 
-.tr-runtimeerror {
-    background-color: #b78ffc;
-
-}
-
-.tr-wronganswer {
-    background-color: #f94e48;
-}
-
-.tr-accepted {
-    background-color: #3af466;
-}
-
-.tr-tle {
-    background-color: #fcf92f;
-}
-
-.tr-notsolved {
-    background-color: #f8f7f9;
-}
-
 .problems-badge {
-    transition: 0.5s;
+    /*transition: 0.5s;*/
 }
 
 .problems-badge:hover {
-    transition: 0.5s;
-    background: rgb(41, 101, 168);
+    transition: 0.1s;
+    background: #337ab7;
+    border-color: #2e6da4;
 }
 
 .details {
@@ -653,7 +633,7 @@ footer {
 }
 
 .tags-table-container {
-    width: 99%;
+    width: 100%;
 }
 
 .problems-table-tags-links {
@@ -703,7 +683,7 @@ footer {
 /**************************************/
 /*</editor-fold>*/
 
-/*<editor-fold desc="Problems Page">*/
+/*<editor-fold desc="Contests Page">*/
 /*====================================*/
 /*========== CONTEST PAGE ===========*/
 /*====================================*/

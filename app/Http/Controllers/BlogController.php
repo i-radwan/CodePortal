@@ -9,7 +9,7 @@ class BlogController extends Controller
     /**
      * Show the blogs page.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {

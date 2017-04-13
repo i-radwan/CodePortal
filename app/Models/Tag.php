@@ -57,23 +57,4 @@ class Tag extends Model
             Constants::FLD_PROBLEM_TAGS_PROBLEM_ID
         );
     }
-
-    public static function getTagProblems($tagID, $page = 1, $sortBy = [])
-    {
-        $sortBy = Utilities::initializeProblemsSortByArray($sortBy);
-        // Set page
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
-        // Get all problems
-        $problems = Problem::getAllProblemsForTable();
-
-        // Join with problems tags
-        $problems = $problems->join(Constants::TBL_PROBLEM_TAGS,
-                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
-                '=',
-                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID)
-            ->where(Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID, '=', $tagID);
-        return Utilities::prepareProblemsOutput($problems, $sortBy);
-    }
 }

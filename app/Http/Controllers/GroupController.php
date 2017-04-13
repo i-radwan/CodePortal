@@ -9,7 +9,7 @@ class GroupController extends Controller
     /**
      * Show the groups page.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View
      */
     public function index()
     {
