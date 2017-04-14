@@ -326,6 +326,8 @@ class ContestController extends Controller
     }
 
     /**
+     * Get contest questions info
+     *
      * @param User $user
      * @param Contest $contest
      * @param $data
