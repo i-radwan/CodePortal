@@ -174,14 +174,9 @@ class ContestController extends Controller
      */
     public function announceQuestion(Question $question)
     {
-        $user = Auth::user();
-
         // Check if question exists
         if ($question) {
-            // Check if organizer/owner is the one who fired this request
-            $contest = $user->organizingContests()->find($question->contest_id);
-            if(!$contest) $contest = $user->owningContests()->find($question->contest_id);
-            if ($contest) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
                 $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
                 $question->save();
             }
@@ -198,14 +193,9 @@ class ContestController extends Controller
      */
     public function renounceQuestion(Question $question)
     {
-        $user = Auth::user();
-
         // Check if question exists
         if ($question) {
-            // Check if organizer/owner is the one who fired this request
-            $contest = $user->organizingContests()->find($question->contest_id);
-            if(!$contest) $contest = $user->owningContests()->find($question->contest_id);
-            if ($contest) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
                 $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
                 $question->save();
             }
@@ -229,10 +219,7 @@ class ContestController extends Controller
 
         // Check if question exists
         if ($question) {
-            // Check if organizer/owner is the one who fired this request
-            $contest = $user->organizingContests()->find($question->contest_id);
-            if(!$contest) $contest = $user->owningContests()->find($question->contest_id);
-            if ($contest) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
                 $question->saveAnswer($questionAnswer, $user);
             }
         }
