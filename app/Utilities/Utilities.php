@@ -110,12 +110,42 @@ class Utilities
     }
 
     /**
+     * Format past date time to user-friendly format (Today, Yesterday, ..etc)
+     *
+     * @param $dateTime
+     * @return false|string
+     */
+    public static function formatPastDateTime($dateTime)
+    {
+        $dateTime = strtotime($dateTime);
+
+        // If notification date is today, display hrs/mins count
+        if ($dateTime >= strtotime("today")) {
+            $curTime = time();
+            $timeElapsed = $curTime - $dateTime;
+            $seconds = $timeElapsed;
+            $minutes = round($timeElapsed / 60);
+            $hours = round($timeElapsed / 3600);
+            if ($minutes == 0 && $hours == 0 && $seconds > 0) {
+                return '1 min ago';
+            } else if ($minutes < 60) {
+                return $minutes . ' min(s) ago';
+            } else {
+                return $hours . ' hr(s) ago';
+            }
+        } else if ($dateTime >= strtotime("yesterday"))
+            return "Yesterday " . date('H:i', $dateTime);
+        return date('M d, H:i', $dateTime);
+    }
+
+    /**
      * This function makes the input form data safe for SQL
      *
      * @param string $data input data
      * @return string safe data
      */
-    public static function makeInputSafe($data) {
+    public static function makeInputSafe($data)
+    {
         return htmlspecialchars(stripslashes(trim($data)));
     }
 }
