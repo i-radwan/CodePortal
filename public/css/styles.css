@@ -76,6 +76,24 @@ html, body {
 
 .notification-container {
     min-width: 300px;
+    position: relative;
+}
+
+.notification-delete {
+    position: absolute;
+    display: none;
+    top: 6px;
+    right: 10px;
+    color: rgba(167, 167, 167, 0.65);
+    cursor: pointer;
+}
+
+.notification-container:hover > .notification-delete {
+    display: inline-block;
+}
+
+.notification-delete:hover {
+    color: #717171;
 }
 
 .notification-container a {
@@ -110,7 +128,7 @@ html, body {
 }
 
 .notification-icon > i {
-    font-size: 30px !important;
+    font-size: 30px;
 }
 
 /* Navigation bar styles for small devices and above */
@@ -143,16 +161,16 @@ html, body {
 }
 
 @media (max-width: 768px) {
-    .notifications-icon {
-        display: none !important;
-    }
-
     .notifications-text {
         display: inline-block;
     }
 
+    .notifications-icon {
+        display: none;
+    }
+
     .notification-icon > i {
-        font-size: 22px !important;
+        font-size: 22px;
     }
 
     .notification-text {

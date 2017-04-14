@@ -201,6 +201,19 @@ class User extends Authenticatable
     }
 
     /**
+     * Return user non-deleted notifications sorted by id desc.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userDisplayableNotifications()
+    {
+        return $this->receivedNotifications()
+            ->where(Constants::FLD_NOTIFICATIONS_STATUS, '!=',
+                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED])
+            ->orderBy(Constants::FLD_NOTIFICATIONS_ID, 'desc');
+    }
+
+    /**
      * Return user unread notifications
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

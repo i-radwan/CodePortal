@@ -12,10 +12,12 @@
 
     <!-- Styles -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/styles.css" rel="stylesheet">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet">
+
+    {{--Custom Styling--}}
+    <link href="/css/styles.css" rel="stylesheet">
 
     <!-- Scripts -->
     <script>
