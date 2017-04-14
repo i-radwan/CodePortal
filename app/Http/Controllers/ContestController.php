@@ -336,14 +336,12 @@ class ContestController extends Controller
     private function getQuestionsInfo($user, $contest, &$data)
     {
         // Get contest announcements
-        $announcements = $contest->announcements()
-            ->get();
+        $announcements = $contest->announcements()->get();
 
         // If user is logged in, get his questions too
         if ($user) {
             // Get user specific questions
-            $questions = $user->contestQuestions($contest->id)
-                ->get();
+            $questions = $user->contestQuestions($contest->id)->get();
 
             // Merge announcements and user questions
             $announcements = $announcements->merge($questions);

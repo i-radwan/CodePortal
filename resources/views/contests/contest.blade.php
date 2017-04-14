@@ -34,7 +34,7 @@
                             <span class="pull-right text-dark btn btn-link margin-5px">Leave</span>
                         </a>
 
-                    @elseif(Auth::user() && !$isOwner)
+                    @elseif(Auth::user() && !$isOwner && !$isOrganizer)
                         <a href="{{url('/contest/join/'.$contestID)}}">
                             <span class="pull-right text-dark btn btn-link margin-5px">Join</span>
                         </a>
