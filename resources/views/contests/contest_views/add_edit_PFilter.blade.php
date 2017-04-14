@@ -24,6 +24,10 @@
                         <input id="tagsAuto" type="text"  class="typeahead search-box" placeholder="Enter Tag" autocomplete="off"/>
                         <button class="close-icon" type="reset"></button>
                 </div>
+                <div class="container">
+                    <ul id="tagsList" name="tags[]">
+                    </ul>
+                </div>
             </div>
     </div>
 </div>

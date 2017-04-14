@@ -1,7 +1,35 @@
+
+<script  type = "text/javascript">
+function syncProblemState() {
+    var checkedRows = [];
+    var j = 0;
+    var checkboxes = document.getElementsByClassName('checkState');
+    for(var i=0; checkboxes[i]; ++i){
+        if(checkboxes[i].checked){
+            checkedRows[j] = checkboxes[i].value;
+            j = j + 1;
+        }
+    }
+    console.log(checkedRows);
+    $.ajax({
+        url: 'home',
+        type: 'POST',
+        data: {_token: "{{csrf_token()}}"},
+        success: function(data){
+            console.log(data);
+//            $('#responsestatus').val(data);
+//            $('#subscription-confirm').modal('show');
+        }
+    });
+}
+</script>
 <table class="table table-bordered">
     {{--Headings--}}
     <thead>
         <tr>
+            @if(isset($checkBoxes) && $checkBoxes = 'true')
+                <th data-field="state" data-checkbox="true"></th>
+            @endif
             @include('problems.sortable_heading', ['title' => 'ID', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ID_KEY])
             @include('problems.sortable_heading', ['title' => 'Name', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_NAME_KEY])
             @include('problems.sortable_heading', ['title' => '#Acc.', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY])
@@ -21,6 +49,9 @@
             @php($verdict = $problem->simpleVerdict($user))
 
             <tr class="{{ $verdict == Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
+                @if(isset($checkBoxes) && $checkBoxes = 'true')
+                    <td><input class="checkState" name= "{{Constants::CHECKED_PROBLEMS}}[]" type="checkbox" value="{{ Utilities::generateProblemNumber($problem) }}" onclick="syncProblemState()" {{(isset($checkedRows)) ? in_array(Utilities::generateProblemNumber($problem),$checkedRows) ? "checked":"" : ""}}></td>
+                @endif
                 {{--ID--}}
                 <td>{{ Utilities::generateProblemNumber($problem) }}</td>
 

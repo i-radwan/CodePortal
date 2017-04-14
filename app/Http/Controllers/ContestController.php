@@ -71,12 +71,13 @@ class ContestController extends Controller
      */
     public function addEditContestView(Request $request)
     {
-        
+
         $problems = self::getProblemsAndFilters($request);
         return view('contests.add_edit')
             ->with('problems', $problems)
             ->with('tags', Tag::all())
             ->with('judges', Judge::all())
+            ->with('checkBoxes', 'true')
             ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
@@ -87,7 +88,7 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
-        dd($request);
+        dd(Session::get('rows'));
         $contest = new Contest($request->all());
         $contest->save();
     }
@@ -103,9 +104,14 @@ class ContestController extends Controller
     }
 
     public function tagsAutoComplete(Request $request){
-        $data  = Tag::select('name')->get();
+        $data  = Tag::select('rows')->get();
         return response()->json($data);
 
+    }
+
+    public function applyCheckBoxes(Request $request){
+        return response()->json(['response' => 'This is post method']);
+        Session::put($request->get('rows'));
     }
 
     /**

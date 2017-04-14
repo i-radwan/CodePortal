@@ -68,6 +68,8 @@ class Constants
     const SINGLE_CONTEST_TIME_KEY = "time";
     const SINGLE_CONTEST_DURATION_KEY = "duration";
 
+    const CHECKED_PROBLEMS = "checkedRows";
+
     // Participants
     const PARTICIPANTS_DISPLAYED_FIELDS = [
         self::FLD_USERS_USERNAME,
