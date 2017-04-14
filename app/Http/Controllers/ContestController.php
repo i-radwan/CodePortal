@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Session;
+use Redirect;
+use URL;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Tag;
@@ -111,8 +113,7 @@ class ContestController extends Controller
     public function deleteContest(Contest $contest)
     {
         // Check if current auth. user is the owner
-        if ($contest->owner->id == Auth::user()->id) $contest->delete();
-
+        if (Auth::user() && $contest->owner->id == Auth::user()->id) $contest->delete();
         return redirect('contests/');
     }
 
@@ -157,15 +158,14 @@ class ContestController extends Controller
     {
         $user = Auth::user();
         $problem = 1; // ToDo get problem from request
-        // Check if user is signed in
-        if ($user) {
-            $contest = $user->participatingContests()->find($contestID);
 
-            // Check if contest exists (user participating in it) and the contest is running now
-            if ($contest && $contest->isContestRunning()) {
-                new Question($request->all(), $user, $contest, $problem);
-                return back();
-            }
+        // Check if user is a participant
+        $contest = $user->participatingContests()->find($contestID);
+
+        // Check if contest exists (user participating in it) and the contest is running now
+        if ($contest && $contest->isRunning()) {
+            new Question($request->all(), $user, $contest, $problem);
+            return back();
         }
         Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
         return back();
@@ -240,7 +240,7 @@ class ContestController extends Controller
                 $question->saveAnswer($questionAnswer, $user);
             }
         }
-        return back();
+        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**
@@ -335,13 +335,8 @@ class ContestController extends Controller
     }
 
     /**
-     * Get contest questions related to currently signed in user
+     * Get contest questions info
      *
-     * @param User $user
-     * @param Contest $contest
-     * @param array $data
-     */
-    /**
      * @param User $user
      * @param Contest $contest
      * @param $data
@@ -350,14 +345,12 @@ class ContestController extends Controller
     private function getQuestionsInfo($user, $contest, &$data)
     {
         // Get contest announcements
-        $announcements = $contest->announcements()
-            ->get();
+        $announcements = $contest->announcements()->get();
 
         // If user is logged in, get his questions too
         if ($user) {
             // Get user specific questions
-            $questions = $user->contestQuestions($contest->id)
-                ->get();
+            $questions = $user->contestQuestions($contest->id)->get();
 
             // Merge announcements and user questions
             $announcements = $announcements->merge($questions);
@@ -365,9 +358,10 @@ class ContestController extends Controller
 
         // Get extra data from foreign keys
         foreach ($announcements as $announcement) {
-            // Get admin username from id
-            $announcement[Constants::FLD_QUESTIONS_ADMIN_ID] =
-                User::find($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])->username;
+            // Get admin username from id if answer is provided
+            if ($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])
+                $announcement[Constants::FLD_QUESTIONS_ADMIN_ID] =
+                    User::find($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])->username;
 
             // Get problem number from id
             $announcement[Constants::FLD_QUESTIONS_PROBLEM_ID] =
