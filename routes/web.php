@@ -28,11 +28,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
 
     Route::post('contest/add', 'ContestController@addContest');
-    Route::post('contest/edit', 'ContestController@editContest');
+    Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
 
     // Question routes...
-    Route::get('contest/question/announce/{question}', 'ContestController@announceQuestion');
-    Route::get('contest/question/renounce/{question}', 'ContestController@renounceQuestion');
+    Route::put('contest/question/announce/{question}', 'ContestController@announceQuestion');
+    Route::put('contest/question/renounce/{question}', 'ContestController@renounceQuestion');
     Route::post('contest/question/answer', 'ContestController@answerQuestion');
     Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 

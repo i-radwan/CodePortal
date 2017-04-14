@@ -38,23 +38,27 @@
                         <button class="btn btn-primary question-answer-button"
                                 data-toggle="modal"
                                 data-target="#question-answer-model"
-                                onclick="$('#question-id').val('{{$question[Constants::FLD_QUESTIONS_ID]}}');$('#question-answer').val('{{$question[Constants::FLD_QUESTIONS_ANSWER]}}');">
+                                onclick="$('#question-id').val('{{$question[Constants::FLD_QUESTIONS_ID]}}');$('#question-answer').val('{{($question[Constants::FLD_QUESTIONS_ANSWER] != "")? $question[Constants::FLD_QUESTIONS_ANSWER]: "Re-read the problem statement!"}}');">
                             Answer
                         </button>
                     @endif
 
                     @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && $isOrganizer
                         && strlen($question[Constants::FLD_QUESTIONS_ANSWER])>0)
-                        <a href="{{url('contest/question/announce/'.$question[Constants::FLD_QUESTIONS_ID])}}">
-                            <button class="btn btn-primary">Announce
+                        <form action="{{url('contest/question/announce/'.$question[Constants::FLD_QUESTIONS_ID])}}"
+                              method="post">{{method_field('PUT')}}
+                            {{csrf_field()}}
+                            <button type="submit" class="btn btn-primary">Announce
                             </button>
-                        </a>
+                        </form>
 
                     @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1 && $isOrganizer)
-                        <a href="{{url('contest/question/renounce/'.$question[Constants::FLD_QUESTIONS_ID])}}">
-                            <button class="btn btn-primary">Renounce
+                        <form action="{{url('contest/question/renounce/'.$question[Constants::FLD_QUESTIONS_ID])}}"
+                              method="post">{{method_field('PUT')}}
+                            {{csrf_field()}}
+                            <button type="submit" class="btn btn-primary">Renounce
                             </button>
-                        </a>
+                        </form>
                     @endif
                 </td>
             @endif

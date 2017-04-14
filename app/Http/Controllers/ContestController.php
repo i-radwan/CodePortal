@@ -163,7 +163,7 @@ class ContestController extends Controller
         }
 
         Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
-        return back();
+        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**
@@ -186,7 +186,7 @@ class ContestController extends Controller
             }
         }
 
-        return back();
+        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**
@@ -209,7 +209,7 @@ class ContestController extends Controller
             }
         }
 
-        return back();
+        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**
