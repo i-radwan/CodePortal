@@ -597,12 +597,6 @@ footer {
     text-align: center;
 }
 
-.problems-table-container, .contests-table-container {
-    width: 100%;
-    padding: 0;
-    text-align: center;
-}
-
 .problems-table-head {
     text-align: center;
 }
@@ -950,9 +944,9 @@ footer {
 /**************************************/
 /*</editor-fold>*/
 
-/*<editor-fold desc="ErrorsPage">*/
+/*<editor-fold desc="Errors Page">*/
 /*====================================*/
-/*==== Errors page ======*/
+/*==== ERRORS PAGE ======*/
 /*====================================*/
 
 .error-code {
@@ -968,4 +962,3 @@ footer {
 
 /**************************************/
 /*</editor-fold>*/
-
