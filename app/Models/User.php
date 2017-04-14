@@ -205,7 +205,7 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userDisplayableNotifications()
+    public function userDisplayableReceivedNotifications()
     {
         return $this->receivedNotifications()
             ->where(Constants::FLD_NOTIFICATIONS_STATUS, '!=',
