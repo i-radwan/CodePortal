@@ -104,7 +104,7 @@
                                         <div role="tabpanel" class="tab-pane" id="participants">
                                             @include('contests.contest_views.participants')
                                         </div>
-                                        <div role="tabpanel" class="tab-pane" id="questions">
+                                        <div role="tabpanel" class="tab-pane horizontal-scroll" id="questions">
                                             @if($data['questions'] && count($data['questions']))
                                                 @include('contests.contest_views.questions')
                                             @else

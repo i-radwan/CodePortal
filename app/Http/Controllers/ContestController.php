@@ -292,7 +292,7 @@ class ContestController extends Controller
 
         // Get time and convert to familiar format
         $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY] =
-            date('D M y, H:i', strtotime($contest->time));
+            date('D M d, H:i', strtotime($contest->time));
 
         // Get contest running status
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY]

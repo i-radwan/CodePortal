@@ -41,6 +41,15 @@ html, body {
     margin: 5px;
 }
 
+.break-word {
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.horizontal-scroll {
+    overflow-x: auto;
+}
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -501,6 +510,16 @@ footer {
     .signup-cover {
         background-image: url("/images/cover/3/xs.jpg");
     }
+
+    /* Contest info elements */
+    .contest-info-time p {
+        float: none !important;
+        text-align: center;
+    }
+
+    .contest-details {
+        text-align: center;
+    }
 }
 
 /**************************************/
@@ -647,6 +666,17 @@ footer {
 
 /*<editor-fold desc="Contests Page">*/
 /*====================================*/
+/*========== CONTESTS PAGE ===========*/
+/*====================================*/
+
+.contest-table-name-th {
+    min-width: 300px;
+}
+
+/*</editor-fold>*/
+
+/*<editor-fold desc="Contest Page">*/
+/*====================================*/
 /*========== CONTEST PAGE ===========*/
 /*====================================*/
 
@@ -725,6 +755,10 @@ footer {
     color: darkred;
 }
 
+.questions-table-question-th {
+    min-width: 300px;
+}
+
 .questions-table h4 {
     padding: 0;
     margin: 0;
@@ -732,7 +766,6 @@ footer {
 
 .questions-table p {
     padding-left: 2px;
-    word-break: break-all;
     margin: 0;
 }
 

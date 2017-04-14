@@ -8,7 +8,6 @@ use App\Models\Judge;
 use App\Utilities\Utilities;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\Request;
 
 class ProblemController extends Controller
 {
