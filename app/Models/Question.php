@@ -64,7 +64,7 @@ class Question extends Model
     public function __construct(array $attributes = [], $user = null, $contest = null, $problem = null)
     {
         parent::__construct($attributes);
-        if ($user != null && $contest != null) {
+        if ($user != null && $contest != null && $problem != null) {
             $this->user()->associate($user);
             $this->contest()->associate($contest);
             $this->problem()->associate($problem);
