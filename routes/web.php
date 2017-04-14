@@ -75,7 +75,7 @@ Route::any('getData', function(){
     dd("Roger That");
 });
 
-Route::get('autocomplete',array('as' => 'autocomplete', 'uses' => 'ContestController@autocomplete'));
+Route::get('tagsautocomplete',array('as' => 'tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
 
 // Errors Routes...
 Route::get('errors/404', function () {

@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title></title>
-</head>
 <body>
 <div class="panel panel-default problems-filters-panel">
     <div class="panel-body">
@@ -24,13 +21,8 @@
             <div>
                 <h5>Tags:</h5>
                 <div class="search-wrapper" >
-                        <input id="tagsAuto" type="text"  required class="typeahead search-box" placeholder="Enter Tag" autocomplete="off"/>
+                        <input id="tagsAuto" type="text"  class="typeahead search-box" placeholder="Enter Tag" autocomplete="off"/>
                         <button class="close-icon" type="reset"></button>
-                </div>
-                <div class = "container">
-                    <ul id = "tagsList">
-
-                    </ul>
                 </div>
             </div>
     </div>
@@ -43,8 +35,9 @@
 {{--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.js"></script>--}}
 <script type="text/javascript">
     var list = document.getElementById("tagsList");
-    var path = "{{route('autocomplete')}}";
-        $('input.typeahead').typeahead({
+    var path = "{{route('tagsautocomplete')}}";
+    //Tags AutoComplete
+    $('input.typeahead').typeahead({
             source: function( query, process){
                 return $.get(path, { query: query}, function(data){
                    return process(data);
@@ -71,7 +64,7 @@
                 return ;
             }
         });
-
+    //Organisers AutoComplete //TODO : later On
 </script>
 
 </html>

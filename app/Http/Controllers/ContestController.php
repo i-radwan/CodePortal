@@ -71,7 +71,7 @@ class ContestController extends Controller
      */
     public function addEditContestView(Request $request)
     {
-//        dd("Roger that");
+        
         $problems = self::getProblemsAndFilters($request);
         return view('contests.add_edit')
             ->with('problems', $problems)
@@ -87,6 +87,7 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
+        dd($request);
         $contest = new Contest($request->all());
         $contest->save();
     }
@@ -101,7 +102,7 @@ class ContestController extends Controller
 
     }
 
-    public function autocomplete(Request $request){
+    public function tagsAutoComplete(Request $request){
         $data  = Tag::select('name')->get();
         return response()->json($data);
 
@@ -391,5 +392,5 @@ class ContestController extends Controller
     public static function getProblemsAndFilters(Request $request){
         return ProblemController::getProblemsToContestController($request); //Returning the Problems Data
     }
-    
+
 }
