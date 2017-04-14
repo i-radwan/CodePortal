@@ -3,14 +3,17 @@
 
 @if(count($notifications))
     <li class="dropdown notifications-dropdown">
+        {{--Notifications bell icon--}}
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-           aria-expanded="false" onclick="{{($unreadCount)?'markAllNotificationsRead()':''}}">
+           aria-expanded="false"
+           @if($unreadCount) onclick="markAllNotificationsRead('{{csrf_token()}}');" @endif >
             <i id="notifications-icon"
                class="notifications-icon fa fa-bell{{($unreadCount)?' dark-red':'-o'}}"
                aria-hidden="true"></i>
             <span class="notifications-text">Notifications</span>
         </a>
 
+        {{--Notifications dropdown menu--}}
         <ul class="dropdown-menu notifications" role="menu">
             @foreach($notifications as $notification)
                 @php($contest = \App\Models\Contest::find($notification->resource_id))
@@ -31,7 +34,8 @@
                        onclick="cancelNotification(event, '{{csrf_token()}}', '{{$notification->id}}', this);"></i>
                 </li>
                 @if(!$loop->last)
-                    <li role="separator" class="divider">@endif
+                    <li role="separator" class="divider">
+                @endif
             @endforeach
         </ul>
     </li>

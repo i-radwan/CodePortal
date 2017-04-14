@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
-    Route::get('contest/join/{contest}', 'ContestController@joinContest');
+    Route::get('contest/join/{contest}', 'ContestController@joinContest'); // ToDo public middleware
 
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');
@@ -37,11 +37,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 
     // Notifications routes...
-    Route::get('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
+    Route::put('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 });
 
-Route::get('contest/{contest}', 'ContestController@displayContest');
+Route::get('contest/{contest}', 'ContestController@displayContest'); // ToDo public middleware
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
