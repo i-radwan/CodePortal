@@ -897,3 +897,24 @@ footer {
 
 /**************************************/
 /*</editor-fold>*/
+
+/*<editor-fold desc="ErrorsPage">*/
+/*====================================*/
+/*==== Errors page ======*/
+/*====================================*/
+
+.error-code {
+    font-size: 200px;
+    color: #932700;
+    font-family: 'Raleway', sans-serif;
+}
+
+.error-text {
+    color: #932700;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+/**************************************/
+/*</editor-fold>*/
+

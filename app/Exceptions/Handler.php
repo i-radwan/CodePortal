@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
     {
         if($exception instanceof ModelNotFoundException)
         {
-            return back();
+            return redirect('errors/404');
         }
         else if($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException)
         {
