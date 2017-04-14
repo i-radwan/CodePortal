@@ -39,7 +39,7 @@
                                     </tbody>
                                 </table>
                                 {{--Pagination--}}
-                                {{ $data[Constants::CONTESTS_PAGINATOR_KEY]->render() }}
+                                {{ $data[Constants::CONTESTS_CONTESTS_KEY]->render() }}
                             </div>
                         @else
                             <p class="no-contests-msg">No contests!</p>

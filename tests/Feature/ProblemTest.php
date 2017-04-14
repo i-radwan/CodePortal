@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\ProblemController;
 use Illuminate\Validation\ValidationException;
 use App\Models\Problem;
 use App\Utilities\Constants;
@@ -31,7 +32,7 @@ class ProblemTest extends DatabaseTest
         } catch (ValidationException $e) {
         }
         try {
-            $this->insertProblem('Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1', 10, 20, $judge, '123', '213');
+            $this->insertProblem('Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Problem1Prob', 10, 20, $judge, '123', '213');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - name too long");
         } catch (ValidationException $e) {
         }
@@ -42,19 +43,19 @@ class ProblemTest extends DatabaseTest
         }
 
         // Test judge keys uniqueness
-        $this->insertProblem('Problem1', 20, $judge, '123', '213');
+        $p = $this->insertProblem('Problem1', 20, $judge, '123', '213');
         try {
             $this->insertProblem('Problem1', 20, $judge, '123', '213');
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - duplicated judge keys");
         } catch (ValidationException $e) {
         }
-
+        $p->delete();
         $this->assertTrue(Problem::count() == $initialCount); // not inserted
 
         // Test pagination
-        for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 20, $judge, '123' . $i, '213' . $i);
-        $problems = Problem::getAllProblems(2);
-        $this->assertEquals(count(json_decode($problems, true)['problems']['data']), Constants::PROBLEMS_COUNT_PER_PAGE);
+        for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge, '123' . $i, '213' . $i);
+        $problems = ProblemController::filterProblems();
+        $this->assertEquals($problems->count(), Constants::PROBLEMS_COUNT_PER_PAGE);
 
         // Test problems filtering
         $judge1 = $this->insertJudge('2', 'Judge1', 'http://www.link.com');
@@ -86,20 +87,19 @@ class ProblemTest extends DatabaseTest
             }
         }
 
-        $problems = Problem::filter($name, [$validTag1->id, $validTag2->id], [$judge1->id, $judge2->id]);
-        $this->assertEquals(json_decode($problems, true)['problems']['total'], 100);
-        $problems = Problem::filter($name, [$validTag1->id], [$judge1->id, $judge2->id]);
-        $this->assertEquals(json_decode($problems, true)['problems']['total'], 20);
-        $problems = Problem::filter($name, [$validTag1->id, $validTag2->id], [$judge1->id]);
-        $this->assertEquals(json_decode($problems, true)['problems']['total'], 50);
-        $problems = Problem::filter($name, [$validTag1->id, $validTag2->id], [$judge2->id]);
-        $this->assertEquals(json_decode($problems, true)['problems']['total'], 50);
-        \Log::info("Filtered Problems :: " . $problems);
+        $problems = Problem::ofName($name)->ofJudges([$judge1->id, $judge2->id])->hasTags([$validTag1->id, $validTag2->id]);
+        $this->assertEquals($problems->count(), 100);
+        $problems = Problem::ofName($name)->ofJudges([$judge1->id, $judge2->id])->hasTags([$validTag1->id]);
+        $this->assertEquals($problems->count(), 20);
+        $problems = Problem::ofName($name)->ofJudges([$judge1->id])->hasTags([$validTag1->id, $validTag2->id]);
+        $this->assertEquals($problems->count(), 50);
+        $problems = Problem::ofName($name)->ofJudges([$judge2->id])->hasTags([$validTag1->id, $validTag2->id]);
+        $this->assertEquals($problems->count(), 50);
+        \Log::info("Filtered Problems :: " . $problems->get()->toJson());
 
         // Sorted problems
-        $problems = Problem::filter($name, [$validTag1->id, $validTag2->id], [$judge2->id, $judge1->id]);
-        \Log::info("Sorted Problems :: " . $problems);
-
+        $problems = Problem::ofName($name)->ofJudges([$judge2->id, $judge1->id])->hasTags( [$validTag1->id, $validTag2->id]);
+        \Log::info("Sorted Problems :: " . $problems->get()->toJson());
 
     }
 }

@@ -11,40 +11,20 @@ use App\Models\Problem;
 use App\Models\User;
 use Auth;
 use Session;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ContestController extends Controller
 {
     /**
      * Show all contests page
      *
-     * @param Request $request
      * @return \Illuminate\View\View $this
      */
-    public function index(Request $request)
+    public function index()
     {
         $data = [];
-        // Get public contests
-        $contests = Contest::ofPublic()->get();
 
-        // Get request page number
-        $page = $request->get('page');
-        if (!$page) $page = 1;
-
-        // Paginate the retrieved contests
-        $paginator = new LengthAwarePaginator(
-            $contests->forPage($page, Constants::CONTESTS_COUNT_PER_PAGE),
-            $contests->count(),
-            Constants::CONTESTS_COUNT_PER_PAGE,
-            $page);
-
-        $paginator->setPath(url("contests/")); // Path for pages buttons
-
-        // Save current page contests to data variable
-        $data[Constants::CONTESTS_CONTESTS_KEY] = $paginator->getCollection();
-
-        // Set pagination data
-        $data[Constants::CONTESTS_PAGINATOR_KEY] = ($paginator);
+        $data[Constants::CONTESTS_CONTESTS_KEY] =
+            Contest::ofPublic()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
 
         // Get all public contests from database
         return view('contests.index')

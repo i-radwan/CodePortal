@@ -545,7 +545,7 @@ footer {
     padding: 0;
 }
 
-.problems-table-container, .questions-table-container, .contests-table-container {
+.problems-table-container, .contests-table-container {
     width: 100%;
     padding: 0;
     text-align: center;
@@ -758,24 +758,24 @@ footer {
     color: darkred;
 }
 
-.questions-table-container h4 {
+.questions-table h4 {
     padding: 0;
     margin: 0;
 }
 
-.questions-table-container p {
+.questions-table p {
     padding-left: 2px;
     word-break: break-all;
     margin: 0;
 }
 
-.questions-table-container button {
+.questions-table button {
     width: 90%;
     margin: 5px;
     font-size: 12px;
 }
 
-.questions-table-container .announcement {
+.questions-table .announcement {
     background: rgba(238, 255, 230, 0.38);
 }
 
