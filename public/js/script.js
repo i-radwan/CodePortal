@@ -1,3 +1,6 @@
+// Constants
+const URL = '127.0.0.1:8000/';
+
 $(document).ready(function () {
 
 
@@ -72,12 +75,14 @@ $(window).on("popstate", function () {
 /**
  * Send Ajax request to mark all user notifications as READ once the user clicks the
  * notifications icon in the header
+ *
+ * @param string csrf token
  */
-function markAllNotificationsRead() {
+function markAllNotificationsRead(token) {
     $.ajax({
-        type: "GET",
-        url: './notifications/mark_all_read',
-        data: "",
+        type: "PUT",
+        url: 'notifications/mark_all_read',
+        data: {"_token": token, "_method": "PUT"},
         success: function () {
             // Change icon to light bell
             $("#notifications-icon").removeClass("fa-bell");
@@ -87,9 +92,67 @@ function markAllNotificationsRead() {
             // Prevent future clicks to execute this function
             $("#notifications-icon").parent()[0].onclick = null;
         }
-    })
+    });
 }
 
+/**
+ * Lazy delete certain notification
+ *
+ * @param string csrf token
+ * @param int notificationID
+ * @param object element clicked element
+ */
+function cancelNotification(e, token, notificationID, element) {
+    // Prevent click event propagation (such that dropdown menu doesn't
+    // close after deleting) notification
+    if (!e)
+        e = window.event;
+    //IE9 & Other Browsers
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+    //IE8 and Lower
+    else {
+        e.cancelBubble = true;
+    }
+
+    // Send lazy delete request
+    $.ajax({
+        type: "DELETE",
+        url: 'notification/' + notificationID,
+        data: {"_token": token},
+        success: function () {
+            hideNotificationElement(element);
+        }
+    });
+    return false;
+}
+
+/**
+ * Hide the notification element from notifications panel once deleted successfully
+ *
+ * @param object element
+ */
+function hideNotificationElement(element) {
+    // Remove UI notification element + separator
+    // In not next/prev means only this one notification visible -> hide notification icon
+    if ($(element).parent().next().length == 0
+        && $(element).parent().prev().length == 0) {
+        $(".notifications-dropdown").hide();
+    }
+    // If prev but not next means the user deleted last one in the table ->
+    // Hide the separator before it
+    else if ($(element).parent().next().length == 0) {
+        $(element).parent().prev().remove();
+    }
+    // User deleted one in the middle -> remove its separator only
+    else {
+        // Hide separator after notification
+        $(element).parent().next().remove();
+    }
+    // Remove notification li element
+    $(element).parent().remove();
+}
 /**************************************/
 /*</editor-fold>*/
 

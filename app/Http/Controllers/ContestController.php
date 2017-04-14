@@ -40,6 +40,8 @@ class ContestController extends Controller
     /**
      * Show single contest page
      *
+     * ToDo: show only public contest (or have non-deleted invitation) -> use public middleware
+     *
      * @param Contest $contest
      * @return \Illuminate\View\View $this
      */
@@ -156,6 +158,8 @@ class ContestController extends Controller
 
     /**
      * Register user participation in a contest
+     *
+     * ToDo: show only public contest (or have non-deleted invitation) -> use public middleware
      *
      * @param Contest $contest
      * @return \Illuminate\Http\RedirectResponse
