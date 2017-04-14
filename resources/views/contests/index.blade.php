@@ -7,7 +7,7 @@
                 <div class="panel panel-default contests-panel">
                     <a href="{{url('/contest/add')}}"><span
                                 class="pull-right text-dark btn btn-link margin-5px">New</span></a>
-                    <div class="panel-heading contests-panel-head">
+                    <div class="panel-heading contests-panel-heading">
                         Contests
                     </div>
                     <div class="panel-body contests-panel-body">

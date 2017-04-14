@@ -84,8 +84,8 @@ class ModelsRelationsTest extends DatabaseTest
         $admin->organizingContests()->save($contest);
         $this->assertEquals(count($user->participatingContests()), 1);
         $this->assertEquals(count($admin->organizingContests()), 1);
-        Log::info($contest->organizingUsers()->getResults());
-        Log::info($contest->participatingUsers()->getResults());
+        Log::info($contest->organizers()->getResults());
+        Log::info($contest->participants()->getResults());
 
         // Contest + Owner
         $this->assertEquals(count($admin->owningContests()), 1);

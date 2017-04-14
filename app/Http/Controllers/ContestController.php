@@ -250,7 +250,7 @@ class ContestController extends Controller
         if ($user && $contest->owner) {
             // Check if the user has joined this contest
             $isUserParticipating =
-                ($contest->participatingUsers()->find($user->id) != null);
+                ($contest->participants()->find($user->id) != null);
             // Check if the user is the owner of this contest
             $isUserOwner =
                 ($contest->owner->id == $user->id);
@@ -284,7 +284,7 @@ class ContestController extends Controller
 
         // Get organizers array
         $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY] =
-            $contest->organizingUsers()->pluck(Constants::FLD_USERS_USERNAME);
+            $contest->organizers()->pluck(Constants::FLD_USERS_USERNAME);
 
         // Get duration in hrs:mins format
         $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY] =
@@ -296,7 +296,7 @@ class ContestController extends Controller
 
         // Get contest running status
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_RUNNING_STATUS] = $contest->isContestRunning();
+        [Constants::SINGLE_CONTEST_RUNNING_STATUS] = $contest->isRunning();
 
         // Is user an organizer?
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
@@ -317,7 +317,7 @@ class ContestController extends Controller
     {
         $participants =
             $contest
-                ->participatingUsers()
+                ->participants()
                 ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
                 ->get();
 
