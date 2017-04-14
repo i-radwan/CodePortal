@@ -67,6 +67,13 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
+//
+Route::any('getData', function(){
+    dd("Roger That");
+});
+
+Route::get('autocomplete',array('as' => 'autocomplete', 'uses' => 'ContestController@autocomplete'));
+
 // Errors Routes...
 Route::get('errors/404', function () {
     return view('errors.404')->with('pageTitle', 'CodePortal | 404');
@@ -74,3 +81,4 @@ Route::get('errors/404', function () {
 Route::get('errors/401', function () {
     return view('errors.401')->with('pageTitle', 'CodePortal | 401');
 });
+

@@ -105,6 +105,12 @@ class ContestController extends Controller
 
     }
 
+    public function autocomplete(Request $request){
+        $data  = Tag::select('name')->get();
+        return response()->json($data);
+
+    }
+
     /**
      * Delete a certain contest if you're owner
      *
