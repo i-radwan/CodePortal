@@ -12,6 +12,11 @@
     </thead>
     <tbody>
     @foreach($questions as $question)
+        {{--define some vars--}}
+        @php
+            $answer = $question[Constants::FLD_QUESTIONS_ANSWER];
+            $questionID = $question[Constants::FLD_QUESTIONS_ID];
+        @endphp
         <tr class="{{$question[Constants::FLD_QUESTIONS_STATUS] ==  Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY] ? 'announcement':''}}">
             <td>{{$question[Constants::FLD_QUESTIONS_PROBLEM_ID]}}</td>
 
@@ -24,8 +29,8 @@
 
                 <br/>
 
-                @if(strlen($question[Constants::FLD_QUESTIONS_ANSWER])>0)
-                    <blockquote class="break-word">{{$question[Constants::FLD_QUESTIONS_ANSWER]}}</blockquote>
+                @if(strlen($answer)>0)
+                    <blockquote class="break-word">{{$answer}}</blockquote>
                 @endif
             </td>
 
@@ -38,14 +43,13 @@
                         <button class="btn btn-primary question-answer-button"
                                 data-toggle="modal"
                                 data-target="#question-answer-model"
-                                onclick="$('#question-id').val('{{$question[Constants::FLD_QUESTIONS_ID]}}');$('#question-answer').val('{{($question[Constants::FLD_QUESTIONS_ANSWER] != "")? $question[Constants::FLD_QUESTIONS_ANSWER]: "Re-read the problem statement!"}}');">
+                                onclick="$('#question-id').val('{{$questionID}}');$('#question-answer').val('{{($answer != "")? $answer: "Re-read the problem statement!"}}');">
                             Answer
                         </button>
                     @endif
 
-                    @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && $isOrganizer
-                        && strlen($question[Constants::FLD_QUESTIONS_ANSWER])>0)
-                        <form action="{{url('contest/question/announce/'.$question[Constants::FLD_QUESTIONS_ID])}}"
+                    @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && $isOrganizer && strlen($answer)>0)
+                        <form action="{{url('contest/question/announce/'.$questionID)}}"
                               method="post">{{method_field('PUT')}}
                             {{csrf_field()}}
                             <button type="submit" class="btn btn-primary">Announce
@@ -53,7 +57,7 @@
                         </form>
 
                     @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1 && $isOrganizer)
-                        <form action="{{url('contest/question/renounce/'.$question[Constants::FLD_QUESTIONS_ID])}}"
+                        <form action="{{url('contest/question/renounce/'.$questionID)}}"
                               method="post">{{method_field('PUT')}}
                             {{csrf_field()}}
                             <button type="submit" class="btn btn-primary">Renounce

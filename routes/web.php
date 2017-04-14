@@ -21,7 +21,7 @@ Route::get('profile/{user}', 'UserController@index');
 Route::get('contests', 'ContestController@index');
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('contest/edit', 'ContestController@addEditContestView');
+    Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
