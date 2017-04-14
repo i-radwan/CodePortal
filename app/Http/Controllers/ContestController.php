@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Session;
+use Redirect;
+use URL;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Contest;
@@ -152,7 +154,7 @@ class ContestController extends Controller
         $contest = $user->participatingContests()->find($contestID);
 
         // Check if contest exists (user participating in it) and the contest is running now
-        if ($contest && $contest->isContestRunning()) {
+        if ($contest && $contest->isRunning()) {
             new Question($request->all(), $user, $contest, $problem);
             return back();
         }
@@ -229,7 +231,7 @@ class ContestController extends Controller
                 $question->saveAnswer($questionAnswer, $user);
             }
         }
-        return back();
+        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**
@@ -347,9 +349,10 @@ class ContestController extends Controller
 
         // Get extra data from foreign keys
         foreach ($announcements as $announcement) {
-            // Get admin username from id
-            $announcement[Constants::FLD_QUESTIONS_ADMIN_ID] =
-                User::find($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])->username;
+            // Get admin username from id if answer is provided
+            if ($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])
+                $announcement[Constants::FLD_QUESTIONS_ADMIN_ID] =
+                    User::find($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])->username;
 
             // Get problem number from id
             $announcement[Constants::FLD_QUESTIONS_PROBLEM_ID] =

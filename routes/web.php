@@ -30,16 +30,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');
 
-});
-Route::get('contest/{contest}', 'ContestController@displayContest');
-
-Route::group(['middleware' => 'auth'], function () {
     // Question routes...
     Route::get('contest/question/announce/{question}', 'ContestController@announceQuestion');
     Route::get('contest/question/renounce/{question}', 'ContestController@renounceQuestion');
     Route::post('contest/question/answer', 'ContestController@answerQuestion');
     Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 });
+
+Route::get('contest/{contest}', 'ContestController@displayContest');
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
