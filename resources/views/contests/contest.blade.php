@@ -13,7 +13,7 @@
 
     $problems = $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY];
     //$standings = $data[Constants::SINGLE_CONTEST_STANDINGS_KEY];
-    //$status = $data[Constants::SINGLE_CONTEST_STATUS_KEY];
+    $status = $data[Constants::SINGLE_CONTEST_STATUS_KEY];
     $participants = $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY];
     $questions = $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY];
 @endphp

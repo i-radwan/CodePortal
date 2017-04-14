@@ -75,6 +75,7 @@
                                                 <div class="notification-text">
                                                     <span>{{\App\Utilities\Constants::NOTIFICATION_TEXT[$notification->type]}}
                                                         <em class="notification-resource-name">{{$contest->name}}</em></span>
+                                                    <p class="text-right small notification-time">{{\App\Utilities\Utilities::formatPastDateTime($notification->created_at)}}</p>
                                                 </div>
                                             </a>
                                         </li>

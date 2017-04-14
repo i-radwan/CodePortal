@@ -17,6 +17,7 @@ class CreateContestAdminsTable extends Migration
         Schema::create(Constants::TBL_CONTEST_ADMINS, function (Blueprint $table) {
             $table->unsignedInteger(Constants::FLD_CONTEST_ADMINS_CONTEST_ID);
             $table->unsignedInteger(Constants::FLD_CONTEST_ADMINS_ADMIN_ID);
+            $table->timestamps();
             $table->primary(array(
                     Constants::FLD_CONTEST_ADMINS_CONTEST_ID,
                     Constants::FLD_CONTEST_ADMINS_ADMIN_ID

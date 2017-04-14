@@ -46,7 +46,7 @@ class Problem extends Model
         // TODO: validating super unique key
         Constants::FLD_PROBLEMS_NAME => 'required|max:255',
         Constants::FLD_PROBLEMS_JUDGE_ID => 'integer|required|exists:' . Constants::TBL_JUDGES . ',' . Constants::FLD_JUDGES_ID,
-        Constants::FLD_PROBLEMS_JUDGE_ID => 'unique_with:problems,judge_first_key,judge_second_key',
+        Constants::FLD_PROBLEMS_JUDGE_ID => 'unique_with:' . Constants::TBL_PROBLEMS . ',' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY . ',' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
         Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => 'required|min:0',
         Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => 'required|max:10',
         Constants::FLD_PROBLEMS_SOLVED_COUNT => 'integer|required|min:0'

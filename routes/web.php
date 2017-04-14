@@ -40,6 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
 
 });
+
 Route::post('home', 'ContestController@applyCheckBoxes' );
 Route::get('contest/{contest}', 'ContestController@displayContest');
 
@@ -48,6 +49,7 @@ Route::get('/getRequest', function(){
         return 'getRequest has loaded successfully.';
     }
 });
+
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
 
