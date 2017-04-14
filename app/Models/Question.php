@@ -112,6 +112,7 @@ class Question extends Model
 
     /**
      * Save question answer
+     *
      * @param $newAnswer
      * @param $admin
      * @return bool

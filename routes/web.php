@@ -39,8 +39,8 @@ Route::group(['middleware' => 'auth'], function () {
     // Notifications routes...
     Route::get('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
 });
-Route::get('contest/{contest}', 'ContestController@displayContest');
 
+Route::get('contest/{contest}', 'ContestController@displayContest');
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -50,6 +51,23 @@ class Contest extends Model
     ];
 
     /**
+     * The basic database columns to be selected when getting the contest submissions
+     *
+     * @var array
+     */
+    protected $basicContestSubmissionsQueryCols = [
+        Constants::TBL_USERS . '.' . Constants::FLD_USERS_USERNAME,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_NAME,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
+        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID,
+        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
+        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_EXECUTION_TIME,
+        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY,
+        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT,
+        Constants::TBL_LANGUAGES . '.' . Constants::FLD_LANGUAGES_NAME . ' as ' . Constants::FLD_SUBMISSIONS_LANGUAGE_NAME
+    ];
+
+    /**
      * Return public visible contests only
      *
      * @param Builder $query
@@ -82,12 +100,112 @@ class Contest extends Model
     /**
      * Return all submissions of the current contest
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Query\Builder
      */
     public function submissions()
     {
-        $query = $this->participants();
+        $query = DB::table(Constants::TBL_CONTESTS)
+            ->select($this->basicContestSubmissionsQueryCols)
+            ->where(
+                Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID,
+                '=',
+                $this->id
+            );
+
+        $this->contestJoinProblems($query);
+        $this->contestJoinUsers($query);
+        $this->contestJoinSubmissions($query);
+
+        return $query;
     }
+
+    /**
+     * Join contest with its related problems
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     */
+    private function contestJoinProblems($query)
+    {
+        $query
+            ->join(
+                Constants::TBL_CONTEST_PROBLEMS,
+                Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
+                '=',
+                Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID
+            )
+            ->join(
+                Constants::TBL_PROBLEMS,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+                '=',
+                Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID
+            );
+    }
+
+    /**
+     * Join contest with its related users
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     */
+    private function contestJoinUsers($query)
+    {
+        $query
+            ->join(
+                Constants::TBL_CONTEST_PARTICIPANTS,
+                Constants::TBL_CONTEST_PARTICIPANTS . '.' . Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID,
+                '=',
+                Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID
+            )
+            ->join(
+                Constants::TBL_USERS,
+                Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID,
+                '=',
+                Constants::TBL_CONTEST_PARTICIPANTS . '.' . Constants::FLD_CONTEST_PARTICIPANTS_USER_ID
+            );
+    }
+
+    /**
+     * Join contest with its related submissions
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     */
+    private function contestJoinSubmissions($query)
+    {
+        $contestStartTime = strtotime($this->time);
+        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
+
+        // TODO: need to check timestamps accurately
+        // TODO: It seems that Codeforces timestamp is leading 4 hours
+        $query
+            ->join(
+                Constants::TBL_SUBMISSIONS,
+                function ($join) {
+                    $join->on(
+                        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
+                        '=',
+                        Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID
+                    );
+                    $join->on(
+                        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
+                        '=',
+                        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
+                    );
+                }
+            )
+            ->join(
+                Constants::TBL_LANGUAGES,
+                Constants::TBL_LANGUAGES . '.' . Constants::FLD_LANGUAGES_ID,
+                '=',
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_LANGUAGE_ID
+            )
+            ->whereBetween(
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
+                [$contestStartTime, $contestEndTime]
+            )
+            ->orderByDesc(
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME
+            );
+    }
+
 
     /**
      * Return all participating users of the current contest
@@ -166,7 +284,6 @@ class Contest extends Model
         // Check if contest is running
         return (date("Y-m-d H:i:s") > $this->time && date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime));
     }
-
 
     /**
      * Return the notifications pointing at this contest
