@@ -103,7 +103,6 @@ class ContestController extends Controller
     {
         // Check if current auth. user is the owner
         if (Auth::user() && $contest->owner->id == Auth::user()->id) $contest->delete();
-        else return redirect('error/401');
         return redirect('contests/');
     }
 
@@ -148,15 +147,14 @@ class ContestController extends Controller
     {
         $user = Auth::user();
         $problem = 1; // ToDo get problem from request
-        // Check if user is signed in
-        if ($user) {
-            $contest = $user->participatingContests()->find($contestID);
 
-            // Check if contest exists (user participating in it) and the contest is running now
-            if ($contest && $contest->isContestRunning()) {
-                new Question($request->all(), $user, $contest, $problem);
-                return back();
-            }
+        // Check if user is a participant
+        $contest = $user->participatingContests()->find($contestID);
+
+        // Check if contest exists (user participating in it) and the contest is running now
+        if ($contest && $contest->isContestRunning()) {
+            new Question($request->all(), $user, $contest, $problem);
+            return back();
         }
         Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
         return back();
@@ -325,13 +323,6 @@ class ContestController extends Controller
         $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;
     }
 
-    /**
-     * Get contest questions related to currently signed in user
-     *
-     * @param User $user
-     * @param Contest $contest
-     * @param array $data
-     */
     /**
      * @param User $user
      * @param Contest $contest
