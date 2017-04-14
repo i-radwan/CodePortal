@@ -74,6 +74,7 @@ class ContestController extends Controller
      */
     public function addEditContestView(Request $request)
     {
+//        dd("Roger that");
         $problems = self::getProblemsAndFilters($request);
         return view('contests.add_edit')
             ->with('problems', $problems)
