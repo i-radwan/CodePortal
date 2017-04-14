@@ -7,11 +7,11 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] as $participant)
+        @foreach($participants as $participant)
             <tr>
                 <td>
                     <a href="{{ url('profile/' . $participant[Constants::FLD_USERS_USERNAME]) }}">
-                        {{$participant[Constants::FLD_USERS_USERNAME]}}
+                        {{ $participant[Constants::FLD_USERS_USERNAME] }}
                     </a>
                 </td>
                 <td> {{ $participant[Constants::FLD_USERS_COUNTRY] }}</td>

@@ -2,7 +2,7 @@
 @php
     $ownerUsername = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_OWNER_KEY];
     $isOwner = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_OWNER];
-    $isOrganizer = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER] || $isOwner;
+    $isOrganizer = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER];
     $isParticipant = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING];
     $contestID = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY];
     $contestName = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_NAME_KEY];
@@ -10,6 +10,12 @@
     $contestDuration = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_DURATION_KEY];
     $contestOrganizers = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ORGANIZERS_KEY];
     $isContestRunning = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS];
+
+    $problems = $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY];
+    //$standings = $data[Constants::SINGLE_CONTEST_STANDINGS_KEY];
+    //$status = $data[Constants::SINGLE_CONTEST_STATUS_KEY];
+    $participants = $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY];
+    $questions = $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY];
 @endphp
 
 @extends('layouts.app')
@@ -30,12 +36,11 @@
                    href="{{ url('/contest/leave/' . $contestID) }}">
                     <span class="btn btn-link text-dark pull-right margin-5px">Leave</span>
                 </a>
-            @elseif(Auth::user() && !$isOrganizer)
+            @elseif(Auth::check())
                 <a href="{{ url('/contest/join/' . $contestID) }}">
                     <span class="btn btn-link text-dark pull-right margin-5px">Join</span>
                 </a>
             @endif
-
 
             <div class="panel-heading">{{ $contestName }}</div>
 
@@ -45,7 +50,7 @@
                     <div class="alert alert-danger">
                         <ul>
                             @foreach ($errors->all() as $error)
-                                <li>• {{ $error }}</li>
+                                <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -78,19 +83,19 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="problems">
-                            Problems
+                            @include('contests.contest_views.problems')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="standings">
-                            Standings
+                            @include('contests.contest_views.standings')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="status">
-                            Status
+                            @include('contests.contest_views.status')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="participants">
                             @include('contests.contest_views.participants')
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="questions">
-                            @if($data['questions'] && count($data['questions']))
+                        <div role="tabpanel" class="tab-pane  horizontal-scroll" id="questions">
+                            @if($questions && count($questions))
                                 @include('contests.contest_views.questions')
                             @else
                                 <p class="no-questions-msg">No questions!</p>
@@ -106,7 +111,7 @@
             </div>
         </div>
 
-        @if ($isOrganizer)
+        @if ($isOwner || $isOrganizer)
             @include('contests.contest_views.answer_question_modal')
         @endif
 

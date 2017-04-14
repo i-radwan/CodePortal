@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 class Contest extends Model
 {
@@ -166,5 +165,16 @@ class Contest extends Model
 
         // Check if contest is running
         return (date("Y-m-d H:i:s") > $this->time && date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime));
+    }
+
+
+    /**
+     * Return the notifications pointing at this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }
 }
