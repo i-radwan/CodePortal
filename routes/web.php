@@ -40,8 +40,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 });
-Route::get('contest/{contest}', 'ContestController@displayContest');
 
+Route::get('contest/{contest}', 'ContestController@displayContest');
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');

@@ -79,5 +79,4 @@ class Notification extends Model
     {
         return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }
-
 }

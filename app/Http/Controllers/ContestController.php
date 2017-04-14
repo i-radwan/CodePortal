@@ -52,6 +52,8 @@ class ContestController extends Controller
         $this->getUserOwnerOrParticipant($currentUser, $contest, $data);
         $this->getBasicContestInfo($contest, $data);
         $this->getProblemsInfo($contest, $data);
+        $this->getStandingsInfo($contest, $data);
+        $this->getStatusInfo($contest, $data);
         $this->getParticipantsInfo($contest, $data);
         $this->getQuestionsInfo($currentUser, $contest, $data);
 
@@ -308,12 +310,37 @@ class ContestController extends Controller
      */
     private function getProblemsInfo($contest, &$data)
     {
-        $problems = $contest
-            ->problems()
-            ->get();
+        //TODO: paginate problems
+        $problems = $contest->problems()->get();
 
-        // Set contest participants
+        // Set contest problems
         $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY] = $problems;
+    }
+
+    /**
+     * Get contest standings data
+     *
+     * @param Contest $contest
+     * @param array $data
+     */
+    private function getStandingsInfo($contest, &$data)
+    {
+
+    }
+
+    /**
+     * Get contest status data
+     *
+     * @param Contest $contest
+     * @param array $data
+     */
+    private function getStatusInfo($contest, &$data)
+    {
+        //TODO: paginate submissions
+        $submissions = $contest->submissions()->get();
+
+        // Set contest status
+        $data[Constants::SINGLE_CONTEST_STATUS_KEY] = $submissions;
     }
 
     /**

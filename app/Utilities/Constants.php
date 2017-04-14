@@ -164,12 +164,33 @@ class Constants
     const VERDICT_UNKNOWN = '17';
     const VERDICT_COUNT = 18;   // Note: To be incremented manually
 
+    const VERDICT_NAMES = [
+        self::VERDICT_FAILED => '0',
+        self::VERDICT_ACCEPTED => 'Accepted',
+        self::VERDICT_PARTIAL_ACCEPTED => 'Partial Accepted',
+        self::VERDICT_COMPILATION_ERROR => 'Compilation Error',
+        self::VERDICT_RUNTIME_ERROR => 'Runtime Error',
+        self::VERDICT_WRONG_ANSWER => 'Wrong Answer',
+        self::VERDICT_PRESENTATION_ERROR => 'Presentation Error',
+        self::VERDICT_TIME_LIMIT_EXCEEDED => 'Time Limit Exceeded',
+        self::VERDICT_MEMORY_LIMIT_EXCEEDED => 'Memory Limit Exceeded',
+        self::VERDICT_IDLENESS_LIMIT_EXCEEDED => 'Idleness Limit Exceeded',
+        self::VERDICT_SECURITY_VIOLATED => 'Security Violated',
+        self::VERDICT_CRASHED => 'Crashed',
+        self::VERDICT_INPUT_PREPARATION_CRASHED => 'Input Preparation Crashed',
+        self::VERDICT_CHALLENGED => 'Challenged',
+        self::VERDICT_SKIPPED => 'Skipped',
+        self::VERDICT_TESTING => 'Testing',
+        self::VERDICT_REJECTED => 'Rejected',
+        self::VERDICT_UNKNOWN => 'Unknown',
+    ];
+
     // Simple list of verdicts
     const SIMPLE_VERDICT_NOT_SOLVED = 0;
     const SIMPLE_VERDICT_ACCEPTED = 1;
     const SIMPLE_VERDICT_WRONG_SUBMISSION = 2;
 
-    // External judges submission verdicts
+    // Codeforces submission verdicts
     const CODEFORCES_SUBMISSION_VERDICTS = [
         "FAILED" => self::VERDICT_FAILED,
         "OK" => self::VERDICT_ACCEPTED,
@@ -191,6 +212,7 @@ class Constants
         "UNKNOWN" => self::VERDICT_UNKNOWN
     ];
 
+    // uHunt submission verdicts
     const UHUNT_SUBMISSION_VERDICTS = [
         "10" => self::VERDICT_FAILED,
         "15" => self::VERDICT_REJECTED,
@@ -206,6 +228,7 @@ class Constants
         "90" => self::VERDICT_ACCEPTED,
     ];
 
+    // uHunt submission languages
     const UHUNT_SUBMISSION_LANGUAGES = [
         "1" => "ANSI C",
         "2" => "Java",
@@ -362,6 +385,8 @@ class Constants
     const FLD_SUBMISSIONS_EXECUTION_TIME = "execution_time";
     const FLD_SUBMISSIONS_CONSUMED_MEMORY = "consumed_memory";
     const FLD_SUBMISSIONS_VERDICT = "verdict";
+    const FLD_SUBMISSIONS_PROBLEM_NAME = "problem_name";            // Derived attribute
+    const FLD_SUBMISSIONS_LANGUAGE_NAME = "language_name";          // Derived attribute
 
     // Questions
     const FLD_QUESTIONS_ID = "id";
