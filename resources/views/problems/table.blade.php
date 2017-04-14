@@ -25,7 +25,7 @@
 
             <tr class="{{ $verdict == Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
                 @if(isset($checkBoxes) && $checkBoxes = 'true')
-                    <td><input class="checkState" name= "{{Constants::CHECKED_PROBLEMS}}[]" type="checkbox" value="{{ Utilities::generateProblemNumber($problem) }}" onclick="syncProblemState()" {{(isset($checkedRows)) ? in_array(Utilities::generateProblemNumber($problem),$checkedRows) ? "checked":"" : ""}}></td>
+                    <td><input class="checkState" type="checkbox" value="{{ Utilities::generateProblemNumber($problem) }}" onclick="syncProblemState()" {{(isset($checkedRows[Request::get('page')])) ? in_array(Utilities::generateProblemNumber($problem),$checkedRows[Request::get('page')]) ? "checked":"" : ""}}></td>
                 @endif
                 {{--ID--}}
                 <td>{{ Utilities::generateProblemNumber($problem) }}</td>
@@ -66,6 +66,7 @@
 
 <script  type = "text/javascript">
     function syncProblemState() {
+        //get the check boxes in each page
         var checkedRows = [];
         var j = 0;
         var checkboxes = document.getElementsByClassName('checkState');
@@ -81,7 +82,8 @@
             type: 'POST',
             data: {
                 _token: "{{csrf_token()}}",
-                checkedRows : checkedRows
+                checkedRows : checkedRows,
+                page : "{{Request::get('page') != null ? Request::get('page') : 1}}"
             },
             success: function(data){
                 console.log(data);

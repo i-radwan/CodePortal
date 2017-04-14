@@ -82,7 +82,7 @@ class ContestController extends Controller
             ->with('tags', Tag::all())
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
-            ->with('checkedRows',Session::get('checkedProblems'))
+            ->with('checkedRows',Session::get('checkedRows'))
             ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
@@ -93,7 +93,8 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
-        dd(Session::get('rows'));
+        Session::forget(Constants::CHECKED_PROBLEMS);
+
         $contest = new Contest($request->all());
         $contest->save();
     }
@@ -115,16 +116,14 @@ class ContestController extends Controller
     }
 
     public function applyCheckBoxes(Request $request){
-        //Check for previous value in session
-        if( Session::has(Constants::CHECKED_PROBLEMS)){ //Merge the 2 arrays
+        $page = $request->get('page'); //get the current page
+        if( Session::has(Constants::CHECKED_PROBLEMS))
             $currentCheckedProblems = Session::get(Constants::CHECKED_PROBLEMS);
-            $newCheckedProblems = array_merge($currentCheckedProblems,$request->get(Constants::CHECKED_PROBLEMS));
-        }
-        else{ //There are no previous checked problems
-            $newCheckedProblems = $request->get(Constants::CHECKED_PROBLEMS);
-        }
-        Session::put(Constants::CHECKED_PROBLEMS,$newCheckedProblems );
-        return response()->json(['response' => $newCheckedProblems]);
+        else
+            $currentCheckedProblems = [];
+        $currentCheckedProblems[$page] = $request->get(Constants::CHECKED_PROBLEMS);
+        Session::put(Constants::CHECKED_PROBLEMS, $currentCheckedProblems);
+        return ;
 
     }
 
