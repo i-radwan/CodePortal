@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Utilities\Constants;
 use Auth;
 
-class NotificationsController extends Controller
+class NotificationController extends Controller
 {
     public function markAllUserNotificationsRead(\Request $request)
     {

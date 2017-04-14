@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 
     // Notifications routes...
-    Route::get('notifications/mark_all_read', 'NotificationsController@markAllUserNotificationsRead');
+    Route::get('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
 });
 
 

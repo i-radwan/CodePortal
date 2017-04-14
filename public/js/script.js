@@ -83,7 +83,7 @@ function markAllNotificationsRead() {
             $("#notifications-icon").removeClass("fa-bell");
             $("#notifications-icon").removeClass("dark-red");
             $("#notifications-icon").addClass("fa-bell-o");
-            
+
             // Prevent future clicks to execute this function
             $("#notifications-icon").parent()[0].onclick = null;
         }
