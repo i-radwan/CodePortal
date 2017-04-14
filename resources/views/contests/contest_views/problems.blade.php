@@ -4,13 +4,13 @@
         <tr>
             <th class="text-center">ID</th>
             <th class="text-center">Name</th>
+            <th class="text-center">Solved</th>
             <th class="text-center">Judge</th>
         </tr>
     </thead>
 
     @php($user = Auth::user())
 
-    {{--TODO: add number of accepted submissions in the current contest--}}
     <tbody>
         @foreach($problems as $problem)
             {{--TODO: get verdict of submissions related to the current contest--}}
@@ -26,6 +26,9 @@
                         {{ $problem->name }}
                     </a>
                 </td>
+
+                {{--TODO: add number of accepted submissions in the current contest--}}
+                <td>{{ $problem->solved_count }}</td>
 
                 {{--Judge--}}
                 <td>
