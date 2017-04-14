@@ -105,7 +105,11 @@
                                             @include('contests.contest_views.participants')
                                         </div>
                                         <div role="tabpanel" class="tab-pane" id="questions">
-                                            @include('contests.contest_views.questions')
+                                            @if($data['questions'] && count($data['questions']))
+                                                @include('contests.contest_views.questions')
+                                            @else
+                                                <p class="no-questions-msg">No questions!</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

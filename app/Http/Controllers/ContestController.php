@@ -332,20 +332,27 @@ class ContestController extends Controller
      * @param Contest $contest
      * @param array $data
      */
+    /**
+     * @param User $user
+     * @param Contest $contest
+     * @param $data
+     * @return array
+     */
     private function getQuestionsInfo($user, $contest, &$data)
     {
-        if (!$user) return;
-
-        // Get user specific questions
-        $questions = $user->contestQuestions($contest->id)
-            ->get();
-
         // Get contest announcements
         $announcements = $contest->announcements()
             ->get();
 
-        // Merge announcements and user questions
-        $announcements = $announcements->merge($questions);
+        // If user is logged in, get his questions too
+        if ($user) {
+            // Get user specific questions
+            $questions = $user->contestQuestions($contest->id)
+                ->get();
+
+            // Merge announcements and user questions
+            $announcements = $announcements->merge($questions);
+        }
 
         // Get extra data from foreign keys
         foreach ($announcements as $announcement) {
