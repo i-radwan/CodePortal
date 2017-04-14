@@ -200,4 +200,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RECEIVER_ID);
     }
+
+    /**
+     * Return user unread notifications
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function unreadNotifications()
+    {
+        return $this->receivedNotifications()
+            ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=',
+                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]);
+    }
 }

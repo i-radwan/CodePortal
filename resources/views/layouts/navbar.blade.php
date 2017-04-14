@@ -8,7 +8,8 @@
                 </a>
 
                 <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#app-navbar-collapse">
                     <span class="sr-only">Toggle Navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -48,8 +49,44 @@
                             <a href="{{ route('register') }}">Sign Up</a>
                         </li>
                     @else
+                        {{--Notifications panel--}}
+                        @php($notifications = Auth::user()->receivedNotifications()->get())
+                        @php($unreadCount = count(Auth::user()->unreadNotifications()->get()))
+
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-expanded="false">
+                                <i id="notifications-icon"
+                                   class="notifications-icon fa fa-bell{{($unreadCount > 0)?' dark-red':'-o'}}"
+                                   aria-hidden="true"></i>
+                                <span class="notifications-text">Notifications</span>
+                            </a>
+
+                            <ul class="dropdown-menu notifications" role="menu">
+                                @foreach($notifications as $notification)
+                                    @php($contest = \App\Models\Contest::find($notification->resource_id))
+                                    <li class="notification-container">
+
+                                        <a href="{{url('contest/'.$contest->id)}}">
+                                            <div class="notification-icon">
+                                                <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+                                            </div>
+                                            <div class="notification-text">
+                                                <span>{{\App\Utilities\Constants::NOTIFICATION_TEXT[$notification->type]}}<span class="notification-resource-name">{{$contest->name}}</span></span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    @if(!$loop->last)
+                                        <li role="separator" class="divider">@endif
+                                @endforeach
+                            </ul>
+                        </li>
+                        {{--/Notifications panel--}}
+
+                        {{--Profile panel--}}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-expanded="false">
                                 {{ Auth::user()->username }} <span class="caret"></span>
                             </a>
 
@@ -65,7 +102,8 @@
                                         Logout
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                          style="display: none;">
                                         {{ csrf_field() }}
                                     </form>
                                 </li>

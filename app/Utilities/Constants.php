@@ -280,6 +280,10 @@ class Constants
         self::NOTIFICATION_TYPE_TEAM => '2'
     ];
 
+    const NOTIFICATION_TEXT = [
+        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_CONTEST] => "You're invited to join the private contest: ",
+    ];
+
     //
     // Tables
     //

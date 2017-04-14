@@ -50,10 +50,48 @@ html, body {
     overflow-x: auto;
 }
 
+.dark-red {
+    color: #be191e;
+}
+
 /**************************************/
 /*</editor-fold>*/
 
 /*<editor-fold desc="Header & Footer Styles">*/
+
+/* Notifications styles */
+
+.notification-container {
+    min-width: 300px;
+}
+
+.notification-container a {
+    white-space: normal !important;
+}
+
+.notification-text {
+    display: inline-block;
+    width: 80%;
+    margin-left: 5px;
+}
+
+.notification-resource-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 150px;
+}
+
+.notification-icon {
+    display: inline-block;
+    width: 15%;
+    float: left;
+}
+
+.notification-icon > i {
+    font-size: 30px !important;
+}
 
 /* Navigation bar styles for small devices and above */
 @media (min-width: 768px) {
@@ -78,6 +116,34 @@ html, body {
         background-color: #f8f8f8;
         color: #777;
     }
+
+    .notifications-text {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .notifications-icon {
+        display: none !important;
+    }
+
+    .notifications-text {
+        display: inline-block;
+    }
+
+    .notification-icon > i {
+        font-size: 22px !important;
+    }
+
+    .notification-text {
+        display: inline-block;
+        width: 88%;
+    }
+
+    .notification-icon {
+        width: 10%;
+    }
+
 }
 
 /**************************************/
