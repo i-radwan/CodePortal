@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach($data['questions'] as $question)
+    @foreach($questions as $question)
         <tr class="{{$question[Constants::FLD_QUESTIONS_STATUS] ==  Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY] ? 'announcement':''}}">
             <td>{{$question[Constants::FLD_QUESTIONS_PROBLEM_ID]}}</td>
             <td class="text-left">

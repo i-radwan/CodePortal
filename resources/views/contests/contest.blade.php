@@ -10,6 +10,12 @@
     $contestDuration = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_DURATION_KEY];
     $contestOrganizers = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ORGANIZERS_KEY];
     $isContestRunning = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS];
+
+    $problems = $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY];
+    //$standings = $data[Constants::SINGLE_CONTEST_STANDINGS_KEY];
+    //$status = $data[Constants::SINGLE_CONTEST_STATUS_KEY];
+    $participants = $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY];
+    $questions = $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY];
 @endphp
 
 @extends('layouts.app')
@@ -81,16 +87,16 @@
                             @include('contests.contest_views.problems')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="standings">
-                            Standings
+                            @include('contests.contest_views.standings')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="status">
-                            Status
+                            @include('contests.contest_views.status')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="participants">
                             @include('contests.contest_views.participants')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="questions">
-                            @if($data['questions'] && count($data['questions']))
+                            @if($questions && count($questions))
                                 @include('contests.contest_views.questions')
                             @else
                                 <p class="no-questions-msg">No questions!</p>

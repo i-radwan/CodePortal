@@ -51,6 +51,7 @@ class ContestController extends Controller
         // Check if user is participating or owning the contest to show buttons
         $this->getUserOwnerOrParticipant($currentUser, $contest, $data);
         $this->getBasicContestInfo($contest, $data);
+        $this->getProblemsInfo($contest, $data);
         $this->getParticipantsInfo($contest, $data);
         $this->getQuestionsInfo($currentUser, $contest, $data);
 
@@ -74,7 +75,6 @@ class ContestController extends Controller
      *
      * @param Request $request
      */
-
     public function addContest(Request $request)
     {
         $contest = new Contest($request->all());
@@ -298,6 +298,22 @@ class ContestController extends Controller
 
         // Set contest info
         $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;
+    }
+
+    /**
+     * Get contest problems data
+     *
+     * @param Contest $contest
+     * @param array $data
+     */
+    private function getProblemsInfo($contest, &$data)
+    {
+        $problems = $contest
+            ->problems()
+            ->get();
+
+        // Set contest participants
+        $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY] = $problems;
     }
 
     /**

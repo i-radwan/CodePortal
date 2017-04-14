@@ -35,7 +35,7 @@ class Constants
     // ============================================================
     //endregion
 
-    //region Contests page
+    //region contests page
 
     //
     // Contests page constants
@@ -44,26 +44,23 @@ class Constants
     const CONTESTS_COUNT_PER_PAGE = 30;
 
     const CONTESTS_CONTESTS_KEY = 'contests';
-    const CONTESTS_PAGINATOR_KEY = 'paginator';
-    // ============================================================
-    //endregion
-
-    //region Single contest page
 
     //
     // Single contest page constants
     //
 
-    // Keys
     // Main keys
     const SINGLE_CONTEST_CONTEST_KEY = "contest";
+    const SINGLE_CONTEST_PROBLEMS_KEY = "problems";
+    const SINGLE_CONTEST_STANDINGS_KEY = "standings";
+    const SINGLE_CONTEST_STATUS_KEY = "status";
     const SINGLE_CONTEST_PARTICIPANTS_KEY = "participants";
     const SINGLE_CONTEST_QUESTIONS_KEY = "questions";
     const SINGLE_CONTEST_EXTRA_KEY = "extra";
 
     // Details keys
 
-    // contest
+    // Contest
     const SINGLE_CONTEST_ID_KEY = "id";
     const SINGLE_CONTEST_NAME_KEY = "name";
     const SINGLE_CONTEST_OWNER_KEY = "owner";
@@ -71,17 +68,17 @@ class Constants
     const SINGLE_CONTEST_TIME_KEY = "time";
     const SINGLE_CONTEST_DURATION_KEY = "duration";
 
-    // participants
+    // Participants
     const PARTICIPANTS_DISPLAYED_FIELDS = [
         self::FLD_USERS_USERNAME,
         self::FLD_USERS_COUNTRY
     ];
-    // extra
+
+    // Extra
     const SINGLE_CONTEST_IS_USER_PARTICIPATING = "leave_btn_visible";
     const SINGLE_CONTEST_IS_USER_OWNER = "delete_btn_visible";
     const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
     const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
-
     // ============================================================
     //endregion
 
