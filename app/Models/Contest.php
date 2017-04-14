@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class Contest extends Model
 {
@@ -77,6 +78,16 @@ class Contest extends Model
             Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
             Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID
         );
+    }
+
+    /**
+     * Return all submissions of the current contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function submissions()
+    {
+        $query = $this->participants();
     }
 
     /**

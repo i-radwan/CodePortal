@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Session;
+use App\Models\User;
+use App\Models\Problem;
+use App\Models\Contest;
 use App\Models\Question;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
-use App\Models\Contest;
-use App\Models\Problem;
-use App\Models\User;
-use Auth;
-use Session;
 
 class ContestController extends Controller
 {
@@ -300,8 +300,8 @@ class ContestController extends Controller
 
         // Is user an organizer?
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER] =
-            (Auth::user()->organizingContests()->find($contest->id) != null);
+        [Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER] = Auth::guest() ?
+            false : (Auth::user()->organizingContests()->find($contest->id) != null);
 
         // Set contest info
         $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;

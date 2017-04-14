@@ -5,37 +5,35 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default contests-panel">
-                    <a href="{{url('/contest/add')}}"><span
-                                class="pull-right text-dark btn btn-link margin-5px">New</span></a>
-                    <div class="panel-heading contests-panel-heading">
-                        Contests
-                    </div>
+                    <a href="{{ url('/contest/add') }}">
+                        <span class="btn btn-link text-dark pull-right margin-5px">New</span>
+                    </a>
+                    <div class="panel-heading contests-panel-heading">Contests</div>
                     <div class="panel-body contests-panel-body">
                         @if(count($data))
                             <div class="container contests-table-container">
                                 <table class="table table-bordered contests-table" id="contests_table">
                                     <thead>
-                                    <tr>
-                                        <th class="text-center">ID</th>
-                                        <th class="text-center" width="30%">Name</th>
-                                        <th class="text-center">Time</th>
-                                        <th class="text-center">Duration</th>
-                                        <th class="text-center">Owner</th>
-                                    </tr>
+                                        <tr>
+                                            <th class="text-center">ID</th>
+                                            <th class="text-center" width="30%">Name</th>
+                                            <th class="text-center">Time</th>
+                                            <th class="text-center">Duration</th>
+                                            <th class="text-center">Owner</th>
+                                        </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach($data[Constants::CONTESTS_CONTESTS_KEY] as $contest)
-                                        <tr>
-                                            <td>{{$contest->id}}</td>
-                                            <td><a href="{{url('contest/'.$contest->id)}}">{{$contest->name}}</a></td>
-                                            <td>{{date('D M y, H:i', strtotime($contest->time))}}</td>
-                                            <td>{{\App\Utilities\Utilities::convertMinsToHoursMins($contest->duration)}} hrs</td>
-                                            <td>
-                                                <a href="{{url('profile/'.$contest->owner->username)}}">{{$contest->owner->username}}</a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
+                                        @foreach($data[Constants::CONTESTS_CONTESTS_KEY] as $contest)
+                                            <tr>
+                                                <td>{{$contest->id}}</td>
+                                                <td><a href="{{url('contest/'.$contest->id)}}">{{$contest->name}}</a></td>
+                                                <td>{{date('D M y, H:i', strtotime($contest->time))}}</td>
+                                                <td>{{\App\Utilities\Utilities::convertMinsToHoursMins($contest->duration)}} hrs</td>
+                                                <td>
+                                                    <a href="{{url('profile/'.$contest->owner->username)}}">{{$contest->owner->username}}</a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                                 {{--Pagination--}}

@@ -543,6 +543,7 @@ footer {
 .problems-panel-body, .contests-panel-body {
     border: 0;
     padding: 0;
+    text-align: center;
 }
 
 .problems-table-container, .contests-table-container {

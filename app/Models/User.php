@@ -137,7 +137,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the contests that the current owned
+     * Return the contests that the current user owns
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
