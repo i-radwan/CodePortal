@@ -8,7 +8,7 @@
             </a>
             <div class="panel-heading contests-panel-heading">Contests</div>
             <div class="panel-body contests-panel-body horizontal-scroll">
-                @if(count($data))
+                @if(count($data[Constants::CONTESTS_CONTESTS_KEY]))
                     <table class="table table-bordered" id="contests_table">
                         <thead>
                         <tr>

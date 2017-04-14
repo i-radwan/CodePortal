@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
-    Route::get('contest/join/{contest}', 'ContestController@joinContest'); // ToDo public middleware
+    Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
 
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');
@@ -41,7 +41,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 });
 
-Route::get('contest/{contest}', 'ContestController@displayContest'); // ToDo public middleware
+Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['can:view-join-contest,contest']);
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');

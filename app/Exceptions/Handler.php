@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -47,7 +48,10 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof ModelNotFoundException || $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             return redirect('errors/404');
+        } else if ($exception instanceof AuthorizationException) {
+            return redirect('errors/401');
         }
+
         return parent::render($request, $exception);
     }
 
