@@ -2,7 +2,7 @@
 @php
     $ownerUsername = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_OWNER_KEY];
     $isOwner = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_OWNER];
-    $isOrganizer = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER] || $isOwner;
+    $isOrganizer = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER];
     $isParticipant = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING];
     $contestID = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY];
     $contestName = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_NAME_KEY];
@@ -30,7 +30,7 @@
                    href="{{ url('/contest/leave/' . $contestID) }}">
                     <span class="btn btn-link text-dark pull-right margin-5px">Leave</span>
                 </a>
-            @elseif(Auth::user() && !$isOrganizer)
+            @elseif(Auth::check())
                 <a href="{{ url('/contest/join/' . $contestID) }}">
                     <span class="btn btn-link text-dark pull-right margin-5px">Join</span>
                 </a>
@@ -45,7 +45,7 @@
                     <div class="alert alert-danger">
                         <ul>
                             @foreach ($errors->all() as $error)
-                                <li>• {{ $error }}</li>
+                                <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -78,7 +78,7 @@
                     <!-- Tab panes -->
                     <div class="tab-content">
                         <div role="tabpanel" class="tab-pane active" id="problems">
-                            Problems
+                            @include('contests.contest_views.problems')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="standings">
                             Standings
@@ -106,7 +106,7 @@
             </div>
         </div>
 
-        @if ($isOrganizer)
+        @if ($isOwner || $isOrganizer)
             @include('contests.contest_views.answer_question_modal')
         @endif
 

@@ -695,7 +695,7 @@ footer {
     font-weight: 300;
 }
 
-.contest-ask-question input[type=submit] {
+.contest-ask-question button {
     margin: 5px auto;
     font-size: 18px;
     padding: auto 20px;
@@ -741,6 +741,10 @@ footer {
 }
 
 /*  Contest tabs    */
+.contest-tabs {
+    padding: 20px /*ToDo: I think it's better to remove the padding*/
+}
+
 .contest-tabs .nav-tabs {
     border-bottom: 2px solid #DDD;
 }
@@ -794,11 +798,6 @@ footer {
     /*box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);*/
     margin-bottom: 30px;
 }
-
-.contest-tabs {
-    padding: 20px
-}
-
 /**************************************/
 /*</editor-fold>*/
 

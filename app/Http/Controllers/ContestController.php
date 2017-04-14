@@ -48,19 +48,15 @@ class ContestController extends Controller
 
         $data = [];
 
-        // Check if user is participating or owning the contest to show btns
+        // Check if user is participating or owning the contest to show buttons
         $this->getUserOwnerOrParticipant($currentUser, $contest, $data);
-
-        // Get basic contest info
         $this->getBasicContestInfo($contest, $data);
-
-        // Get participants data
         $this->getParticipantsInfo($contest, $data);
-
-        // Get questions data
         $this->getQuestionsInfo($currentUser, $contest, $data);
 
-        return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
+        return view('contests.contest')
+            ->with('data', $data)
+            ->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
 
     /**
@@ -103,8 +99,10 @@ class ContestController extends Controller
      */
     public function deleteContest(Contest $contest)
     {
-        // Check if current auth. user is the owner
-        if (Auth::user() && $contest->owner->id == Auth::user()->id) $contest->delete();
+        // Check if current auth. user is the owner of the contest
+        if (Auth::check() && $contest->owner->id == Auth::user()->id) {
+            $contest->delete();
+        }
         return redirect('contests/');
     }
 
@@ -118,7 +116,6 @@ class ContestController extends Controller
     {
         $user = Auth::user();
         $user->participatingContests()->detach($contest);
-
         return back();
     }
 
@@ -132,7 +129,6 @@ class ContestController extends Controller
     {
         $user = Auth::user();
         $user->participatingContests()->syncWithoutDetaching([$contest->id]);
-
         return back();
     }
 
@@ -142,7 +138,7 @@ class ContestController extends Controller
      * ToDo add problem id after @Wael gets problems
      *
      * @param Request $request
-     * @param $contestID
+     * @param int $contestID
      * @return \Illuminate\Http\RedirectResponse
      */
     public function addQuestion(Request $request, $contestID)
@@ -155,9 +151,11 @@ class ContestController extends Controller
 
         // Check if contest exists (user participating in it) and the contest is running now
         if ($contest && $contest->isRunning()) {
+            // TODO: I think static function is better than the constructor
             new Question($request->all(), $user, $contest, $problem);
             return back();
         }
+
         Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
         return back();
     }
@@ -174,7 +172,6 @@ class ContestController extends Controller
 
         // Check if question exists
         if ($question) {
-
             // Check if organizer is the one who fired this request
             $contest = $user->organizingContests()->find($question->contest_id);
             if ($contest) {
@@ -182,6 +179,7 @@ class ContestController extends Controller
                 $question->save();
             }
         }
+
         return back();
     }
 
@@ -197,7 +195,6 @@ class ContestController extends Controller
 
         // Check if question exists
         if ($question) {
-
             // Check if organizer is the one who fired this request
             $contest = $user->organizingContests()->find($question->contest_id);
             if ($contest) {
@@ -205,6 +202,7 @@ class ContestController extends Controller
                 $question->save();
             }
         }
+
         return back();
     }
 
@@ -218,19 +216,18 @@ class ContestController extends Controller
     {
         $questionID = $request->get('question_id');
         $questionAnswer = $request->get('question_answer');
-
         $question = Question::find($questionID);
         $user = Auth::user();
 
         // Check if question exists
         if ($question) {
-
             // Check if organizer is the one who fired this request
             $contest = $user->organizingContests()->find($question->contest_id);
             if ($contest) {
                 $question->saveAnswer($questionAnswer, $user);
             }
         }
+
         return Redirect::to(URL::previous() . "#questions");
     }
 
@@ -244,24 +241,20 @@ class ContestController extends Controller
      */
     private function getUserOwnerOrParticipant($user, $contest, &$data)
     {
-        $isUserParticipating = false;
         $isUserOwner = false;
+        $isUserParticipating = false;
 
         if ($user && $contest->owner) {
-            // Check if the user has joined this contest
-            $isUserParticipating =
-                ($contest->participants()->find($user->id) != null);
             // Check if the user is the owner of this contest
-            $isUserOwner =
-                ($contest->owner->id == $user->id);
+            $isUserOwner = ($contest->owner->id == $user->id);
+
+            // Check if the user has joined this contest
+            $isUserParticipating = ($contest->participants()->find($user->id) != null);
         }
 
         // Set data values
-        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING] = $isUserParticipating;
-
-        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_IS_USER_OWNER] = $isUserOwner;
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_OWNER] = $isUserOwner;
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING] = $isUserParticipating;
     }
 
     /**
@@ -273,6 +266,7 @@ class ContestController extends Controller
     private function getBasicContestInfo($contest, &$data)
     {
         $contestInfo = [];
+
         // Get contest id
         $contestInfo[Constants::SINGLE_CONTEST_ID_KEY] = $contest->id;
 
@@ -295,13 +289,12 @@ class ContestController extends Controller
             date('D M y, H:i', strtotime($contest->time));
 
         // Get contest running status
-        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_RUNNING_STATUS] = $contest->isRunning();
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS]
+            = $contest->isRunning();
 
         // Is user an organizer?
-        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER] = Auth::guest() ?
-            false : (Auth::user()->organizingContests()->find($contest->id) != null);
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER]
+            = Auth::check() ? (Auth::user()->organizingContests()->find($contest->id) != null) : false;
 
         // Set contest info
         $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;
@@ -315,11 +308,10 @@ class ContestController extends Controller
      */
     private function getParticipantsInfo($contest, &$data)
     {
-        $participants =
-            $contest
-                ->participants()
-                ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
-                ->get();
+        $participants = $contest
+            ->participants()
+            ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
+            ->get();
 
         // Set contest participants
         $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;
@@ -362,5 +354,4 @@ class ContestController extends Controller
         // Set contest questions
         $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements;
     }
-
 }

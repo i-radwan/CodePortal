@@ -156,16 +156,25 @@ class User extends Authenticatable
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID);
     }
 
+    /**
+     * Return all questions asked by the current user in the given contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function contestQuestions($contestId)
     {
-        return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID)
+        return $this->questions()
             ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }
 
+    /**
+     * Return all questions answered by the current user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function answeredQuestions()
     {
-        // ToDo: rename function to camel + recheck the logic of this function
-        return $this->hasMany(Question::class)->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
+        return $this->questions()
+            ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
     }
-
 }
