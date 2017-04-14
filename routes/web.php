@@ -19,7 +19,6 @@ Route::get('profile/{user}', 'UserController@index');
 
 // Contest routes...
 Route::get('contests', 'ContestController@index');
-Route::get('contest/{contest}', 'ContestController@displayContest');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/edit', 'ContestController@addEditContestView');
@@ -40,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Notifications routes...
     Route::get('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
 });
+Route::get('contest/{contest}', 'ContestController@displayContest');
 
 
 // Problems routes...
