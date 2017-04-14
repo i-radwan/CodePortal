@@ -58,7 +58,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                    aria-expanded="false">
                                     <i id="notifications-icon"
-                                       class="notifications-icon fa fa-bell{{($unreadCount > 0)?' dark-red':'-o'}}"
+                                       class="notifications-icon fa fa-bell{{($unreadCount)?' dark-red':'-o'}}"
                                        aria-hidden="true"></i>
                                     <span class="notifications-text">Notifications</span>
                                 </a>
@@ -66,16 +66,16 @@
                                 <ul class="dropdown-menu notifications" role="menu">
                                     @foreach($notifications as $notification)
                                         @php($contest = \App\Models\Contest::find($notification->resource_id))
-                                        <li class="notification-container">
+                                        <li class="notification-container {{($notification->status == \App\Utilities\Constants::NOTIFICATION_STATUS[\App\Utilities\Constants::NOTIFICATION_STATUS_UNREAD])?'unread':'read'}}">
 
                                             <a href="{{url('contest/'.$contest->id)}}">
-                                                <div class="notification-icon">
-                                                    <i class="fa fa-flag-checkered" aria-hidden="true"></i>
-                                                </div>
-                                                <div class="notification-text">
+                                            <div class="notification-icon">
+                                                <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+                                            </div>
+                                            <div class="notification-text">
                                                     <span>{{\App\Utilities\Constants::NOTIFICATION_TEXT[$notification->type]}}
-                                                        <span class="notification-resource-name">{{$contest->name}}</span></span>
-                                                </div>
+                                                        <em class="notification-resource-name">{{$contest->name}}</em></span>
+                                            </div>
                                             </a>
                                         </li>
                                         @if(!$loop->last)
