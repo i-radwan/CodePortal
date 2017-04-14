@@ -53,34 +53,37 @@
                         @php($notifications = Auth::user()->receivedNotifications()->get())
                         @php($unreadCount = count(Auth::user()->unreadNotifications()->get()))
 
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                               aria-expanded="false">
-                                <i id="notifications-icon"
-                                   class="notifications-icon fa fa-bell{{($unreadCount > 0)?' dark-red':'-o'}}"
-                                   aria-hidden="true"></i>
-                                <span class="notifications-text">Notifications</span>
-                            </a>
+                        @if(count($notifications))
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-expanded="false">
+                                    <i id="notifications-icon"
+                                       class="notifications-icon fa fa-bell{{($unreadCount > 0)?' dark-red':'-o'}}"
+                                       aria-hidden="true"></i>
+                                    <span class="notifications-text">Notifications</span>
+                                </a>
 
-                            <ul class="dropdown-menu notifications" role="menu">
-                                @foreach($notifications as $notification)
-                                    @php($contest = \App\Models\Contest::find($notification->resource_id))
-                                    <li class="notification-container">
+                                <ul class="dropdown-menu notifications" role="menu">
+                                    @foreach($notifications as $notification)
+                                        @php($contest = \App\Models\Contest::find($notification->resource_id))
+                                        <li class="notification-container">
 
-                                        <a href="{{url('contest/'.$contest->id)}}">
-                                            <div class="notification-icon">
-                                                <i class="fa fa-flag-checkered" aria-hidden="true"></i>
-                                            </div>
-                                            <div class="notification-text">
-                                                <span>{{\App\Utilities\Constants::NOTIFICATION_TEXT[$notification->type]}}<span class="notification-resource-name">{{$contest->name}}</span></span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    @if(!$loop->last)
-                                        <li role="separator" class="divider">@endif
-                                @endforeach
-                            </ul>
-                        </li>
+                                            <a href="{{url('contest/'.$contest->id)}}">
+                                                <div class="notification-icon">
+                                                    <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+                                                </div>
+                                                <div class="notification-text">
+                                                    <span>{{\App\Utilities\Constants::NOTIFICATION_TEXT[$notification->type]}}
+                                                        <span class="notification-resource-name">{{$contest->name}}</span></span>
+                                                </div>
+                                            </a>
+                                        </li>
+                                        @if(!$loop->last)
+                                            <li role="separator" class="divider">@endif
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @endif
                         {{--/Notifications panel--}}
 
                         {{--Profile panel--}}
