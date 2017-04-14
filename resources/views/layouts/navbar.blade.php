@@ -50,7 +50,7 @@
                         </li>
                     @else
                         {{--Notifications panel--}}
-                        @php($notifications = Auth::user()->receivedNotifications()->get())
+                        @php($notifications = Auth::user()->receivedNotifications()->orderBy(\App\Utilities\Constants::FLD_NOTIFICATIONS_ID, 'desc')->get())
                         @php($unreadCount = count(Auth::user()->unreadNotifications()->get()))
 
                         @if(count($notifications))
