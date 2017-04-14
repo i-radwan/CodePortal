@@ -264,6 +264,21 @@ class Constants
         self::QUESTION_STATUS_ANNOUNCEMENT_KEY => '1'
     ];
 
+    const NOTIFICATION_STATUS_READ = "READ";
+    const NOTIFICATION_STATUS_UNREAD = "UNREAD";
+    const NOTIFICATION_STATUS = [
+        self::NOTIFICATION_STATUS_UNREAD => '0',
+        self::NOTIFICATION_STATUS_READ => '1'
+    ];
+
+    const NOTIFICATION_TYPE_CONTEST = "CONTEST";
+    const NOTIFICATION_TYPE_GROUP = "GROUP";
+    const NOTIFICATION_TYPE_TEAM = "TEAM";
+    const NOTIFICATION_TYPE = [
+        self::NOTIFICATION_TYPE_CONTEST => '0',
+        self::NOTIFICATION_TYPE_GROUP => '1',
+        self::NOTIFICATION_TYPE_TEAM => '2'
+    ];
 
     //
     // Tables
@@ -279,6 +294,7 @@ class Constants
     const TBL_JUDGES = "judges";
     const TBL_TAGS = "tags";
     const TBL_LANGUAGES = "languages";
+    const TBL_NOTIFICATIONS = "notifications";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
@@ -368,6 +384,16 @@ class Constants
     const FLD_LANGUAGES_ID = "id";
     const FLD_LANGUAGES_NAME = "name";
 
+
+    //Notifications
+    const FLD_NOTIFICATIONS_ID = "id";
+    const FLD_NOTIFICATIONS_SENDER_ID = "sender_id";
+    const FLD_NOTIFICATIONS_RECEIVER_ID = "receiver_id";
+    const FLD_NOTIFICATIONS_RESOURCE_ID = "resource_id";    // Group id, contest id, ...etc
+    const FLD_NOTIFICATIONS_TYPE = "type";                  // From group, contest, team, ...etc
+    const FLD_NOTIFICATIONS_STATUS = "status";              // Read, unread
+
+
     // User handles
     const FLD_USER_HANDLES_USER_ID = "user_id";
     const FLD_USER_HANDLES_JUDGE_ID = "judge_id";
@@ -388,6 +414,7 @@ class Constants
     // Problem tags
     const FLD_PROBLEM_TAGS_PROBLEM_ID = "problem_id";
     const FLD_PROBLEM_TAGS_TAG_ID = "tag_id";
+
     // ============================================================
     //endregion
 }

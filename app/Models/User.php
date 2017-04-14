@@ -156,16 +156,48 @@ class User extends Authenticatable
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID);
     }
 
+    /**
+     * Return all user questions in specific contest
+     *
+     * @param int $contestId
+     * @return mixed
+     */
     public function contestQuestions($contestId)
     {
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID)
             ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }
 
+    /**
+     * Return all questions answered by this contest organizer
+     *
+     * ToDo: Remove if not used
+     *
+     * @return mixed
+     */
     public function answeredQuestions()
     {
-        // ToDo: rename function to camel + recheck the logic of this function
         return $this->hasMany(Question::class)->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
     }
 
+
+    /**
+     * Return the notifications sent by this user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentNotifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_SENDER_ID);
+    }
+
+    /**
+     * Return the notifications sent by this user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function receivedNotifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RECEIVER_ID);
+    }
 }
