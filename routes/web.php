@@ -19,6 +19,7 @@ Route::get('profile/{user}', 'UserController@index');
 
 // Contest routes...
 Route::get('contests', 'ContestController@index');
+Route::get('contest/{contest}', 'ContestController@displayContest');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/edit', 'ContestController@addEditContestView');
@@ -37,7 +38,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 });
 
-Route::get('contest/{contest}', 'ContestController@displayContest');
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');

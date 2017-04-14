@@ -17,6 +17,7 @@ class CreateContestProblemsTable extends Migration
         Schema::create(Constants::TBL_CONTEST_PROBLEMS, function (Blueprint $table) {
             $table->unsignedInteger(Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID);
             $table->unsignedInteger(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID);
+            $table->timestamps();
             $table->primary(array(
                     Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
                     Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID

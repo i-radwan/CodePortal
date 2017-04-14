@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Utilities\Constants;
-use App\Utilities\Utilities;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model

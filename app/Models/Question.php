@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Log;
 use Validator;
 use App\Utilities\Constants;
-use App\Exceptions\UnknownAdminException;
 use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
@@ -131,6 +129,6 @@ class Question extends Model
         $v->validate();
 
         // Save
-        return parent::save([]);
+        return parent::save();
     }
 }

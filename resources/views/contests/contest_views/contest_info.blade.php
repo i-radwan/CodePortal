@@ -9,11 +9,16 @@
                 <strong>Owner:</strong>
                 <a href="{{url('profile/'.$ownerUsername)}}">{{$ownerUsername}}</a>
             </p>
-            @if(count($contestOrganizers)>0)
+            @if(count($contestOrganizers))
                 <p>
                     <strong>Organizers:</strong>
                     @foreach($contestOrganizers as $organizer)
-                        <a href="{{url('profile/'.$organizer)}}">{{$organizer}}</a>@if(!$loop->last),@endif
+                        <a href="{{url('profile/'.$organizer)}}">{{$organizer}}</a>
+
+                        @if(!$loop->last)
+                            ,
+                        @endif
+                        
                     @endforeach
                 </p>
             @endif

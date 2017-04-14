@@ -157,29 +157,28 @@ class User extends Authenticatable
     }
 
     /**
-     * Return all user questions in specific contest
+     * Return all questions asked by the current user in the given contest
      *
-     * @param int $contestId
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function contestQuestions($contestId)
     {
-        return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID)
+        return $this->questions()
             ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }
 
     /**
-     * Return all questions answered by this contest organizer
+     * Return all questions answered by the current user
      *
      * ToDo: Remove if not used
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function answeredQuestions()
     {
-        return $this->hasMany(Question::class)->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
+        return $this->questions()
+            ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
     }
-
 
     /**
      * Return the notifications sent by this user
