@@ -116,4 +116,26 @@ class ProblemController extends Controller
         // Execute the problems paginated query
         return $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
     }
+
+    /**
+     * This Function gets the problems to the ContestController with the applied filters
+     * @param $request
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getProblemsToContestController($request){
+        $searchStr = Utilities::makeInputSafe($request->get(Constants::URL_QUERY_SEARCH_KEY));
+        $judgesIDs = $request->get(Constants::URL_QUERY_JUDGES_KEY);
+        $tagsIDs = $request->get(Constants::URL_QUERY_SEARCH_KEY);
+        $sortParam = $request->get(Constants::URL_QUERY_SORT_PARAM_KEY);
+        if ($sortParam && !array_key_exists($sortParam, Constants::PROBLEMS_SORT_PARAMS)) {
+            $sortParam = Constants::URL_QUERY_SORT_PARAM_ID_KEY;
+        }
+        $sortOrder = $request->get(Constants::URL_QUERY_SORT_ORDER_KEY);
+        if ($sortOrder && $sortOrder != 'asc' && $sortOrder != 'desc') {
+            $sortOrder = 'asc';
+        }
+        $sortParams = [Constants::PROBLEMS_SORT_PARAMS[$sortParam] => $sortOrder];
+        $problems = self::filterProblems($searchStr, $judgesIDs, $tagsIDs, $sortParams);
+        return $problems;
+    }
 }

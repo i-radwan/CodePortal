@@ -6,11 +6,14 @@ use Auth;
 use Session;
 use App\Models\User;
 use App\Models\Problem;
+use App\Models\Tag;
+use App\Models\Judge;
 use App\Models\Contest;
 use App\Models\Question;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ProblemController;
 
 class ContestController extends Controller
 {
@@ -63,12 +66,18 @@ class ContestController extends Controller
 
     /**
      * Show add/edit contest page
+     * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return $this
      */
-    public function addEditContestView()
+    public function addEditContestView(Request $request)
     {
-        return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
+        $problems = self::getProblemsAndFilters($request);
+        return view('contests.add_edit')
+            ->with('problems', $problems)
+            ->with('tags', Tag::all())
+            ->with('judges', Judge::all())
+            ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
     /**
@@ -367,6 +376,10 @@ class ContestController extends Controller
 
         // Set contest questions
         $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements;
+    }
+
+    public static function getProblemsAndFilters(Request $request){
+        return ProblemController::getProblemsToContestController($request); //Returning the Problems Data
     }
 
 }

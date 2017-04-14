@@ -84,9 +84,10 @@
                             </div>
                             <div class="form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
                                 <label for="problems" class="col-md-4 control-label">Problems</label>
-
+                                <div class = "col-md-4" >
+                                    @include("contests.contest_views.")
+                                </div>
                                 <div class="col-md-6">
-
                                     @if ($errors->has('problems'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('problems') }}</strong>
