@@ -25,7 +25,9 @@
                         <button class="close-icon" type="reset"></button>
                 </div>
                 <div class="container">
+
                     <ul id="tagsList" name="tags[]">
+
                     </ul>
                 </div>
             </div>

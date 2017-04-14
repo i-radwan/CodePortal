@@ -1,28 +1,3 @@
-
-<script  type = "text/javascript">
-function syncProblemState() {
-    var checkedRows = [];
-    var j = 0;
-    var checkboxes = document.getElementsByClassName('checkState');
-    for(var i=0; checkboxes[i]; ++i){
-        if(checkboxes[i].checked){
-            checkedRows[j] = checkboxes[i].value;
-            j = j + 1;
-        }
-    }
-    console.log(checkedRows);
-    $.ajax({
-        url: 'home',
-        type: 'POST',
-        data: {_token: "{{csrf_token()}}"},
-        success: function(data){
-            console.log(data);
-//            $('#responsestatus').val(data);
-//            $('#subscription-confirm').modal('show');
-        }
-    });
-}
-</script>
 <table class="table table-bordered">
     {{--Headings--}}
     <thead>
@@ -88,3 +63,29 @@ function syncProblemState() {
 
 {{--Pagination--}}
 {{ $problems->appends(Request::all())->render() }}
+
+<script  type = "text/javascript">
+    function syncProblemState() {
+        var checkedRows = [];
+        var j = 0;
+        var checkboxes = document.getElementsByClassName('checkState');
+        for(var i=0; checkboxes[i]; ++i){
+            if(checkboxes[i].checked){
+                checkedRows[j] = checkboxes[i].value;
+                j = j + 1;
+            }
+        }
+        console.log(checkedRows);
+        $.ajax({
+            url: "{{Request::url()}}/checkRowsSync",
+            type: 'POST',
+            data: {
+                _token: "{{csrf_token()}}",
+                checkedRows : checkedRows
+            },
+            success: function(data){
+                console.log(data);
+            }
+        });
+    }
+</script>

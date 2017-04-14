@@ -80,6 +80,7 @@ class ContestController extends Controller
             ->with('tags', Tag::all())
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
+            ->with('checkedRows',Session::get('checkedProblems'))
             ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
@@ -106,14 +107,23 @@ class ContestController extends Controller
     }
 
     public function tagsAutoComplete(Request $request){
-        $data  = Tag::select('rows')->get();
+        $data  = Tag::select('name')->get();
         return response()->json($data);
 
     }
 
     public function applyCheckBoxes(Request $request){
-        return response()->json(['response' => 'This is post method']);
-        Session::put($request->get('rows'));
+        //Check for previous value in session
+        if( Session::has(Constants::CHECKED_PROBLEMS)){ //Merge the 2 arrays
+            $currentCheckedProblems = Session::get(Constants::CHECKED_PROBLEMS);
+            $newCheckedProblems = array_merge($currentCheckedProblems,$request->get(Constants::CHECKED_PROBLEMS));
+        }
+        else{ //There are no previous checked problems
+            $newCheckedProblems = $request->get(Constants::CHECKED_PROBLEMS);
+        }
+        Session::put(Constants::CHECKED_PROBLEMS,$newCheckedProblems );
+        return response()->json(['response' => $newCheckedProblems]);
+
     }
 
     /**

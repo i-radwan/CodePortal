@@ -41,14 +41,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
-Route::post('home', 'ContestController@applyCheckBoxes' );
-Route::get('contest/{contest}', 'ContestController@displayContest');
 
-Route::get('/getRequest', function(){
-    if(Request::ajax()){
-        return 'getRequest has loaded successfully.';
-    }
-});
+Route::get('contest/{contest}', 'ContestController@displayContest');
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
@@ -84,6 +78,7 @@ Route::any('getData', function(){
 });
 
 Route::get('tagsautocomplete',array('as' => 'tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
+Route::post('contest/add/checkRowsSync', 'ContestController@applyCheckBoxes' );
 
 // Errors Routes...
 Route::get('errors/404', function () {
