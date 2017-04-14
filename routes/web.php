@@ -36,6 +36,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/question/renounce/{question}', 'ContestController@renounceQuestion');
     Route::post('contest/question/answer', 'ContestController@answerQuestion');
     Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
+
+    // Notifications routes...
+    Route::get('notifications/mark_all_read', 'NotificationsController@markAllUserNotificationsRead');
 });
 
 

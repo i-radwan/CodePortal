@@ -66,3 +66,30 @@ $(window).on("popstate", function () {
 /**************************************/
 /*</editor-fold>*/
 
+
+/*<editor-fold desc="Notifications">*/
+
+/**
+ * Send Ajax request to mark all user notifications as READ once the user clicks the
+ * notifications icon in the header
+ */
+function markAllNotificationsRead() {
+    $.ajax({
+        type: "GET",
+        url: './notifications/mark_all_read',
+        data: "",
+        success: function () {
+            // Change icon to light bell
+            $("#notifications-icon").removeClass("fa-bell");
+            $("#notifications-icon").removeClass("dark-red");
+            $("#notifications-icon").addClass("fa-bell-o");
+            
+            // Prevent future clicks to execute this function
+            $("#notifications-icon").parent()[0].onclick = null;
+        }
+    })
+}
+
+/**************************************/
+/*</editor-fold>*/
+
