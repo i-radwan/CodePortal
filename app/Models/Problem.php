@@ -78,6 +78,21 @@ class Problem extends Model
     ];
 
     /**
+     * Return the sheets that contain this problem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function sheets()
+    {
+        return $this->belongsToMany(
+            Sheet::class,
+            Constants::TBL_SHEETS_PROBLEMS,
+            Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID,
+            Constants::FLD_SHEETS_PROBLEMS_SHEET_ID
+        )->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)->withTimestamps();
+    }
+
+    /**
      * Return the hosting online judge of the current problem
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

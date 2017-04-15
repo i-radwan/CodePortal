@@ -377,6 +377,7 @@ class Constants
     const TBL_NOTIFICATIONS = "notifications";
     const TBL_GROUPS = "groups";
     const TBL_SHEETS = "sheets";
+    const TBL_SHEETS_PROBLEMS = "sheets_problems";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
@@ -518,6 +519,11 @@ class Constants
     // Groups join requests
     const FLD_GROUPS_JOIN_REQUESTS_USER_ID = "user_id";
     const FLD_GROUPS_JOIN_REQUESTS_GROUP_ID = "group_id";
+
+    // Sheet problems
+    const FLD_SHEETS_PROBLEMS_SHEET_ID = "sheet_id";
+    const FLD_SHEETS_PROBLEMS_PROBLEM_ID = "problem_id";
+    const FLD_SHEETS_PROBLEMS_SOLUTION = "solution";
 
     // ============================================================
     //endregion

@@ -80,7 +80,7 @@ function markAllNotificationsRead(token, url) {
         type: "POST",
         url: url,
         data: {_token: token, _method: "PUT"},
-        success: function (result) {
+        success: function () {
             // Change icon to light bell
             $("#notifications-icon").removeClass("fa-bell");
             $("#notifications-icon").removeClass("dark-red");
@@ -120,7 +120,7 @@ function cancelNotification(e, token, url, element) {
         type: "POST",
         url: url,
         data: {_token: token, _method: "DELETE"},
-        success: function (result) {
+        success: function () {
             hideNotificationElement(element);
         }
     });
