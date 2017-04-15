@@ -132,8 +132,7 @@ class ContestController extends Controller
     }
 
     public function organisersAutoComplete(Request $request){
-        $data = User::select(Constants::FLD_USERS_USERNAME)->get();
-        $data = [ 'aaa', 'aaaas', 'aaaab', 'bsdhuiheiu', 'wenture']; //ToDO: here
+        $data = User::select([Constants::FLD_USERS_USERNAME.' as name'])->get([]);
         return response()->json($data);
     }
 
