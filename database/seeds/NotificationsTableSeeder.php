@@ -19,7 +19,7 @@ class NotificationsTableSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-        $limit = 3000;
+        $limit = 1000;
 
         // ToDo generalize to groups, teams
         $ContestIDs = Contest::all()->pluck('id')->toArray();
