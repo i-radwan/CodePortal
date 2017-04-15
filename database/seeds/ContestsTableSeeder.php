@@ -17,6 +17,9 @@ class ContestsTableSeeder extends Seeder
     {
         // Delete previous records
         DB::table(Constants::TBL_CONTESTS)->delete();
+        DB::table(Constants::TBL_CONTEST_ADMINS)->delete();
+        DB::table(Constants::TBL_CONTEST_PARTICIPANTS)->delete();
+        DB::table(Constants::TBL_CONTEST_PROBLEMS)->delete();
 
         $faker = Faker\Factory::create();
 
@@ -39,43 +42,34 @@ class ContestsTableSeeder extends Seeder
         // Contests Organizers
         for ($i = 0; $i < count($contestIDs) * 3; $i++) {
             // Insert if only not exists
-            $userID = $faker->randomElement($userIDs);
-            $contestID = $faker->randomElement($contestIDs);
-            if (!DB::table(Constants::TBL_CONTEST_ADMINS)
-                ->where(Constants::FLD_CONTEST_ADMINS_ADMIN_ID, $userID)
-                ->where(Constants::FLD_CONTEST_ADMINS_CONTEST_ID, $contestID)->get()->count()
-            )
+            try {
                 DB::table(Constants::TBL_CONTEST_ADMINS)->insert([
-                    Constants::FLD_CONTEST_ADMINS_ADMIN_ID => $userID,
-                    Constants::FLD_CONTEST_ADMINS_CONTEST_ID => $contestID,
+                    Constants::FLD_CONTEST_ADMINS_ADMIN_ID => $faker->randomElement($userIDs),
+                    Constants::FLD_CONTEST_ADMINS_CONTEST_ID => $faker->randomElement($contestIDs),
                 ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+            };
         }
         // Contests Participants
         for ($i = 0; $i < count($contestIDs) * 10; $i++) {
-            $userID = $faker->randomElement($userIDs);
-            $contestID = $faker->randomElement($contestIDs);
-            if (!DB::table(Constants::TBL_CONTEST_PARTICIPANTS)
-                ->where(Constants::FLD_CONTEST_PARTICIPANTS_USER_ID, $userID)
-                ->where(Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID, $contestID)->get()->count()
-            )
+            try {
                 DB::table(Constants::TBL_CONTEST_PARTICIPANTS)->insert([
-                    Constants::FLD_CONTEST_PARTICIPANTS_USER_ID => $userID,
-                    Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID => $contestID,
+                    Constants::FLD_CONTEST_PARTICIPANTS_USER_ID => $faker->randomElement($userIDs),
+                    Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID => $faker->randomElement($contestIDs),
                 ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+            };
         }
         // Contests Problems
         $problemIDs = Problem::all()->pluck('id')->toArray();
         for ($i = 0; $i < count($contestIDs) * 5; $i++) {
-            $contestID = $faker->randomElement($contestIDs);
-            $problemID = $faker->randomElement($problemIDs);
-            if (!DB::table(Constants::TBL_CONTEST_PROBLEMS)
-                ->where(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID, $problemID)
-                ->where(Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID, $contestID)->get()->count()
-            )
+            try {
                 DB::table(Constants::TBL_CONTEST_PROBLEMS)->insert([
-                    Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID => $contestID,
-                    Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID => $problemID,
+                    Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID => $faker->randomElement($contestIDs),
+                    Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID => $faker->randomElement($problemIDs),
                 ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+            };
         }
 
 

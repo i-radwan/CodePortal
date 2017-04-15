@@ -26,7 +26,7 @@ class QuestionsTableSeeder extends Seeder
             $contestOrganizersIDs = Contest::find($contestIDs[$i % $contestsCount])->organizers()->pluck('id')->toArray();
             $contestProblemsIDs = Contest::find($contestIDs[$i % $contestsCount])->problems()->pluck('id')->toArray();
 
-            $contestID = $faker->randomElement($contestIDs);
+            $contestID = $contestIDs[$i % $contestsCount];
             $userID = $faker->randomElement($contestParticipantsIDs);
             $organizerID = $faker->randomElement($contestOrganizersIDs);
             $problemID = $faker->randomElement($contestProblemsIDs);
