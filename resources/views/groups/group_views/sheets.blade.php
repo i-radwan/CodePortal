@@ -15,7 +15,7 @@
         <tr>
             <td> {{ $sheet[Constants::FLD_SHEETS_ID] }} </td>
             <td>
-                <a href="{{url('sheets/'.$sheet[Constants::FLD_SHEETS_ID])}}">{{ $sheet[Constants::FLD_SHEETS_NAME] }}</a>
+                <a href="{{url('sheet/'.$sheet[Constants::FLD_SHEETS_ID])}}">{{ $sheet[Constants::FLD_SHEETS_NAME] }}</a>
             </td>
             <td> {{ count($sheet->problems()->get())}}</td>
             @if($isOwner)

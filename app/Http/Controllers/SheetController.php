@@ -7,9 +7,30 @@ use App\Models\Sheet;
 use Redirect;
 use URL;
 use Illuminate\Http\Request;
+use App\Utilities\Constants;
+use Auth;
 
 class SheetController extends Controller
 {
+    /**
+     * Show single sheet page which contains problems
+     *
+     * @param Sheet $sheet
+     * @return \Illuminate\View\View $this
+     */
+    public function displaySheet(Sheet $sheet)
+    {
+        if (!$sheet) return back();
+
+        $data = [];
+
+        $this->getProblemsInfo($sheet, $data);
+        $this->getBasicContestInfo($sheet, $data);
+
+        return view('groups.sheet_views.sheet')
+            ->with('data', $data)
+            ->with('pageTitle', config('app.name') . ' | ' . $sheet->name);
+    }
 
     /**
      * Show add sheet page
@@ -65,5 +86,49 @@ class SheetController extends Controller
         $sheet->delete();
         return Redirect::to(URL::previous() . "#sheets");
     }
+
+
+    /**
+     * Get sheet basic info
+     *
+     * @param Sheet $sheet
+     * @param array $data
+     */
+    private function getBasicContestInfo(Sheet $sheet, &$data)
+    {
+        $sheetInfo = [];
+
+        // Get sheet id
+        $sheetInfo[Constants::SINGLE_SHEET_ID_KEY] = $sheet[Constants::FLD_SHEETS_ID];
+
+        // Get sheet name
+        $sheetInfo[Constants::SINGLE_SHEET_NAME_KEY] = $sheet[Constants::FLD_SHEETS_NAME];
+
+        // Get sheet group id
+        $sheetInfo[Constants::SINGLE_SHEET_GROUP_ID_KEY] = $sheet[Constants::FLD_SHEETS_GROUP_ID];
+
+
+        // Is user an organizer?
+        $data[Constants::SINGLE_SHEET_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_OWNER]
+            = Auth::check() ? (Auth::user()->owningGroups()->find($sheet[Constants::FLD_SHEETS_GROUP_ID]) != null) : false;
+
+        // Set contest info
+        $data[Constants::SINGLE_SHEET_SHEET_KEY] = $sheetInfo;
+    }
+
+    /**
+     * Get sheets problems
+     *
+     * @param Sheet $sheet
+     * @param array $data
+     */
+    private function getProblemsInfo(Sheet $sheet, &$data)
+    {
+        $problems = $sheet->problems()->get();
+
+        // Set group members
+        $data[Constants::SINGLE_SHEET_PROBLEMS_KEY] = $problems;
+    }
+
 
 }

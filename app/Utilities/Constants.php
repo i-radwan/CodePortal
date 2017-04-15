@@ -140,6 +140,26 @@ class Constants
     // ============================================================
     //endregion
 
+    // Single Sheet page region
+
+    // Main keys
+    const SINGLE_SHEET_SHEET_KEY = "sheet";
+    const SINGLE_SHEET_PROBLEMS_KEY = "problems";
+    const SINGLE_SHEET_EXTRA_KEY = "extra";
+
+
+    // Details keys
+
+    // Sheet
+    const SINGLE_SHEET_ID_KEY = "id";
+    const SINGLE_SHEET_NAME_KEY = "name";
+    const SINGLE_SHEET_GROUP_ID_KEY = "group_id";
+
+    // Extra
+
+    // ============================================================
+    //endregion
+
     //region Judges
 
     //

@@ -74,12 +74,22 @@ class AuthServiceProvider extends ServiceProvider
             ) return true;
             return false;
         });
+
         // Owner of sheet group
         Gate::define("owner-sheet", function ($user, $sheet) {
             if ($group = Group::find($sheet[Constants::FLD_SHEETS_GROUP_ID])) {
                 // Check if user is organizer or owner
                 if ($user->owningGroups()->find($group)) return true;
             }
+            return false;
+        });
+
+        // Owner or member of sheet
+        Gate::define("owner-or-member-sheet", function ($user, $sheet) {
+            // Check if user is organizer or owner
+            if ($user->owningGroups()->find($sheet->group_id)
+                || $user->joiningGroups()->find($sheet->group_id)
+            ) return true;
             return false;
         });
 
