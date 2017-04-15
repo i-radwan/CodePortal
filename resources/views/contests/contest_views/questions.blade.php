@@ -3,7 +3,7 @@
     <thead>
     <tr>
         <th class="text-center">Problem</th>
-        <th class="questions-table-question-th">Question</th>
+        <th class="questions-table-question-cell">Question</th>
         <th class="text-center">Admin</th>
         @if($isContestRunning)
             <th class="text-center">Actions</th>
@@ -20,7 +20,7 @@
         <tr class="{{$question[Constants::FLD_QUESTIONS_STATUS] ==  Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY] ? 'announcement':''}}">
             <td>{{$question[Constants::FLD_QUESTIONS_PROBLEM_ID]}}</td>
 
-            <td class="text-left">
+            <td class="text-left questions-table-question-cell">
                 <h4 class="break-word">
                     <strong>{{$question[Constants::FLD_QUESTIONS_TITLE]}}</strong>
                 </h4><br/>
@@ -39,7 +39,7 @@
             @if($isContestRunning)
                 <td>
 
-                    @if($isOrganizer)
+                    @if($isOwnerOrOrganizer)
                         <button class="btn btn-primary question-answer-button"
                                 data-toggle="modal"
                                 data-target="#question-answer-model"
@@ -48,7 +48,7 @@
                         </button>
                     @endif
 
-                    @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && $isOrganizer && strlen($answer)>0)
+                    @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && $isOwnerOrOrganizer && strlen($answer)>0)
                         <form action="{{url('contest/question/announce/'.$questionID)}}"
                               method="post">{{method_field('PUT')}}
                             {{csrf_field()}}
@@ -56,7 +56,7 @@
                             </button>
                         </form>
 
-                    @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1 && $isOrganizer)
+                    @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1 && $isOwnerOrOrganizer)
                         <form action="{{url('contest/question/renounce/'.$questionID)}}"
                               method="post">{{method_field('PUT')}}
                             {{csrf_field()}}

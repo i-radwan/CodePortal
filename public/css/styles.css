@@ -853,8 +853,9 @@ footer {
     color: darkred;
 }
 
-.questions-table-question-th {
+.questions-table-question-cell {
     min-width: 300px;
+    max-width: 400px;
 }
 
 .questions-table h4 {

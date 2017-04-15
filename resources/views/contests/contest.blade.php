@@ -2,7 +2,7 @@
 @php
     $ownerUsername = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_OWNER_KEY];
     $isOwner = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_OWNER];
-    $isOrganizer = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER];
+    $isOwnerOrOrganizer = Gate::allows('owner-organizer-contest', $contestID);
     $isParticipant = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING];
     $contestID = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY];
     $contestName = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_NAME_KEY];
@@ -111,7 +111,7 @@
             </div>
         </div>
 
-        @if ($isOwner || $isOrganizer)
+        @if (Gate::allows('owner-organizer-contest', $contestID))
             @include('contests.contest_views.answer_question_modal')
         @endif
 
