@@ -121,11 +121,11 @@ class ProblemController extends Controller
      * @param $request
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getProblemsToContestController($request){
+    public static function getProblemsToContestController($request, $tagsNames, $judgesIDs, $sortParam = []){
         //ToDO (Samir) improve the function "do something towards sortParams
-        $searchStr = Utilities::makeInputSafe($request->get(Constants::URL_QUERY_SEARCH_KEY));
-        $judgesIDs = $request->get(Constants::URL_QUERY_JUDGES_KEY);
-        $tagsIDs = $request->get(Constants::URL_QUERY_SEARCH_KEY);
+        $searchStr = "";
+        $tagsIDs = (count(Tag::whereIn('name', $tagsNames)->get()) == 0) ? null : Tag::whereIn('name', $tagsNames)->get();
+        $judgesIDs = count($judgesIDs) == 0 ? null : $judgesIDs;
         $sortParam = $request->get(Constants::URL_QUERY_SORT_PARAM_KEY);
         if ($sortParam && !array_key_exists($sortParam, Constants::PROBLEMS_SORT_PARAMS)) {
             $sortParam = Constants::URL_QUERY_SORT_PARAM_ID_KEY;

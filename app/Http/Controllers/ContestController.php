@@ -27,7 +27,10 @@ class ContestController extends Controller
     public function index()
     {
         //ForgetCheckedProblems
+        //Forget roblemsFilters
         Session::forget(Constants::CHECKED_PROBLEMS);
+        Session::forget(Constants::CONTESTS_PROBLEMS_FILTERS);
+
         $data = [];
 
         $data[Constants::CONTESTS_CONTESTS_KEY] =
@@ -77,13 +80,22 @@ class ContestController extends Controller
      */
     public function addEditContestView(Request $request)
     {
-
-        $problems = self::getProblemsAndFilters($request);
+        if(Session::has(Constants::CONTESTS_PROBLEMS_FILTERS)){
+            $cjudges = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges'] : [];
+            $ctags = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']: [];
+        }
+        else{
+            $cjudges = [];
+            $ctags = [];
+        }
+        $problems = self::getProblemsWithFilters($request, $ctags, $cjudges);
         return view('contests.add_edit')
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
-            ->with('checkedRows',Session::get('checkedRows'))
+            ->with(Constants::CHECKED_PROBLEMS,Session::get(Constants::CHECKED_PROBLEMS))
+            ->with(Constants::CONTESTS_CHECKED_TAGS, $ctags)
+            ->with(Constants::CONTESTS_CHECKED_JUDGES, $cjudges)
             ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
@@ -128,13 +140,7 @@ class ContestController extends Controller
     }
 
     public function applyProblemsFilters(Request $request){
-        $page = $request->get('page'); //get the current page
-        if( Session::has(Constants::CHECKED_PROBLEMS))
-            $currentCheckedProblems = Session::get(Constants::CHECKED_PROBLEMS);
-        else
-            $currentCheckedProblems = [];
-        $currentCheckedProblems[$page] = $request->get(Constants::CHECKED_PROBLEMS);
-        Session::put(Constants::CHECKED_PROBLEMS, $currentCheckedProblems);
+        Session::put(Constants::CONTESTS_PROBLEMS_FILTERS, $request->get('cProblemsFilters'));
         return ;
 
     }
@@ -436,8 +442,8 @@ class ContestController extends Controller
     }
 
 
-    public static function getProblemsAndFilters(Request $request){
-        return ProblemController::getProblemsToContestController($request); //Returning the Problems Data
+    public static function getProblemsWithFilters($request,$tagNames, $judgesIDs){
+        return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); //Returning the Problems Data
     }
 
 }

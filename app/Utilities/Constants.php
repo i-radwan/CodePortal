@@ -69,6 +69,9 @@ class Constants
     const SINGLE_CONTEST_DURATION_KEY = "duration";
 
     const CHECKED_PROBLEMS = "checkedRows";
+    const CONTESTS_PROBLEMS_FILTERS = "cProblemsFilters";
+    const CONTESTS_CHECKED_JUDGES = "cJudges";
+    const CONTESTS_CHECKED_TAGS = "cTags";
 
     // Participants
     const PARTICIPANTS_DISPLAYED_FIELDS = [

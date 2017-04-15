@@ -6,7 +6,7 @@
                 @foreach ($judges as $judge)
                     <div class="checkbox">
                         <label>
-                            <input class="judgeState" type="checkbox" {{ in_array($judge->id, Request::get(Constants::URL_QUERY_JUDGES_KEY, [])) ? 'checked' : '' }}
+                            <input class="judgeState" type="checkbox" {{ in_array($judge->id, Request::get(Constants::CONTESTS_CHECKED_JUDGES, [])) ? 'checked' : '' }}
                             name="{{ Constants::URL_QUERY_JUDGES_KEY }}[]"
                                    value="{{ $judge->id }}">
                             {{ $judge->name }}
@@ -19,16 +19,14 @@
             {{--Tags AutoComplete--}}
             <h5>Tags:</h5>
             <div class="search-wrapper">
-                {{--<form>--}}
                     <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off"/>
                     <button class="close-icon" type="reset"></button>
-                {{--</form>--}}
             </div>
             <div class="container">
                 <ul id="tagsList" class = "tags-list" name="tags[]">
                     {{--Adding Previously Checked $tags--}}
-                    @if( isset($tags) )
-                        @foreach( $tags as $tag)
+                    @if( isset($cTags) )
+                        @foreach( $cTags as $tag)
                             <li name = "tags[]" value = "{{$tag}}" ><button class="tags-close-icon "></button>{{$tag}} </li>
                         @endforeach
                     @endif
@@ -129,25 +127,24 @@
             }
         }
         //Then you have now judges and tags
-        return({'tags' : tags,'judges': judges });
+        return({'cTags' : tags,'cJudges': judges });
 
     }
     function applyFilters() {
         console.log("Hey I am here, PLease do request here El7");
-        console.log(getCurrentFilters());
-        {{--$.ajax({--}}
-            {{--url: "{{Request::url()}}/TagsJudgesFSync",--}}
-            {{--type: 'POST',--}}
-            {{--data: {--}}
-                {{--_token: "{{csrf_token()}}",--}}
-                {{--checkedRows : checkedRows,--}}
-                {{--page : "{{Request::get('page') != null ? Request::get('page') : 1}}"--}}
-            {{--},--}}
-            {{--success: function(data){--}}
-                {{--console.log(data);--}}
-            {{--}--}}
-        {{--});--}}
-        {{--location.reload();--}}
+        var filters = getCurrentFilters();
+        $.ajax({
+            url: "{{Request::url()}}/TagsJudgesFSync",
+            type: 'POST',
+            data: {
+                _token: "{{csrf_token()}}",
+                cProblemsFilters : filters,
+            },
+            success: function(data){
+                console.log(data);
+            }
+        });
+        location.reload();
     }
     //Organisers AutoComplete //TODO : later On
 </script>
