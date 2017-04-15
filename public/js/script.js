@@ -79,7 +79,7 @@ function markAllNotificationsRead(token) {
     $.ajax({
         type: "PUT",
         url: 'notifications/mark_all_read',
-        data: {"_token": token, "_method" : "PUT"},
+        data: {"_token": token, "_method": "PUT"},
         success: function () {
             // Change icon to light bell
             $("#notifications-icon").removeClass("fa-bell");
@@ -88,6 +88,9 @@ function markAllNotificationsRead(token) {
 
             // Prevent future clicks to execute this function
             $("#notifications-icon").parent()[0].onclick = null;
+        },
+        error: function (result) {
+            console.log(result.responseText);
         }
     });
 }

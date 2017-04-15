@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Auth;
 use App\Utilities\Constants;
@@ -43,6 +44,7 @@ class GroupController extends Controller
         $data = [];
 
         $this->getBasicGroupInfo($currentUser, $group, $data);
+        $this->getMembersInfo($group, $data);
 //        $this->getProblemsInfo($contest, $data);
 //        $this->getStandingsInfo($contest, $data);
 //        $this->getStatusInfo($contest, $data);
@@ -112,6 +114,8 @@ class GroupController extends Controller
     /**
      * Register user membership in a group
      *
+     * Another way to join is via requests acceptance (by owner)
+     *
      * Authorization happens in the defined Gate
      *
      * @param Group $group
@@ -122,15 +126,22 @@ class GroupController extends Controller
         $user = Auth::user();
 
         // Check if user has valid (non-deleted) invitation for joining this group
-        $groupsInvitations = $user->userDisplayableReceivedNotifications()
+        $groupsInvitation = $user->userDisplayableReceivedNotifications()
             ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
-            ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group->id)->get();
+            ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group->id)->first();
 
         // Else, check if the user hasn't sent joining request (if sent stop, else send one)
 
-        if (count($groupsInvitations) > 0) {
+        if ($groupsInvitation) {
+            // Join the group
             $user->joiningGroups()->syncWithoutDetaching([$group->id]);
-        } else if (!$user->seekingJoinGroups()->find($group->id)) {
+            // Delete user joining invitation once joined the group
+            // Because if the user left the group and the then rejoined
+            // (if the invitation still exists), he will join, and we
+            // should prevent this
+            $groupsInvitation->update([Constants::FLD_NOTIFICATIONS_STATUS =>
+                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]]);
+        } else if (!$user->seekingJoinGroups()->find($group->id)) { // Send joining request
             $user->seekingJoinGroups()->syncWithoutDetaching([$group->id]);
         }
 
@@ -147,7 +158,7 @@ class GroupController extends Controller
      * @param Group $group
      * @param array $data
      */
-    private function getBasicGroupInfo($user, $group, &$data)
+    private function getBasicGroupInfo(User $user, Group $group, &$data)
     {
         $groupInfo = [];
 
@@ -180,4 +191,23 @@ class GroupController extends Controller
         // Set group info
         $data[Constants::SINGLE_GROUP_GROUP_KEY] = $groupInfo;
     }
+
+
+    /**
+     * Get group members data
+     *
+     * @param Group $group
+     * @param array $data
+     */
+    private function getMembersInfo(Group $group, &$data)
+    {
+        $members = $group
+            ->members()
+            ->select(Constants::MEMBERS_DISPLAYED_FIELDS)
+            ->get();
+
+        // Set group members
+        $data[Constants::SINGLE_GROUP_MEMBERS_KEY] = $members;
+    }
+
 }

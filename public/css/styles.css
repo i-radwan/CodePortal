@@ -704,7 +704,7 @@ footer {
     margin-left: -2px;
 }
 
-.no-problems-msg, .no-contests-msg, .no-questions-msg, .no-groups-msg {
+.no-problems-msg, .no-contests-msg, .no-questions-msg, .no-groups-msg, .group-please-join-msg {
     margin: 30px;
 }
 
