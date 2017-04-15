@@ -75,10 +75,10 @@ class Constants
     ];
 
     // Extra
-    const SINGLE_CONTEST_IS_USER_PARTICIPATING = "leave_btn_visible";
-    const SINGLE_CONTEST_IS_USER_OWNER = "delete_btn_visible";
-    const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
+    const SINGLE_CONTEST_IS_USER_PARTICIPATING = "user_is_participant";
+    const SINGLE_CONTEST_IS_USER_OWNER = "user_is_owner";
     const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
+    const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
     // ============================================================
     //endregion
 
@@ -96,6 +96,22 @@ class Constants
     //
     // Single group page constants
     //
+
+    // Main keys
+    const SINGLE_GROUP_GROUP_KEY = "group";
+    const SINGLE_GROUP_EXTRA_KEY = "extra";
+
+    // Details keys
+
+    // Group
+    const SINGLE_GROUP_ID_KEY = "id";
+    const SINGLE_GROUP_NAME_KEY = "name";
+    const SINGLE_GROUP_OWNER_KEY = "owner";
+
+    // Extra
+    const SINGLE_GROUP_IS_USER_OWNER = "user_is_owner";
+    const SINGLE_GROUP_IS_USER_MEMBER = "user_is_member";
+    const SINGLE_GROUP_USER_SENT_REQUEST = "user_sent_request";
 
     // ============================================================
     //endregion
@@ -350,6 +366,7 @@ class Constants
     const TBL_CONTEST_ADMINS = "contest_admins";
     const TBL_PROBLEM_TAGS = "problem_tags";
     const TBL_GROUP_MEMBERS = "groups_members";
+    const TBL_GROUPS_JOIN_REQUESTS = "groups_join_requests";
 
 
     //
@@ -473,6 +490,10 @@ class Constants
     // Group members
     const FLD_GROUP_MEMBERS_USER_ID = "user_id";
     const FLD_GROUP_MEMBERS_GROUP_ID = "group_id";
+
+    // Groups join requests
+    const FLD_GROUPS_JOIN_REQUESTS_USER_ID = "user_id";
+    const FLD_GROUPS_JOIN_REQUESTS_GROUP_ID = "group_id";
 
     // ============================================================
     //endregion

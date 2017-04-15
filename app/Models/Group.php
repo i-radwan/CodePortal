@@ -70,5 +70,20 @@ class Group extends Model
         )->withTimestamps();
     }
 
+    /**
+     * Return all users who sent requests to join this group
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function membershipSeekers()
+    {
+        return $this->belongsToMany(
+            User::class,
+            Constants::TBL_GROUPS_JOIN_REQUESTS,
+            Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID,
+            Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID
+        )->withTimestamps();
+    }
+
 
 }

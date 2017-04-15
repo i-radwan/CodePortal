@@ -104,7 +104,7 @@ class ContestController extends Controller
     public function deleteContest(Contest $contest)
     {
         // Check if current auth. user is the owner of the contest
-        if (Auth::check() && $contest->owner->id == Auth::user()->id) {
+        if ($contest->owner->id == Auth::user()->id) {
             $contest->delete();
         }
         return redirect('contests/');

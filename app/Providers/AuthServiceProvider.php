@@ -39,11 +39,11 @@ class AuthServiceProvider extends ServiceProvider
             if ($canViewAndJoin) return true; // To avoid next query if already true
 
             // Check if user is invited to private contest
-            $contests = $user->userDisplayableReceivedNotifications()
+            $contestsInvitations = $user->userDisplayableReceivedNotifications()
                 ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST])
                 ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $contest->id)->get();
 
-            $canViewAndJoin |= (count($contests) > 0);
+            $canViewAndJoin |= (count($contestsInvitations) > 0);
 
             return $canViewAndJoin;
         });

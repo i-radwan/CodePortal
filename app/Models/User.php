@@ -251,4 +251,19 @@ class User extends Authenticatable
         return $this->hasMany(Group::class, Constants::FLD_GROUPS_OWNER_ID);
     }
 
+
+    /**
+     * Return the groups that the current user has sent a join request to its admin
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function seekingJoinGroups()
+    {
+        return $this->belongsToMany(
+            Group::class,
+            Constants::TBL_GROUPS_JOIN_REQUESTS,
+            Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID,
+            Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID
+        )->withTimestamps();
+    }
 }

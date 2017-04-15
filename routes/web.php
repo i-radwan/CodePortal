@@ -46,7 +46,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('group/add', 'GroupController@addEditGroupView');
 
     Route::post('group/add', 'GroupController@addGroup');
-    
+
+    Route::get('group/leave/{contest}', 'ContestController@leaveContest');
+    Route::get('group/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
+
+    Route::delete('group/{group}', 'GroupController@deleteGroup');
+    Route::put('group/leave/{group}', 'GroupController@leaveGroup');
+    Route::post('group/join/{group}', 'GroupController@joinGroup');
+
     Route::get('group/{group}', 'GroupController@displayGroup'); // ToDo middleware if owner or member only
 
 });
