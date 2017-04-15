@@ -84,9 +84,9 @@
                 _token: "{{csrf_token()}}",
                 checkedRows : checkedRows,
                 page : "{{Request::get('page') != null ? Request::get('page') : 1}}"
+                {{--ToDo @Samir (:Change Sticking with Page Avoid Sorting)--}}
             },
             success: function(data){
-                console.log(data);
             }
         });
     }
