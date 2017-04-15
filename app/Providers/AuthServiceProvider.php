@@ -48,6 +48,15 @@ class AuthServiceProvider extends ServiceProvider
             return $canViewAndJoin;
         });
 
+        // Owner or organizer of contest
+        Gate::define("owner-organizer-contest", function ($user, $contest) {
+            // Check if user is organizer or owner
+            if ($user->organizingContests()->find($contest) ||
+                $user->owningContests()->find($contest)
+            ) return true;
+            return false;
+        });
+
 
     }
 }

@@ -60,6 +60,7 @@ class Utilities
      */
     public static function generateProblemNumber($problem)
     {
+        if(!$problem) return '0';
         // Get judge data from constants file
         $judge = Constants::JUDGES[$problem->judge_id];
         $number = $judge[Constants::JUDGE_PROBLEM_NUMBER_FORMAT_KEY];

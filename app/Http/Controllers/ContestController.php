@@ -195,7 +195,7 @@ class ContestController extends Controller
         }
 
         Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
-        return back();
+        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**
@@ -206,19 +206,15 @@ class ContestController extends Controller
      */
     public function announceQuestion(Question $question)
     {
-        $user = Auth::user();
-
         // Check if question exists
         if ($question) {
-            // Check if organizer is the one who fired this request
-            $contest = $user->organizingContests()->find($question->contest_id);
-            if ($contest) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
                 $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
                 $question->save();
             }
         }
 
-        return back();
+        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**
@@ -229,19 +225,15 @@ class ContestController extends Controller
      */
     public function renounceQuestion(Question $question)
     {
-        $user = Auth::user();
-
         // Check if question exists
         if ($question) {
-            // Check if organizer is the one who fired this request
-            $contest = $user->organizingContests()->find($question->contest_id);
-            if ($contest) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
                 $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
                 $question->save();
             }
         }
 
-        return back();
+        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**
@@ -259,9 +251,7 @@ class ContestController extends Controller
 
         // Check if question exists
         if ($question) {
-            // Check if organizer is the one who fired this request
-            $contest = $user->organizingContests()->find($question->contest_id);
-            if ($contest) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
                 $question->saveAnswer($questionAnswer, $user);
             }
         }
