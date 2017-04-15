@@ -55,15 +55,7 @@
             <div class="panel-body">
                 @if($isMember || $isOwner)
                     {{--Alerts Part--}}
-                    @if(count($errors) > 0)
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                    @include('components.alert')
 
                     {{--Tabs Section--}}
                     <div class="content-tabs card">
@@ -92,7 +84,7 @@
 
                         <!-- Tab panes -->
                         <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="members">
+                            <div role="tabpanel" class="tab-pane active horizontal-scroll" id="members">
                                 @if(count($members))
                                     @include('groups.group_views.members')
                                 @else
@@ -100,8 +92,10 @@
                                 @endif
                             </div>
                             <div role="tabpanel" class="tab-pane" id="contests">
+
                             </div>
                             <div role="tabpanel" class="tab-pane" id="sheets">
+
                             </div>
                             @if($isOwner)
                                 <div role="tabpanel" class="tab-pane horizontal-scroll" id="requests">

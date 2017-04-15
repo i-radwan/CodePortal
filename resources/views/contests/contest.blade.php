@@ -47,15 +47,7 @@
 
             <div class="panel-body">
                 {{--Alerts Part--}}
-                @if(count($errors) > 0)
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                @include('components.alert')
 
                 {{--Contest info: time, duration, owner, etc.--}}
                 @include('contests.contest_views.contest_info')

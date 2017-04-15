@@ -99,9 +99,11 @@ class Constants
 
     // Main keys
     const SINGLE_GROUP_GROUP_KEY = "group";
-    const SINGLE_GROUP_EXTRA_KEY = "extra";
     const SINGLE_GROUP_MEMBERS_KEY = "members";
     const SINGLE_GROUP_REQUESTS_KEY = "requests";
+    const SINGLE_GROUP_SHEETS_KEY = "sheets";
+    const SINGLE_GROUP_CONTESTS_KEY = "contests";
+    const SINGLE_GROUP_EXTRA_KEY = "extra";
 
     // Details keys
 
@@ -374,6 +376,7 @@ class Constants
     const TBL_LANGUAGES = "languages";
     const TBL_NOTIFICATIONS = "notifications";
     const TBL_GROUPS = "groups";
+    const TBL_SHEETS = "sheets";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
@@ -471,6 +474,11 @@ class Constants
     // Languages
     const FLD_LANGUAGES_ID = "id";
     const FLD_LANGUAGES_NAME = "name";
+
+    // Sheets
+    const FLD_SHEETS_ID = "id";
+    const FLD_SHEETS_NAME = "name";
+    const FLD_SHEETS_GROUP_ID = "group_id";
 
 
     //Notifications

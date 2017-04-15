@@ -75,12 +75,12 @@ $(window).on("popstate", function () {
  *
  * @param string csrf token
  */
-function markAllNotificationsRead(token) {
+function markAllNotificationsRead(token, url) {
     $.ajax({
-        type: "PUT",
-        url: 'notifications/mark_all_read',
-        data: {"_token": token, "_method": "PUT"},
-        success: function () {
+        type: "POST",
+        url: url,
+        data: {_token: token, _method: "PUT"},
+        success: function (result) {
             // Change icon to light bell
             $("#notifications-icon").removeClass("fa-bell");
             $("#notifications-icon").removeClass("dark-red");
@@ -102,7 +102,7 @@ function markAllNotificationsRead(token) {
  * @param int notificationID
  * @param object element clicked element
  */
-function cancelNotification(e, token, notificationID, element) {
+function cancelNotification(e, token, url, element) {
     // Prevent click event propagation (such that dropdown menu doesn't
     // close after deleting) notification
     if (!e)
@@ -115,13 +115,12 @@ function cancelNotification(e, token, notificationID, element) {
     else {
         e.cancelBubble = true;
     }
-
     // Send lazy delete request
     $.ajax({
-        type: "DELETE",
-        url: 'notification/' + notificationID,
-        data: {"_token": token},
-        success: function () {
+        type: "POST",
+        url: url,
+        data: {_token: token, _method: "DELETE"},
+        success: function (result) {
             hideNotificationElement(element);
         }
     });

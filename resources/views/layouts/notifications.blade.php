@@ -6,7 +6,7 @@
         {{--Notifications bell icon--}}
         <a class="dropdown-toggle" data-toggle="dropdown" role="button"
            aria-expanded="false"
-           @if($unreadCount) onclick="markAllNotificationsRead('{{csrf_token()}}');" @endif >
+           @if($unreadCount) onclick="markAllNotificationsRead('{{csrf_token()}}', '{{url('notifications/mark_all_read')}}');" @endif >
             <i id="notifications-icon"
                class="notifications-icon fa fa-bell{{($unreadCount)?' dark-red':'-o'}}"
                aria-hidden="true"></i>
@@ -43,7 +43,7 @@
                         </div>
                     </a>
                     <i class="fa fa-times notification-delete" aria-hidden="true"
-                       onclick="cancelNotification(event, '{{csrf_token()}}', '{{$notification->id}}', this);"></i>
+                       onclick="cancelNotification(event, '{{csrf_token()}}', '{{url("notification/".$notification->id)}}', this);"></i>
                 </li>
                 @if(!$loop->last)
                     <li role="separator" class="divider">

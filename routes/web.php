@@ -49,9 +49,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('group/{group}', 'GroupController@displayGroup');
 
     Route::post('group/add', 'GroupController@addGroup');
+    Route::post('group/join/{group}', 'GroupController@joinGroup');
 
     Route::delete('group/{group}', 'GroupController@deleteGroup');
-    Route::post('group/join/{group}', 'GroupController@joinGroup');
 
     Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest')->middleware(['can:owner-group,group']);
     Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest')->middleware(['can:owner-group,group']);
