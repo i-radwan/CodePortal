@@ -57,6 +57,23 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
+        // Owner of group
+        Gate::define("owner-group", function ($user, $group) {
+            // Check if user is organizer or owner
+            if ($user->owningGroups()->find($group)
+            ) return true;
+            return false;
+        });
+
+        // Owner or member of group
+        Gate::define("owner-or-member-group", function ($user, $group) {
+            // Check if user is organizer or owner
+            if ($user->owningGroups()->find($group)
+                || $user->joiningGroups()->find($group)
+            ) return true;
+            return false;
+        });
+
 
     }
 }

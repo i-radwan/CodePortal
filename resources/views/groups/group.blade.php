@@ -81,7 +81,11 @@
                             @if($isOwner)
                                 <li role="presentation">
                                     <a href="#requests" aria-controls="requests" role="tab"
-                                       data-toggle="tab">Requests</a>
+                                       data-toggle="tab">Requests
+                                        @if(count($seekers))
+                                            <span class="dark-red">•</span>
+                                        @endif
+                                    </a>
                                 </li>
                             @endif
                         </ul>

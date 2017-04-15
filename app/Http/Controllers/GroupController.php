@@ -32,8 +32,6 @@ class GroupController extends Controller
     /**
      * Show single group page
      *
-     * ToDO: Authorization happens in the defined Gate
-     *
      * @param Group $group
      * @return \Illuminate\View\View $this
      */
@@ -48,11 +46,6 @@ class GroupController extends Controller
         $this->getBasicGroupInfo($currentUser, $group, $data);
         $this->getMembersInfo($group, $data);
         $this->getRequestsInfo($group, $data);
-//        $this->getProblemsInfo($contest, $data);
-//        $this->getStandingsInfo($contest, $data);
-//        $this->getStatusInfo($contest, $data);
-//        $this->getParticipantsInfo($contest, $data);
-//        $this->getQuestionsInfo($currentUser, $contest, $data);
 
         return view('groups.group')
             ->with('data', $data)

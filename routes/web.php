@@ -46,15 +46,15 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Groups routes...
     Route::get('group/add', 'GroupController@addEditGroupView');
-    Route::get('group/{group}', 'GroupController@displayGroup'); // ToDo middleware if owner or member only
+    Route::get('group/{group}', 'GroupController@displayGroup');
 
     Route::post('group/add', 'GroupController@addGroup');
 
     Route::delete('group/{group}', 'GroupController@deleteGroup');
     Route::post('group/join/{group}', 'GroupController@joinGroup');
 
-    Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest'); // ToDo middleware owner only
-    Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest'); // ToDo middleware owner only
+    Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest')->middleware(['can:owner-group,group']);
+    Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest')->middleware(['can:owner-group,group']);
     Route::put('group/leave/{group}', 'GroupController@leaveGroup');
 
 });
