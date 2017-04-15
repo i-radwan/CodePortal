@@ -673,6 +673,11 @@ footer {
     text-align: center;
 }
 
+.alert {
+    margin-top: 5px;
+    text-align: left;
+}
+
 .problems-table-head {
     text-align: center;
 }

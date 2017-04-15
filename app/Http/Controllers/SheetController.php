@@ -89,6 +89,41 @@ class SheetController extends Controller
 
 
     /**
+     * Save problem solution (provided by group owner)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function saveProblemSolution(Request $request)
+    {
+        $problemID = $request->get('problem_id');
+        $sheetID = $request->get('sheet_id');
+        $solution = $request->get('problem_solution');
+
+        // Check if solution is empty
+        if (!strlen(trim($solution))) return back()->withErrors(['You cannot provide empty solution!']);
+
+        // Get sheet model
+        $sheet = Sheet::find($sheetID);
+
+        // Check if group owner
+        if (\Gate::allows("owner-sheet", [$sheet])) {
+
+            // Get problem model with pivot to add solution
+            $problem = $sheet->problems()->find($problemID);
+
+
+            // Check if problem exists then update solution
+            if ($problem) {
+                $problem->pivot->solution = $solution;
+                $problem->pivot->save();
+            }
+        }
+        return back();
+    }
+
+
+    /**
      * Get sheet basic info
      *
      * @param Sheet $sheet

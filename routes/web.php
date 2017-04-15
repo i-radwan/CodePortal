@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('group/add', 'GroupController@addEditGroupView');
     Route::get('group/{group}', 'GroupController@displayGroup');
 
+    Route::post('sheet/problem/solution', 'SheetController@saveProblemSolution');
     Route::post('group/add', 'GroupController@addGroup');
     Route::post('group/join/{group}', 'GroupController@joinGroup');
     Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);;
