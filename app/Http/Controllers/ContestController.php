@@ -127,6 +127,12 @@ class ContestController extends Controller
 
     }
 
+    public function organisersAutoComplete(Request $request){
+        $data = User::select(Constants::FLD_USERS_USERNAME)->get();
+        $data = [ 'aaa', 'aaaas', 'aaaab', 'bsdhuiheiu', 'wenture']; //ToDO: here
+        return response()->json($data);
+    }
+
     public function applyProblemsCheckBoxes(Request $request){
         $page = $request->get('page'); //get the current page
         if( Session::has(Constants::CHECKED_PROBLEMS))
@@ -142,6 +148,10 @@ class ContestController extends Controller
     public function applyProblemsFilters(Request $request){
         Session::put(Constants::CONTESTS_PROBLEMS_FILTERS, $request->get('cProblemsFilters'));
         return ;
+
+    }
+
+    public function applyOrganisers(Request $request){
 
     }
     /**

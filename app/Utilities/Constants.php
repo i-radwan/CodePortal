@@ -72,6 +72,8 @@ class Constants
     const CONTESTS_PROBLEMS_FILTERS = "cProblemsFilters";
     const CONTESTS_CHECKED_JUDGES = "cJudges";
     const CONTESTS_CHECKED_TAGS = "cTags";
+    const CONTEST_AUTO_COMPLETE_ORGANISERS = 1;
+    const CONTEST_AUTO_COMPLETE_TAGS = 0;
 
     // Participants
     const PARTICIPANTS_DISPLAYED_FIELDS = [

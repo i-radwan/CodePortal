@@ -87,7 +87,7 @@
                                 <br>
                                 <br>
                                 <div class = "col-md-4" >
-                                    @include("contests.contest_views.add_edit_PFilter")
+                                    @include("contests.contest_views.add_edit_filter")
                                 </div>
                                 <div class="col-md-8">
                                     @include("problems.table")
@@ -100,7 +100,7 @@
                             </div>
                             <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
                                 <label for="organizers" class="col-md-4 control-label">Organizers</label>
-
+                                @include("contests.contest_views.organisers")
                                 <div class="col-md-6">
                                     @if ($errors->has('organizers'))
                                         <span class="help-block">

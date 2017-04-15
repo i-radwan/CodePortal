@@ -30,8 +30,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
     Route::get('contest/add/tagsautocomplete',array('as' => 'contest/add/tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
+    
+    Route::get('contest/add/organisersautocomplete',array('as' => 'contest/add/organisersautocomplete', 'uses' => 'ContestController@organisersAutoComplete'));
+
     Route::post('contest/add/checkRowsSync', 'ContestController@applyProblemsCheckBoxes' );
     Route::post('contest/add/TagsJudgesFSync', 'ContestController@applyProblemsFilters' );
+    Route::post('contest/add/OrganisersSync', 'ContestController@applyOrganisers' );
 
 
     // Question routes...
