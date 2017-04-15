@@ -5,7 +5,7 @@
         <th class="text-center">Problem</th>
         <th class="questions-table-question-cell">Question</th>
         <th class="text-center">Admin</th>
-        @if($isContestRunning)
+        @if($isContestRunning && $isOwnerOrOrganizer)
             <th class="text-center">Actions</th>
         @endif
     </tr>
@@ -36,19 +36,17 @@
 
             <td>{{$question[Constants::FLD_QUESTIONS_ADMIN_ID]}}</td>
 
-            @if($isContestRunning)
+            @if($isContestRunning && $isOwnerOrOrganizer)
                 <td>
 
-                    @if($isOwnerOrOrganizer)
-                        <button class="btn btn-primary question-answer-button"
-                                data-toggle="modal"
-                                data-target="#question-answer-model"
-                                onclick="$('#question-id').val('{{$questionID}}');$('#question-answer').val('{{($answer != "")? $answer: "Re-read the problem statement!"}}');">
-                            Answer
-                        </button>
-                    @endif
+                    <button class="btn btn-primary question-answer-button"
+                            data-toggle="modal"
+                            data-target="#question-answer-model"
+                            onclick="$('#question-id').val('{{$questionID}}');$('#question-answer').val('{{($answer != "")? $answer: "Re-read the problem statement!"}}');">
+                        Answer
+                    </button>
 
-                    @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && $isOwnerOrOrganizer && strlen($answer)>0)
+                    @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && strlen($answer)>0)
                         <form action="{{url('contest/question/announce/'.$questionID)}}"
                               method="post">{{method_field('PUT')}}
                             {{csrf_field()}}
@@ -56,7 +54,7 @@
                             </button>
                         </form>
 
-                    @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1 && $isOwnerOrOrganizer)
+                    @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1)
                         <form action="{{url('contest/question/renounce/'.$questionID)}}"
                               method="post">{{method_field('PUT')}}
                             {{csrf_field()}}
