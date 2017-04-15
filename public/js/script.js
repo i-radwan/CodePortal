@@ -1,6 +1,3 @@
-// Constants
-const URL = '127.0.0.1:8000/';
-
 $(document).ready(function () {
 
 
@@ -82,7 +79,7 @@ function markAllNotificationsRead(token) {
     $.ajax({
         type: "PUT",
         url: 'notifications/mark_all_read',
-        data: {"_token": token, "_method": "PUT"},
+        data: {"_token": token, "_method" : "PUT"},
         success: function () {
             // Change icon to light bell
             $("#notifications-icon").removeClass("fa-bell");

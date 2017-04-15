@@ -306,6 +306,8 @@ class Constants
 
     const NOTIFICATION_TEXT = [
         self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_CONTEST] => "You're invited to join the private contest: ",
+        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_GROUP] => "You're invited to join the private group: ",
+        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_TEAM] => "You're invited to join the private team: ",
     ];
 
     //
