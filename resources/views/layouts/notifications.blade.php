@@ -14,6 +14,7 @@
         </a>
 
         {{--Notifications dropdown menu--}}
+        {{--ToDo : To be generalized for groups and teams not only contests --}}
         <ul class="dropdown-menu notifications" role="menu">
             @foreach($notifications as $notification)
                 @php($contest = \App\Models\Contest::find($notification->resource_id))
