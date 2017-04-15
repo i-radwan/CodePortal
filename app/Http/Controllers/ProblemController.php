@@ -122,6 +122,7 @@ class ProblemController extends Controller
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getProblemsToContestController($request){
+        //ToDO (Samir) improve the function "do something towards sortParams
         $searchStr = Utilities::makeInputSafe($request->get(Constants::URL_QUERY_SEARCH_KEY));
         $judgesIDs = $request->get(Constants::URL_QUERY_JUDGES_KEY);
         $tagsIDs = $request->get(Constants::URL_QUERY_SEARCH_KEY);

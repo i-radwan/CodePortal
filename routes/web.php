@@ -29,6 +29,10 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
+    Route::get('contest/add/tagsautocomplete',array('as' => 'contest/add/tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
+    Route::post('contest/add/checkRowsSync', 'ContestController@applyProblemsCheckBoxes' );
+    Route::post('contest/add/TagsJudgesFSync', 'ContestController@applyProblemsFilters' );
+
 
     // Question routes...
     Route::put('contest/question/announce/{question}', 'ContestController@announceQuestion');
@@ -77,8 +81,6 @@ Route::any('getData', function(){
     dd("Roger That");
 });
 
-Route::get('tagsautocomplete',array('as' => 'tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
-Route::post('contest/add/checkRowsSync', 'ContestController@applyCheckBoxes' );
 
 // Errors Routes...
 Route::get('errors/404', function () {

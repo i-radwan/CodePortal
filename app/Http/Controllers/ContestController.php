@@ -26,6 +26,8 @@ class ContestController extends Controller
      */
     public function index()
     {
+        //ForgetCheckedProblems
+        Session::forget(Constants::CHECKED_PROBLEMS);
         $data = [];
 
         $data[Constants::CONTESTS_CONTESTS_KEY] =
@@ -79,7 +81,6 @@ class ContestController extends Controller
         $problems = self::getProblemsAndFilters($request);
         return view('contests.add_edit')
             ->with('problems', $problems)
-            ->with('tags', Tag::all())
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
             ->with('checkedRows',Session::get('checkedRows'))
@@ -93,8 +94,7 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
-        Session::forget(Constants::CHECKED_PROBLEMS);
-
+        dd($request);
         $contest = new Contest($request->all());
         $contest->save();
     }
@@ -115,7 +115,7 @@ class ContestController extends Controller
 
     }
 
-    public function applyCheckBoxes(Request $request){
+    public function applyProblemsCheckBoxes(Request $request){
         $page = $request->get('page'); //get the current page
         if( Session::has(Constants::CHECKED_PROBLEMS))
             $currentCheckedProblems = Session::get(Constants::CHECKED_PROBLEMS);
@@ -127,6 +127,17 @@ class ContestController extends Controller
 
     }
 
+    public function applyProblemsFilters(Request $request){
+        $page = $request->get('page'); //get the current page
+        if( Session::has(Constants::CHECKED_PROBLEMS))
+            $currentCheckedProblems = Session::get(Constants::CHECKED_PROBLEMS);
+        else
+            $currentCheckedProblems = [];
+        $currentCheckedProblems[$page] = $request->get(Constants::CHECKED_PROBLEMS);
+        Session::put(Constants::CHECKED_PROBLEMS, $currentCheckedProblems);
+        return ;
+
+    }
     /**
      * Delete a certain contest if you're owner
      *
