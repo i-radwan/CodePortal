@@ -27,7 +27,7 @@ class ContestsTableSeeder extends Seeder
         for ($i = 0; $i < $limit; $i++) {
             DB::table(Constants::TBL_CONTESTS)->insert([
                 Constants::FLD_CONTESTS_OWNER_ID => $faker->randomElement($userIDs),
-                Constants::FLD_CONTESTS_NAME => $faker->name,
+                Constants::FLD_CONTESTS_NAME => $faker->sentence,
                 Constants::FLD_CONTESTS_VISIBILITY => $faker->randomElement(Constants::CONTEST_VISIBILITY),
                 Constants::FLD_CONTESTS_TIME => $faker->dateTimeThisMonth,
                 Constants::FLD_CONTESTS_DURATION => $faker->numberBetween(30, 150),

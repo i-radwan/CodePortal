@@ -30,6 +30,7 @@ class QuestionsTableSeeder extends Seeder
             $userID = $faker->randomElement($contestParticipantsIDs);
             $organizerID = $faker->randomElement($contestOrganizersIDs);
             $problemID = $faker->randomElement($contestProblemsIDs);
+            if (!$problemID || !$userID || !$organizerID) continue;
             if ($i % 3 == 0) {
                 DB::table(Constants::TBL_QUESTIONS)->insert([
                     Constants::FLD_QUESTIONS_USER_ID => $userID,
