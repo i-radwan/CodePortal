@@ -23,6 +23,8 @@ Route::get('contests', 'ContestController@index');
 Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
+
+    // ToDo change those to put/delete requests
     Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
     Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
@@ -44,6 +46,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('group/add', 'GroupController@addEditGroupView');
 
     Route::post('group/add', 'GroupController@addGroup');
+    
+    Route::get('group/{group}', 'GroupController@displayGroup'); // ToDo middleware if owner or member only
 
 });
 
