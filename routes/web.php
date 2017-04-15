@@ -46,10 +46,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Groups routes...
     Route::get('group/add', 'GroupController@addEditGroupView');
+    Route::get('sheet/new/{group}', 'SheetController@addSheetView')->middleware(['can:owner-group,group']);;
     Route::get('group/{group}', 'GroupController@displayGroup');
 
     Route::post('group/add', 'GroupController@addGroup');
     Route::post('group/join/{group}', 'GroupController@joinGroup');
+    Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);;
 
     Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
 

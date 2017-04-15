@@ -96,6 +96,11 @@
 
                             </div>
                             <div role="tabpanel" class="tab-pane" id="sheets">
+                                @if($isOwner)
+                                    <a href="{{url('sheet/new/'.$groupID)}}"
+                                       class="btn-sm btn btn-primary pull-right new-sheet-link">New
+                                        Sheet</a>
+                                @endif
                                 @if(count($sheets))
                                     @include('groups.group_views.sheets')
                                 @else
