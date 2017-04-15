@@ -38,7 +38,7 @@
                     {{--Pagination--}}
                     {{ $data[Constants::GROUPS_GROUPS_KEY]->render() }}
                 @else
-                    <p class="no-groups-msg">No groups!</p>
+                    <p class="margin-30px">No groups!</p>
                 @endif
             </div>
         </div>

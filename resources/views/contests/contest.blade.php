@@ -61,7 +61,7 @@
                 @include('contests.contest_views.contest_info')
 
                 {{--Tabs Section--}}
-                <div class="contest-tabs card">
+                <div class="content-tabs card">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active">
@@ -99,7 +99,7 @@
                             @if($questions && count($questions))
                                 @include('contests.contest_views.questions')
                             @else
-                                <p class="no-questions-msg">No questions!</p>
+                                <p class="margin-30px">No questions!</p>
                             @endif
                         </div>
                     </div>

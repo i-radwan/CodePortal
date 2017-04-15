@@ -44,7 +44,7 @@
                     {{--Pagination--}}
                     {{ $data[Constants::CONTESTS_CONTESTS_KEY]->render() }}
                 @else
-                    <p class="no-contests-msg">No contests!</p>
+                    <p class="margin-30px">No contests!</p>
                 @endif
             </div>
         </div>

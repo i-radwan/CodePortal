@@ -101,6 +101,7 @@ class Constants
     const SINGLE_GROUP_GROUP_KEY = "group";
     const SINGLE_GROUP_EXTRA_KEY = "extra";
     const SINGLE_GROUP_MEMBERS_KEY = "members";
+    const SINGLE_GROUP_REQUESTS_KEY = "requests";
 
     // Details keys
 
@@ -120,6 +121,13 @@ class Constants
         self::FLD_USERS_USERNAME,
         self::FLD_USERS_EMAIL,
         self::FLD_USERS_COUNTRY
+    ];
+
+    // Requests displayable fields
+    const REQUESTS_DISPLAYED_FIELDS = [
+        self::FLD_USERS_ID,
+        self::FLD_USERS_USERNAME,
+        self::FLD_USERS_EMAIL,
     ];
     // ============================================================
     //endregion

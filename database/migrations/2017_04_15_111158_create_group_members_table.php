@@ -17,6 +17,11 @@ class CreateGroupMembersTable extends Migration
         Schema::create(Constants::TBL_GROUP_MEMBERS, function (Blueprint $table) {
             $table->unsignedInteger(Constants::FLD_GROUP_MEMBERS_GROUP_ID);
             $table->unsignedInteger(Constants::FLD_GROUP_MEMBERS_USER_ID);
+            $table->primary(array(
+                    Constants::FLD_GROUP_MEMBERS_GROUP_ID,
+                    Constants::FLD_GROUP_MEMBERS_USER_ID
+                )
+            );
             $table->timestamps();
         });
     }

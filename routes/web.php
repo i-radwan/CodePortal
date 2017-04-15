@@ -9,6 +9,8 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
+| NOTE:: Routes order MATTERS
+|
 */
 
 // Homepage routes...
@@ -44,17 +46,16 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Groups routes...
     Route::get('group/add', 'GroupController@addEditGroupView');
+    Route::get('group/{group}', 'GroupController@displayGroup'); // ToDo middleware if owner or member only
 
     Route::post('group/add', 'GroupController@addGroup');
 
-    Route::get('group/leave/{contest}', 'ContestController@leaveContest');
-    Route::get('group/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
-
     Route::delete('group/{group}', 'GroupController@deleteGroup');
-    Route::put('group/leave/{group}', 'GroupController@leaveGroup');
     Route::post('group/join/{group}', 'GroupController@joinGroup');
 
-    Route::get('group/{group}', 'GroupController@displayGroup'); // ToDo middleware if owner or member only
+    Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest'); // ToDo middleware owner only
+    Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest'); // ToDo middleware owner only
+    Route::put('group/leave/{group}', 'GroupController@leaveGroup');
 
 });
 

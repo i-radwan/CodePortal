@@ -2,8 +2,8 @@
 <table class="table table-bordered table-hover text-center">
     <thead>
     <tr>
-        <th class="text-center" width="30%">Username</th>
-        <th class="text-center" width="30%">Email</th>
+        <th class="text-center" width="33%">Username</th>
+        <th class="text-center" width="33%">Email</th>
         <th class="text-center">Country</th>
     </tr>
     </thead>

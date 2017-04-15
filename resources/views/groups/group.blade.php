@@ -9,6 +9,7 @@
     $isMember = $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_MEMBER];
 
     $members = $data[Constants::SINGLE_GROUP_MEMBERS_KEY];
+    $seekers = $data[Constants::SINGLE_GROUP_REQUESTS_KEY];
 @endphp
 
 @extends('layouts.app')
@@ -17,7 +18,7 @@
     <div class="container">
         <div class="panel panel-default">
 
-            {{--Contest leave/delete/join links--}}
+            {{--Group leave/delete/join links--}}
             @if($isOwner)
                 <form action="{{url('group/'.$groupID)}}"
                       method="post">{{method_field('DELETE')}}
@@ -65,7 +66,7 @@
                     @endif
 
                     {{--Tabs Section--}}
-                    <div class="contest-tabs card">
+                    <div class="content-tabs card">
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
@@ -88,18 +89,29 @@
                         <!-- Tab panes -->
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="members">
-                                @include('groups.group_views.members')
+                                @if(count($members))
+                                    @include('groups.group_views.members')
+                                @else
+                                    <p class="margin-30px">No members!</p>
+                                @endif
                             </div>
                             <div role="tabpanel" class="tab-pane" id="contests">
                             </div>
                             <div role="tabpanel" class="tab-pane" id="sheets">
                             </div>
-                            <div role="tabpanel" class="tab-pane" id="requests">
-                            </div>
+                            @if($isOwner)
+                                <div role="tabpanel" class="tab-pane horizontal-scroll" id="requests">
+                                    @if(count($seekers))
+                                        @include('groups.group_views.requests')
+                                    @else
+                                        <p class="margin-30px">No requests!</p>
+                                    @endif
+                                </div>
+                            @endif
                         </div>
                     </div>
                 @else
-                    <p class="group-please-join-msg">Please join to see group details!</p>
+                    <p class="margin-30px">Please join to see group details!</p>
                 @endif
             </div>
         </div>

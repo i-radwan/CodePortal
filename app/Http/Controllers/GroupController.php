@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Auth;
 use App\Utilities\Constants;
+use Redirect;
+use URL;
 
 class GroupController extends Controller
 {
@@ -45,6 +47,7 @@ class GroupController extends Controller
 
         $this->getBasicGroupInfo($currentUser, $group, $data);
         $this->getMembersInfo($group, $data);
+        $this->getRequestsInfo($group, $data);
 //        $this->getProblemsInfo($contest, $data);
 //        $this->getStandingsInfo($contest, $data);
 //        $this->getStatusInfo($contest, $data);
@@ -148,6 +151,40 @@ class GroupController extends Controller
         return back();
     }
 
+    /**
+     * Accept group join request
+     *
+     * @protected by middleware (to allow owners only)
+     *
+     * @param Group $group
+     * @param User $user
+     * @return mixed
+     */
+    public function acceptRequest(Group $group, User $user)
+    {
+        if ($user) {
+            $group->membershipSeekers()->detach($user);
+            $group->members()->save($user);
+        }
+        return Redirect::to(URL::previous() . "#requests");
+    }
+
+    /**
+     * Reject group join request
+     *
+     * @protected by middleware (to allow owners only)
+     *
+     * @param Group $group
+     * @param User $user
+     * @return mixed
+     */
+    public function rejectRequest(Group $group, User $user)
+    {
+        if ($user) {
+            $group->membershipSeekers()->detach($user);
+        }
+        return Redirect::to(URL::previous() . "#requests");
+    }
 
     /**
      * Get group basic info (owner)
@@ -209,5 +246,23 @@ class GroupController extends Controller
         // Set group members
         $data[Constants::SINGLE_GROUP_MEMBERS_KEY] = $members;
     }
+
+    /**
+     * Get group joining requests data
+     *
+     * @param Group $group
+     * @param array $data
+     */
+    private function getRequestsInfo(Group $group, &$data)
+    {
+        $seekers = $group
+            ->membershipSeekers()
+            ->select(Constants::REQUESTS_DISPLAYED_FIELDS)
+            ->get();
+
+        // Set group members
+        $data[Constants::SINGLE_GROUP_REQUESTS_KEY] = $seekers;
+    }
+
 
 }

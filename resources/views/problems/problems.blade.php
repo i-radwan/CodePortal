@@ -4,7 +4,7 @@
         @if($problems->count())
             @include('problems.table')
         @else
-            <p class="no-problems-msg">
+            <p class="margin-30px">
                 No problems!
                 @if(count(Request::get(Constants::URL_QUERY_JUDGES_KEY)) || count(Request::get(Constants::URL_QUERY_TAGS_KEY)) || strlen(Request::get(Constants::URL_QUERY_SEARCH_KEY)))
                     <br/>
