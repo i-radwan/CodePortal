@@ -2,15 +2,44 @@
 
 @section('content')
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Groups</div>
-
-                    <div class="panel-body">
-                        List of all groups (phase 2)
-                    </div>
-                </div>
+        <div class="panel panel-default groups-panel">
+            <a href="{{ url('/group/add') }}">
+                <span class="btn btn-link text-dark pull-right margin-5px">New</span>
+            </a>
+            <div class="panel-heading groups-panel-heading">Groups</div>
+            <div class="panel-body groups-panel-body horizontal-scroll">
+                @if(count($data[Constants::GROUPS_GROUPS_KEY]))
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th class="text-center group-table-name-th">Name</th>
+                            <th class="text-center">Owner</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach($data[Constants::GROUPS_GROUPS_KEY] as $group)
+                            <tr>
+                                <td>{{ $group->id }}</td>
+                                <td>
+                                    <a href="{{ url('group/' . $group->id) }}">
+                                        {{ $group->name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ url('profile/' . $group->owner->username)}}">
+                                        {{ $group->owner->username }}
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                    {{--Pagination--}}
+                    {{ $data[Constants::GROUPS_GROUPS_KEY]->render() }}
+                @else
+                    <p class="no-groups-msg">No groups!</p>
+                @endif
             </div>
         </div>
     </div>

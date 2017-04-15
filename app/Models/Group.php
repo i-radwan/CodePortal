@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Utilities\Constants;
+use Illuminate\Database\Eloquent\Builder;
 
 class Group extends Model
 {
@@ -42,7 +43,6 @@ class Group extends Model
         Constants::FLD_GROUPS_NAME => 'required|max:100',
         Constants::FLD_GROUPS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
     ];
-
 
     /**
      * Return the owner user of this group

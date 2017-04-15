@@ -82,6 +82,24 @@ class Constants
     // ============================================================
     //endregion
 
+
+    //region groups page
+
+    //
+    // Groups page constants
+    //
+
+    const GROUPS_COUNT_PER_PAGE = 30;
+
+    const GROUPS_GROUPS_KEY = 'groups';
+
+    //
+    // Single group page constants
+    //
+
+    // ============================================================
+    //endregion
+
     //region Judges
 
     //

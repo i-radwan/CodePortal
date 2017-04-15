@@ -655,15 +655,15 @@ footer {
 /*========== PROBLEMS PAGE ===========*/
 /*====================================*/
 
-.problems-panel, .contests-panel {
+.problems-panel, .contests-panel, .groups-panel {
     border: 0;
 }
 
-.problems-panel-heading, .contests-panel-heading {
+.problems-panel-heading, .contests-panel-heading, .groups-panel-heading {
     border: 1px solid #ddd;
 }
 
-.problems-panel-body, .contests-panel-body {
+.problems-panel-body, .contests-panel-body, .groups-panel-body {
     border: 0;
     padding: 0;
     text-align: center;
@@ -704,7 +704,7 @@ footer {
     margin-left: -2px;
 }
 
-.no-problems-msg, .no-contests-msg, .no-questions-msg {
+.no-problems-msg, .no-contests-msg, .no-questions-msg, .no-groups-msg {
     margin: 30px;
 }
 
@@ -767,7 +767,7 @@ footer {
 /*========== CONTESTS PAGE ===========*/
 /*====================================*/
 
-.contest-table-name-th {
+.contest-table-name-th, .group-table-name-th {
     min-width: 300px;
 }
 

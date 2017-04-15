@@ -21,8 +21,8 @@ Route::get('profile/{user}', 'UserController@index');
 Route::get('contests', 'ContestController@index');
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
     Route::get('contest/add', 'ContestController@addEditContestView');
+    Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
     Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
     Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
@@ -39,6 +39,12 @@ Route::group(['middleware' => 'auth'], function () {
     // Notifications routes...
     Route::put('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
+
+    // Groups routes...
+    Route::get('group/add', 'GroupController@addEditGroupView');
+
+    Route::post('group/add', 'GroupController@addGroup');
+
 });
 
 Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['can:view-join-contest,contest']);
