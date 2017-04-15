@@ -323,6 +323,7 @@ class Constants
     const TBL_TAGS = "tags";
     const TBL_LANGUAGES = "languages";
     const TBL_NOTIFICATIONS = "notifications";
+    const TBL_GROUPS = "groups";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
@@ -330,6 +331,7 @@ class Constants
     const TBL_CONTEST_PARTICIPANTS = "contest_participants";
     const TBL_CONTEST_ADMINS = "contest_admins";
     const TBL_PROBLEM_TAGS = "problem_tags";
+    const TBL_GROUP_MEMBERS = "groups_members";
 
 
     //
@@ -401,6 +403,11 @@ class Constants
     const FLD_QUESTIONS_ANSWER = "answer";
     const FLD_QUESTIONS_ADMIN_ID = "admin_id";
 
+    // Groups
+    const FLD_GROUPS_ID = "id";
+    const FLD_GROUPS_NAME = "name";
+    const FLD_GROUPS_OWNER_ID = "owner_id";
+
     // Judges
     const FLD_JUDGES_ID = "id";
     const FLD_JUDGES_NAME = "name";
@@ -444,6 +451,10 @@ class Constants
     // Problem tags
     const FLD_PROBLEM_TAGS_PROBLEM_ID = "problem_id";
     const FLD_PROBLEM_TAGS_TAG_ID = "tag_id";
+
+    // Group members
+    const FLD_GROUP_MEMBERS_USER_ID = "user_id";
+    const FLD_GROUP_MEMBERS_GROUP_ID = "group_id";
 
     // ============================================================
     //endregion

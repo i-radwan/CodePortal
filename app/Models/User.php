@@ -224,4 +224,31 @@ class User extends Authenticatable
             ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=',
                 Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]);
     }
+
+
+    /**
+     * Return the groups that the current user has joined
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function joiningGroups()
+    {
+        return $this->belongsToMany(
+            Group::class,
+            Constants::TBL_GROUP_MEMBERS,
+            Constants::FLD_GROUP_MEMBERS_USER_ID,
+            Constants::FLD_GROUP_MEMBERS_GROUP_ID
+        )->withTimestamps();
+    }
+
+    /**
+     * Return the groups that the current user owns
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function owningGroups()
+    {
+        return $this->hasMany(Group::class, Constants::FLD_GROUPS_OWNER_ID);
+    }
+
 }
