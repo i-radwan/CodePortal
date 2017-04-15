@@ -30,6 +30,7 @@ class ContestController extends Controller
         //Forget roblemsFilters
         Session::forget(Constants::CHECKED_PROBLEMS);
         Session::forget(Constants::CONTESTS_PROBLEMS_FILTERS);
+        Session::forget(Constants::CONTESTS_MENTIONED_ORGANISERS);
 
         $data = [];
 
@@ -80,6 +81,9 @@ class ContestController extends Controller
      */
     public function addEditContestView(Request $request)
     {
+        if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS))
+            $mOrganisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
+        else $mOrganisers = [];
         if(Session::has(Constants::CONTESTS_PROBLEMS_FILTERS)){
             $cjudges = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges'] : [];
             $ctags = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']: [];
@@ -96,6 +100,7 @@ class ContestController extends Controller
             ->with(Constants::CHECKED_PROBLEMS,Session::get(Constants::CHECKED_PROBLEMS))
             ->with(Constants::CONTESTS_CHECKED_TAGS, $ctags)
             ->with(Constants::CONTESTS_CHECKED_JUDGES, $cjudges)
+            ->with(Constants::CONTESTS_MENTIONED_ORGANISERS, $mOrganisers)
             ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
@@ -152,7 +157,8 @@ class ContestController extends Controller
     }
 
     public function applyOrganisers(Request $request){
-
+        Session::put(Constants::CONTESTS_MENTIONED_ORGANISERS, $request->get(Constants::CONTESTS_MENTIONED_ORGANISERS));
+        return ;
     }
     /**
      * Delete a certain contest if you're owner

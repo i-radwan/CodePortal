@@ -83,7 +83,7 @@
                                 </div>
                             </div>
                             <div class="form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
-                                <label for="problems" class="col-md-4 control-label">Problems</label>
+                                <label for="problems" class="col-md-12 control-label" style="text-align: center">Problems</label>
                                 <br>
                                 <br>
                                 <div class = "col-md-4" >
@@ -99,8 +99,10 @@
                                 </div>
                             </div>
                             <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
-                                <label for="organizers" class="col-md-4 control-label">Organizers</label>
+                                <label for="organizers" class="col-md-4 control-label" >Organizers</label>
+                                <div class = "col-md-6">
                                 @include("contests.contest_views.organisers")
+                                </div>
                                 <div class="col-md-6">
                                     @if ($errors->has('organizers'))
                                         <span class="help-block">
