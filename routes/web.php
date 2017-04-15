@@ -51,11 +51,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('group/add', 'GroupController@addGroup');
     Route::post('group/join/{group}', 'GroupController@joinGroup');
 
-    Route::delete('group/{group}', 'GroupController@deleteGroup');
+    Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
 
     Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest')->middleware(['can:owner-group,group']);
     Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest')->middleware(['can:owner-group,group']);
     Route::put('group/leave/{group}', 'GroupController@leaveGroup');
+
+    // Sheets routes...
+    Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-sheet,sheet']);
 
 });
 

@@ -10,6 +10,7 @@
 
     $members = $data[Constants::SINGLE_GROUP_MEMBERS_KEY];
     $seekers = $data[Constants::SINGLE_GROUP_REQUESTS_KEY];
+    $sheets = $data[Constants::SINGLE_GROUP_SHEETS_KEY];
 @endphp
 
 @extends('layouts.app')
@@ -95,7 +96,11 @@
 
                             </div>
                             <div role="tabpanel" class="tab-pane" id="sheets">
-
+                                @if(count($sheets))
+                                    @include('groups.group_views.sheets')
+                                @else
+                                    <p class="margin-30px">No sheets!</p>
+                                @endif
                             </div>
                             @if($isOwner)
                                 <div role="tabpanel" class="tab-pane horizontal-scroll" id="requests">

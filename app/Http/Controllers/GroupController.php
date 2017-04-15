@@ -46,6 +46,7 @@ class GroupController extends Controller
         $this->getBasicGroupInfo($currentUser, $group, $data);
         $this->getMembersInfo($group, $data);
         $this->getRequestsInfo($group, $data);
+        $this->getSheetsInfo($group, $data);
 
         return view('groups.group')
             ->with('data', $data)
@@ -84,10 +85,7 @@ class GroupController extends Controller
      */
     public function deleteGroup(Group $group)
     {
-        // Check if current auth. user is the owner of the group
-        if ($group->owner->id == Auth::user()->id) {
-            $group->delete();
-        }
+        $group->delete();
         return redirect('groups/');
     }
 
@@ -255,6 +253,23 @@ class GroupController extends Controller
 
         // Set group members
         $data[Constants::SINGLE_GROUP_REQUESTS_KEY] = $seekers;
+    }
+
+    /**
+     * Get group sheets
+     *
+     * @param Group $group
+     * @param array $data
+     */
+    private function getSheetsInfo(Group $group, &$data)
+    {
+        $sheets = $group
+            ->sheets()
+            ->select(Constants::SHEETS_DISPLAYED_FIELDS)
+            ->get();
+
+        // Set group members
+        $data[Constants::SINGLE_GROUP_SHEETS_KEY] = $sheets;
     }
 
 

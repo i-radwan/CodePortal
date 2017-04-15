@@ -131,6 +131,12 @@ class Constants
         self::FLD_USERS_USERNAME,
         self::FLD_USERS_EMAIL,
     ];
+
+    // Sheets displayable fields
+    const SHEETS_DISPLAYED_FIELDS = [
+        self::FLD_SHEETS_ID,
+        self::FLD_SHEETS_NAME
+    ];
     // ============================================================
     //endregion
 

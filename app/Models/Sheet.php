@@ -57,4 +57,27 @@ class Sheet extends Model
             Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID
         )->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)->withTimestamps();
     }
+
+    /**
+     * Return the group which this sheet belongs to
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function group()
+    {
+        return $this->belongsTo(Group::class, Constants::FLD_SHEETS_GROUP_ID);
+    }
+
+
+    /**
+     * Delete the sheet after removing all of its relations records
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        $this->problems()->detach();
+        return parent::delete();
+    }
+
 }

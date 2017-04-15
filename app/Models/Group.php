@@ -86,4 +86,14 @@ class Group extends Model
     }
 
 
+    /**
+     * Return the group sheets
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sheets()
+    {
+        return $this->hasMany(Sheet::class, Constants::FLD_SHEETS_GROUP_ID);
+    }
+
 }

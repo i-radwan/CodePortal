@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Group;
 use App\Models\Notification;
 use App\Utilities\Constants;
 use Illuminate\Support\Facades\Gate;
@@ -71,6 +72,14 @@ class AuthServiceProvider extends ServiceProvider
             if ($user->owningGroups()->find($group)
                 || $user->joiningGroups()->find($group)
             ) return true;
+            return false;
+        });
+        // Owner of sheet group
+        Gate::define("owner-sheet", function ($user, $sheet) {
+            if ($group = Group::find($sheet[Constants::FLD_SHEETS_GROUP_ID])) {
+                // Check if user is owner
+                if ($user->owningGroups()->find($group)) return true;
+            }
             return false;
         });
 

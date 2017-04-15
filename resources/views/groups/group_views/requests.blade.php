@@ -18,14 +18,14 @@
             <td> {{ $seeker->email }}</td>
             <td>
                 <form action="{{url('group/request/accept/'.$groupID.'/'.$seeker->id)}}"
-                      method="post" class="group-request-action">
+                      method="post" class="action">
                     {{method_field('PUT')}}
                     {{csrf_field()}}
                     <button type="submit" class="btn btn-link text-dark">Accept
                     </button>
                 </form>
                 <form action="{{url('group/request/reject/'.$groupID.'/'.$seeker->id)}}"
-                      method="post" class="group-request-action">
+                      method="post" class="action">
                     {{method_field('PUT')}}
                     {{csrf_field()}}
                     <button type="submit" class="btn btn-link text-dark">Reject
