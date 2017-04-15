@@ -77,7 +77,7 @@ class AuthServiceProvider extends ServiceProvider
         // Owner of sheet group
         Gate::define("owner-sheet", function ($user, $sheet) {
             if ($group = Group::find($sheet[Constants::FLD_SHEETS_GROUP_ID])) {
-                // Check if user is owner
+                // Check if user is organizer or owner
                 if ($user->owningGroups()->find($group)) return true;
             }
             return false;

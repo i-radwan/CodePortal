@@ -64,7 +64,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
-Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['can:view-join-contest,contest']);
+Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['canGuestOrMember:view-join-contest,contest']);
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
