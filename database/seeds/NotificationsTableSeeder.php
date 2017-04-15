@@ -39,7 +39,8 @@ class NotificationsTableSeeder extends Seeder
                 Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $receiverID,
                 Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $faker->randomElement($ContestIDs),
                 Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
-                Constants::FLD_NOTIFICATIONS_TYPE => $faker->randomElement(Constants::NOTIFICATION_TYPE),
+                // Constants::FLD_NOTIFICATIONS_TYPE => $faker->randomElement(Constants::NOTIFICATION_TYPE), ToDo generalize
+                Constants::FLD_NOTIFICATIONS_TYPE => Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST],
             ]);
         }
     }
