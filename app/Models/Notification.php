@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\GroupInvitationException;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,6 +49,43 @@ class Notification extends Model
         Constants::FLD_NOTIFICATIONS_RECEIVER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_NOTIFICATIONS_TYPE => 'required|Regex:/([012])/'
     ];
+
+    /**
+     * Create and save new notification
+     *
+     * Notification constructor.
+     * @param array $attributes
+     * @param User|null $sender
+     * @param User|null $receiver
+     * @param Team /Group/Contest $resource
+     * @param int $type
+     * @param bool $duplicationAllowed , allow resending the same notification to the same user twice
+     * @throws NotificationDuplicateException
+     */
+    public function __construct(array $attributes = [], User $sender = null, User $receiver = null, $resource = null, $type = null, $duplicationAllowed = false)
+    {
+        parent::__construct($attributes);
+
+        if ($sender != null && $receiver != null && $resource != null && $type != null) {
+            // Check if user already received this notification
+            if (!$duplicationAllowed) {
+                // Get same resource notifications count
+                $prevNotificationsCount = $receiver->receivedNotifications()
+                    ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $resource->id)
+                    ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', $type)->count();
+
+                if ($prevNotificationsCount > 0)
+                    throw new GroupInvitationException(Constants::GROUP_INVITATION_EXCEPTION_MSGS[Constants::GROUP_INVITATION_EXCEPTION_INVITED]); // Stop and prevent saving new one
+            }
+
+            // Save the notification after checking the duplication
+            $this->sender()->associate($sender);
+            $this->receiver()->associate($receiver);
+            $this->resource()->associate($resource);
+            $this->type = $type;
+            $this->save();
+        }
+    }
 
     /**
      * Returns the user who sent this notification

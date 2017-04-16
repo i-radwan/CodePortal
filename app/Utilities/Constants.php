@@ -554,4 +554,18 @@ class Constants
 
     // ============================================================
     //endregion
+
+    //
+    // Exceptions region
+    //
+
+    // GroupInvitationException
+    const GROUP_INVITATION_EXCEPTION_INVITED = "INVITED";
+
+    const GROUP_INVITATION_EXCEPTION_MSGS = [
+        self::GROUP_INVITATION_EXCEPTION_INVITED => 'This receiver has already received notification regarding this resource',
+    ];
+
+    //=============================================================
+    //endregion
 }

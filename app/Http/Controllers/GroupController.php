@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\GroupInvitationException;
 use App\Models\Group;
 use App\Models\Notification;
 use App\Models\User;
@@ -144,19 +145,26 @@ class GroupController extends Controller
      */
     public function inviteMember(Request $request, Group $group)
     {
+        // Get user
         $user = User::where(Constants::FLD_USERS_USERNAME, '=', $request->get('username'))->first();
-        if ($group && $user && \Gate::denies("member-group", [$group, $user])) {
-            // Create notification ToDo move inside constructor
-            // ToDo check if not already invited
-            $notification = new Notification();
-            $notification->sender()->associate(Auth::user());
-            $notification->receiver()->associate($user);
-            $notification->resource()->associate($group);
-            $notification->type = (Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]);
-            $notification->save();
+
+        // Check if already member or owner
+        if (\Gate::allows("owner-or-member-group", [$group, $user])) {
+            return back()->withErrors([$request->get('username') . ' is already member!']);
         }
 
-        return back();
+        if ($group && $user && \Gate::denies("member-group", [$group, $user])) {
+
+            // Create new notification if user isn't already invited
+            try {
+                new Notification($request->all(), Auth::user(), $user, $group,
+                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP], false);
+
+            } catch (GroupInvitationException $e) {
+                return back()->withErrors([$request->get('username') . ' is already invited!']);
+            }
+        }
+        return back()->withMessages([$request->get('username') . ' invited successfully!']);
     }
 
     /**

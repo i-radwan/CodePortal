@@ -67,7 +67,8 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         // Owner or member of group
-        Gate::define("owner-or-member-group", function ($user, $group) {
+        Gate::define("owner-or-member-group", function ($currentUser, $group, $user) {
+            if (!$user) $user = $currentUser;
             // Check if user is member or owner
             if ($user->owningGroups()->find($group->id)
                 || $user->joiningGroups()->find($group->id)
