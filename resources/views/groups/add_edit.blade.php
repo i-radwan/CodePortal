@@ -11,7 +11,6 @@
                     <div class="panel-body">
                         <form class="form-horizontal" role="form" method="POST" action="{{ url($formAction) }}">
                             {{ csrf_field() }}
-                            <input type="hidden" name="group_id" value="{{isset($group->id)}}"/>
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} has-feedback">
                                 <label for="name" class="col-md-4 control-label">Name</label>
 

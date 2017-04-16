@@ -75,7 +75,7 @@ class GroupController extends Controller
     public function editGroupView(Group $group)
     {
         return view('groups.add_edit')
-            ->with('formAction', 'group/edit')
+            ->with('formAction', 'group/edit/' . $group->id)
             ->with('btnText', 'Edit')
             ->with('group', $group)
             ->with('pageTitle', config('app.name') . ' | ' . $group->name);
@@ -99,15 +99,13 @@ class GroupController extends Controller
      * Update group in database
      *
      * @param Request $request
+     * @param Group $group
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function editGroup(Request $request)
+    public function editGroup(Request $request, Group $group)
     {
-        $group = Group::find($request->get('group_id'));
-        if (\Gate::allows('owner-group', $group)) {
-            $group->name = $request->get('name');
-            $group->save();
-        }
+        $group->name = $request->get('name');
+        $group->save();
         return redirect('group/' . $group->id);
     }
 

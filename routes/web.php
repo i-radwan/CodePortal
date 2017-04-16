@@ -49,12 +49,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('sheet/edit/{sheet}', 'SheetController@editSheetView')->middleware(['can:owner-sheet,sheet']);
     Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-sheet,sheet']);
     Route::get('group/add', 'GroupController@addGroupView');
-    Route::get('group/edit/{group}', 'GroupController@editGroupView');
+    Route::get('group/edit/{group}', 'GroupController@editGroupView')->middleware(['can:owner-group,group']);
     Route::get('group/{group}', 'GroupController@displayGroup');
 
     Route::post('sheet/problem/solution', 'SheetController@saveProblemSolution');
     Route::post('group/add', 'GroupController@addGroup');
-    Route::post('group/edit', 'GroupController@editGroup');
+    Route::post('group/edit/{group}', 'GroupController@editGroup')->middleware(['can:owner-group,group']);
     Route::post('group/join/{group}', 'GroupController@joinGroup');
     Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);
     Route::post('sheet/edit/{sheet}', 'SheetController@editSheet')->middleware(['can:owner-sheet,sheet']);
