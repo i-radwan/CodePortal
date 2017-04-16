@@ -4,16 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use Auth;
+use Mockery\Exception;
 use Session;
 use Redirect;
 use URL;
 use App\Models\User;
 use App\Models\Problem;
+use App\Models\Tag;
+use App\Models\Judge;
 use App\Models\Contest;
 use App\Models\Question;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ProblemController;
 
 class ContestController extends Controller
 {
@@ -24,6 +28,12 @@ class ContestController extends Controller
      */
     public function index()
     {
+        //Forget CheckedProblems
+        //Forget ProblemsFilters
+        Session::forget(Constants::CHECKED_PROBLEMS);
+        Session::forget(Constants::CONTESTS_PROBLEMS_FILTERS);
+        Session::forget(Constants::CONTESTS_MENTIONED_ORGANISERS);
+
         $data = [];
 
         $data[Constants::CONTESTS_CONTESTS_KEY] =
@@ -47,7 +57,9 @@ class ContestController extends Controller
     {
         $currentUser = Auth::user();
 
-        if (!$contest) return redirect('contests/');
+        if (!$contest) {
+            return redirect('contests/');
+        }
 
         $data = [];
 
@@ -67,12 +79,32 @@ class ContestController extends Controller
 
     /**
      * Show add/edit contest page
+     * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return $this
      */
-    public function addEditContestView()
+    public function addEditContestView(Request $request)
     {
-        return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
+        if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS))
+            $mOrganisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
+        else $mOrganisers = [];
+        if (Session::has(Constants::CONTESTS_PROBLEMS_FILTERS)) {
+            $cjudges = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges'] : [];
+            $ctags = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags'] : [];
+        } else {
+            $cjudges = [];
+            $ctags = [];
+        }
+        $problems = self::getProblemsWithFilters($request, $ctags, $cjudges);
+        return view('contests.add_edit')
+            ->with('problems', $problems)
+            ->with('judges', Judge::all())
+            ->with('checkBoxes', 'true')
+            ->with(Constants::CHECKED_PROBLEMS, Session::get(Constants::CHECKED_PROBLEMS))
+            ->with(Constants::CONTESTS_CHECKED_TAGS, $ctags)
+            ->with(Constants::CONTESTS_CHECKED_JUDGES, $cjudges)
+            ->with(Constants::CONTESTS_MENTIONED_ORGANISERS, $mOrganisers)
+            ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
     /**
@@ -96,8 +128,23 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
+        $request[Constants::FLD_CONTESTS_OWNER_ID] = Auth::user()->id;
         $contest = new Contest($request->all());
         $contest->save();
+        //Get Organisers
+        if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
+            $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
+            $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
+            //Save Organisers
+            foreach ($organisers as $organiser) {
+                $contest->organizers()->save($organiser);
+            }
+        }
+        //Add Problems
+        if (Session::has(Constants::CHECKED_PROBLEMS)) {
+            $problems = Session::get(Constants::CHECKED_PROBLEMS);
+            $contest->problems()->syncWithoutDetaching($problems);
+        }
     }
 
     /**
@@ -110,6 +157,59 @@ class ContestController extends Controller
 
     }
 
+    public function tagsAutoComplete(Request $request)
+    {
+        $data = Tag::select('name')->get();
+        return response()->json($data);
+
+    }
+
+    public function organisersAutoComplete(Request $request)
+    {
+        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])->get([]);
+        return response()->json($data);
+    }
+
+    public function applyProblemsCheckBoxes(Request $request)
+    {
+
+        if (Session::has(Constants::CHECKED_PROBLEMS))
+            $currentInSession = Session::get(Constants::CHECKED_PROBLEMS);
+        else
+            $currentInSession = [];
+        $j = count($currentInSession);
+        $checkedRows = $request->get('checkedRows'); //TODO @Samir Change That
+        $checkedStates = $request->get('checkedStates');
+        for ($i = 0; $i < count($checkedRows); $i = $i + 1) {
+            $isFound = in_array($checkedRows[$i], $currentInSession);
+            if ($checkedStates[$i]) {//If it's checked
+                if (!($isFound)) {
+                    $currentInSession[$j] = $checkedRows[$i];
+                    $j = $j + 1;
+                }
+            } else { //Check if it's in the current session
+                if ($isFound) { //Remove
+                    $currentInSession = array_diff($currentInSession, [$checkedRows[$i]]);
+                }
+            }
+        }
+        Session::put(Constants::CHECKED_PROBLEMS, $currentInSession);
+        return $currentInSession;
+    }
+
+    public function applyProblemsFilters(Request $request)
+    {
+        Session::put(Constants::CONTESTS_PROBLEMS_FILTERS, $request->get(Constants::CONTESTS_PROBLEMS_FILTERS));
+        return;
+
+    }
+
+    public function applyOrganisers(Request $request)
+    {
+        Session::put(Constants::CONTESTS_MENTIONED_ORGANISERS, $request->get(Constants::CONTESTS_MENTIONED_ORGANISERS));
+        return;
+    }
+
     /**
      * Delete a certain contest if you're owner
      *
@@ -119,7 +219,8 @@ class ContestController extends Controller
     public function deleteContest(Contest $contest)
     {
         // Check if current auth. user is the owner of the contest
-        if ($contest->owner->id == Auth::user()->id) {
+        // TODO: delete contest data from all tables
+        if (Auth::check() && $contest->owner->id == Auth::user()->id) {
             $contest->delete();
         }
         return redirect('contests/');
@@ -334,7 +435,48 @@ class ContestController extends Controller
      */
     private function getStandingsInfo($contest, &$data)
     {
+        //TODO: paginate standings
+//        \DB::enableQueryLog();
+        $rawData = $contest->standings()->get();
+//        dd(\DB::getQueryLog());
 
+        $standings = [];
+        $idx = 0;
+        $len = count($rawData);
+
+        for ($i = 0; $i < $len; ++$i) {
+            $standings[$idx] = [];
+            $cur = &$standings[$idx];
+            $curData = (array)$rawData[$i];
+            $cur[Constants::FLD_SUBMISSIONS_USER_ID] = $curData[Constants::FLD_SUBMISSIONS_USER_ID];
+            $cur[Constants::FLD_USERS_USERNAME] = $curData[Constants::FLD_USERS_USERNAME];
+            $cur[Constants::FLD_USERS_SOLVED_COUNT] = $curData[Constants::FLD_USERS_SOLVED_COUNT];
+            $cur[Constants::FLD_USERS_TRAILS_COUNT] = $curData[Constants::FLD_USERS_TRAILS_COUNT];
+            $cur[Constants::FLD_USERS_PENALTY] = $curData[Constants::FLD_USERS_PENALTY];
+
+            $cur[Constants::TBL_PROBLEMS] = [];
+            $problems = &$cur[Constants::TBL_PROBLEMS];
+
+            do {
+                $problems[] = [
+                    Constants::FLD_SUBMISSIONS_PROBLEM_ID => $curData[Constants::FLD_SUBMISSIONS_PROBLEM_ID],
+                    Constants::FLD_PROBLEMS_SOLVED_COUNT => $curData[Constants::FLD_PROBLEMS_SOLVED_COUNT],
+                    Constants::FLD_PROBLEMS_TRAILS_COUNT => $curData[Constants::FLD_PROBLEMS_TRAILS_COUNT]
+                ];
+
+                if (++$i < $len) {
+                    $curData = (array)$rawData[$i];
+                }
+            } while ($i < $len && $cur[Constants::FLD_SUBMISSIONS_USER_ID] == $curData[Constants::FLD_SUBMISSIONS_USER_ID]);
+
+            --$i;
+            ++$idx;
+        }
+
+//        dd($standings);
+
+        // Set contest status
+        $data[Constants::SINGLE_CONTEST_STANDINGS_KEY] = $standings;
     }
 
     /**
@@ -346,7 +488,9 @@ class ContestController extends Controller
     private function getStatusInfo($contest, &$data)
     {
         //TODO: paginate submissions
+//        \DB::enableQueryLog();
         $submissions = $contest->submissions()->get();
+//        dd(\DB::getQueryLog());
 
         // Set contest status
         $data[Constants::SINGLE_CONTEST_STATUS_KEY] = $submissions;
@@ -405,5 +549,11 @@ class ContestController extends Controller
 
         // Set contest questions
         $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements;
+    }
+
+
+    public static function getProblemsWithFilters($request, $tagNames, $judgesIDs)
+    {
+        return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); //Returning the Problems Data
     }
 }

@@ -30,13 +30,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        Constants::FLD_USERS_EMAIL,
-        Constants::FLD_USERS_PASSWORD,
-        Constants::FLD_USERS_USERNAME,
-        Constants::FLD_USERS_GENDER,
-        Constants::FLD_USERS_BIRTHDATE,
-        Constants::FLD_USERS_PROFILE_PICTURE,
-        Constants::FLD_USERS_COUNTRY
+    Constants::FLD_USERS_EMAIL,
+    Constants::FLD_USERS_PASSWORD,
+    Constants::FLD_USERS_USERNAME,
+    Constants::FLD_USERS_GENDER,
+    Constants::FLD_USERS_BIRTHDATE,
+    Constants::FLD_USERS_PROFILE_PICTURE,
+    Constants::FLD_USERS_COUNTRY
     ];
 
     /**
@@ -45,8 +45,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        Constants::FLD_USERS_PASSWORD,
-        Constants::FLD_USERS_REMEMBER_TOKEN,
+    Constants::FLD_USERS_PASSWORD,
+    Constants::FLD_USERS_REMEMBER_TOKEN,
     ];
 
     /**
@@ -61,7 +61,7 @@ class User extends Authenticatable
             Constants::TBL_USER_HANDLES,
             Constants::FLD_USER_HANDLES_USER_ID,
             Constants::FLD_USER_HANDLES_JUDGE_ID
-        )->withPivot(Constants::FLD_USER_HANDLES_HANDLE);
+            )->withPivot(Constants::FLD_USER_HANDLES_HANDLE);
     }
 
     /**
@@ -118,7 +118,7 @@ class User extends Authenticatable
             Constants::TBL_CONTEST_PARTICIPANTS,
             Constants::FLD_CONTEST_PARTICIPANTS_USER_ID,
             Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID
-        )->withTimestamps();
+            )->withTimestamps();
     }
 
     /**
@@ -133,7 +133,7 @@ class User extends Authenticatable
             Constants::TBL_CONTEST_ADMINS,
             Constants::FLD_CONTEST_ADMINS_ADMIN_ID,
             Constants::FLD_CONTEST_ADMINS_CONTEST_ID
-        );
+            );
     }
 
     /**
@@ -163,8 +163,9 @@ class User extends Authenticatable
      */
     public function contestQuestions($contestId)
     {
+
         return $this->questions()
-            ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
+        ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }
 
     /**
@@ -177,7 +178,7 @@ class User extends Authenticatable
     public function answeredQuestions()
     {
         return $this->questions()
-            ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
+        ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
     }
 
     /**
@@ -208,12 +209,29 @@ class User extends Authenticatable
     public function userDisplayableReceivedNotifications()
     {
         return $this->receivedNotifications()
-            ->where(Constants::FLD_NOTIFICATIONS_STATUS, '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED])
-            ->orderBy(Constants::FLD_NOTIFICATIONS_ID, 'desc');
+        ->where(Constants::FLD_NOTIFICATIONS_STATUS, '!=',
+            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED])
+        ->orderBy(Constants::FLD_NOTIFICATIONS_ID, 'desc');
     }
 
     /**
+     * Return all the wrong submission of the current user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public static function getWrongAnswerProblems($user)
+    {
+        $userData=User::where('username',$user)->first(); 
+        return $userData->submissions->where('verdict','0')->pluck('problem_id');
+    }
+
+    public static function getSolvedProblems($user)
+    {
+        //ToDo: for the statistics
+        $userData=User::where('username',$user)->first(); 
+        return $userData->submissions->where('verdict','1')->pluck('problem_id');
+    }
+    /*
      * Return user unread notifications
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -221,8 +239,8 @@ class User extends Authenticatable
     public function unreadNotifications()
     {
         return $this->receivedNotifications()
-            ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]);
+        ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=',
+            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]);
     }
 
 
@@ -267,3 +285,4 @@ class User extends Authenticatable
         )->withTimestamps();
     }
 }
+

@@ -53,10 +53,8 @@ class AuthServiceProvider extends ServiceProvider
         // Owner or organizer of contest
         Gate::define("owner-organizer-contest", function ($user, $contestID) {
             // Check if user is organizer or owner
-            if ($user->organizingContests()->find($contestID) ||
-                $user->owningContests()->find($contestID)
-            ) return true;
-            return false;
+            return (($user->organizingContests()->find($contestID) ||
+                $user->owningContests()->find($contestID)));
         });
 
         // Owner of group/sheet
@@ -76,9 +74,7 @@ class AuthServiceProvider extends ServiceProvider
             else if ($resource instanceof Group) {
 
                 // Check if user is owner
-                if ($user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID])
-                ) return true;
-                return false;
+                return ($user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID]));
             }
             return false;
         });
@@ -91,8 +87,8 @@ class AuthServiceProvider extends ServiceProvider
                 && $member->joiningGroups()->find($group[Constants::FLD_GROUPS_ID])
             ) return true;
             return false;
-        });
 
+        });
         // Owner or member of group
         Gate::define("owner-or-member-group", function ($currentUser, $resource, $user = null) {
             // If not user is specified, use the system injected currentUser

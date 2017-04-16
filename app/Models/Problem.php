@@ -33,7 +33,6 @@ class Problem extends Model
         Constants::FLD_PROBLEMS_NAME,
         Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
         Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
-        Constants::FLD_PROBLEMS_DIFFICULTY,
         Constants::FLD_PROBLEMS_SOLVED_COUNT
     ];
 
@@ -50,17 +49,6 @@ class Problem extends Model
         Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => 'required|min:0',
         Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => 'required|max:10',
         Constants::FLD_PROBLEMS_SOLVED_COUNT => 'integer|required|min:0'
-    ];
-
-    /**
-     * The attributes that are displayable in the problems table.
-     *
-     * @var array
-     */
-    public static $displayable = [
-        Constants::FLD_PROBLEMS_NAME,
-        Constants::FLD_PROBLEMS_SOLVED_COUNT,
-        Constants::FLD_PROBLEMS_JUDGE_NAME
     ];
 
     /**
