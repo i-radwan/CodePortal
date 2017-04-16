@@ -118,7 +118,11 @@ class ProblemController extends Controller
 
     /**
      * This Function gets the problems to the ContestController with the applied filters
-     * @param $request
+     * @param       $request
+     * @param       $tagsNames array of tagsNames
+     * @param       $judgesIDs array of JudgesIds
+     * @param array $sortParam sort By Parameters
+     *
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getProblemsToContestController($request, $tagsNames, $judgesIDs, $sortParam = []){

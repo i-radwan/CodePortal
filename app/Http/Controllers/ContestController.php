@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Mockery\Exception;
 use Session;
 use Redirect;
 use URL;
@@ -111,9 +112,24 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
-        dd($request);
         $contest = new Contest($request->all());
         $contest->save();
+        dd("Check");
+        //Add Problems
+        if(Session::has(Constants::CHECKED_PROBLEMS))
+            $problems = Session::get(Constants::CHECKED_PROBLEMS);
+        else
+            $problems = [];
+        //Get Organisers
+        if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS))
+            $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
+        else
+            $organisers = [];
+
+        //Save Problems
+        $contest->problems()->save($problems);
+        //Save Organisers
+        $contest->organizers()->save($organisers);
     }
 
     /**
