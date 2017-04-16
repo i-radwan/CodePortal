@@ -46,7 +46,6 @@ class Notification extends Model
     protected $rules = [
         Constants::FLD_NOTIFICATIONS_SENDER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_NOTIFICATIONS_RECEIVER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
-        Constants::FLD_NOTIFICATIONS_STATUS => 'required|Regex:/([012])/',
         Constants::FLD_NOTIFICATIONS_TYPE => 'required|Regex:/([012])/'
     ];
 

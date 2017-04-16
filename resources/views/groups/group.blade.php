@@ -87,6 +87,9 @@
                         <!-- Tab panes -->
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active horizontal-scroll" id="members">
+                                @if($isOwner)
+                                    @include('groups.group_views.invite')
+                                @endif
                                 @if(count($members))
                                     @include('groups.group_views.members')
                                 @else

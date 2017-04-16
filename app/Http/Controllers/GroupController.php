@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Auth;
@@ -131,6 +132,30 @@ class GroupController extends Controller
     public function removeMember(Group $group, User $user)
     {
         $user->joiningGroups()->detach($group);
+        return back();
+    }
+
+    /**
+     * Invite user to a group
+     *
+     * @param Request $request
+     * @param Group $group
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function inviteMember(Request $request, Group $group)
+    {
+        $user = User::where(Constants::FLD_USERS_USERNAME, '=', $request->get('username'))->first();
+        if ($group && $user && \Gate::denies("member-group", [$group, $user])) {
+            // Create notification ToDo move inside constructor
+            // ToDo check if not already invited
+            $notification = new Notification();
+            $notification->sender()->associate(Auth::user());
+            $notification->receiver()->associate($user);
+            $notification->resource()->associate($group);
+            $notification->type = (Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]);
+            $notification->save();
+        }
+
         return back();
     }
 
