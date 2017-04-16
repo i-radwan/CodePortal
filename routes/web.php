@@ -113,12 +113,6 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
-//
-Route::any('getData', function () {
-    dd("Roger That");
-});
-
-
 // Errors Routes...
 Route::get('errors/404', function () {
     return view('errors.404')->with('pageTitle', 'CodePortal | 404');
