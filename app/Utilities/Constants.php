@@ -43,6 +43,8 @@ class Constants
 
     const CONTESTS_COUNT_PER_PAGE = 30;
 
+    const CONTESTS_PENALTY_PER_WRONG_SUBMISSION = 20;
+
     const CONTESTS_CONTESTS_KEY = 'contests';
 
     //
@@ -349,6 +351,9 @@ class Constants
     const FLD_USERS_PROFILE_PICTURE = "profile_picture";
     const FLD_USERS_ROLE = "role";
     const FLD_USERS_REMEMBER_TOKEN = "remember_token";
+    const FLD_USERS_PENALTY = "user_penalty";                       // Derived attribute
+    const FLD_USERS_SOLVED_COUNT = "user_solved_count";             // Derived attribute
+    const FLD_USERS_TRAILS_COUNT = "user_trials_count";             // Derived attribute
     const FLD_USERS_CODEFORCES_HANDLE = "codeforces_handle";        // Used in sign up & profile pages
     const FLD_USERS_UVA_HANDLE = "uva_handle";                      // Used in sign up & profile pages
     const FLD_USERS_LIVE_ARCHIVE_HANDLE = "live_archive_handle";    // Used in sign up & profile pages
@@ -372,10 +377,8 @@ class Constants
     const FLD_PROBLEMS_JUDGE_FIRST_KEY = "judge_first_key";
     const FLD_PROBLEMS_JUDGE_SECOND_KEY = "judge_second_key";
     const FLD_PROBLEMS_NAME = "name";
-    const FLD_PROBLEMS_DIFFICULTY = "difficulty";
     const FLD_PROBLEMS_SOLVED_COUNT = "solved_count";
-    const FLD_PROBLEMS_JUDGE_NAME = "judge_name";                   // Derived attribute
-    const FLD_PROBLEMS_TAGS = "tag_names";                          // Derived attribute
+    const FLD_PROBLEMS_TRAILS_COUNT = "trials_count";                   // Derived attribute
 
     // Submissions
     const FLD_SUBMISSIONS_ID = "id";

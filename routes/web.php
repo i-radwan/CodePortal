@@ -41,7 +41,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 });
 
-Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['can:view-join-contest,contest']);
+//TODO: recheck the exception thrown by the middleware
+Route::get('contest/{contest}', 'ContestController@displayContest');//->middleware(['can:view-join-contest,contest']);
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');

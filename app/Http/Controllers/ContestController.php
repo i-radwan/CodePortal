@@ -319,7 +319,48 @@ class ContestController extends Controller
      */
     private function getStandingsInfo($contest, &$data)
     {
+        //TODO: paginate standings
+//        \DB::enableQueryLog();
+        $rawData = $contest->standings()->get();
+//        dd(\DB::getQueryLog());
 
+        $standings = [];
+        $idx = 0;
+        $len = count($rawData);
+
+        for ($i = 0; $i < $len; ++$i) {
+            $standings[$idx] = [];
+            $cur = &$standings[$idx];
+            $curData = (array)$rawData[$i];
+            $cur[Constants::FLD_SUBMISSIONS_USER_ID] = $curData[Constants::FLD_SUBMISSIONS_USER_ID];
+            $cur[Constants::FLD_USERS_USERNAME] = $curData[Constants::FLD_USERS_USERNAME];
+            $cur[Constants::FLD_USERS_SOLVED_COUNT] = $curData[Constants::FLD_USERS_SOLVED_COUNT];
+            $cur[Constants::FLD_USERS_TRAILS_COUNT] = $curData[Constants::FLD_USERS_TRAILS_COUNT];
+            $cur[Constants::FLD_USERS_PENALTY] = $curData[Constants::FLD_USERS_PENALTY];
+
+            $cur[Constants::TBL_PROBLEMS] = [];
+            $problems = &$cur[Constants::TBL_PROBLEMS];
+
+            do {
+                $problems[] = [
+                    Constants::FLD_SUBMISSIONS_PROBLEM_ID => $curData[Constants::FLD_SUBMISSIONS_PROBLEM_ID],
+                    Constants::FLD_PROBLEMS_SOLVED_COUNT => $curData[Constants::FLD_PROBLEMS_SOLVED_COUNT],
+                    Constants::FLD_PROBLEMS_TRAILS_COUNT => $curData[Constants::FLD_PROBLEMS_TRAILS_COUNT]
+                ];
+
+                if (++$i < $len) {
+                    $curData = (array)$rawData[$i];
+                }
+            } while($i < $len && $cur[Constants::FLD_SUBMISSIONS_USER_ID] == $curData[Constants::FLD_SUBMISSIONS_USER_ID]);
+
+            --$i;
+            ++$idx;
+        }
+
+//        dd($standings);
+
+        // Set contest status
+        $data[Constants::SINGLE_CONTEST_STANDINGS_KEY] = $standings;
     }
 
     /**
@@ -331,7 +372,9 @@ class ContestController extends Controller
     private function getStatusInfo($contest, &$data)
     {
         //TODO: paginate submissions
+//        \DB::enableQueryLog();
         $submissions = $contest->submissions()->get();
+//        dd(\DB::getQueryLog());
 
         // Set contest status
         $data[Constants::SINGLE_CONTEST_STATUS_KEY] = $submissions;
