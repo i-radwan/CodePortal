@@ -26,12 +26,12 @@ class UserController extends Controller
 
     public function edit()
     {
-        $user=\Auth::user()->username;
-        return view('profile.edit')->with('pageTitle', config('app.name').'|'.$user);
+        $user=\Auth::user();
+        return view('profile.edit')->with('pageTitle', config('app.name').'|'.$user->username)->with('user',$user);
     }
     public function editProfile(Request $request)
     {
-        echo $request->name;  
+        dd($request);  
     }
     public function userDate($user)
     {

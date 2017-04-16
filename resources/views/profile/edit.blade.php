@@ -22,29 +22,30 @@
 			</div>
 			<h3>Personal info</h3>
 
-			<form class="form-horizontal" role="form">
+			<form method="post"  class="form-horizontal" role="form">
+			{{ csrf_field() }}
 				<div class="form-group">
 					<label class="col-lg-3 control-label">First name:</label>
 					<div class="col-lg-8">
-						<input class="form-control" value="Jane" type="text">
+						<input name="FirstName" class="form-control" value="{{isset($user->first_name) ? $user->first_name: "" }}" type="text">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-3 control-label">Last name:</label>
 					<div class="col-lg-8">
-						<input class="form-control" value="Bishop" type="text">
+						<input name="LastName"class="form-control" value="user->name" type="text">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-lg-3 control-label">Company:</label>
+					<label class="col-lg-3 control-label">Country:</label>
 					<div class="col-lg-8">
-						<input class="form-control" value="" type="text">
+						<input name="Country" class="form-control" value="" type="text">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-3 control-label">Email:</label>
 					<div class="col-lg-8">
-						<input class="form-control" value="janesemail@gmail.com" type="text">
+						<input name="Email" class="form-control" value="{{$user->email}}" type="text">
 					</div>
 				</div>
 				<div class="form-group">
@@ -85,7 +86,7 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label"></label>
 					<div class="col-md-8">
-						<input class="btn btn-primary" value="Save Changes" type="button">
+						<input class="btn btn-primary" value="Save Changes" type="submit">
 						<span></span>
 						<input class="btn btn-default" value="Cancel" type="reset">
 					</div>
