@@ -15,18 +15,12 @@
                         <input type="hidden" name="problem_id" id="problem-id"/>
                         <input type="hidden" name="sheet_id" id="sheet-id"/>
                         {{--ToDo : Add languages list--}}
-                        <div class="form-group">
-                            <div class="cols-sm-12">
-                                <div class="input-group">
-                                <span class="input-group-addon">
-                                    <i class="fa fa-info" aria-hidden="true"></i>
-                                </span>
-                                    {{--ToDo : use code editor later--}}
-                                    <textarea class="form-control" name="problem_solution" id="problem-solution"
-                                              cols="5"
-                                              rows="10" placeholder="Solution..."></textarea>
-                                </div>
-                            </div>
+                        <div class="form-group code-editor-container">
+                            <pre id="code-editor">
+                            </pre>
+                            <textarea class="form-control" name="problem_solution" id="problem-solution"
+                                      cols="0"
+                                      rows="0"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -39,7 +33,10 @@
                 </form>
             @else
                 <div class="modal-body">
-                    <p id="problem-solution-p"></p>
+                    <div class="form-group code-editor-container">
+                            <pre id="code-editor-members">
+                    </pre>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-info" data-dismiss="modal">Close
@@ -50,3 +47,6 @@
         </div>
     </div>
 </div>
+<script>
+
+</script>

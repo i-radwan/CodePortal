@@ -41,6 +41,9 @@
 <script src="/js/jquery.waypoints.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/jquery.datetimepicker.full.min.js"></script>
+{{--Include files for code editor--}}
+<script src="/modules/code-editor/ace.js" type="text/javascript" charset="utf-8"></script>
+
 <script src="/js/script.js"></script>
 </body>
 </html>

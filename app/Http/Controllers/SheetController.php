@@ -9,6 +9,7 @@ use URL;
 use Illuminate\Http\Request;
 use App\Utilities\Constants;
 use Auth;
+use Response;
 
 class SheetController extends Controller
 {
@@ -150,13 +151,33 @@ class SheetController extends Controller
 
             // Check if problem exists then update solution
             if ($problem) {
-                $problem->pivot->solution = $solution;
-                $problem->pivot->save();
+
+                // Check if solution file already created
+                if (!$problem->pivot->solution) {
+                    $problem->pivot->solution = uniqid();
+                    $problem->pivot->save();
+                }
+
+                // Write to code file of this solution
+                $codeFile = fopen("code/" . $problem->pivot->solution, "w") or die("Unable to open file!");
+                fwrite($codeFile, $solution);
+                fclose($codeFile);
             }
         }
         return back();
     }
 
+    public function retrieveProblemSolution(Sheet $sheet, $problemID)
+    {
+        // Get solution file name
+        $solutionFile = $sheet->problems()->find($problemID)->pivot->solution;
+
+        // Read and return file contents
+        $codeFile = fopen("code/$solutionFile", "r");
+        $codeFileContest = fread($codeFile, filesize("code/123"));
+        fclose($codeFile);
+        return $codeFileContest;
+    }
 
     /**
      * Get sheet basic info

@@ -7,10 +7,10 @@
         </ul>
     </div>
 @endif
-@if(count($messages) > 0)
+@if(Session::has('messages') && Session::get('messages') > 0)
     <div class="alert alert-success">
         <ul>
-            @foreach ($messages->all() as $message)
+            @foreach (Session::get('messages') as $message)
                 <li>{{ $message }}</li>
             @endforeach
         </ul>

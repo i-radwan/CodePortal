@@ -164,7 +164,7 @@ class GroupController extends Controller
                 return back()->withErrors([$request->get('username') . ' is already invited!']);
             }
         }
-        return back()->withMessages([$request->get('username') . ' invited successfully!']);
+        return back()->with('messages', [$request->get('username') . ' invited successfully!']);
     }
 
     /**

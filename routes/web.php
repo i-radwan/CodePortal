@@ -45,6 +45,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 
     // Groups routes...
+    Route::get('sheet/solution/{sheet}/{problemID}', 'SheetController@retrieveProblemSolution')->middleware(['can:owner-or-member-sheet,sheet']);
     Route::get('sheet/new/{group}', 'SheetController@addSheetView')->middleware(['can:owner-group,group']);
     Route::get('sheet/edit/{sheet}', 'SheetController@editSheetView')->middleware(['can:owner-sheet,sheet']);
     Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-sheet,sheet']);

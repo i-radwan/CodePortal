@@ -67,6 +67,72 @@ $(window).on("popstate", function () {
 /*</editor-fold>*/
 
 
+/*<editor-fold desc="Code editor">*/
+
+// ToDo Comment this hell block
+if ($("#code-editor").length) {
+    var editor = ace.edit("code-editor");
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/javascript");
+} else if ($("#code-editor-members").length) {
+    var editor_members = ace.edit("code-editor-members");
+    editor_members.setTheme("ace/theme/twilight");
+    editor_members.session.setMode("ace/mode/javascript");
+}
+/**
+ *
+ */
+$("#answer-model-submit-button").click(function () {
+    $('#problem-solution').val(editor.getValue());
+    return true;
+});
+
+/**
+ *
+ *
+ * @param problemID
+ * @param sheetID
+ * @param url
+ */
+function getSolutionFromFile(url) {
+    $.ajax({
+        type: "GET",
+        url: url,
+        success: function (problemSolution) {
+            // Fill editors with solution
+            if (editor) {
+                editor.setValue(problemSolution);
+                editor.gotoLine(1);
+            } else if (editor_members) {
+                editor_members.setValue((problemSolution.length) ? problemSolution : 'No solution provided!');
+                editor_members.setReadOnly(true);
+            }
+        },
+        error: function (result) {
+            console.log(result.responseText);
+        }
+    });
+}
+/**
+ * Fill problem answer form/p fields
+ *
+ * @param int problemID
+ * @param int sheetID
+ * @param string url for solution file
+ * @param problemSolution
+ */
+function fillAnswerModal(problemID, sheetID, url) {
+    if ($('#problem-id').length && $('#sheet-id').length) {
+        $('#problem-id').val(problemID);
+        $('#sheet-id').val(sheetID);
+    }
+    getSolutionFromFile(url);
+}
+/**************************************/
+/*</editor-fold>*/
+
+
+
 /*<editor-fold desc="Notifications">*/
 
 /**

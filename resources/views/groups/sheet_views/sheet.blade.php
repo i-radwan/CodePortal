@@ -47,8 +47,7 @@
                                     <button class="btn btn-primary"
                                             data-toggle="modal"
                                             data-target="#problem-solution-model"
-                                            onclick="$('#problem-id').val('{{$problem->id}}');$('#sheet-id').val('{{$sheetID}}');$('#problem-solution').val('{{$solution}}');$('#problem-solution-p').html('{{(strlen($solution))?$solution:"No solution provided!"}}');">
-
+                                            onclick="fillAnswerModal('{{$problem->id}}', '{{$sheetID}}', '{{url("sheet/solution/$sheetID/".$problem->id)}}');">
                                         Solution
                                     </button>
                                 </td>
