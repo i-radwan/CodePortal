@@ -195,6 +195,7 @@ class GroupController extends Controller
      *
      * Authorization happens in the defined Gate
      *
+     * NOTE: changing this function may destroy acceptRequest function logic
      * @param Group $group
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -237,7 +238,17 @@ class GroupController extends Controller
     public function acceptRequest(Group $group, User $user)
     {
         if ($user) {
+            // Remove user invitation
+            $user->userDisplayableReceivedNotifications()
+                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
+                ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group->id)
+                ->update([Constants::FLD_NOTIFICATIONS_STATUS =>
+                    Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]]);
+
+            // Remove user join request
             $group->membershipSeekers()->detach($user);
+
+            // Save user to members
             $group->members()->save($user);
         }
         return Redirect::to(URL::previous() . "#requests");

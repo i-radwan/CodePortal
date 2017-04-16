@@ -7,6 +7,7 @@
     $isOwner = $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_OWNER];
     $userSentRequest = $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_USER_SENT_REQUEST];
     $isMember = $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_MEMBER];
+    $isGroup = true;
 
     $members = $data[Constants::SINGLE_GROUP_MEMBERS_KEY];
     $seekers = $data[Constants::SINGLE_GROUP_REQUESTS_KEY];
@@ -103,11 +104,9 @@
                                        class="btn-sm btn btn-primary pull-right new-sheet-link">New
                                         Contest</a>
                                 @endif
-                                @if(count($contests))
-                                    @include('groups.group_views.contests')
-                                @else
-                                    <p class="margin-30px">No contests!</p>
-                                @endif
+                                <div class="text-center horizontal-scroll">
+                                    @include('contests.contest_views.contests_table')
+                                </div>
                             </div>
                             <div role="tabpanel" class="tab-pane" id="sheets">
                                 @if($isOwner)
