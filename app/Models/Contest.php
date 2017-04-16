@@ -317,7 +317,7 @@ class Contest extends Model
             "`" . Constants::TBL_CONTESTS . "`.`" . Constants::FLD_CONTESTS_TIME . "`" .
             ") " .
             "else " .
-            Constants::CONTESTS_PENALTY_PER_WRONG_SUBMISSION . " ".
+            Constants::CONTESTS_PENALTY_PER_WRONG_SUBMISSION . " " .
             "end) as " .
             "`" . Constants::FLD_USERS_PENALTY . "`"
         ));
@@ -623,7 +623,7 @@ class Contest extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function contests()
+    public function groups()
     {
         return $this->belongsToMany(
             Contest::class,
