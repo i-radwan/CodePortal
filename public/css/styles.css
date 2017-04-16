@@ -762,6 +762,9 @@ footer {
 .tags-list{
     list-style-type: none;
 }
+.contest_clear_problems_filters{
+    visibility: hidden;
+}
 /*====================================*/
 /*========== PROBLEMS PAGE ===========*/
 /*====================================*/

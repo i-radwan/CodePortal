@@ -111,6 +111,7 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
+        dd($request->all());
         $contest = new Contest($request->all());
         $contest->save();
     }
@@ -164,7 +165,7 @@ class ContestController extends Controller
     }
 
     public function applyProblemsFilters(Request $request){
-        Session::put(Constants::CONTESTS_PROBLEMS_FILTERS, $request->get('cProblemsFilters'));
+        Session::put(Constants::CONTESTS_PROBLEMS_FILTERS, $request->get(Constants::CONTESTS_PROBLEMS_FILTERS));
         return ;
 
     }

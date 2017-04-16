@@ -36,11 +36,31 @@
         {{--Apply filters & Clear buttons--}}
         <p>
             <input  class="btn btn-default" value="Apply Filters" onclick="applyFilters()"/>
-            <a href="{{ Request::url() }}" class="btn btn-link text-dark pull-right">Clear</a>
+            <a href="{{ Request::url() }}" class="btn btn-link text-dark pull-right contest_clear_problems_filters" id="clearTableLink" >Clear</a>
         </p>
     </div>
-
 </div>
+{{--Problems Count--}}
+{{--@if(isset($checkedRows))--}}
+{{--<div class="panel panel-default problems-filters-panel">--}}
+    {{--<div class="panel-body">--}}
+        {{--<div class="container">--}}
+            {{--Problems Count: {{count($checkedRows)}}--}}
+        {{--</div>--}}
+    {{--</div>--}}
+    {{--<hr>--}}
+    {{--<div class="panel-body">--}}
+        {{--<div class="container">--}}
+            {{--Problems:--}}
+            {{--<ul>--}}
+                {{--@foreach( $checkedRows as $problemRow)--}}
+                    {{--<li>{{($problemRow)}}</li>--}}
+                {{--@endforeach--}}
+            {{--</ul>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+{{--</div>--}}
+{{--@endif--}}
 
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
 <script type="text/javascript" src="//codeorigin.jquery.com/ui/1.10.2/jquery-ui.min.js"></script>
@@ -64,7 +84,8 @@
             success: function(data){
             }
         });
-        location.reload();
+//        location.reload();
+        document.getElementById("clearTableLink").click();
     }
     //Wait for deletion key
     $(document).on('mousedown','.tags-close-icon', function(item) {
