@@ -170,8 +170,7 @@ class SheetController extends Controller
         return back();
     }
 
-    public
-    function retrieveProblemSolution(Sheet $sheet, $problemID)
+    public function retrieveProblemSolution(Sheet $sheet, $problemID)
     {
         // Get solution file name
         $solutionFile = $sheet->problems()->find($problemID)->pivot->solution;
@@ -189,8 +188,7 @@ class SheetController extends Controller
      * @param Sheet $sheet
      * @param array $data
      */
-    private
-    function getBasicContestInfo(Sheet $sheet, &$data)
+    private function getBasicContestInfo(Sheet $sheet, &$data)
     {
         $sheetInfo = [];
 
@@ -218,13 +216,10 @@ class SheetController extends Controller
      * @param Sheet $sheet
      * @param array $data
      */
-    private
-    function getProblemsInfo(Sheet $sheet, &$data)
+    private function getProblemsInfo(Sheet $sheet, &$data)
     {
         $problems = $sheet->problems()->get();
         // Set group members
         $data[Constants::SINGLE_SHEET_PROBLEMS_KEY] = $problems;
     }
-
-
 }
