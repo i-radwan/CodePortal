@@ -293,6 +293,15 @@ class Contest extends Model
     public function submissions()
     {
         $query = $this->contestBasicQuery($this->basicContestSubmissionsQueryCols, false);
+
+        // Join with language table
+        $query->join(
+            Constants::TBL_LANGUAGES,
+            Constants::TBL_LANGUAGES . '.' . Constants::FLD_LANGUAGES_ID,
+            '=',
+            Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_LANGUAGE_ID
+        );
+
         $query->orderByDesc(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME);
         return $query;
     }
@@ -318,11 +327,7 @@ class Contest extends Model
 
         $this->contestJoinProblems($query);
         $this->contestJoinUsers($query);
-
-        if ($tillFirstAccepted)
-            $this->contestLeftJoinSubmissionsUntilFirstAccepted($query);
-        else
-            $this->contestJoinSubmissions($query);
+        $this->contestJoinSubmissions($query, $tillFirstAccepted);
 
         return $query;
     }
@@ -375,94 +380,30 @@ class Contest extends Model
      * Join contest with its related submissions
      *
      * @param \Illuminate\Database\Query\Builder $query
+     * @param bool $tillFirstAccepted Whether to join with all submission or with submissions until first accepted
      */
-    private function contestJoinSubmissions($query)
+    private function contestJoinSubmissions($query, $tillFirstAccepted = false)
     {
         // TODO: need to check timestamps accurately
         // TODO: It seems that Codeforces timestamp is leading 4 hours
         $contestStartTime = strtotime($this->time);
         $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
 
-        $query
-            ->join(
-                Constants::TBL_SUBMISSIONS,
-                function ($join) {
-                    $join->on(
-                        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
-                        '=',
-                        Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID
-                    );
-                    $join->on(
-                        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
-                        '=',
-                        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
-                    );
-                }
-            )
-//            ->whereBetween(
-//                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-//                [$contestStartTime, $contestEndTime]
-//            )
-            ->join(
-                Constants::TBL_LANGUAGES,
-                Constants::TBL_LANGUAGES . '.' . Constants::FLD_LANGUAGES_ID,
-                '=',
-                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_LANGUAGE_ID
+        if ($tillFirstAccepted) {
+            $joinType = 'leftJoin';
+            $submissionsTable = DB::raw('(' .
+                Submission::tillFirstAccepted($contestStartTime, $contestEndTime)->toSql() .
+                ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`'
             );
-    }
-
-    /**
-     * Left join contest with its related submissions until the first accepted submission
-     *
-     * @param \Illuminate\Database\Query\Builder $query
-     */
-    private function contestLeftJoinSubmissionsUntilFirstAccepted($query)
-    {
-        // TODO: need to check timestamps accurately
-        // TODO: It seems that Codeforces timestamp is leading 4 hours
-        $contestStartTime = strtotime($this->time);
-        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
-
-        $firstAcceptedQuery =
-            DB::table(Constants::TBL_SUBMISSIONS)
-                ->select(
-                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME
-                )
-                ->whereColumn(
-                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
-                    '=',
-                    's' . '.' . Constants::FLD_SUBMISSIONS_USER_ID
-                )
-                ->whereColumn(
-                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
-                    '=',
-                    's' . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID
-                )
-                ->where(
-                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT,
-                    '=',
-                    DB::raw("'" . Constants::VERDICT_ACCEPTED . "'")
-                )
-//                ->whereBetween(
-//                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-//                    [$contestStartTime, $contestEndTime]
-//                )
-                ->orderBy(
-                    Constants::FLD_SUBMISSIONS_SUBMISSION_TIME
-                )
-                ->limit(1);
-
-        $submissionsQuery =
-            DB::table(Constants::TBL_SUBMISSIONS . ' as ' . 's')
-                ->where(
-                    's' . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-                    '<=',
-                    DB::raw('COALESCE((' . $firstAcceptedQuery->toSql() . '), UNIX_TIMESTAMP())')
-                );
+        }
+        else {
+            $joinType = 'join';
+            $submissionsTable = Constants::TBL_SUBMISSIONS;
+        }
 
         $query
-            ->leftJoin(
-                DB::raw('(' . $submissionsQuery->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`'),
+            ->$joinType(
+                $submissionsTable,
                 function ($join) {
                     $join->on(
                         Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
