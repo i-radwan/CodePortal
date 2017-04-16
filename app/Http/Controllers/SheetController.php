@@ -46,6 +46,23 @@ class SheetController extends Controller
             ->with('pageTitle', config('app.name') . ' | Sheet');
     }
 
+    /**
+     * Show edit sheet page
+     *
+     * @param Sheet $sheet
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function editSheetView(Sheet $sheet)
+    {
+        // Show edit sheet view with sheet info attached
+        return view('groups.sheet_views.add_edit')
+            ->with('action', 'Edit')
+            ->with('sheetName', $sheet->name)
+            ->with('problemsIDs', implode(",", $sheet->problems()->pluck(Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID)->toArray()))
+            ->with('url', 'sheet/edit/' . $sheet->id)
+            ->with('pageTitle', config('app.name') . ' | Sheet');
+    }
+
 
     /**
      * Add new sheet to database
@@ -66,12 +83,31 @@ class SheetController extends Controller
 
         // Fetch problems and ToDo replace with samir tbl
         $problemsIDs = explode(",", $request->get('problems'));
-        foreach ($problemsIDs as $problemID) {
-            $sheet->problems()->attach($problemID);
-        }
+        $sheet->problems()->sync($problemsIDs);
 
         // Return to sheets
         return redirect('group/' . $group->id . '#sheets');
+    }
+
+    /**
+     * Update sheet in database
+     *
+     * @param Request $request
+     * @param Sheet $sheet
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function editSheet(Request $request, Sheet $sheet)
+    {
+        $sheet[Constants::FLD_SHEETS_NAME] = $request->get('name');
+        // Save sheet
+        $sheet->save();
+
+        // Fetch problems and ToDo replace with samir tbl
+        $problemsIDs = explode(",", $request->get('problems'));
+        $sheet->problems()->sync($problemsIDs);
+
+        // Return to sheets
+        return redirect('group/' . $sheet->group_id . '#sheets');
     }
 
 

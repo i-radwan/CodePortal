@@ -20,7 +20,7 @@
             <td> {{ count($sheet->problems()->get())}}</td>
             @if($isOwner)
                 <td class="text-center">
-                    <a href="" class="btn btn-link text-dark">
+                    <a href="{{url('sheet/edit/'.$sheet[Constants::FLD_SHEETS_ID])}}}" class="btn btn-link text-dark">
                         Edit
                     </a>
                     <form action="{{url('sheet/'.$sheet[Constants::FLD_SHEETS_ID])}}"

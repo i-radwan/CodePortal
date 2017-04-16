@@ -20,7 +20,8 @@
 
                                 <div class="col-md-6">
                                     <input id="name" type="text" class="form-control" name="name"
-                                           value="{{ old('name') }}" placeholder="Name" required autofocus>
+                                           value="{{ (isset($sheetName))?$sheetName:old('name') }}" placeholder="Name"
+                                           required autofocus>
 
                                     @if ($errors->has('name'))
                                         <span class="help-block">
@@ -35,7 +36,8 @@
 
                                 <div class="col-md-6">
                                     <input id="problems" type="text" class="form-control" name="problems"
-                                           value="{{ old('problems') }}" placeholder="IDs comma separated" required>
+                                           value="{{ (isset($problemsIDs))?$problemsIDs:old('problems') }}"
+                                           placeholder="IDs comma separated" required>
 
                                     @if ($errors->has('problems'))
                                         <span class="help-block">
@@ -47,7 +49,7 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <button type="submit" class="btn btn-primary">
-                                        Add
+                                        {{$action}}
                                     </button>
                                 </div>
                             </div>
