@@ -12,13 +12,15 @@
 
     <!-- Styles -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/styles.css" rel="stylesheet">
     <link href="/css/animate.css" rel="stylesheet">
     <link href="/css/jquery.datetimepicker.min.css" rel="stylesheet">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,600" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    {{--Custom Styling--}}
+    <link href="/css/styles.css" rel="stylesheet">
 
     <!-- Scripts -->
     <script>
@@ -27,18 +29,18 @@
 </head>
 
 <body>
-    <div class="space-wrapper">
-        @include('layouts.navbar')
-        @yield('content')
-    </div>
+<div class="space-wrapper">
+    @include('layouts.navbar')
+    @yield('content')
+</div>
 
-    @include('layouts.footer')
+@include('layouts.footer')
 
-    <!-- Scripts -->
-    <script src="/js/jquery-3.1.1.min.js"></script>
-    <script src="/js/jquery.waypoints.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/jquery.datetimepicker.full.min.js"></script>
-    <script src="/js/script.js"></script>
+<!-- Scripts -->
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/jquery.waypoints.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.datetimepicker.full.min.js"></script>
+<script src="/js/script.js"></script>
 </body>
 </html>

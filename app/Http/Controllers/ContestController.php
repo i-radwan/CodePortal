@@ -2,57 +2,71 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Session;
+use Redirect;
+use URL;
+use App\Models\User;
+use App\Models\Problem;
+use App\Models\Contest;
+use App\Models\Question;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
-use App\Models\Contest;
-use App\Models\User;
-use Auth;
 
 class ContestController extends Controller
 {
     /**
-     * Show the contests page.
+     * Show all contests page
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\View\View $this
      */
     public function index()
     {
+        $data = [];
+
+        $data[Constants::CONTESTS_CONTESTS_KEY] =
+            Contest::ofPublic()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
+
         // Get all public contests from database
-        $contestsData = $this->prepareContestsTableData();
-        return view('contests.index', compact('data', $contestsData))->with('pageTitle', config('app.name') . ' | Contests');
+        return view('contests.index')
+            ->with('data', $data)
+            ->with('pageTitle', config('app.name') . ' | Contests');
     }
 
     /**
      * Show single contest page
-     * @param $contestID
-     * @return $this
+     *
+     * Authorization happens in the defined Gate
+     *
+     * @param Contest $contest
+     * @return \Illuminate\View\View $this
      */
-    public function displayContest($contestID)
+    public function displayContest(Contest $contest)
     {
-        $contest = Contest::find($contestID);
         $currentUser = Auth::user();
 
         if (!$contest) return redirect('contests/');
+
         $data = [];
 
-        // Check if user is participating or owning the contest to show btns
-        $this->getLeaveAndDeleteButtonsVisibility($currentUser, $contest, $data);
-
-        // Get basic contest info
+        // Check if user is participating or owning the contest to show buttons
+        $this->getUserOwnerOrParticipant($currentUser, $contest, $data);
         $this->getBasicContestInfo($contest, $data);
-
-        // Get participants data
+        $this->getProblemsInfo($contest, $data);
+        $this->getStandingsInfo($contest, $data);
+        $this->getStatusInfo($contest, $data);
         $this->getParticipantsInfo($contest, $data);
-
-        // Get questions data
         $this->getQuestionsInfo($currentUser, $contest, $data);
 
-        return view('contests.contest')->with('data', $data)->with('pageTitle', config('app.name') . ' | ' . $contest->name);
+        return view('contests.contest')
+            ->with('data', $data)
+            ->with('pageTitle', config('app.name') . ' | ' . $contest->name);
     }
 
     /**
      * Show add/edit contest page
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function addEditContestView()
@@ -62,9 +76,9 @@ class ContestController extends Controller
 
     /**
      * Add new contest to database
+     *
      * @param Request $request
      */
-
     public function addContest(Request $request)
     {
         $contest = new Contest($request->all());
@@ -73,6 +87,7 @@ class ContestController extends Controller
 
     /**
      * Update contest in database
+     *
      * @param Request $request
      */
     public function editContest(Request $request)
@@ -80,134 +95,174 @@ class ContestController extends Controller
 
     }
 
-    public function deleteContest($contestID)
+    /**
+     * Delete a certain contest if you're owner
+     *
+     * @param Contest $contest
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function deleteContest(Contest $contest)
     {
-        $user = Auth::user();
-        $contest = $user->owningContests()->find($contestID);
-        if ($contest) $contest->delete();
+        // Check if current auth. user is the owner of the contest
+        if (Auth::check() && $contest->owner->id == Auth::user()->id) {
+            $contest->delete();
+        }
         return redirect('contests/');
     }
 
-    public function leaveContest($contestID)
+    /**
+     * Cancel user participation in a contest
+     *
+     * @param Contest $contest
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function leaveContest(Contest $contest)
     {
         $user = Auth::user();
-        $contest = $user->owningContests()->find($contestID);
-        if ($contest)
-            $user->participatingContests()->detach($contestID);
-        return back();
-    }
-
-    public function joinContest($contestID)
-    {
-        $user = Auth::user();
-        $contest = $user->owningContests()->find($contestID);
-        if ($contest)
-            $user->participatingContests()->save(Contest::find($contestID));
+        $user->participatingContests()->detach($contest);
         return back();
     }
 
     /**
-     * Prepare contests to match contests table format by providing the required
-     * headers and data formatting
-     * @return array of data for view (contest table input)
+     * Register user participation in a contest
+     *
+     * Authorization happens in the defined Gate
+     *
+     * @param Contest $contest
+     * @return \Illuminate\Http\RedirectResponse
      */
-    private function prepareContestsTableData()
+    public function joinContest(Contest $contest)
     {
-        $contests = Contest::getPublicContests();
-
-        $rows = [];
-
-        // Prepare problems data for table according to the table protocol
-        foreach ($contests as $contest) {
-            $rows[] = [
-                Constants::TABLE_DATA_KEY => $this->getContestRowData($contest)
-            ];
-        }
-        // Return problems table data: headings & rows
-        return [
-            Constants::TABLE_HEADINGS_KEY => Constants::CONTESTS_TABLE_HEADINGS,
-            Constants::TABLE_ROWS_KEY => $rows
-        ];
+        $user = Auth::user();
+        $user->participatingContests()->syncWithoutDetaching([$contest->id]);
+        return back();
     }
 
     /**
-     * Get specific contest data
-     * @param $contest
-     * @return array that holds contest data to be showm
+     * Ask question related to the contest problems
+     *
+     * ToDo add problem id after @Wael gets problems
+     *
+     * @param Request $request
+     * @param int $contestID
+     * @return \Illuminate\Http\RedirectResponse
      */
-    private function getContestRowData($contest)
+    public function addQuestion(Request $request, $contestID)
     {
-        // Note that they should be in the same order of the headings
-        return [
-            [   // ID
-                Constants::TABLE_DATA_KEY => $contest->id
-            ],
-            [   // Name
-                Constants::TABLE_DATA_KEY => $contest->name,
-                Constants::TABLE_LINK_KEY => url('contest/' . $contest->id) // ToDo add contest page link
-            ],
-            [   // Time
-                Constants::TABLE_DATA_KEY => $contest->time
-            ],
-            [   // Duration
-                Constants::TABLE_DATA_KEY => Utilities::convertMinsToHoursMins($contest->duration)
-            ],
-            [   // Owner name
-                Constants::TABLE_DATA_KEY => $this->getContestOwnerName($contest->owner_id),
-                Constants::TABLE_LINK_KEY => "" // ToDo add owner profile link
-            ]
-        ];
-    }
+        $user = Auth::user();
+        $problem = 1; // ToDo get problem from request
 
-    /**
-     * Get contest owner Name
-     * ToDo, if no more functionality, inline this function !
-     * @param $ownerID
-     * @return mixed
-     */
-    private function getContestOwnerName($ownerID)
-    {
-        return User::find($ownerID)->username;
-    }
+        // Check if user is a participant
+        $contest = $user->participatingContests()->find($contestID);
 
-    /**
-     * Check if the user owns the contest, then set delete contest button to visible
-     * check if the user is participating in this contest, then set leave contest
-     * button to visible
-     * @param $user
-     * @param $contest
-     * @param $data
-     */
-    private function getLeaveAndDeleteButtonsVisibility($user, $contest, &$data)
-    {
-        $leaveBtnVisible = false;
-        $deleteBtnVisible = false;
-
-        if ($user) {
-            // Check if the user has joined this contest (to show leave link)
-            $leaveBtnVisible =
-                ($contest->participatingUsers()->find($user->id) != null);
-            // Check if the user is the owner of this contest (to show delete link)
-            $deleteBtnVisible =
-                ($contest->owner->id == $user->id);
+        // Check if contest exists (user participating in it) and the contest is running now
+        if ($contest && $contest->isRunning()) {
+            // TODO: I think static function is better than the constructor
+            new Question($request->all(), $user, $contest, $problem);
+            return back();
         }
 
-        // Set btns visibility values
-        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY] = $leaveBtnVisible;
+        Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
+        return Redirect::to(URL::previous() . "#questions");
+    }
 
-        $data[Constants::SINGLE_CONTEST_EXTRA_KEY]
-        [Constants::SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY] = $deleteBtnVisible;
+    /**
+     * Mark question as announcement
+     *
+     * @param Question $question
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function announceQuestion(Question $question)
+    {
+        // Check if question exists
+        if ($question) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
+                $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
+                $question->save();
+            }
+        }
+
+        return Redirect::to(URL::previous() . "#questions");
+    }
+
+    /**
+     * Un-mark question as announcement
+     *
+     * @param Question $question
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function renounceQuestion(Question $question)
+    {
+        // Check if question exists
+        if ($question) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
+                $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
+                $question->save();
+            }
+        }
+
+        return Redirect::to(URL::previous() . "#questions");
+    }
+
+    /**
+     * Save question answer (provided by contest organizers)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function answerQuestion(Request $request)
+    {
+        $questionID = $request->get('question_id');
+        $questionAnswer = $request->get('question_answer');
+        $question = Question::find($questionID);
+        $user = Auth::user();
+
+        // Check if question exists
+        if ($question) {
+            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
+                $question->saveAnswer($questionAnswer, $user);
+            }
+        }
+
+        return Redirect::to(URL::previous() . "#questions");
+    }
+
+    /**
+     * Check if the user owns the contest and
+     * check if the user is participating in this contest
+     *
+     * @param User $user
+     * @param Contest $contest
+     * @param array $data
+     */
+    private function getUserOwnerOrParticipant($user, $contest, &$data)
+    {
+        $isUserOwner = false;
+        $isUserParticipating = false;
+
+        if ($user && $contest->owner) {
+            // Check if the user is the owner of this contest
+            $isUserOwner = ($contest->owner->id == $user->id);
+
+            // Check if the user has joined this contest
+            $isUserParticipating = ($contest->participants()->find($user->id) != null);
+        }
+
+        // Set data values
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_OWNER] = $isUserOwner;
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING] = $isUserParticipating;
     }
 
     /**
      * Get contest basic info (owner, organizers, time, duration)
-     * @param $contest
-     * @param $data
+     *
+     * @param Contest $contest
+     * @param array $data
      */
     private function getBasicContestInfo($contest, &$data)
     {
         $contestInfo = [];
+
         // Get contest id
         $contestInfo[Constants::SINGLE_CONTEST_ID_KEY] = $contest->id;
 
@@ -219,7 +274,7 @@ class ContestController extends Controller
 
         // Get organizers array
         $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY] =
-            $contest->organizingUsers()->pluck(Constants::FLD_USERS_USERNAME)->toArray();
+            $contest->organizers()->pluck(Constants::FLD_USERS_USERNAME);
 
         // Get duration in hrs:mins format
         $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY] =
@@ -227,44 +282,113 @@ class ContestController extends Controller
 
         // Get time and convert to familiar format
         $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY] =
-            date('D M y, H:i', strtotime($contest->time));
+            date('D M d, H:i', strtotime($contest->time));
+
+        // Get contest running status
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS]
+            = $contest->isRunning();
+
+        // Is user an organizer?
+        $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER]
+            = Auth::check() ? (Auth::user()->organizingContests()->find($contest->id) != null) : false;
 
         // Set contest info
         $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;
     }
 
     /**
+     * Get contest problems data
+     *
+     * @param Contest $contest
+     * @param array $data
+     */
+    private function getProblemsInfo($contest, &$data)
+    {
+        //TODO: paginate problems
+        $problems = $contest->problems()->get();
+
+        // Set contest problems
+        $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY] = $problems;
+    }
+
+    /**
+     * Get contest standings data
+     *
+     * @param Contest $contest
+     * @param array $data
+     */
+    private function getStandingsInfo($contest, &$data)
+    {
+
+    }
+
+    /**
+     * Get contest status data
+     *
+     * @param Contest $contest
+     * @param array $data
+     */
+    private function getStatusInfo($contest, &$data)
+    {
+        //TODO: paginate submissions
+        $submissions = $contest->submissions()->get();
+
+        // Set contest status
+        $data[Constants::SINGLE_CONTEST_STATUS_KEY] = $submissions;
+    }
+
+    /**
      * Get contest participants specific data
-     * @param $contest
-     * @param $data
+     *
+     * @param Contest $contest
+     * @param array $data
      */
     private function getParticipantsInfo($contest, &$data)
     {
-        $participants =
-            $contest
-                ->participatingUsers()
-                ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
-                ->get()->toArray();
+        $participants = $contest
+            ->participants()
+            ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
+            ->get();
 
         // Set contest participants
         $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;
     }
 
     /**
-     * Get contest questions related to currently signed in user
-     * @param $user
-     * @param $contest
+     * Get contest questions info
+     *
+     * @param User $user
+     * @param Contest $contest
      * @param $data
+     * @return array
      */
     private function getQuestionsInfo($user, $contest, &$data)
     {
-        if (!$user) return;
+        // Get contest announcements
+        $announcements = $contest->announcements()->get();
 
-        $questions = $user->contestQuestions($contest->id)
-            ->get()->toArray();
+        // If user is logged in, get his questions too
+        if ($user) {
+            // Get user specific questions
+            $questions = $user->contestQuestions($contest->id)->get();
+
+            // Merge announcements and user questions
+            $announcements = $announcements->merge($questions);
+        }
+
+        // Get extra data from foreign keys
+        foreach ($announcements as $announcement) {
+            // Get admin username from id if answer is provided
+            if ($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])
+                $announcement[Constants::FLD_QUESTIONS_ADMIN_ID] =
+                    User::find($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])->username;
+
+            // Get problem number from id
+            $announcement[Constants::FLD_QUESTIONS_PROBLEM_ID] =
+                Utilities::generateProblemNumber(Problem::find($announcement[Constants::FLD_QUESTIONS_PROBLEM_ID]));
+        }
 
         // Set contest questions
-        $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $questions;
+        $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements;
     }
-
 }

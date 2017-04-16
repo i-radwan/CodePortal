@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Judge;
+use App\Models\Problem;
 use Illuminate\Validation\ValidationException;
 
 class JudgeTest extends DatabaseTest
@@ -56,13 +57,13 @@ class JudgeTest extends DatabaseTest
         // Insert a lot of problems for counting statistics
         for ($i = 0; $i < 100; $i++) {
             if ($i % 2 == 0)
-                $this->insertProblem('Problem' . $i, 10, 20, $judge1, '12' . $i, '21' . $i);
+                $this->insertProblem('Problem' . $i, 20, $judge1, '12' . $i, '21' . $i);
             else
-                $this->insertProblem('Problem' . $i, 10, 20, $judge2, '2' . $i, '2' . $i);
+                $this->insertProblem('Problem' . $i, 20, $judge2, '2' . $i, '2' . $i);
         }
         // Get problems of judge 1 and check if the count = 50
-        $problems = Judge::getJudgeProblems($judge1->id);
-        $this->assertEquals(json_decode($problems, true)['problems']['total'], 50);
+        $problems = Problem::ofJudges([$judge1->id])->get();
+        $this->assertEquals(count($problems->toArray()), 50);
 
         \Log::info("Judge's Problems :: " . $problems);
     }

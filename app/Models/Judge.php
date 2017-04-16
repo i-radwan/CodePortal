@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use App\Utilities\Constants;
-use App\Utilities\Utilities;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 
 class Judge extends Model
@@ -100,29 +98,5 @@ class Judge extends Model
             Constants::FLD_USER_HANDLES_JUDGE_ID,
             Constants::FLD_USER_HANDLES_USER_ID
         )->withPivot(Constants::FLD_USER_HANDLES_HANDLE);
-    }
-
-    /**
-     * Return the user model corresponding to the given handle, if not found then null is returned
-     *
-     * @param string $handle
-     * @return User|null
-     */
-    public function user($handle)
-    {
-        return $this->users()->wherePivot(Constants::FLD_USER_HANDLES_HANDLE, $handle)->first();
-    }
-
-    public static function getJudgeProblems($judgeID, $page = 1, $sortBy = [])
-    {
-        $sortBy = Utilities::initializeProblemsSortByArray($sortBy);
-
-        // Set page
-        Paginator::currentPageResolver(function () use ($page) {
-            return $page;
-        });
-        $problems = Problem::getAllProblemsForTable();
-        $problems = $problems->where(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID, '=', $judgeID);
-        return Utilities::prepareProblemsOutput($problems, $sortBy);
     }
 }

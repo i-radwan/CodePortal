@@ -23,8 +23,8 @@ class ModelsRelationsTest extends DatabaseTest
         $language->save();
         $judge = $this->insertJudge('1', 'Codeforces3', 'http://www.judge3.com');
         $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0', $admin);
-        $problem1 = $this->insertProblem('Problem1', '10', '20', $judge, '123', '213');
-        $question = $this->insertQuestion('Question1', "Hello", 'Answer1', $contest, $user);
+        $problem1 = $this->insertProblem('Problem1', '20', $judge, '123', '213');
+        $question = $this->insertQuestion('Question1', "HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello", 'Answer1', $contest, $user, $problem1);
         $question->saveAnswer("Ansert1", $admin);
         $submission = $this->insertSubmission('123', 100, 200, '1', $problem1, $user, $language);
         $tag = new Tag([Constants::FLD_TAGS_NAME => 'Tag0123']);
@@ -35,7 +35,7 @@ class ModelsRelationsTest extends DatabaseTest
         $tag = new Tag([Constants::FLD_TAGS_NAME => 'Tag01232']);
         $tag->save();
         $problem1->tags()->sync([$tag->id], false);
-        $problem = $this->insertProblem('Problem1', '10', '20', $judge, '22', '33');
+        $problem = $this->insertProblem('Problem1', '20', $judge, '22', '33');
         $problem->tags()->sync([$tag->id], false);
         $problem->tags()->sync([$tag->id], false);
         $problem->tags()->sync([$tag->id], false);
@@ -77,15 +77,15 @@ class ModelsRelationsTest extends DatabaseTest
         $this->assertEquals($question->admin()->getResults()->id, $admin->id);
 
         // User + Judge
-        $user->handles()->save($judge, [Constants::FLD_USER_HANDLES_HANDLE => 'asd']);
+        $user->addHandle($judge->id, 'asd');
 
         // User + Contest
         $user->participatingContests()->save($contest);
         $admin->organizingContests()->save($contest);
         $this->assertEquals(count($user->participatingContests()), 1);
         $this->assertEquals(count($admin->organizingContests()), 1);
-        Log::info($contest->organizingUsers()->getResults());
-        Log::info($contest->participatingUsers()->getResults());
+        Log::info($contest->organizers()->getResults());
+        Log::info($contest->participants()->getResults());
 
         // Contest + Owner
         $this->assertEquals(count($admin->owningContests()), 1);

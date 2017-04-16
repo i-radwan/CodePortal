@@ -137,7 +137,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the contests that the current owned
+     * Return the contests that the current user owns
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -156,17 +156,62 @@ class User extends Authenticatable
         return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID);
     }
 
+    /**
+     * Return all questions asked by the current user in the given contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function contestQuestions($contestId)
     {
-        // ToDo: rename function to camel case
-        return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID)
+
+        return $this->questions()
         ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }
 
+    /**
+     * Return all questions answered by the current user
+     *
+     * ToDo: Remove if not used
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function answeredQuestions()
     {
-        // ToDo: rename function to camel + recheck the logic of this function
-        return $this->hasMany(Question::class)->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
+        return $this->questions()
+        ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
+    }
+
+    /**
+     * Return the notifications sent by this user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentNotifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_SENDER_ID);
+    }
+
+    /**
+     * Return the notifications sent by this user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function receivedNotifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RECEIVER_ID);
+    }
+
+    /**
+     * Return user non-deleted notifications sorted by id desc.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userDisplayableReceivedNotifications()
+    {
+        return $this->receivedNotifications()
+        ->where(Constants::FLD_NOTIFICATIONS_STATUS, '!=',
+            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED])
+        ->orderBy(Constants::FLD_NOTIFICATIONS_ID, 'desc');
     }
 
     /**
@@ -185,6 +230,17 @@ class User extends Authenticatable
         //ToDo: for the statistics
         $userData=User::where('username',$user)->first(); 
         return $userData->submissions->where('verdict','1')->pluck('problem_id');
+    }
+    /*
+     * Return user unread notifications
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function unreadNotifications()
+    {
+        return $this->receivedNotifications()
+        ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=',
+            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]);
     }
 }
 

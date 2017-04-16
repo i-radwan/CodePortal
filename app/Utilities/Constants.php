@@ -12,48 +12,30 @@ class Constants
 
     const PROBLEMS_COUNT_PER_PAGE = 30;
 
-    // TODO: add links
+    const URL_QUERY_SEARCH_KEY = "q";
+    const URL_QUERY_JUDGES_KEY = "judges";
+    const URL_QUERY_TAGS_KEY = "tags";
+    const URL_QUERY_TAG_KEY = "tag";
+    const URL_QUERY_SORT_PARAM_KEY = "sort";
+    const URL_QUERY_SORT_ORDER_KEY = "order";
+    const URL_QUERY_PAGE_KEY = "page";
 
-    const PROBLEMS_TABLE_HEADINGS = [
-        [
-            Constants::TABLE_DATA_KEY => "ID",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Name",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "# Acc.",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Judge",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Tags",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-    ];
+    const URL_QUERY_SORT_PARAM_ID_KEY = "id";
+    const URL_QUERY_SORT_PARAM_NAME_KEY = "name";
+    const URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY = "acceptedCount";
+    const URL_QUERY_SORT_PARAM_JUDGE_KEY = "judge";
 
-    const PROBLEMS_SORT_BY = [
-        "Name" => self::FLD_PROBLEMS_NAME,
-        "Difficulty" => self::FLD_PROBLEMS_DIFFICULTY,
-        "# Acc." => self::FLD_PROBLEMS_SOLVED_COUNT,
-        "ID" => self::FLD_PROBLEMS_ID,
-        "Judge" => self::FLD_PROBLEMS_JUDGE_ID,
-        "" => self::FLD_PROBLEMS_NAME
+    const PROBLEMS_SORT_PARAMS = [
+        self::URL_QUERY_SORT_PARAM_ID_KEY => self::FLD_PROBLEMS_ID,
+        self::URL_QUERY_SORT_PARAM_NAME_KEY => self::FLD_PROBLEMS_NAME,
+        self::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY => self::FLD_PROBLEMS_SOLVED_COUNT,
+        self::URL_QUERY_SORT_PARAM_JUDGE_KEY => self::FLD_PROBLEMS_JUDGE_ID,
+        '' => self::FLD_PROBLEMS_ID
     ];
     // ============================================================
     //endregion
 
-    //region Contests page
+    //region contests page
 
     //
     // Contests page constants
@@ -61,60 +43,24 @@ class Constants
 
     const CONTESTS_COUNT_PER_PAGE = 30;
 
-    // TODO: add links
-    const CONTESTS_TABLE_HEADINGS = [
-        [
-            Constants::TABLE_DATA_KEY => "ID",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Name",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Time",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Duration",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-        [
-            Constants::TABLE_DATA_KEY => "Owner",
-            Constants::TABLE_HEADINGS_LINK_UP_KEY => "",
-            Constants::TABLE_HEADINGS_LINK_DOWN_KEY => "",
-        ],
-    ];
-
-    const Contest_SORT_BY = [
-        "ID" => self::FLD_CONTESTS_ID,
-        "Name" => self::FLD_CONTESTS_NAME,
-        "Time" => self::FLD_CONTESTS_TIME,
-        "Owner" => self::FLD_CONTESTS_OWNER_ID
-    ];
-    // ============================================================
-    //endregion
-
-    //region SingleContest page
+    const CONTESTS_CONTESTS_KEY = 'contests';
 
     //
-    // SingleContest page constants
+    // Single contest page constants
     //
 
-    // Keys
     // Main keys
     const SINGLE_CONTEST_CONTEST_KEY = "contest";
+    const SINGLE_CONTEST_PROBLEMS_KEY = "problems";
+    const SINGLE_CONTEST_STANDINGS_KEY = "standings";
+    const SINGLE_CONTEST_STATUS_KEY = "status";
     const SINGLE_CONTEST_PARTICIPANTS_KEY = "participants";
     const SINGLE_CONTEST_QUESTIONS_KEY = "questions";
     const SINGLE_CONTEST_EXTRA_KEY = "extra";
 
     // Details keys
 
-    // contest
+    // Contest
     const SINGLE_CONTEST_ID_KEY = "id";
     const SINGLE_CONTEST_NAME_KEY = "name";
     const SINGLE_CONTEST_OWNER_KEY = "owner";
@@ -122,65 +68,17 @@ class Constants
     const SINGLE_CONTEST_TIME_KEY = "time";
     const SINGLE_CONTEST_DURATION_KEY = "duration";
 
-    // participants
+    // Participants
     const PARTICIPANTS_DISPLAYED_FIELDS = [
         self::FLD_USERS_USERNAME,
         self::FLD_USERS_COUNTRY
     ];
-    // extra
-    const SINGLE_CONTEST_LEAVE_BTN_VISIBLE_KEY = "leave_btn_visible";
-    const SINGLE_CONTEST_DELETE_BTN_VISIBLE_KEY = "delete_btn_visible";
 
-
-    // ============================================================
-    //endregion
-
-
-    //region Table protocol
-
-    //
-    // Table Protocol constants
-    //
-
-    // Keys
-    const TABLE_HEADINGS_KEY = "headings";
-    const TABLE_ROWS_KEY = "rows";
-    const TABLE_DATA_KEY = "data";
-    const TABLE_META_DATA_KEY = "meta_data";
-    const TABLE_LINK_KEY = "link";
-    const TABLE_EXTERNAL_LINK_KEY = "external_link";
-    const TABLE_HEADINGS_LINK_UP_KEY = "link_up";
-    const TABLE_HEADINGS_LINK_DOWN_KEY = "link_down";
-    const TABLE_ROW_STATE_KEY = "state";
-    const TABLE_ROW_DISABLED_KEY = "disabled";
-    const TABLE_ROW_CHECKBOX_KEY = "checkbox";
-
-    //Pagination In Generic Table
-    const TABLE_PAGINATION_KEY = "paginator";
-    const PAGINATOR_TOTAL = "total";
-    const PAGINATOR_LAST_PAGE= "lastPage";
-    const PAGINATOR_PER_PAGE= "perPage";
-    const PAGINATOR_CURRENT_PAGE= "currentPage";
-    const PAGINATOR_PATH= "path";
-    const PAGINATOR_NEXT_URL= "next_page_url";
-    const PAGINATOR_PREV_URL= "prev_page_url";
-    const PAGINATOR_START_LIMIT= "initialPage";
-    const PAGINATOR_END_LIMIT= "pagesLimit";
-    //Previous Filters Accompanied with the the Generic Table
-    const PREVIOUS_TABLE_FILTERS = "applied_filters";
-    const APPLIED_FILTERS_JUDGES_IDS = "judges";
-    const APPLIED_FILTERS_TAGS_IDS = "tags";
-    const APPLIED_FILTERS_TAG_ID = "tag";
-    const APPLIED_FILTERS_SEARCH_STRING = "q";
-    const APPLIED_FILTERS_SORT_BY_PARAMETER = "sortBy";
-    const APPLIED_FILTERS_SORT_BY_MODE = "order";
-    const FILTERS_TAGS = "tags";
-    const FILTERS_JUDGES = "judges";
-
-    // Values
-    const TABLE_ROW_STATE_NORMAL = 0;
-    const TABLE_ROW_STATE_SUCCESS = 1;
-    const TABLE_ROW_STATE_DANGER = 2;
+    // Extra
+    const SINGLE_CONTEST_IS_USER_PARTICIPATING = "leave_btn_visible";
+    const SINGLE_CONTEST_IS_USER_OWNER = "delete_btn_visible";
+    const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
+    const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
     // ============================================================
     //endregion
 
@@ -264,14 +162,35 @@ class Constants
     const VERDICT_TESTING = '15';
     const VERDICT_REJECTED = '16';
     const VERDICT_UNKNOWN = '17';
-    const VERDICT_COUNT = 18;   // To be incremented manually
+    const VERDICT_COUNT = 18;   // Note: To be incremented manually
+
+    const VERDICT_NAMES = [
+        self::VERDICT_FAILED => '0',
+        self::VERDICT_ACCEPTED => 'Accepted',
+        self::VERDICT_PARTIAL_ACCEPTED => 'Partial Accepted',
+        self::VERDICT_COMPILATION_ERROR => 'Compilation Error',
+        self::VERDICT_RUNTIME_ERROR => 'Runtime Error',
+        self::VERDICT_WRONG_ANSWER => 'Wrong Answer',
+        self::VERDICT_PRESENTATION_ERROR => 'Presentation Error',
+        self::VERDICT_TIME_LIMIT_EXCEEDED => 'Time Limit Exceeded',
+        self::VERDICT_MEMORY_LIMIT_EXCEEDED => 'Memory Limit Exceeded',
+        self::VERDICT_IDLENESS_LIMIT_EXCEEDED => 'Idleness Limit Exceeded',
+        self::VERDICT_SECURITY_VIOLATED => 'Security Violated',
+        self::VERDICT_CRASHED => 'Crashed',
+        self::VERDICT_INPUT_PREPARATION_CRASHED => 'Input Preparation Crashed',
+        self::VERDICT_CHALLENGED => 'Challenged',
+        self::VERDICT_SKIPPED => 'Skipped',
+        self::VERDICT_TESTING => 'Testing',
+        self::VERDICT_REJECTED => 'Rejected',
+        self::VERDICT_UNKNOWN => 'Unknown',
+    ];
 
     // Simple list of verdicts
     const SIMPLE_VERDICT_NOT_SOLVED = 0;
     const SIMPLE_VERDICT_ACCEPTED = 1;
     const SIMPLE_VERDICT_WRONG_SUBMISSION = 2;
 
-
+    // Codeforces submission verdicts
     const CODEFORCES_SUBMISSION_VERDICTS = [
         "FAILED" => self::VERDICT_FAILED,
         "OK" => self::VERDICT_ACCEPTED,
@@ -293,6 +212,7 @@ class Constants
         "UNKNOWN" => self::VERDICT_UNKNOWN
     ];
 
+    // uHunt submission verdicts
     const UHUNT_SUBMISSION_VERDICTS = [
         "10" => self::VERDICT_FAILED,
         "15" => self::VERDICT_REJECTED,
@@ -308,6 +228,7 @@ class Constants
         "90" => self::VERDICT_ACCEPTED,
     ];
 
+    // uHunt submission languages
     const UHUNT_SUBMISSION_LANGUAGES = [
         "1" => "ANSI C",
         "2" => "Java",
@@ -363,6 +284,27 @@ class Constants
         self::QUESTION_STATUS_ANNOUNCEMENT_KEY => '1'
     ];
 
+    const NOTIFICATION_STATUS_READ = "READ";
+    const NOTIFICATION_STATUS_UNREAD = "UNREAD";
+    const NOTIFICATION_STATUS_DELETED = "DELETED";
+    const NOTIFICATION_STATUS = [
+        self::NOTIFICATION_STATUS_UNREAD => '0',
+        self::NOTIFICATION_STATUS_READ => '1',
+        self::NOTIFICATION_STATUS_DELETED => '2'
+    ];
+
+    const NOTIFICATION_TYPE_CONTEST = "CONTEST";
+    const NOTIFICATION_TYPE_GROUP = "GROUP";
+    const NOTIFICATION_TYPE_TEAM = "TEAM";
+    const NOTIFICATION_TYPE = [
+        self::NOTIFICATION_TYPE_CONTEST => '0',
+        self::NOTIFICATION_TYPE_GROUP => '1',
+        self::NOTIFICATION_TYPE_TEAM => '2'
+    ];
+
+    const NOTIFICATION_TEXT = [
+        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_CONTEST] => "You're invited to join the private contest: ",
+    ];
 
     //
     // Tables
@@ -378,6 +320,7 @@ class Constants
     const TBL_JUDGES = "judges";
     const TBL_TAGS = "tags";
     const TBL_LANGUAGES = "languages";
+    const TBL_NOTIFICATIONS = "notifications";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
@@ -442,6 +385,8 @@ class Constants
     const FLD_SUBMISSIONS_EXECUTION_TIME = "execution_time";
     const FLD_SUBMISSIONS_CONSUMED_MEMORY = "consumed_memory";
     const FLD_SUBMISSIONS_VERDICT = "verdict";
+    const FLD_SUBMISSIONS_PROBLEM_NAME = "problem_name";            // Derived attribute
+    const FLD_SUBMISSIONS_LANGUAGE_NAME = "language_name";          // Derived attribute
 
     // Questions
     const FLD_QUESTIONS_ID = "id";
@@ -467,6 +412,16 @@ class Constants
     const FLD_LANGUAGES_ID = "id";
     const FLD_LANGUAGES_NAME = "name";
 
+
+    //Notifications
+    const FLD_NOTIFICATIONS_ID = "id";
+    const FLD_NOTIFICATIONS_SENDER_ID = "sender_id";
+    const FLD_NOTIFICATIONS_RECEIVER_ID = "receiver_id";
+    const FLD_NOTIFICATIONS_RESOURCE_ID = "resource_id";    // Group id, contest id, ...etc
+    const FLD_NOTIFICATIONS_TYPE = "type";                  // From group, contest, team, ...etc
+    const FLD_NOTIFICATIONS_STATUS = "status";              // Read, unread
+
+
     // User handles
     const FLD_USER_HANDLES_USER_ID = "user_id";
     const FLD_USER_HANDLES_JUDGE_ID = "judge_id";
@@ -487,6 +442,7 @@ class Constants
     // Problem tags
     const FLD_PROBLEM_TAGS_PROBLEM_ID = "problem_id";
     const FLD_PROBLEM_TAGS_TAG_ID = "tag_id";
+
     // ============================================================
     //endregion
 }

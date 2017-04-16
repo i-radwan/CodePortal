@@ -16,21 +16,34 @@ Route::get('/', 'HomeController@index');
 
 // Profile routes...
 Route::get('profile/{user}', 'UserController@index');
+Route::get('edit','UserController@edit');
+Route::post('edit','UserController@editProfile');
 
 // Contest routes...
 Route::get('contests', 'ContestController@index');
-Route::get('contest/edit', 'ContestController@addEditContestView');
-Route::get('contest/add', 'ContestController@addEditContestView');
-Route::get('contest/delete/{contestID}', 'ContestController@deleteContest');
-Route::get('contest/leave/{contestID}', 'ContestController@leaveContest');
-Route::get('contest/join/{contestID}', 'ContestController@joinContest');
 
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
+    Route::get('contest/add', 'ContestController@addEditContestView');
+    Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
+    Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
+    Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
 
-Route::get('contest/{contestID}', 'ContestController@displayContest');
+    Route::post('contest/add', 'ContestController@addContest');
+    Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
 
+    // Question routes...
+    Route::put('contest/question/announce/{question}', 'ContestController@announceQuestion');
+    Route::put('contest/question/renounce/{question}', 'ContestController@renounceQuestion');
+    Route::post('contest/question/answer', 'ContestController@answerQuestion');
+    Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 
-Route::post('contest/add', 'ContestController@addContest');
-Route::post('contest/edit', 'ContestController@editContest');
+    // Notifications routes...
+    Route::put('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
+    Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
+});
+
+Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['can:view-join-contest,contest']);
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
@@ -59,3 +72,11 @@ Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm'
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
+// Errors Routes...
+Route::get('errors/404', function () {
+    return view('errors.404')->with('pageTitle', 'CodePortal | 404');
+});
+Route::get('errors/401', function () {
+    return view('errors.401')->with('pageTitle', 'CodePortal | 401');
+});

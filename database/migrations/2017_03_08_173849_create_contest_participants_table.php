@@ -15,12 +15,12 @@ class CreateContestParticipantsTable extends Migration
     public function up()
     {
         Schema::create(Constants::TBL_CONTEST_PARTICIPANTS, function (Blueprint $table) {
-            $table->unsignedInteger(Constants::FLD_CONTEST_PARTICIPANTS_USER_ID);
             $table->unsignedInteger(Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID);
+            $table->unsignedInteger(Constants::FLD_CONTEST_PARTICIPANTS_USER_ID);
             $table->timestamps();
             $table->primary(array(
-                Constants::FLD_CONTEST_PARTICIPANTS_USER_ID,
-                Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID
+                Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID,
+                Constants::FLD_CONTEST_PARTICIPANTS_USER_ID
             ));
         });
     }

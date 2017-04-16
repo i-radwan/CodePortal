@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use Log;
 use Validator;
 use App\Utilities\Constants;
-use App\Exceptions\UnknownAdminException;
 use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
@@ -54,6 +52,25 @@ class Question extends Model
     ];
 
     /**
+     * Question constructor. Used to save question and associate user and contest to it
+     *
+     * @param array $attributes
+     * @param User $user
+     * @param Contest $contest
+     * @param Problem $problem
+     */
+    public function __construct(array $attributes = [], $user = null, $contest = null, $problem = null)
+    {
+        parent::__construct($attributes);
+        if ($user != null && $contest != null && $problem != null) {
+            $this->user()->associate($user);
+            $this->contest()->associate($contest);
+            $this->problem()->associate($problem);
+            $this->save();
+        }
+    }
+
+    /**
      * Return the user who asked the current question
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -93,20 +110,26 @@ class Question extends Model
         return $this->belongsTo(Problem::class, Constants::FLD_QUESTIONS_PROBLEM_ID);
     }
 
-    // ToDo: recheck function logic @IAR
-    public function saveAnswer($newAnswer, $admin, $status = '0')
+    /**
+     * Save question answer
+     *
+     * @param $newAnswer
+     * @param $admin
+     * @return bool
+     */
+    public function saveAnswer($newAnswer, $admin)
     {
-        if ($admin->attributes[Constants::FLD_USERS_ROLE] == Constants::ACCOUNT_ROLE["ADMIN"]) {
-            $this->admin()->associate($admin);
-            $this->attributes[Constants::FLD_QUESTIONS_ANSWER] = $newAnswer;
-            $this->attributes[Constants::FLD_QUESTIONS_STATUS] = $status;
-            Log::info($this->attributes);
-            $v = Validator::make($this->attributes, config('rules.question.store_answer_validation_rules'));
-            $v->validate();
-            if ($this->attributes[Constants::FLD_QUESTIONS_ADMIN_ID] && !$this->admin()) {
-                throw new UnknownAdminException;
-            }
-            return parent::save([]);
-        }
+        // Associate organizer who answered the question
+        $this->admin()->associate($admin);
+
+        // Save the provided answer
+        $this->attributes[Constants::FLD_QUESTIONS_ANSWER] = $newAnswer;
+
+        // Validate against rules
+        $v = Validator::make($this->attributes, config('rules.question.store_answer_validation_rules'));
+        $v->validate();
+
+        // Save
+        return parent::save();
     }
 }
