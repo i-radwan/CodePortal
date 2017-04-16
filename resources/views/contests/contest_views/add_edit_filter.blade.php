@@ -6,8 +6,7 @@
                 @foreach ($judges as $judge)
                     <div class="checkbox">
                         <label>
-                            <input class="judgeState" type="checkbox" {{ in_array($judge->id, Request::get(Constants::CONTESTS_CHECKED_JUDGES, [])) ? 'checked' : '' }}
-                            name="{{ Constants::URL_QUERY_JUDGES_KEY }}[]"
+                            <input class="judgeState" type="checkbox" {{ in_array($judge->id, $cJudges) ? 'checked' : '' }}
                                    value="{{ $judge->id }}">
                             {{ $judge->name }}
                         </label>
@@ -19,7 +18,7 @@
             {{--Tags AutoComplete--}}
             Tags:
             <div class="search-wrapper">
-                    <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off"/>
+                    <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off" onkeypress="return event.keyCode != 13;"/>
                     <button class="close-icon" type="reset"></button>
             </div>
             <div class="container">
@@ -91,6 +90,19 @@
     $(document).on('mousedown','.tags-close-icon', function(item) {
                         $(this).parent().remove();
     });
+    //get Current Entered Form Data
+//    function getEnteredFormData() {
+//        var conName = document.getElementById("name").value;
+//        var conDate = document.getElementById("time").value;
+//        var conDur = document.getElementById("duration").value;
+//        var conVis = document.getElementById("private").value;
+//        return {
+//            name : conName,
+//            date : conDate,
+//            duration: conDur,
+//            visibility : conVis
+//        };
+//    }
 </script>
 
 

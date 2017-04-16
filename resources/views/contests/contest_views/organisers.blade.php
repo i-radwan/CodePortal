@@ -1,7 +1,7 @@
 <div>
             {{--Organsisers AutoComplete--}}
             <div class="search-wrapper">
-                    <input id="organisersAuto" type="text" class="organisersAuto search-box" placeholder="Mention Organisers" autocomplete="off"/>
+                    <input id="organisersAuto" type="text" class="organisersAuto search-box" placeholder="Mention Organisers" autocomplete="off" onkeypress="return event.keyCode != 13;"/>
                     <button class="close-icon" type="reset"></button>
             </div>
             <div class="container">

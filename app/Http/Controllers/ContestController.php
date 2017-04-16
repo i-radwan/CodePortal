@@ -111,7 +111,7 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
-        dd($request->all());
+        dd($request);
         $contest = new Contest($request->all());
         $contest->save();
     }
@@ -144,7 +144,7 @@ class ContestController extends Controller
         else
             $currentInSession = [];
         $j = count($currentInSession);
-        $checkedRows = $request->get('checkedRows');
+        $checkedRows = $request->get('checkedRows'); //TODO @Samir Change That
         $checkedStates = $request->get('checkedStates');
         for($i = 0; $i < count($checkedRows); $i = $i + 1){
             $isFound = in_array($checkedRows[$i], $currentInSession);
