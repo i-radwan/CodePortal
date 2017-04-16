@@ -113,7 +113,7 @@ class Submission extends Model
                 ->where(
                     Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT,
                     '=',
-                    DB::raw("'" . Constants::VERDICT_ACCEPTED . "'")
+                    Constants::VERDICT_ACCEPTED
                 )
 //                ->whereBetween(
 //                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
@@ -130,7 +130,8 @@ class Submission extends Model
                     's' . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
                     '<=',
                     DB::raw('COALESCE((' . $firstAcceptedQuery->toSql() . '), UNIX_TIMESTAMP())')
-                );
+                )
+                ->mergeBindings($firstAcceptedQuery);
 
         return $query;
     }

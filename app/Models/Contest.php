@@ -276,6 +276,8 @@ class Contest extends Model
             "(" . $t1->toSql() . ") as `t1` natural join (" . $t2->toSql() . ") as `t2`"
         ));
 
+        $query->mergeBindings($t1)->mergeBindings($t2);
+
         // Sort the standings
         $query->orderByDesc(Constants::FLD_USERS_SOLVED_COUNT);
         $query->orderBy(Constants::FLD_USERS_PENALTY);
@@ -316,18 +318,18 @@ class Contest extends Model
      */
     private function contestBasicQuery($projections, $tillFirstAccepted = false)
     {
-        $query =
-            DB::table(Constants::TBL_CONTESTS)
-                ->select($projections)
-                ->where(
-                    Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID,
-                    '=',
-                    DB::raw($this->id)
-                );
+        $query = DB::table(Constants::TBL_CONTESTS)->select($projections);
 
         $this->contestJoinProblems($query);
         $this->contestJoinUsers($query);
         $this->contestJoinSubmissions($query, $tillFirstAccepted);
+
+        // Note that this where clause should come after the joining for correct binding
+        $query->where(
+            Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID,
+            '=',
+            $this->id
+        );
 
         return $query;
     }
@@ -391,10 +393,9 @@ class Contest extends Model
 
         if ($tillFirstAccepted) {
             $joinType = 'leftJoin';
-            $submissionsTable = DB::raw('(' .
-                Submission::tillFirstAccepted($contestStartTime, $contestEndTime)->toSql() .
-                ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`'
-            );
+            $submissions = Submission::tillFirstAccepted($contestStartTime, $contestEndTime);
+            $submissionsTable = DB::raw('(' . $submissions->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`');
+            $query->mergeBindings($submissions);
         }
         else {
             $joinType = 'join';
