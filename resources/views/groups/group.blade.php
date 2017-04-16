@@ -29,6 +29,7 @@
                             type="submit" class="btn btn-link text-dark pull-right margin-5px">Delete
                     </button>
                 </form>
+                <a href="{{url('group/edit/'.$groupID)}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
             @endif
             @if($isMember)
                 <form action="{{url('group/leave/'.$groupID)}}"

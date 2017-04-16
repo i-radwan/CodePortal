@@ -54,13 +54,31 @@ class GroupController extends Controller
     }
 
     /**
-     * Show add/edit group page
+     * Show add group page
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function addEditGroupView()
+    public function addGroupView()
     {
-        return view('groups.add_edit')->with('pageTitle', config('app.name') . ' | Group');
+        return view('groups.add_edit')
+            ->with('formAction', 'group/add')
+            ->with('btnText', 'Add')
+            ->with('pageTitle', config('app.name') . ' | Group');
+    }
+
+    /**
+     * Show edit group page
+     *
+     * @param Group $group
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function editGroupView(Group $group)
+    {
+        return view('groups.add_edit')
+            ->with('formAction', 'group/edit')
+            ->with('btnText', 'Edit')
+            ->with('group', $group)
+            ->with('pageTitle', config('app.name') . ' | ' . $group->name);
     }
 
     /**
@@ -74,6 +92,22 @@ class GroupController extends Controller
         $group = new Group($request->all());
         $group->owner_id = Auth::user()->id;
         $group->save();
+        return redirect('group/' . $group->id);
+    }
+
+    /**
+     * Update group in database
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function editGroup(Request $request)
+    {
+        $group = Group::find($request->get('group_id'));
+        if (\Gate::allows('owner-group', $group)) {
+            $group->name = $request->get('name');
+            $group->save();
+        }
         return redirect('group/' . $group->id);
     }
 

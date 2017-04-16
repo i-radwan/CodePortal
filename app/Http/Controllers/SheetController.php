@@ -112,7 +112,6 @@ class SheetController extends Controller
             // Get problem model with pivot to add solution
             $problem = $sheet->problems()->find($problemID);
 
-
             // Check if problem exists then update solution
             if ($problem) {
                 $problem->pivot->solution = $solution;

@@ -47,11 +47,13 @@ Route::group(['middleware' => 'auth'], function () {
     // Groups routes...
     Route::get('sheet/new/{group}', 'SheetController@addSheetView')->middleware(['can:owner-group,group']);;
     Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-sheet,sheet']);
-    Route::get('group/add', 'GroupController@addEditGroupView');
+    Route::get('group/add', 'GroupController@addGroupView');
+    Route::get('group/edit/{group}', 'GroupController@editGroupView'); // ToDo middle ware
     Route::get('group/{group}', 'GroupController@displayGroup');
 
     Route::post('sheet/problem/solution', 'SheetController@saveProblemSolution');
     Route::post('group/add', 'GroupController@addGroup');
+    Route::post('group/edit', 'GroupController@editGroup');
     Route::post('group/join/{group}', 'GroupController@joinGroup');
     Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);;
 
@@ -66,7 +68,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 });
 
-Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['canGuestOrMember:view-join-contest,contest']);
+Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
