@@ -69,7 +69,6 @@ class Sheet extends Model
         return $this->belongsTo(Group::class, Constants::FLD_SHEETS_GROUP_ID);
     }
 
-
     /**
      * Delete the sheet after removing all of its relations records
      *
@@ -77,6 +76,15 @@ class Sheet extends Model
      */
     public function delete()
     {
+        // Delete problems solutions code files
+        $problems = $this->problems();
+        foreach ($problems->get() as $problem) {
+            $solutionFile = $problem->pivot->solution;
+            if ($solutionFile)
+                unlink("code/$solutionFile");
+        }
+
+        // Detach problems from relationship
         $this->problems()->detach();
         return parent::delete();
     }

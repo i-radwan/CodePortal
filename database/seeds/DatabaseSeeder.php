@@ -29,12 +29,13 @@ class DatabaseSeeder extends Seeder
         // Seed contests
         $this->call(ContestsTableSeeder::class);
 
-        // Seed notifications
-        $this->call(NotificationsTableSeeder::class);
-
         // Seed questions
         $this->call(QuestionsTableSeeder::class);
 
+        // Seed groups
+        $this->call(GroupsTableSeeder::class);
 
+        // Seed notifications
+        $this->call(NotificationsTableSeeder::class);
     }
 }

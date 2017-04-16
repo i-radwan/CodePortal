@@ -133,4 +133,42 @@ class Group extends Model
         return $query;
     }
 
+
+    /**
+     * Delete the group after removing all of its relations records
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        // Remove sheets
+        $sheets = Sheet::where(Constants::FLD_SHEETS_GROUP_ID, '=', $this->id)->get();
+        foreach ($sheets as $sheet) {
+            $sheet->delete();
+        }
+        // Remove join requests
+        $this->membershipSeekers()->detach();
+
+        // Remove contests
+        $contests = $this->contests()->get();
+        foreach ($contests as $contest) {
+            $contest->delete();
+        }
+        $this->contests()->detach();
+
+        // Remove members
+        $this->members()->detach();
+
+        // Remove notifications
+        Notification::destroy(
+            Notification::
+            where(
+                Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $this->id)
+                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=',
+                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
+                ->pluck(Constants::FLD_NOTIFICATIONS_ID));
+
+        return parent::delete();
+    }
+
 }

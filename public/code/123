@@ -1,4 +1,0 @@
-var doc = {
-    id: '123',
-    name: 'Name'
-};

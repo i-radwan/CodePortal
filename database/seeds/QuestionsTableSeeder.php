@@ -17,7 +17,7 @@ class QuestionsTableSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-        $contestIDs = Contest::all()->pluck('id')->toArray();
+        $contestIDs = Contest::all()->pluck(Constants::FLD_CONTESTS_ID)->toArray();
         $contestsCount = count($contestIDs) - 1;
         // Contests Participants
         for ($i = 0; $i < $contestsCount * 10; $i++) {

@@ -31,9 +31,16 @@
                             <tr>
                                 <td>{{ $group->id }}</td>
                                 <td>
-                                    <a href="{{ url('group/' . $group->id) }}">
+
+                                    {{-- Only singed in users can see group details --}}
+                                    @if(Auth::check())
+                                        <a href="{{ url('group/' . $group->id) }}">
+                                            {{ $group->name }}
+                                        </a>
+                                    @else
                                         {{ $group->name }}
-                                    </a>
+                                    @endif
+
                                 </td>
                                 <td>
                                     <a href="{{ url('profile/' . $group->owner->username)}}">

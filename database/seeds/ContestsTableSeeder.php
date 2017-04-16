@@ -25,7 +25,7 @@ class ContestsTableSeeder extends Seeder
 
         $limit = 200;
         // All user IDs
-        $userIDs = User::all()->pluck('id')->toArray();
+        $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
 
         for ($i = 0; $i < $limit; $i++) {
             DB::table(Constants::TBL_CONTESTS)->insert([
@@ -37,7 +37,7 @@ class ContestsTableSeeder extends Seeder
             ]);
         }
 
-        $contestIDs = Contest::all()->pluck('id')->toArray();
+        $contestIDs = Contest::all()->pluck(Constants::FLD_CONTESTS_ID)->toArray();
 
         // Contests Organizers
         for ($i = 0; $i < count($contestIDs) * 3; $i++) {
@@ -61,7 +61,7 @@ class ContestsTableSeeder extends Seeder
             };
         }
         // Contests Problems
-        $problemIDs = Problem::all()->pluck('id')->toArray();
+        $problemIDs = Problem::all()->pluck(Constants::FLD_PROBLEMS_ID)->toArray();
         for ($i = 0; $i < count($contestIDs) * 5; $i++) {
             try {
                 DB::table(Constants::TBL_CONTEST_PROBLEMS)->insert([
@@ -71,7 +71,6 @@ class ContestsTableSeeder extends Seeder
             } catch (\Illuminate\Database\QueryException $e) {
             };
         }
-
 
     }
 }
