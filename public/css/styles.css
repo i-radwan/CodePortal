@@ -952,7 +952,6 @@ footer {
 
 .code-editor-container {
     overflow: hidden;
-    width: 80vw;
     height: 60vh;
 }
 
@@ -966,9 +965,10 @@ footer {
     left: 0;
 }
 
-#problem-solution{
+#problem-solution {
     display: none;
 }
+
 @media (max-width: 700px) {
     .action {
         width: 100%;
@@ -984,6 +984,19 @@ footer {
 /*====================================*/
 .new-sheet-link {
     margin-bottom: 10px;
+}
+
+.group-search-icon {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: "FlipH";
+}
+
+.group-search-box {
+    display: none;
 }
 
 /*</editor-fold>*/

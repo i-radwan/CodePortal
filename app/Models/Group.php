@@ -96,4 +96,26 @@ class Group extends Model
         return $this->hasMany(Sheet::class, Constants::FLD_SHEETS_GROUP_ID);
     }
 
+
+    /**
+     * Scope a query to only include groups with the given name
+     *
+     * @param Builder $query
+     * @param string|null $name
+     * @return Builder
+     */
+    public function scopeOfName(Builder $query, $name = null)
+    {
+        if ($name == null || $name == "") {
+            return $query;
+        }
+        $query->where(
+            Constants::TBL_GROUPS . '.' . Constants::FLD_GROUPS_NAME,
+            'LIKE',
+            "%$name%"
+        );
+
+        return $query;
+    }
+
 }

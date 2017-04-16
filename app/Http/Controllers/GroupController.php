@@ -11,6 +11,7 @@ use Auth;
 use App\Utilities\Constants;
 use Redirect;
 use URL;
+use App\Utilities\Utilities;
 
 class GroupController extends Controller
 {
@@ -23,8 +24,11 @@ class GroupController extends Controller
     {
         $data = [];
 
+        // Get search filter
+        $searchStr = Utilities::makeInputSafe(request()->get('name'));
+
         $data[Constants::GROUPS_GROUPS_KEY] =
-            Group::paginate(Constants::GROUPS_COUNT_PER_PAGE);
+            Group::ofName($searchStr)->paginate(Constants::GROUPS_COUNT_PER_PAGE);
 
         return view('groups.index')->with('data', $data)
             ->with('pageTitle', config('app.name') . ' | Groups');
