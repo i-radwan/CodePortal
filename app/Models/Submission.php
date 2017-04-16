@@ -87,7 +87,8 @@ class Submission extends Model
     }
 
     /**
-     * Return all submissions until first accepted submission for a user per problem
+     * Return all submissions between the given interval of time
+     * until the first accepted submission for a user per problem
      *
      * @param int $startTime
      * @param int $endTime
@@ -115,10 +116,10 @@ class Submission extends Model
                     '=',
                     Constants::VERDICT_ACCEPTED
                 )
-//                ->whereBetween(
-//                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-//                    [$startTime, $endTime]
-//                )
+                ->whereBetween(
+                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
+                    [$startTime, $endTime]
+                )
                 ->orderBy(
                     Constants::FLD_SUBMISSIONS_SUBMISSION_TIME
                 )
@@ -126,6 +127,11 @@ class Submission extends Model
 
         $query =
             DB::table(Constants::TBL_SUBMISSIONS . ' as ' . 's')
+                ->where(
+                    's' . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
+                    '>=',
+                    $startTime
+                )
                 ->where(
                     's' . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
                     '<=',

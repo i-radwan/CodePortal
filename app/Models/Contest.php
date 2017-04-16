@@ -388,8 +388,8 @@ class Contest extends Model
     {
         // TODO: need to check timestamps accurately
         // TODO: It seems that Codeforces timestamp is leading 4 hours
-        $contestStartTime = strtotime($this->time);
-        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
+        $contestStartTime = 0;//strtotime($this->time);
+        $contestEndTime = 2443014452;//strtotime($this->time . ' + ' . $this->duration . ' minute');
 
         if ($tillFirstAccepted) {
             $joinType = 'leftJoin';
@@ -400,6 +400,10 @@ class Contest extends Model
         else {
             $joinType = 'join';
             $submissionsTable = Constants::TBL_SUBMISSIONS;
+            $query->whereBetween(
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
+                [$contestStartTime, $contestEndTime]
+            );
         }
 
         $query
@@ -418,10 +422,6 @@ class Contest extends Model
                     );
                 }
             );
-//            ->whereBetween(
-//                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-//                [$contestStartTime, $contestEndTime]
-//            );
     }
 
     /**
