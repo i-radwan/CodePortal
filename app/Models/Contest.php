@@ -420,13 +420,13 @@ class Contest extends Model
     /**
      * Return the basic contest query
      *
-     * @param array $projection columns to select
+     * @param array $projections columns to select
      * @return \Illuminate\Database\Query\Builder
      */
-    private function contestBasicQuery($projection)
+    private function contestBasicQuery($projections)
     {
         return DB::table(Constants::TBL_CONTESTS)
-            ->select($projection)
+            ->select($projections)
             ->where(
                 Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID,
                 '=',

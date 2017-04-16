@@ -27,8 +27,8 @@ class ContestController extends Controller
      */
     public function index()
     {
-        //ForgetCheckedProblems
-        //Forget roblemsFilters
+        //Forget CheckedProblems
+        //Forget ProblemsFilters
         Session::forget(Constants::CHECKED_PROBLEMS);
         Session::forget(Constants::CONTESTS_PROBLEMS_FILTERS);
         Session::forget(Constants::CONTESTS_MENTIONED_ORGANISERS);
@@ -56,7 +56,9 @@ class ContestController extends Controller
     {
         $currentUser = Auth::user();
 
-        if (!$contest) return redirect('contests/');
+        if (!$contest) {
+            return redirect('contests/');
+        }
 
         $data = [];
 
@@ -115,7 +117,7 @@ class ContestController extends Controller
         $request[Constants::FLD_CONTESTS_OWNER_ID] = Auth::user()->id;
         $contest = new Contest($request->all());
         $contest->save();
-//        //Get Organisers
+        //Get Organisers
         if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
             $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
             $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
@@ -127,11 +129,7 @@ class ContestController extends Controller
         //Add Problems
         if(Session::has(Constants::CHECKED_PROBLEMS)) {
             $problems = Session::get(Constants::CHECKED_PROBLEMS);
-            $problems = Problem::find($problems);
-            //Save Problems
-            foreach ($problems as $problem) { //It doesn't work
-                $contest->problems()->save($problem);
-            }
+            $contest->problems()->syncWithoutDetaching($problems);
         }
     }
 
@@ -193,6 +191,7 @@ class ContestController extends Controller
         Session::put(Constants::CONTESTS_MENTIONED_ORGANISERS, $request->get(Constants::CONTESTS_MENTIONED_ORGANISERS));
         return ;
     }
+
     /**
      * Delete a certain contest if you're owner
      *
@@ -202,6 +201,7 @@ class ContestController extends Controller
     public function deleteContest(Contest $contest)
     {
         // Check if current auth. user is the owner of the contest
+        // TODO: delete contest data from all tables
         if (Auth::check() && $contest->owner->id == Auth::user()->id) {
             $contest->delete();
         }
@@ -537,5 +537,4 @@ class ContestController extends Controller
     public static function getProblemsWithFilters($request,$tagNames, $judgesIDs){
         return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); //Returning the Problems Data
     }
-
 }
