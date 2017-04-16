@@ -16,7 +16,6 @@
     </thead>
 
     @php($user = Auth::user())
-
     {{--Problems--}}
     <tbody>
         {{--TODO: @Samir add checkboxes When adding new contest view--}}
@@ -25,7 +24,7 @@
 
             <tr class="{{ $verdict == Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
                 @if(isset($checkBoxes) && $checkBoxes = 'true')
-                    <td><input class="checkState" type="checkbox" value="{{ Utilities::generateProblemNumber($problem) }}" onclick="syncProblemState()" {{(isset($checkedRows[Request::get('page')])) ? in_array(Utilities::generateProblemNumber($problem),$checkedRows[Request::get('page')]) ? "checked":"" : ""}}></td>
+                    <td><input class="checkState" type="checkbox" value="{{ ($problem->id) }}" onclick="syncProblemState()" {{(isset($checkedRows)) ? in_array($problem->id,$checkedRows) ? "checked":"" : ""}}></td>
                 @endif
                 {{--ID--}}
                 <td>{{ Utilities::generateProblemNumber($problem) }}</td>
@@ -67,26 +66,25 @@
 <script  type = "text/javascript">
     function syncProblemState() {
         //get the check boxes in each page
+        var checkedStates = [];
         var checkedRows = [];
         var j = 0;
         var checkboxes = document.getElementsByClassName('checkState');
         for(var i=0; checkboxes[i]; ++i){
-            if(checkboxes[i].checked){
-                checkedRows[j] = checkboxes[i].value;
-                j = j + 1;
-            }
+            checkedRows[j] = checkboxes[i].value;
+            checkedStates[j] = (checkboxes[i].checked == true) ? 1:0;
+            j = j + 1;
         }
-        console.log(checkedRows);
         $.ajax({
             url: "{{Request::url()}}/checkRowsSync",
             type: 'POST',
             data: {
                 _token: "{{csrf_token()}}",
                 checkedRows : checkedRows,
-                page : "{{Request::get('page') != null ? Request::get('page') : 1}}"
-                {{--ToDo @Samir (:Change Sticking with Page Avoid Sorting)--}}
+                checkedStates : checkedStates
             },
             success: function(data){
+                console.log(data);
             }
         });
     }

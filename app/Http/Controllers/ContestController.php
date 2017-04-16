@@ -137,15 +137,30 @@ class ContestController extends Controller
     }
 
     public function applyProblemsCheckBoxes(Request $request){
-        $page = $request->get('page'); //get the current page
-        if( Session::has(Constants::CHECKED_PROBLEMS))
-            $currentCheckedProblems = Session::get(Constants::CHECKED_PROBLEMS);
-        else
-            $currentCheckedProblems = [];
-        $currentCheckedProblems[$page] = $request->get(Constants::CHECKED_PROBLEMS);
-        Session::put(Constants::CHECKED_PROBLEMS, $currentCheckedProblems);
-        return ;
 
+        if(Session::has(Constants::CHECKED_PROBLEMS))
+            $currentInSession = Session::get(Constants::CHECKED_PROBLEMS);
+        else
+            $currentInSession = [];
+        $j = count($currentInSession);
+        $checkedRows = $request->get('checkedRows');
+        $checkedStates = $request->get('checkedStates');
+        for($i = 0; $i < count($checkedRows); $i = $i + 1){
+            $isFound = in_array($checkedRows[$i], $currentInSession);
+            if($checkedStates[$i]){//If it's checked
+                if(!($isFound)){
+                    $currentInSession[$j] = $checkedRows[$i];
+                    $j = $j +1;
+                }
+            }
+            else{ //Check if it's in the current session
+                if($isFound){ //Remove
+                    $currentInSession = array_diff($currentInSession, [$checkedRows[$i]]);
+                }
+            }
+        }
+        Session::put(Constants::CHECKED_PROBLEMS, $currentInSession);
+        return $currentInSession ;
     }
 
     public function applyProblemsFilters(Request $request){
