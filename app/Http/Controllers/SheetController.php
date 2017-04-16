@@ -145,7 +145,7 @@ class SheetController extends Controller
         $sheet = Sheet::find($sheetID);
 
         // Check if group owner
-        if (\Gate::allows("owner-sheet", [$sheet])) {
+        if (\Gate::allows("owner-group", [$sheet])) {
 
             // Get problem model with pivot to add solution
             $problem = $sheet->problems()->find($problemID);

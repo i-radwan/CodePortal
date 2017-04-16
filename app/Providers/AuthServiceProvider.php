@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Group;
+use App\Models\Sheet;
 use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Support\Facades\Gate;
@@ -31,7 +32,6 @@ class AuthServiceProvider extends ServiceProvider
         // View or join contest gate
         // User can view and join contest if and only if the contest
         // is public, or the user has non-deleted invitation regarding this contest
-        // ToDo : Generalize this gate to handle teams and groups too
         Gate::define("view-join-contest", function ($user, $contest) {
             $canViewAndJoin = false;
             // Check if contest is public
@@ -58,21 +58,27 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
-        // Owner of group
-        Gate::define("owner-group", function ($user, $group) {
-            // Check if user is owner
-            if ($user->owningGroups()->find($group->id)
-            ) return true;
-            return false;
-        });
+        // Owner of group/sheet
+        Gate::define("owner-group", function ($user, $resource) {
 
-        // Owner or member of group
-        Gate::define("owner-or-member-group", function ($currentUser, $group, $user) {
-            if (!$user) $user = $currentUser;
-            // Check if user is member or owner
-            if ($user->owningGroups()->find($group->id)
-                || $user->joiningGroups()->find($group->id)
-            ) return true;
+            // If resource is sheet
+            if ($resource instanceof Sheet) {
+
+                // Get sheet group
+                if ($group = Group::find($resource[Constants::FLD_SHEETS_GROUP_ID])) {
+
+                    // Check if user is organizer or owner
+                    if ($user->owningGroups()->find($group->id)) return true;
+                }
+                return false;
+            } // If resource is group
+            else if ($resource instanceof Group) {
+
+                // Check if user is owner
+                if ($user->owningGroups()->find($resource->id)
+                ) return true;
+                return false;
+            }
             return false;
         });
 
@@ -85,24 +91,25 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
-        // Owner of sheet group
-        Gate::define("owner-sheet", function ($user, $sheet) {
-            if ($group = Group::find($sheet[Constants::FLD_SHEETS_GROUP_ID])) {
-                // Check if user is organizer or owner
-                if ($user->owningGroups()->find($group->id)) return true;
+        // Owner or member of group
+        Gate::define("owner-or-member-group", function ($currentUser, $resource, $user) {
+            // If not user is specified, use the system injected currentUser
+            if (!$user) $user = $currentUser;
+
+            // If resource is sheet
+            if ($resource instanceof Sheet) {
+                // Check if user is organizer or owner of sheet's group
+                if ($user->owningGroups()->find($resource->group_id)
+                    || $user->joiningGroups()->find($resource->group_id)
+                ) return true;
+                return false;
+            } else if ($resource instanceof Group) { // If resource is group
+                // Check if user is member or owner
+                if ($user->owningGroups()->find($resource->id)
+                    || $user->joiningGroups()->find($resource->id)
+                ) return true;
             }
             return false;
         });
-
-        // Owner or member of sheet's group
-        Gate::define("owner-or-member-sheet", function ($user, $sheet) {
-            // Check if user is organizer or owner
-            if ($user->owningGroups()->find($sheet->group_id)
-                || $user->joiningGroups()->find($sheet->group_id)
-            ) return true;
-            return false;
-        });
-
-
     }
 }

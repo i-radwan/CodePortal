@@ -45,10 +45,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 
     // Groups routes...
-    Route::get('sheet/solution/{sheet}/{problemID}', 'SheetController@retrieveProblemSolution')->middleware(['can:owner-or-member-sheet,sheet']);
+    Route::get('sheet/solution/{sheet}/{problemID}', 'SheetController@retrieveProblemSolution')->middleware(['can:owner-or-member-group,sheet']);
     Route::get('sheet/new/{group}', 'SheetController@addSheetView')->middleware(['can:owner-group,group']);
-    Route::get('sheet/edit/{sheet}', 'SheetController@editSheetView')->middleware(['can:owner-sheet,sheet']);
-    Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-sheet,sheet']);
+    Route::get('sheet/edit/{sheet}', 'SheetController@editSheetView')->middleware(['can:owner-group,sheet']);
+    Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-group,sheet']);
     Route::get('group/contest/new/{group}', 'ContestController@addGroupContestView');
     Route::get('group/add', 'GroupController@addGroupView');
     Route::get('group/edit/{group}', 'GroupController@editGroupView')->middleware(['can:owner-group,group']);
@@ -59,8 +59,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('group/edit/{group}', 'GroupController@editGroup')->middleware(['can:owner-group,group']);
     Route::post('group/join/{group}', 'GroupController@joinGroup');
     Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);
-    Route::post('sheet/edit/{sheet}', 'SheetController@editSheet')->middleware(['can:owner-sheet,sheet']);
-    Route::post('group/member/invite/{group}', 'GroupController@inviteMember')->middleware(['can:owner-group,group']); // ToDo check if not member
+    Route::post('sheet/edit/{sheet}', 'SheetController@editSheet')->middleware(['can:owner-group,sheet']);
+    Route::post('group/member/invite/{group}', 'GroupController@inviteMember')->middleware(['can:owner-group,group']);
 
     Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group'])->middleware(['can:member-group,group,user']);
     Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
@@ -70,7 +70,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('group/leave/{group}', 'GroupController@leaveGroup');
 
     // Sheets routes...
-    Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-sheet,sheet']);
+    Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-group,sheet']);
 
 });
 
