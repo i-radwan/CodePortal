@@ -130,7 +130,9 @@ class ContestController extends Controller
     {
         $request[Constants::FLD_CONTESTS_OWNER_ID] = Auth::user()->id;
         $contest = new Contest($request->all());
-        $contest->save();
+        $added = false;
+        if($contest->save())
+         $added = true;
         //Get Organisers
         if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
             $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
@@ -145,6 +147,17 @@ class ContestController extends Controller
             $problems = Session::get(Constants::CHECKED_PROBLEMS);
             $contest->problems()->syncWithoutDetaching($problems);
         }
+        if($added){
+            Session::flash("messages", ["Contest Added Successfully"]);
+            return redirect()->action(
+                'ContestController@displayContest', ['id' => $contest->id]
+            );;
+        }
+        else{
+            Session::flash("messages", ["Sorry, Contest was not added. Please retry later"]);
+            return redirect()->action('ContestController@index');;
+        }
+
     }
 
     /**
