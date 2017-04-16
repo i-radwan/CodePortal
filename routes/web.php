@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
     // ToDo change those to put/delete requests
     Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
-    Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
+    Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
@@ -67,7 +67,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest')->middleware(['can:owner-group,group']);
     Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest')->middleware(['can:owner-group,group']);
-    Route::put('group/leave/{group}', 'GroupController@leaveGroup');
+    Route::put('group/leave/{group}', 'GroupController@leaveGroup')->middleware(['can:member-group,group']);
 
     // Sheets routes...
     Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-group,sheet']);

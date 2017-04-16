@@ -1,5 +1,5 @@
-{{--Answer Question Modal--}}
-<div id="problem-solution-model" class="modal fade problem-solution-mode" role="dialog">
+{{--Answer Problem Modal--}}
+<div id="problem-solution-model" class="modal problem-solution-mode">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">

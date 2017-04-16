@@ -34,6 +34,7 @@ class AuthServiceProvider extends ServiceProvider
         // is public, or the user has non-deleted invitation regarding this contest
         Gate::define("view-join-contest", function ($user, $contest) {
             $canViewAndJoin = false;
+
             // Check if contest is public
             $canViewAndJoin |= ($contest->visibility == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]);
 
@@ -50,10 +51,10 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         // Owner or organizer of contest
-        Gate::define("owner-organizer-contest", function ($user, $contest) {
+        Gate::define("owner-organizer-contest", function ($user, $contestID) {
             // Check if user is organizer or owner
-            if ($user->organizingContests()->find($contest->id) ||
-                $user->owningContests()->find($contest->id)
+            if ($user->organizingContests()->find($contestID) ||
+                $user->owningContests()->find($contestID)
             ) return true;
             return false;
         });
@@ -68,14 +69,14 @@ class AuthServiceProvider extends ServiceProvider
                 if ($group = Group::find($resource[Constants::FLD_SHEETS_GROUP_ID])) {
 
                     // Check if user is organizer or owner
-                    if ($user->owningGroups()->find($group->id)) return true;
+                    if ($user->owningGroups()->find($group[Constants::FLD_GROUPS_ID])) return true;
                 }
                 return false;
             } // If resource is group
             else if ($resource instanceof Group) {
 
                 // Check if user is owner
-                if ($user->owningGroups()->find($resource->id)
+                if ($user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID])
                 ) return true;
                 return false;
             }
@@ -83,30 +84,31 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         // Member of group
-        Gate::define("member-group", function (User $user, Group $group, User $member) {
+        Gate::define("member-group", function (User $user, Group $group, User $member = null) {
+            $member = ($member) ? $member : $user;
             // Check if user is member and not owner
-            if (!$member->owningGroups()->find($group->id)
-                && $member->joiningGroups()->find($group->id)
+            if (!$member->owningGroups()->find($group[Constants::FLD_GROUPS_ID])
+                && $member->joiningGroups()->find($group[Constants::FLD_GROUPS_ID])
             ) return true;
             return false;
         });
 
         // Owner or member of group
-        Gate::define("owner-or-member-group", function ($currentUser, $resource, $user) {
+        Gate::define("owner-or-member-group", function ($currentUser, $resource, $user = null) {
             // If not user is specified, use the system injected currentUser
             if (!$user) $user = $currentUser;
 
             // If resource is sheet
             if ($resource instanceof Sheet) {
-                // Check if user is organizer or owner of sheet's group
-                if ($user->owningGroups()->find($resource->group_id)
-                    || $user->joiningGroups()->find($resource->group_id)
+                // Check if user is owner of sheet's group
+                if ($user->owningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID])
+                    || $user->joiningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID])
                 ) return true;
                 return false;
             } else if ($resource instanceof Group) { // If resource is group
                 // Check if user is member or owner
-                if ($user->owningGroups()->find($resource->id)
-                    || $user->joiningGroups()->find($resource->id)
+                if ($user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID])
+                    || $user->joiningGroups()->find($resource[Constants::FLD_GROUPS_ID])
                 ) return true;
             }
             return false;

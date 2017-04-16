@@ -53,46 +53,52 @@ class Notification extends Model
     /**
      * Create and save new notification
      *
-     * Notification constructor.
+     * Notification maker function.
+     *
      * @param array $attributes
-     * @param User|null $sender
-     * @param User|null $receiver
+     * @param User $sender
+     * @param User $receiver
      * @param Team /Group/Contest $resource
      * @param int $type
      * @param bool $duplicationAllowed , allow resending the same notification to the same user twice
-     * @throws NotificationDuplicateException
+     * @throws GroupInvitationException
      */
-    public function __construct(array $attributes = [], User $sender = null, User $receiver = null, $resource = null, $type = null, $duplicationAllowed = false)
+    public static function make($attributes, User $sender, User $receiver, $resource, $type, $duplicationAllowed = false)
     {
-        parent::__construct($attributes);
-
         if ($sender != null && $receiver != null && $resource != null && $type != null) {
+
             // Check if user already received this notification
             if (!$duplicationAllowed) {
+
                 // Get same resource notifications count
                 $prevNotificationsCount = $receiver->receivedNotifications()
                     ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $resource->id)
                     ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', $type)->count();
 
                 if ($prevNotificationsCount > 0)
-                    throw new GroupInvitationException(Constants::GROUP_INVITATION_EXCEPTION_MSGS[Constants::GROUP_INVITATION_EXCEPTION_INVITED]); // Stop and prevent saving new one
+                    throw new GroupInvitationException(
+                        Constants::GROUP_INVITATION_EXCEPTION_MSGS
+                        [Constants::GROUP_INVITATION_EXCEPTION_INVITED]); // Stop and prevent saving new one
             }
 
             // Save the notification after checking the duplication
-            $this->sender()->associate($sender);
-            $this->receiver()->associate($receiver);
-            $this->resource()->associate($resource);
-            $this->type = $type;
-            $this->save();
+            $notification = new Notification($attributes);
+            $notification->sender()->associate($sender);
+            $notification->receiver()->associate($receiver);
+            $notification->resource()->associate($resource);
+            $notification[Constants::FLD_NOTIFICATIONS_TYPE] = $type;
+            $notification->save();
         }
     }
+
 
     /**
      * Returns the user who sent this notification
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function sender()
+    public
+    function sender()
     {
         return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_SENDER_ID);
     }
@@ -102,7 +108,8 @@ class Notification extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function receiver()
+    public
+    function receiver()
     {
         return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_RECEIVER_ID);
     }
@@ -112,7 +119,8 @@ class Notification extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function resource()
+    public
+    function resource()
     {
         return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }

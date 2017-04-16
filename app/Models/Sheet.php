@@ -78,7 +78,11 @@ class Sheet extends Model
     {
         // Delete problems solutions code files
         $problems = $this->problems();
+
+        // Iterate over problems
         foreach ($problems->get() as $problem) {
+
+            // Get solution file and delete it
             $solutionFile = $problem->pivot->solution;
             if ($solutionFile)
                 unlink("code/$solutionFile");

@@ -21,8 +21,6 @@ class SheetController extends Controller
      */
     public function displaySheet(Sheet $sheet)
     {
-        if (!$sheet) return back();
-
         $data = [];
 
         $this->getProblemsInfo($sheet, $data);
@@ -30,7 +28,7 @@ class SheetController extends Controller
 
         return view('groups.sheet_views.sheet')
             ->with('data', $data)
-            ->with('pageTitle', config('app.name') . ' | ' . $sheet->name);
+            ->with('pageTitle', config('app.name') . ' | ' . $sheet[Constants::FLD_SHEETS_ID]);
     }
 
     /**
@@ -43,7 +41,7 @@ class SheetController extends Controller
     {
         return view('groups.sheet_views.add_edit')
             ->with('action', 'Add')
-            ->with('url', 'sheet/new/' . $group->id)
+            ->with('url', 'sheet/new/' . $group[Constants::FLD_GROUPS_ID])
             ->with('pageTitle', config('app.name') . ' | Sheet');
     }
 
@@ -58,9 +56,9 @@ class SheetController extends Controller
         // Show edit sheet view with sheet info attached
         return view('groups.sheet_views.add_edit')
             ->with('action', 'Edit')
-            ->with('sheetName', $sheet->name)
+            ->with('sheetName', $sheet[Constants::FLD_SHEETS_NAME])
             ->with('problemsIDs', implode(",", $sheet->problems()->pluck(Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID)->toArray()))
-            ->with('url', 'sheet/edit/' . $sheet->id)
+            ->with('url', 'sheet/edit/' . $sheet[Constants::FLD_SHEETS_ID])
             ->with('pageTitle', config('app.name') . ' | Sheet');
     }
 
@@ -77,17 +75,17 @@ class SheetController extends Controller
         $sheet = new Sheet($request->all());
 
         // Set group id
-        $sheet->group_id = $group->id;
+        $sheet[Constants::FLD_SHEETS_GROUP_ID] = $group[Constants::FLD_GROUPS_ID];
 
         // Save sheet
         $sheet->save();
 
-        // Fetch problems and ToDo replace with samir tbl
+        // Fetch problems and sync with sheet problems ToDo replace with Samir tbl
         $problemsIDs = explode(",", $request->get('problems'));
         $sheet->problems()->sync($problemsIDs);
 
         // Return to sheets
-        return redirect('group/' . $group->id . '#sheets');
+        return redirect('group/' . $group[Constants::FLD_GROUPS_ID] . '#sheets');
     }
 
     /**
@@ -103,12 +101,12 @@ class SheetController extends Controller
         // Save sheet
         $sheet->save();
 
-        // Fetch problems and ToDo replace with samir tbl
+        // Fetch problems and sync problems ToDo replace with samir tbl
         $problemsIDs = explode(",", $request->get('problems'));
         $sheet->problems()->sync($problemsIDs);
 
         // Return to sheets
-        return redirect('group/' . $sheet->group_id . '#sheets');
+        return redirect('group/' . $sheet[Constants::FLD_SHEETS_GROUP_ID] . '#sheets');
     }
 
 
@@ -152,11 +150,11 @@ class SheetController extends Controller
 
             // Check if problem exists then update solution
             if ($problem) {
-
                 // Check if solution file already created
                 if (!$problem->pivot->solution) {
                     $problem->pivot->solution = uniqid();
                 }
+
                 // Save the solution language to DB
                 $problem->pivot->solution_lang = $solution_lang;
                 $problem->pivot->save();

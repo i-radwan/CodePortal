@@ -18,7 +18,7 @@ class CreateSheetProblemsTable extends Migration
             $table->unsignedInteger(Constants::FLD_SHEETS_PROBLEMS_SHEET_ID);
             $table->unsignedInteger(Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID);
             $table->string(Constants::FLD_SHEETS_PROBLEMS_SOLUTION);
-            $table->integer(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG);
+            $table->string(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)->default("c_cpp");//ToDo change later
             $table->timestamps();
 
             $table->primary(array(
