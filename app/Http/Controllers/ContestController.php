@@ -112,24 +112,29 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
+        $request[Constants::FLD_CONTESTS_OWNER_ID] = Auth::user()->id;
         $contest = new Contest($request->all());
         $contest->save();
-        dd("Check");
-        //Add Problems
-        if(Session::has(Constants::CHECKED_PROBLEMS))
-            $problems = Session::get(Constants::CHECKED_PROBLEMS);
-        else
-            $problems = [];
-        //Get Organisers
-        if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS))
+//        //Get Organisers
+        if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
             $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
-        else
-            $organisers = [];
+            $organisers = User::whereIn('username', $organisers)->get();
+            //Save Organisers
+            foreach ($organisers as $organiser){
+                $contest->organizers()->save($organiser);
+            }
+        }
+        //Add Problems
+        if(Session::has(Constants::CHECKED_PROBLEMS)) {
+            $problems = Session::get(Constants::CHECKED_PROBLEMS);
+            $problems = Problem::find($problems);
+            //Save Problems
+            foreach ($problems as $problem) {
+                $contest->problems()->save($problem);
+            }
+        }
 
-        //Save Problems
-        $contest->problems()->save($problems);
-        //Save Organisers
-        $contest->organizers()->save($organisers);
+
     }
 
     /**

@@ -34,7 +34,8 @@ class Contest extends Model
         Constants::FLD_CONTESTS_NAME,
         Constants::FLD_CONTESTS_TIME,
         Constants::FLD_CONTESTS_DURATION,
-        Constants::FLD_CONTESTS_VISIBILITY
+        Constants::FLD_CONTESTS_VISIBILITY,
+        Constants::FLD_CONTESTS_OWNER_ID
     ];
 
     /**
