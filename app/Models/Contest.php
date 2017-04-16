@@ -294,4 +294,20 @@ class Contest extends Model
     {
         return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }
+
+
+    /**
+     * Return all groups related to this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function contests()
+    {
+        return $this->belongsToMany(
+            Contest::class,
+            Constants::TBL_GROUPS_CONTESTS,
+            Constants::FLD_GROUP_CONTESTS_CONTEST_ID,
+            Constants::FLD_GROUP_CONTESTS_GROUP_ID
+        );
+    }
 }

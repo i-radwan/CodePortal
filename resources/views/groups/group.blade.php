@@ -11,6 +11,7 @@
     $members = $data[Constants::SINGLE_GROUP_MEMBERS_KEY];
     $seekers = $data[Constants::SINGLE_GROUP_REQUESTS_KEY];
     $sheets = $data[Constants::SINGLE_GROUP_SHEETS_KEY];
+    $contests = $data[Constants::SINGLE_GROUP_CONTESTS_KEY];
 @endphp
 
 @extends('layouts.app')
@@ -97,7 +98,16 @@
                                 @endif
                             </div>
                             <div role="tabpanel" class="tab-pane" id="contests">
-
+                                @if($isOwner)
+                                    <a href="{{url('group/contest/new/'.$groupID)}}"
+                                       class="btn-sm btn btn-primary pull-right new-sheet-link">New
+                                        Contest</a>
+                                @endif
+                                @if(count($contests))
+                                    @include('groups.group_views.contests')
+                                @else
+                                    <p class="margin-30px">No contests!</p>
+                                @endif
                             </div>
                             <div role="tabpanel" class="tab-pane" id="sheets">
                                 @if($isOwner)

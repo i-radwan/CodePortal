@@ -71,6 +71,21 @@ class Group extends Model
     }
 
     /**
+     * Return all contests related to this group
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function contests()
+    {
+        return $this->belongsToMany(
+            Contest::class,
+            Constants::TBL_GROUPS_CONTESTS,
+            Constants::FLD_GROUP_CONTESTS_GROUP_ID,
+            Constants::FLD_GROUP_CONTESTS_CONTEST_ID
+        );
+    }
+
+    /**
      * Return all users who sent requests to join this group
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

@@ -126,6 +126,14 @@ class Constants
         self::FLD_USERS_COUNTRY
     ];
 
+    // Contests displayable fields
+    const CONTESTS_DISPLAYED_FIELDS = [
+        self::FLD_CONTESTS_ID,
+        self::FLD_CONTESTS_NAME,
+        self::FLD_CONTESTS_TIME,
+        self::FLD_CONTESTS_DURATION,
+    ];
+
     // Requests displayable fields
     const REQUESTS_DISPLAYED_FIELDS = [
         self::FLD_USERS_ID,
@@ -414,6 +422,7 @@ class Constants
     const TBL_PROBLEM_TAGS = "problem_tags";
     const TBL_GROUP_MEMBERS = "groups_members";
     const TBL_GROUPS_JOIN_REQUESTS = "groups_join_requests";
+    const TBL_GROUPS_CONTESTS = "group_contests";
 
 
     //
@@ -552,6 +561,10 @@ class Constants
     const FLD_SHEETS_PROBLEMS_PROBLEM_ID = "problem_id";
     const FLD_SHEETS_PROBLEMS_SOLUTION = "solution";
     const FLD_SHEETS_PROBLEMS_SOLUTION_LANG = "solution_lang"; // ToDo to be connected to languages table later
+
+    // Group contests
+    const FLD_GROUP_CONTESTS_GROUP_ID = "group_id";
+    const FLD_GROUP_CONTESTS_CONTEST_ID = "contest_id";
 
     // ============================================================
     //endregion

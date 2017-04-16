@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use Auth;
 use Session;
 use Redirect;
@@ -71,6 +72,20 @@ class ContestController extends Controller
      */
     public function addEditContestView()
     {
+        return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
+    }
+
+    /**
+     * Show add group contest page
+     *
+     * @param Group $group
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function addGroupContestView(Group $group)
+    {
+        // ToDo: after samir, create private contest for the group
+        // ToDo: Set the contest owner to group admin
+        // ToDo: Send invitations to members to join
         return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
     }
 

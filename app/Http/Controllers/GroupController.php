@@ -53,6 +53,7 @@ class GroupController extends Controller
         $this->getMembersInfo($group, $data);
         $this->getRequestsInfo($group, $data);
         $this->getSheetsInfo($group, $data);
+        $this->getContestsInfo($group, $data);
 
         return view('groups.group')
             ->with('data', $data)
@@ -318,6 +319,22 @@ class GroupController extends Controller
 
         // Set group members
         $data[Constants::SINGLE_GROUP_MEMBERS_KEY] = $members;
+    }
+
+    /**
+     * Get group contests data
+     *
+     * @param Group $group
+     * @param array $data
+     */
+    private function getContestsInfo(Group $group, &$data)
+    {
+        $contests = $group
+            ->contests()
+            ->select(Constants::CONTESTS_DISPLAYED_FIELDS)->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
+
+        // Set group members
+        $data[Constants::SINGLE_GROUP_CONTESTS_KEY] = $contests;
     }
 
     /**

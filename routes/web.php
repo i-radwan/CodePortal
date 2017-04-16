@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('sheet/new/{group}', 'SheetController@addSheetView')->middleware(['can:owner-group,group']);
     Route::get('sheet/edit/{sheet}', 'SheetController@editSheetView')->middleware(['can:owner-sheet,sheet']);
     Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-sheet,sheet']);
+    Route::get('group/contest/new/{group}', 'ContestController@addGroupContestView');
     Route::get('group/add', 'GroupController@addGroupView');
     Route::get('group/edit/{group}', 'GroupController@editGroupView')->middleware(['can:owner-group,group']);
     Route::get('group/{group}', 'GroupController@displayGroup');

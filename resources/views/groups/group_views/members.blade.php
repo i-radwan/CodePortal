@@ -1,4 +1,4 @@
-{{--Display single contest participants info--}}
+{{--Display single group members info--}}
 <table class="table table-bordered table-hover text-center">
     <thead>
     <tr>
