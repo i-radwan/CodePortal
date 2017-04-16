@@ -2,6 +2,9 @@
     {{--Headings--}}
     <thead>
         <tr>
+            @if(isset($checkBoxes) && $checkBoxes = 'true')
+                <th data-field="state" data-checkbox="true"></th>
+            @endif
             @include('problems.sortable_heading', ['title' => 'ID', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ID_KEY])
             @include('problems.sortable_heading', ['title' => 'Name', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_NAME_KEY])
             @include('problems.sortable_heading', ['title' => '#Acc.', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY])
@@ -13,7 +16,6 @@
     </thead>
 
     @php($user = Auth::user())
-
     {{--Problems--}}
     <tbody>
         {{--TODO: @Samir add checkboxes When adding new contest view--}}
@@ -21,6 +23,9 @@
             @php($verdict = $problem->simpleVerdict($user))
 
             <tr class="{{ $verdict == Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
+                @if(isset($checkBoxes) && $checkBoxes = 'true')
+                    <td><input class="checkState" type="checkbox" value="{{ ($problem->id) }}" onclick="syncProblemState()" {{(isset($checkedRows)) ? in_array($problem->id,$checkedRows) ? "checked":"" : ""}}></td>
+                @endif
                 {{--ID--}}
                 <td>{{ Utilities::generateProblemNumber($problem) }}</td>
 
@@ -57,3 +62,30 @@
 
 {{--Pagination--}}
 {{ $problems->appends(Request::all())->render() }}
+
+<script  type = "text/javascript">
+    function syncProblemState() {
+        //get the check boxes in each page
+        var checkedStates = [];
+        var checkedRows = [];
+        var j = 0;
+        var checkboxes = document.getElementsByClassName('checkState');
+        for(var i=0; checkboxes[i]; ++i){
+            checkedRows[j] = checkboxes[i].value;
+            checkedStates[j] = (checkboxes[i].checked == true) ? 1:0;
+            j = j + 1;
+        }
+        $.ajax({
+            url: "{{Request::url()}}/checkRowsSync",
+            type: 'POST',
+            data: {
+                _token: "{{csrf_token()}}",
+                checkedRows : checkedRows,
+                checkedStates : checkedStates
+            },
+            success: function(data){
+                console.log(data);
+            }
+        });
+    }
+</script>

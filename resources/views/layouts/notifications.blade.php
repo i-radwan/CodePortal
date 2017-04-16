@@ -4,7 +4,7 @@
 @if(count($notifications))
     <li class="dropdown notifications-dropdown">
         {{--Notifications bell icon--}}
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button"
            aria-expanded="false"
            @if($unreadCount) onclick="markAllNotificationsRead('{{csrf_token()}}');" @endif >
             <i id="notifications-icon"

@@ -43,6 +43,8 @@ class Constants
 
     const CONTESTS_COUNT_PER_PAGE = 30;
 
+    const CONTESTS_PENALTY_PER_WRONG_SUBMISSION = 20;
+
     const CONTESTS_CONTESTS_KEY = 'contests';
 
     //
@@ -67,6 +69,14 @@ class Constants
     const SINGLE_CONTEST_ORGANIZERS_KEY = "organizers";
     const SINGLE_CONTEST_TIME_KEY = "time";
     const SINGLE_CONTEST_DURATION_KEY = "duration";
+
+    const CHECKED_PROBLEMS = "checkedRows";
+    const CONTESTS_PROBLEMS_FILTERS = "cProblemsFilters";
+    const CONTESTS_CHECKED_JUDGES = "cJudges";
+    const CONTESTS_CHECKED_TAGS = "cTags";
+    const CONTESTS_MENTIONED_ORGANISERS = "mOrganisers";
+    const CONTEST_AUTO_COMPLETE_ORGANISERS = 1;
+    const CONTEST_AUTO_COMPLETE_TAGS = 0;
 
     // Participants
     const PARTICIPANTS_DISPLAYED_FIELDS = [
@@ -304,6 +314,8 @@ class Constants
 
     const NOTIFICATION_TEXT = [
         self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_CONTEST] => "You're invited to join the private contest: ",
+        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_GROUP] => "You're invited to join the private group: ",
+        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_TEAM] => "You're invited to join the private team: ",
     ];
 
     //
@@ -347,6 +359,9 @@ class Constants
     const FLD_USERS_PROFILE_PICTURE = "profile_picture";
     const FLD_USERS_ROLE = "role";
     const FLD_USERS_REMEMBER_TOKEN = "remember_token";
+    const FLD_USERS_PENALTY = "user_penalty";                       // Derived attribute
+    const FLD_USERS_SOLVED_COUNT = "user_solved_count";             // Derived attribute
+    const FLD_USERS_TRAILS_COUNT = "user_trials_count";             // Derived attribute
     const FLD_USERS_CODEFORCES_HANDLE = "codeforces_handle";        // Used in sign up & profile pages
     const FLD_USERS_UVA_HANDLE = "uva_handle";                      // Used in sign up & profile pages
     const FLD_USERS_LIVE_ARCHIVE_HANDLE = "live_archive_handle";    // Used in sign up & profile pages
@@ -370,10 +385,8 @@ class Constants
     const FLD_PROBLEMS_JUDGE_FIRST_KEY = "judge_first_key";
     const FLD_PROBLEMS_JUDGE_SECOND_KEY = "judge_second_key";
     const FLD_PROBLEMS_NAME = "name";
-    const FLD_PROBLEMS_DIFFICULTY = "difficulty";
     const FLD_PROBLEMS_SOLVED_COUNT = "solved_count";
-    const FLD_PROBLEMS_JUDGE_NAME = "judge_name";                   // Derived attribute
-    const FLD_PROBLEMS_TAGS = "tag_names";                          // Derived attribute
+    const FLD_PROBLEMS_TRAILS_COUNT = "trials_count";                   // Derived attribute
 
     // Submissions
     const FLD_SUBMISSIONS_ID = "id";

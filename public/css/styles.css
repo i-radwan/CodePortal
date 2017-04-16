@@ -652,9 +652,122 @@ footer {
 
 /*<editor-fold desc="Problems Page">*/
 /*====================================*/
+/*====== ADD/EDIT CONTEST PAGE =======*/
+/*====================================*/
+.search-box,.close-icon,.search-wrapper {
+    position: relative;
+    padding: 6px;
+}
+.search-wrapper {
+    width: 85%;
+
+}
+.search-box {
+    width: 85%;
+    border: 1px solid #ccc;
+    outline: 0;
+    border-radius: 7px;
+}
+.search-box:not(:valid) ~ .closes-icon {
+    display: none;
+}
+.close-icon {
+    border:1px solid transparent;
+    background-color: transparent;
+    display: inline-block;
+    vertical-align: middle;
+    outline: 0;
+    cursor: pointer;
+}
+.close-icon:after {
+    content: "X";
+    display: block;
+    width: 20px;
+    height: 20px;
+    position: relative;
+    background-color: #FA9595;
+    z-index:1;
+    right: 35px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    padding: 2px;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    font-weight: normal;
+    font-size: 12px;
+    box-shadow: 0 0 2px #E50F0F;
+    cursor: pointer;
+}
+
+.tags-close-icon{
+    border:1px solid transparent;
+    background-color: transparent;
+    display: inline-block;
+    vertical-align: middle;
+    outline: 0;
+    cursor: pointer;
+}
+.tags-close-icon:after{
+    content: "X";
+    display: block;
+    width: 17px;
+    height: 17px;
+    position: inherit;
+    background-color: #fc645f;
+    z-index:1;
+    right: 35px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    padding: 2px;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    font-weight: normal;
+    font-size: 12px;
+    box-shadow: 0 0 2px #E50F0F;
+    cursor: pointer;
+}
+.organiser-close-icon {
+    border:1px solid transparent;
+    background-color: transparent;
+    display: inline-block;
+    vertical-align: middle;
+    outline: 0;
+    cursor: pointer;
+}
+.organiser-close-icon:after{
+    content: "X";
+    display: block;
+    width: 17px;
+    height: 17px;
+    position: relative;
+    background-color: #fc645f;
+    z-index:1;
+    right: 35px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    padding: 2px;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    font-weight: normal;
+    font-size: 12px;
+    box-shadow: 0 0 2px #E50F0F;
+    cursor: pointer;
+}
+.tags-list{
+    list-style-type: none;
+}
+.contest_clear_problems_filters{
+    visibility: hidden;
+}
+/*====================================*/
 /*========== PROBLEMS PAGE ===========*/
 /*====================================*/
-
 .problems-panel, .contests-panel {
     border: 0;
 }

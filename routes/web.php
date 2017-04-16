@@ -32,6 +32,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
 
+    Route::get('contest/add/tagsautocomplete',array('as' => 'contest/add/tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
+    Route::get('contest/add/organisersautocomplete',array('as' => 'contest/add/organisersautocomplete', 'uses' => 'ContestController@organisersAutoComplete'));
+
+    Route::post('contest/add/checkRowsSync', 'ContestController@applyProblemsCheckBoxes' );
+    Route::post('contest/add/TagsJudgesFSync', 'ContestController@applyProblemsFilters' );
+    Route::post('contest/add/OrganisersSync', 'ContestController@applyOrganisers' );
+
     // Question routes...
     Route::put('contest/question/announce/{question}', 'ContestController@announceQuestion');
     Route::put('contest/question/renounce/{question}', 'ContestController@renounceQuestion');
@@ -43,7 +50,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 });
 
-Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['can:view-join-contest,contest']);
+//TODO: recheck the exception thrown by the middleware
+Route::get('contest/{contest}', 'ContestController@displayContest');//->middleware(['can:view-join-contest,contest']);
+
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
@@ -73,6 +82,12 @@ Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail'
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
+//
+Route::any('getData', function(){
+    dd("Roger That");
+});
+
+
 // Errors Routes...
 Route::get('errors/404', function () {
     return view('errors.404')->with('pageTitle', 'CodePortal | 404');
@@ -80,3 +95,4 @@ Route::get('errors/404', function () {
 Route::get('errors/401', function () {
     return view('errors.401')->with('pageTitle', 'CodePortal | 401');
 });
+
