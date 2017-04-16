@@ -118,7 +118,7 @@ class ContestController extends Controller
 //        //Get Organisers
         if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
             $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
-            $organisers = User::whereIn('username', $organisers)->get();
+            $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
             //Save Organisers
             foreach ($organisers as $organiser){
                 $contest->organizers()->save($organiser);
@@ -129,12 +129,10 @@ class ContestController extends Controller
             $problems = Session::get(Constants::CHECKED_PROBLEMS);
             $problems = Problem::find($problems);
             //Save Problems
-            foreach ($problems as $problem) {
+            foreach ($problems as $problem) { //It doesn't work
                 $contest->problems()->save($problem);
             }
         }
-
-
     }
 
     /**
