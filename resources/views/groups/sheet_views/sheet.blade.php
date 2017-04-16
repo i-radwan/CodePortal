@@ -47,7 +47,7 @@
                                     <button class="btn btn-primary"
                                             data-toggle="modal"
                                             data-target="#problem-solution-model"
-                                            onclick="fillAnswerModal('{{$problem->id}}', '{{$sheetID}}', '{{url("sheet/solution/$sheetID/".$problem->id)}}');">
+                                            onclick="fillAnswerModal('{{$problem->id}}', '{{$sheetID}}', '{{url("sheet/solution/$sheetID/".$problem->id)}}', '{{$problem->pivot->solution_lang}}');">
                                         Solution
                                     </button>
                                 </td>

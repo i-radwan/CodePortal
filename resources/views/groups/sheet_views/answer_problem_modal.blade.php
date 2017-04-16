@@ -24,6 +24,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
+                        @if($isOwner)
+                            <div class="pull-left">@include('groups.sheet_views.languages_list')</div>
+                        @endif
                         <button type="submit" class="btn btn-success" id="answer-model-submit-button">
                             Save
                         </button>

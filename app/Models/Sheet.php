@@ -55,7 +55,8 @@ class Sheet extends Model
             Constants::TBL_SHEETS_PROBLEMS,
             Constants::FLD_SHEETS_PROBLEMS_SHEET_ID,
             Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID
-        )->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)->withTimestamps();
+        )->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
+            ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)->withTimestamps();
     }
 
     /**

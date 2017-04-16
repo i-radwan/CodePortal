@@ -136,6 +136,7 @@ class SheetController extends Controller
         $problemID = $request->get('problem_id');
         $sheetID = $request->get('sheet_id');
         $solution = $request->get('problem_solution');
+        $solution_lang = $request->get('solution_lang');
 
         // Check if solution is empty
         if (!strlen(trim($solution))) return back()->withErrors(['You cannot provide empty solution!']);
@@ -155,8 +156,10 @@ class SheetController extends Controller
                 // Check if solution file already created
                 if (!$problem->pivot->solution) {
                     $problem->pivot->solution = uniqid();
-                    $problem->pivot->save();
                 }
+                // Save the solution language to DB
+                $problem->pivot->solution_lang = $solution_lang;
+                $problem->pivot->save();
 
                 // Write to code file of this solution
                 $codeFile = fopen("code/" . $problem->pivot->solution, "w") or die("Unable to open file!");
@@ -167,14 +170,15 @@ class SheetController extends Controller
         return back();
     }
 
-    public function retrieveProblemSolution(Sheet $sheet, $problemID)
+    public
+    function retrieveProblemSolution(Sheet $sheet, $problemID)
     {
         // Get solution file name
         $solutionFile = $sheet->problems()->find($problemID)->pivot->solution;
 
         // Read and return file contents
         $codeFile = fopen("code/$solutionFile", "r");
-        $codeFileContest = fread($codeFile, filesize("code/123"));
+        $codeFileContest = fread($codeFile, filesize("code/" . $solutionFile));
         fclose($codeFile);
         return $codeFileContest;
     }
@@ -185,7 +189,8 @@ class SheetController extends Controller
      * @param Sheet $sheet
      * @param array $data
      */
-    private function getBasicContestInfo(Sheet $sheet, &$data)
+    private
+    function getBasicContestInfo(Sheet $sheet, &$data)
     {
         $sheetInfo = [];
 
@@ -213,10 +218,10 @@ class SheetController extends Controller
      * @param Sheet $sheet
      * @param array $data
      */
-    private function getProblemsInfo(Sheet $sheet, &$data)
+    private
+    function getProblemsInfo(Sheet $sheet, &$data)
     {
         $problems = $sheet->problems()->get();
-
         // Set group members
         $data[Constants::SINGLE_SHEET_PROBLEMS_KEY] = $problems;
     }

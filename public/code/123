@@ -1,6 +1,4 @@
-<b>Bold</b>
-<?php
-
-echo 1235;
-
-?>
+var doc = {
+    id: '123',
+    name: 'Name'
+};

@@ -68,16 +68,24 @@ $(window).on("popstate", function () {
 
 
 /*<editor-fold desc="Code editor">*/
-
+const LANGUAGES = {
+    0: "c_cpp",
+    1: "java",
+    2: "python",
+    3: "php",
+    4: "javascript",
+    5: "ruby",
+    6: "haskell"
+}
 // ToDo Comment this hell block
 if ($("#code-editor").length) {
     var editor = ace.edit("code-editor");
     editor.setTheme("ace/theme/twilight");
-    editor.session.setMode("ace/mode/javascript");
+    editor.session.setMode("ace/mode/c_cpp");
 } else if ($("#code-editor-members").length) {
     var editor_members = ace.edit("code-editor-members");
     editor_members.setTheme("ace/theme/twilight");
-    editor_members.session.setMode("ace/mode/javascript");
+    editor_members.session.setMode("ace/mode/c_cpp");
 }
 /**
  *
@@ -121,13 +129,29 @@ function getSolutionFromFile(url) {
  * @param string url for solution file
  * @param problemSolution
  */
-function fillAnswerModal(problemID, sheetID, url) {
+function fillAnswerModal(problemID, sheetID, url, solution_lang) {
+    if (!solution_lang.length) solution_lang = "c_cpp";
+
+    // Set selected language in solution_lang menu
+    $("#solution_lang").val(solution_lang);
+
+    // Clear editors first
+    if (editor) {
+        editor.setValue("");
+        editor.getSession().setMode("ace/mode/" + solution_lang);
+    } else if (editor_members) {
+        editor_members.setValue("");
+        editor_members.getSession().setMode("ace/mode/" + solution_lang);
+    }
+
+    // Set form values
     if ($('#problem-id').length && $('#sheet-id').length) {
         $('#problem-id').val(problemID);
         $('#sheet-id').val(sheetID);
     }
     getSolutionFromFile(url);
 }
+
 /**************************************/
 /*</editor-fold>*/
 
