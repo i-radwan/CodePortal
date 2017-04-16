@@ -8,11 +8,14 @@ use Redirect;
 use URL;
 use App\Models\User;
 use App\Models\Problem;
+use App\Models\Tag;
+use App\Models\Judge;
 use App\Models\Contest;
 use App\Models\Question;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
+use App\Http\Controllers\ProblemController;
 
 class ContestController extends Controller
 {
@@ -23,6 +26,12 @@ class ContestController extends Controller
      */
     public function index()
     {
+        //ForgetCheckedProblems
+        //Forget roblemsFilters
+        Session::forget(Constants::CHECKED_PROBLEMS);
+        Session::forget(Constants::CONTESTS_PROBLEMS_FILTERS);
+        Session::forget(Constants::CONTESTS_MENTIONED_ORGANISERS);
+
         $data = [];
 
         $data[Constants::CONTESTS_CONTESTS_KEY] =
@@ -66,12 +75,33 @@ class ContestController extends Controller
 
     /**
      * Show add/edit contest page
+     * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @return $this
      */
-    public function addEditContestView()
+    public function addEditContestView(Request $request)
     {
-        return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
+        if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS))
+            $mOrganisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
+        else $mOrganisers = [];
+        if(Session::has(Constants::CONTESTS_PROBLEMS_FILTERS)){
+            $cjudges = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges'] : [];
+            $ctags = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']: [];
+        }
+        else{
+            $cjudges = [];
+            $ctags = [];
+        }
+        $problems = self::getProblemsWithFilters($request, $ctags, $cjudges);
+        return view('contests.add_edit')
+            ->with('problems', $problems)
+            ->with('judges', Judge::all())
+            ->with('checkBoxes', 'true')
+            ->with(Constants::CHECKED_PROBLEMS,Session::get(Constants::CHECKED_PROBLEMS))
+            ->with(Constants::CONTESTS_CHECKED_TAGS, $ctags)
+            ->with(Constants::CONTESTS_CHECKED_JUDGES, $cjudges)
+            ->with(Constants::CONTESTS_MENTIONED_ORGANISERS, $mOrganisers)
+            ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
     /**
@@ -95,6 +125,39 @@ class ContestController extends Controller
 
     }
 
+    public function tagsAutoComplete(Request $request){
+        $data  = Tag::select('name')->get();
+        return response()->json($data);
+
+    }
+
+    public function organisersAutoComplete(Request $request){
+        $data = User::select([Constants::FLD_USERS_USERNAME.' as name'])->get([]);
+        return response()->json($data);
+    }
+
+    public function applyProblemsCheckBoxes(Request $request){
+        $page = $request->get('page'); //get the current page
+        if( Session::has(Constants::CHECKED_PROBLEMS))
+            $currentCheckedProblems = Session::get(Constants::CHECKED_PROBLEMS);
+        else
+            $currentCheckedProblems = [];
+        $currentCheckedProblems[$page] = $request->get(Constants::CHECKED_PROBLEMS);
+        Session::put(Constants::CHECKED_PROBLEMS, $currentCheckedProblems);
+        return ;
+
+    }
+
+    public function applyProblemsFilters(Request $request){
+        Session::put(Constants::CONTESTS_PROBLEMS_FILTERS, $request->get('cProblemsFilters'));
+        return ;
+
+    }
+
+    public function applyOrganisers(Request $request){
+        Session::put(Constants::CONTESTS_MENTIONED_ORGANISERS, $request->get(Constants::CONTESTS_MENTIONED_ORGANISERS));
+        return ;
+    }
     /**
      * Delete a certain contest if you're owner
      *
@@ -434,4 +497,10 @@ class ContestController extends Controller
         // Set contest questions
         $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements;
     }
+
+
+    public static function getProblemsWithFilters($request,$tagNames, $judgesIDs){
+        return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); //Returning the Problems Data
+    }
+
 }

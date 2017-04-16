@@ -70,6 +70,14 @@ class Constants
     const SINGLE_CONTEST_TIME_KEY = "time";
     const SINGLE_CONTEST_DURATION_KEY = "duration";
 
+    const CHECKED_PROBLEMS = "checkedRows";
+    const CONTESTS_PROBLEMS_FILTERS = "cProblemsFilters";
+    const CONTESTS_CHECKED_JUDGES = "cJudges";
+    const CONTESTS_CHECKED_TAGS = "cTags";
+    const CONTESTS_MENTIONED_ORGANISERS = "mOrganisers";
+    const CONTEST_AUTO_COMPLETE_ORGANISERS = 1;
+    const CONTEST_AUTO_COMPLETE_TAGS = 0;
+
     // Participants
     const PARTICIPANTS_DISPLAYED_FIELDS = [
         self::FLD_USERS_USERNAME,
