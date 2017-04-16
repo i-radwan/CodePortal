@@ -122,6 +122,19 @@ class GroupController extends Controller
     }
 
     /**
+     * Remove user membership from a group
+     *
+     * @param Group $group
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function removeMember(Group $group, User $user)
+    {
+        $user->joiningGroups()->detach($group);
+        return back();
+    }
+
+    /**
      * Cancel user membership in a group
      *
      * @param Group $group

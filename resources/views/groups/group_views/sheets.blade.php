@@ -28,7 +28,7 @@
                         {{method_field('DELETE')}}
                         {{csrf_field()}}
                         <button type="submit" class="btn btn-link text-dark"
-                                onclick="return confirm('Are you sure want to delete the contest?\nThis cannot be undone')">
+                                onclick="return confirm('Are you sure want to delete the sheet?\nThis cannot be undone')">
                             Delete
                         </button>
                     </form>

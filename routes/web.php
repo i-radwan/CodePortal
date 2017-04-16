@@ -59,6 +59,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);
     Route::post('sheet/edit/{sheet}', 'SheetController@editSheet')->middleware(['can:owner-sheet,sheet']);
 
+    Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group'])->middleware(['can:member-group,group,user']);
     Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
 
     Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest')->middleware(['can:owner-group,group']);

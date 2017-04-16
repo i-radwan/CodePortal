@@ -120,6 +120,7 @@ class Constants
 
     // Members displayable fields
     const MEMBERS_DISPLAYED_FIELDS = [
+        self::FLD_USERS_ID,
         self::FLD_USERS_USERNAME,
         self::FLD_USERS_EMAIL,
         self::FLD_USERS_COUNTRY

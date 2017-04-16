@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Group;
-use App\Models\Notification;
+use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -52,25 +52,34 @@ class AuthServiceProvider extends ServiceProvider
         // Owner or organizer of contest
         Gate::define("owner-organizer-contest", function ($user, $contest) {
             // Check if user is organizer or owner
-            if ($user->organizingContests()->find($contest) ||
-                $user->owningContests()->find($contest)
+            if ($user->organizingContests()->find($contest->id) ||
+                $user->owningContests()->find($contest->id)
             ) return true;
             return false;
         });
 
         // Owner of group
         Gate::define("owner-group", function ($user, $group) {
-            // Check if user is organizer or owner
-            if ($user->owningGroups()->find($group)
+            // Check if user is owner
+            if ($user->owningGroups()->find($group->id)
             ) return true;
             return false;
         });
 
         // Owner or member of group
         Gate::define("owner-or-member-group", function ($user, $group) {
-            // Check if user is organizer or owner
-            if ($user->owningGroups()->find($group)
-                || $user->joiningGroups()->find($group)
+            // Check if user is member or owner
+            if ($user->owningGroups()->find($group->id)
+                || $user->joiningGroups()->find($group->id)
+            ) return true;
+            return false;
+        });
+
+        // Member of group
+        Gate::define("member-group", function ($user, Group $group, User $member) {
+            // Check if user is member and not owner
+            if (!$member->owningGroups()->find($group->id)
+                && $member->joiningGroups()->find($group->id)
             ) return true;
             return false;
         });
@@ -79,16 +88,16 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define("owner-sheet", function ($user, $sheet) {
             if ($group = Group::find($sheet[Constants::FLD_SHEETS_GROUP_ID])) {
                 // Check if user is organizer or owner
-                if ($user->owningGroups()->find($group)) return true;
+                if ($user->owningGroups()->find($group->id)) return true;
             }
             return false;
         });
 
-        // Owner or member of sheet
+        // Owner or member of sheet's group
         Gate::define("owner-or-member-sheet", function ($user, $sheet) {
             // Check if user is organizer or owner
-            if ($user->owningGroups()->find($sheet->group_id)
-                || $user->joiningGroups()->find($sheet->group_id)
+            if ($user->owningGroups()->find($sheet->group_id->id)
+                || $user->joiningGroups()->find($sheet->group_id->id)
             ) return true;
             return false;
         });
