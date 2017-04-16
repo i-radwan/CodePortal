@@ -1,3 +1,4 @@
+{{--Errors--}}
 @if(count($errors) > 0)
     <div class="alert alert-danger">
         <ul>
@@ -7,6 +8,8 @@
         </ul>
     </div>
 @endif
+
+{{--Normal Messages--}}
 @if(Session::has('messages') && Session::get('messages') > 0)
     <div class="alert alert-success">
         <ul>

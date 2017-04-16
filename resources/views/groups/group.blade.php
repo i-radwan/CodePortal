@@ -88,6 +88,7 @@
 
                         <!-- Tab panes -->
                         <div class="tab-content">
+
                             <div role="tabpanel" class="tab-pane active horizontal-scroll" id="members">
                                 @if($isOwner)
                                     @include('groups.group_views.invite')
@@ -98,6 +99,7 @@
                                     <p class="margin-30px">No members!</p>
                                 @endif
                             </div>
+
                             <div role="tabpanel" class="tab-pane" id="contests">
                                 @if($isOwner)
                                     <a href="{{url('group/contest/new/'.$groupID)}}"
@@ -108,6 +110,7 @@
                                     @include('contests.contest_views.contests_table')
                                 </div>
                             </div>
+
                             <div role="tabpanel" class="tab-pane" id="sheets">
                                 @if($isOwner)
                                     <a href="{{url('sheet/new/'.$groupID)}}"
@@ -120,6 +123,7 @@
                                     <p class="margin-30px">No sheets!</p>
                                 @endif
                             </div>
+
                             @if($isOwner)
                                 <div role="tabpanel" class="tab-pane horizontal-scroll" id="requests">
                                     @if(count($seekers))

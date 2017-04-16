@@ -20,9 +20,13 @@
             <td> {{ count($sheet->problems()->get())}}</td>
             @if($isOwner)
                 <td class="text-center">
+
+                    {{--Edit sheet--}}
                     <a href="{{url('sheet/edit/'.$sheet[Constants::FLD_SHEETS_ID])}}}" class="btn btn-link text-dark">
                         Edit
                     </a>
+
+                    {{--Delete sheet--}}
                     <form action="{{url('sheet/'.$sheet[Constants::FLD_SHEETS_ID])}}"
                           method="post" class="action">
                         {{method_field('DELETE')}}

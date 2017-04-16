@@ -12,6 +12,8 @@
                     <div class="panel-body">
                         {{--Alerts Part--}}
                         @include('components.alert')
+
+                        {{--Name--}}
                         <form class="form-horizontal" role="form" method="POST" action="{{ url($url) }}">
                             {{ csrf_field() }}
 
@@ -31,6 +33,7 @@
                                 </div>
                             </div>
 
+                            {{--Problems--}}
                             <div class="form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
                                 <label for="problems" class="col-md-4 control-label">Problems</label>
 

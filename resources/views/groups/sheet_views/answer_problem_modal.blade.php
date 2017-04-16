@@ -14,7 +14,6 @@
                     <div class="modal-body">
                         <input type="hidden" name="problem_id" id="problem-id"/>
                         <input type="hidden" name="sheet_id" id="sheet-id"/>
-                        {{--ToDo : Add languages list--}}
                         <div class="form-group code-editor-container">
                             <pre id="code-editor">
                             </pre>
