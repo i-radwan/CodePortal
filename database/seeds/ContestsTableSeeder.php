@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Team;
 use App\Models\Problem;
 use App\Models\Contest;
 use App\Utilities\Constants;
@@ -27,6 +28,8 @@ class ContestsTableSeeder extends Seeder
 
         // Get all user IDs
         $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
+        // Get all team IDs
+        $teamIDs = Team::all()->pluck(Constants::FLD_TEAMS_ID)->toArray();
 
         for ($i = 0; $i < $limit; ++$i) {
             DB::table(Constants::TBL_CONTESTS)->insert([
@@ -74,8 +77,21 @@ class ContestsTableSeeder extends Seeder
         for ($i = 0; $i < $limit * 10; ++$i) {
             try {
                 DB::table(Constants::TBL_CONTEST_PARTICIPANTS)->insert([
-                    Constants::FLD_CONTEST_PARTICIPANTS_USER_ID => $faker->randomElement($userIDs),
                     Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID => $faker->randomElement($contestIDs),
+                    Constants::FLD_CONTEST_PARTICIPANTS_USER_ID => $faker->randomElement($userIDs),
+                ]);
+            }
+            catch (\Illuminate\Database\QueryException $e) {
+
+            };
+        }
+
+        // Contests Teams
+        for ($i = 0; $i < $limit * 3; ++$i) {
+            try {
+                DB::table(Constants::TBL_CONTEST_PARTICIPANTS)->insert([
+                    Constants::FLD_CONTEST_TEAMS_CONTEST_ID => $faker->randomElement($contestIDs),
+                    Constants::FLD_CONTEST_TEAMS_TEAM_ID => $faker->randomElement($teamIDs),
                 ]);
             }
             catch (\Illuminate\Database\QueryException $e) {
