@@ -2,22 +2,19 @@
 
 @section('content')
     <div class="container">
-        <div class="row">
+        @include('problems.collapsible-filters')
+        @include('problems.problems')
+        @include('problems.tags')
 
-            {{--@include('problems.collapsible-filters')--}}
+        {{--Problems table--}}
+        {{--<div class="col-md-8">--}}
             {{--@include('problems.problems')--}}
+        {{--</div>--}}
+
+        {{--Sidebar--}}
+        {{--<div class="col-md-4">--}}
+            {{--@include('problems.filters')--}}
             {{--@include('problems.tags')--}}
-
-            {{--Problems table--}}
-            <div class="col-md-8">
-                @include('problems.problems')
-            </div>
-
-            {{--Sidebar--}}
-            <div class="col-md-4">
-                @include('problems.filters')
-                @include('problems.tags')
-            </div>
-        </div>
+        {{--</div>--}}
     </div>
 @endsection
