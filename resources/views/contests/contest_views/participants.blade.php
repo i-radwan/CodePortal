@@ -19,3 +19,6 @@
         @endforeach
     </tbody>
 </table>
+
+{{--Pagination--}}
+{{ $status->fragment('participants')->render() }}

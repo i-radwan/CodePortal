@@ -447,10 +447,7 @@ class ContestController extends Controller
      */
     private function getStandingsInfo($contest, &$data)
     {
-        //TODO: paginate standings
-//        \DB::enableQueryLog();
-        $rawData = $contest->standings()->get();
-//        dd(\DB::getQueryLog());
+        $rawData = $contest->standings()->paginate(Constants::CONTEST_STANDINGS_PER_PAGE);
 
         $standings = [];
         $idx = 0;
@@ -516,7 +513,7 @@ class ContestController extends Controller
         $participants = $contest
             ->participants()
             ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
-            ->get();
+            ->paginate(Constants::CONTEST_PARTICIPANTS_PER_PAGE);
 
         // Set contest participants
         $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;
