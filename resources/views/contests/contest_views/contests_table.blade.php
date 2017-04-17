@@ -1,5 +1,5 @@
 @if(count($data[Constants::CONTESTS_CONTESTS_KEY]))
-    <table class="table table-bordered" id="contests_table">
+    <table class="table table-bordered table-hover" id="contests_table">
         <thead>
         <tr>
             <th class="text-center">ID</th>

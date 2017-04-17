@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Validator;
 use App\Utilities\Constants;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
-    use ValidateModelData;
 
     /**
      * The table associated with the model.
@@ -66,6 +66,27 @@ class User extends Authenticatable
         Constants::FLD_USERS_BIRTHDATE => 'date',       //TODO: add more validation on birthdate
         Constants::FLD_USERS_ROLE => 'Regex:/([012])/',
     ];
+
+    /**
+     * Validate the rules then save the model to the database
+     *
+     * @param array $options
+     * @return bool
+     */
+    public function save(array $options = [])
+    {
+        $rules = $this->rules;
+
+        if ($this->exists) {
+            $rules[Constants::FLD_USERS_USERNAME] = 'required|max:20|unique:' .
+                Constants::TBL_USERS . ',' . Constants::FLD_USERS_USERNAME . ',' . $this->id;
+            $rules[Constants::FLD_USERS_EMAIL] = 'required|email|max:50|unique:' .
+                Constants::TBL_USERS . ',' . Constants::FLD_USERS_EMAIL . ',' . $this->id;
+        }
+
+        Validator::make($this->attributes, $rules)->validate();
+        return parent::save($options);
+    }
 
     /**
      * Return the handles on different online judges of the current user
