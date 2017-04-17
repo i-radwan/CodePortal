@@ -39,7 +39,7 @@
             @if($isContestRunning && $isOwnerOrOrganizer)
                 <td>
 
-                    <button class="btn btn-primary question-answer-button"
+                    <button class="btn btn-primary"
                             data-toggle="modal"
                             data-target="#question-answer-model"
                             onclick="$('#question-id').val('{{$questionID}}');$('#question-answer').val('{{($answer != "")? $answer: "Re-read the problem statement!"}}');">

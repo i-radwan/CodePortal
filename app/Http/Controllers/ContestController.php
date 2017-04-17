@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use Auth;
 use Mockery\Exception;
 use Session;
@@ -84,14 +85,13 @@ class ContestController extends Controller
      */
     public function addEditContestView(Request $request)
     {
-        if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS))
+        if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS))
             $mOrganisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
         else $mOrganisers = [];
-        if(Session::has(Constants::CONTESTS_PROBLEMS_FILTERS)){
+        if (Session::has(Constants::CONTESTS_PROBLEMS_FILTERS)) {
             $cjudges = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges'] : [];
-            $ctags = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']: [];
-        }
-        else{
+            $ctags = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags'] : [];
+        } else {
             $cjudges = [];
             $ctags = [];
         }
@@ -100,11 +100,25 @@ class ContestController extends Controller
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
-            ->with(Constants::CHECKED_PROBLEMS,Session::get(Constants::CHECKED_PROBLEMS))
+            ->with(Constants::CHECKED_PROBLEMS, Session::get(Constants::CHECKED_PROBLEMS))
             ->with(Constants::CONTESTS_CHECKED_TAGS, $ctags)
             ->with(Constants::CONTESTS_CHECKED_JUDGES, $cjudges)
             ->with(Constants::CONTESTS_MENTIONED_ORGANISERS, $mOrganisers)
             ->with('pageTitle', config('app.name') . ' | Contest');
+    }
+
+    /**
+     * Show add group contest page
+     *
+     * @param Group $group
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function addGroupContestView(Group $group)
+    {
+        // ToDo: after samir, create private contest for the group
+        // ToDo: Set the contest owner to group admin
+        // ToDo: Send invitations to members to join
+        return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
     }
 
     /**
@@ -118,16 +132,16 @@ class ContestController extends Controller
         $contest = new Contest($request->all());
         $contest->save();
         //Get Organisers
-        if(Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
+        if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
             $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
             $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
             //Save Organisers
-            foreach ($organisers as $organiser){
+            foreach ($organisers as $organiser) {
                 $contest->organizers()->save($organiser);
             }
         }
         //Add Problems
-        if(Session::has(Constants::CHECKED_PROBLEMS)) {
+        if (Session::has(Constants::CHECKED_PROBLEMS)) {
             $problems = Session::get(Constants::CHECKED_PROBLEMS);
             $contest->problems()->syncWithoutDetaching($problems);
         }
@@ -143,53 +157,57 @@ class ContestController extends Controller
 
     }
 
-    public function tagsAutoComplete(Request $request){
-        $data  = Tag::select('name')->get();
+    public function tagsAutoComplete(Request $request)
+    {
+        $data = Tag::select('name')->get();
         return response()->json($data);
 
     }
 
-    public function organisersAutoComplete(Request $request){
-        $data = User::select([Constants::FLD_USERS_USERNAME.' as name'])->get([]);
+    public function organisersAutoComplete(Request $request)
+    {
+        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])->get([]);
         return response()->json($data);
     }
 
-    public function applyProblemsCheckBoxes(Request $request){
+    public function applyProblemsCheckBoxes(Request $request)
+    {
 
-        if(Session::has(Constants::CHECKED_PROBLEMS))
+        if (Session::has(Constants::CHECKED_PROBLEMS))
             $currentInSession = Session::get(Constants::CHECKED_PROBLEMS);
         else
             $currentInSession = [];
         $j = count($currentInSession);
         $checkedRows = $request->get('checkedRows'); //TODO @Samir Change That
         $checkedStates = $request->get('checkedStates');
-        for($i = 0; $i < count($checkedRows); $i = $i + 1){
+        for ($i = 0; $i < count($checkedRows); $i = $i + 1) {
             $isFound = in_array($checkedRows[$i], $currentInSession);
-            if($checkedStates[$i]){//If it's checked
-                if(!($isFound)){
+            if ($checkedStates[$i]) {//If it's checked
+                if (!($isFound)) {
                     $currentInSession[$j] = $checkedRows[$i];
-                    $j = $j +1;
+                    $j = $j + 1;
                 }
-            }
-            else{ //Check if it's in the current session
-                if($isFound){ //Remove
+            } else { //Check if it's in the current session
+                if ($isFound) { //Remove
                     $currentInSession = array_diff($currentInSession, [$checkedRows[$i]]);
                 }
             }
         }
         Session::put(Constants::CHECKED_PROBLEMS, $currentInSession);
-        return $currentInSession ;
+        return $currentInSession;
     }
 
-    public function applyProblemsFilters(Request $request){
+    public function applyProblemsFilters(Request $request)
+    {
         Session::put(Constants::CONTESTS_PROBLEMS_FILTERS, $request->get(Constants::CONTESTS_PROBLEMS_FILTERS));
-        return ;
+        return;
 
     }
 
-    public function applyOrganisers(Request $request){
+    public function applyOrganisers(Request $request)
+    {
         Session::put(Constants::CONTESTS_MENTIONED_ORGANISERS, $request->get(Constants::CONTESTS_MENTIONED_ORGANISERS));
-        return ;
+        return;
     }
 
     /**
@@ -449,7 +467,7 @@ class ContestController extends Controller
                 if (++$i < $len) {
                     $curData = (array)$rawData[$i];
                 }
-            } while($i < $len && $cur[Constants::FLD_SUBMISSIONS_USER_ID] == $curData[Constants::FLD_SUBMISSIONS_USER_ID]);
+            } while ($i < $len && $cur[Constants::FLD_SUBMISSIONS_USER_ID] == $curData[Constants::FLD_SUBMISSIONS_USER_ID]);
 
             --$i;
             ++$idx;
@@ -534,7 +552,8 @@ class ContestController extends Controller
     }
 
 
-    public static function getProblemsWithFilters($request,$tagNames, $judgesIDs){
+    public static function getProblemsWithFilters($request, $tagNames, $judgesIDs)
+    {
         return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); //Returning the Problems Data
     }
 }

@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use App\Utilities\Constants;
 use App\Models\Contest;
 use App\Models\User;
+use App\Models\Group;
 
 class NotificationsTableSeeder extends Seeder
 {
@@ -19,12 +20,13 @@ class NotificationsTableSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-        $limit = 3000;
+        $limit = 500;
 
-        // ToDo generalize to groups, teams
-        $ContestIDs = Contest::all()->pluck('id')->toArray();
-        $userIDs = User::all()->pluck('id')->toArray();
+        // ToDo generalize to teams
+        $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
 
+        // Seed contest notifications
+        $ContestIDs = Contest::all()->pluck(Constants::FLD_CONTESTS_ID)->toArray();
         for ($i = 0; $i < $limit; $i++) {
 
             // Get different sender ID and receiver ID
@@ -33,15 +35,34 @@ class NotificationsTableSeeder extends Seeder
                 $receiverID = $faker->randomElement($userIDs);
             } while ($senderID == $receiverID);
 
-
             DB::table(Constants::TBL_NOTIFICATIONS)->insert([
                 Constants::FLD_NOTIFICATIONS_SENDER_ID => $senderID,
                 Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $receiverID,
                 Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $faker->randomElement($ContestIDs),
                 Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
-                // Constants::FLD_NOTIFICATIONS_TYPE => $faker->randomElement(Constants::NOTIFICATION_TYPE), ToDo generalize
-                Constants::FLD_NOTIFICATIONS_TYPE => Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST],
+                Constants::FLD_NOTIFICATIONS_TYPE => (Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST])
             ]);
+        }
+
+        // Seed group notifications
+        $groupIDs = Group::all()->pluck(Constants::FLD_GROUPS_ID)->toArray();
+        for ($i = 0; $i < $limit; $i++) {
+
+            // Get different sender ID and receiver ID
+            $senderID = $faker->randomElement($userIDs);
+            do {
+                $receiverID = $faker->randomElement($userIDs);
+            } while ($senderID == $receiverID);
+            try {
+                DB::table(Constants::TBL_NOTIFICATIONS)->insert([
+                    Constants::FLD_NOTIFICATIONS_SENDER_ID => $senderID,
+                    Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $receiverID,
+                    Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $faker->randomElement($groupIDs),
+                    Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
+                    Constants::FLD_NOTIFICATIONS_TYPE => (Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
+                ]);
+            } catch (\Illuminate\Database\QueryException $e) {
+            }
         }
     }
 }

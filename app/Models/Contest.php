@@ -317,7 +317,7 @@ class Contest extends Model
             "`" . Constants::TBL_CONTESTS . "`.`" . Constants::FLD_CONTESTS_TIME . "`" .
             ") " .
             "else " .
-            Constants::CONTESTS_PENALTY_PER_WRONG_SUBMISSION . " ".
+            Constants::CONTESTS_PENALTY_PER_WRONG_SUBMISSION . " " .
             "end) as " .
             "`" . Constants::FLD_USERS_PENALTY . "`"
         ));
@@ -615,5 +615,21 @@ class Contest extends Model
 //                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
 //                [$contestStartTime, $contestEndTime]
 //            );
+    }
+
+
+    /**
+     * Return all groups related to this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(
+            Contest::class,
+            Constants::TBL_GROUPS_CONTESTS,
+            Constants::FLD_GROUP_CONTESTS_CONTEST_ID,
+            Constants::FLD_GROUP_CONTESTS_GROUP_ID
+        );
     }
 }

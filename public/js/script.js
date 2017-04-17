@@ -1,12 +1,5 @@
 $(document).ready(function () {
 
-
-    /*<editor-fold desc="Single Contest Page">*/
-
-
-    /**************************************/
-    /*</editor-fold>*/
-
     /*<editor-fold desc="Animations">*/
     /*====================================*/
     /*========== animate.css   ===========*/
@@ -67,6 +60,133 @@ $(window).on("popstate", function () {
 /*</editor-fold>*/
 
 
+/*<editor-fold desc="Code editor">*/
+
+// The following section handles Ace code editor
+// Tasks:
+// 1. Fill the solution modal with problem previous solution if available
+// 2. Reserve user modifications to code even if he closes the modal
+// 3. Allow user to save the new answer
+// 4. Allow members to view the code only
+
+// This var is used to store the problems solution once fetched from the Ajax
+// request, then every owner modification to the code is also reserved here.
+// When the user refreshes the page, the non-saved modifications are gone...
+var currentProblemsSolutions = {};
+
+// These vars store the current state if user is owner or member
+var isOwner = false;
+var isMember = false;
+var editor;
+if ($("#code-editor").length) { // Check if owner
+    isOwner = true;
+} else if ($("#code-editor-members").length) {
+    isMember = true;
+}
+
+// Here I initialize the code editor for both owner and members views
+if (isOwner) {
+    editor = ace.edit("code-editor"); // Initialize Ace editor with code editor container ID editor.getSession().on('change', function () {
+
+    // Catch owner input in code editor
+    // Save the modifications to the currentProblemsSolutions storage
+    // which is indexed by problemID
+    editor.getSession().on('change', function () {
+        if ($('#problem-id').val().length)
+            currentProblemsSolutions[$('#problem-id').val()] = editor.getValue();
+    });
+} else if (isMember) {
+    editor = ace.edit("code-editor-members"); // Initialize Ace editor with code editor container ID
+}
+
+if (editor) {
+    editor.setTheme("ace/theme/twilight"); // Set the editor theme
+    editor.session.setMode("ace/mode/c_cpp"); // Set initial mode to c_cpp
+}
+
+// When user clicks save answer button
+// Before the form submission, the hidden textarea gets filled with
+// code editor value, such that the textarea value (i.e. code editor value)
+// gets transmitted with the form request to the controller
+// THIS happens because we cannot catch code editor value easily
+$("#answer-model-submit-button").click(function () {
+    $('#problem-solution').val(editor.getValue());
+    return true;
+});
+
+/**
+ * Retrieve problem solution from url
+ *
+ * @param int problemID used for storing solution once retrieved
+ * @param url used to contact backend
+ */
+function getSolutionFromFile(problemID, url) {
+    $.ajax({
+        type: "GET",
+        url: url,
+        async: false,
+        success: function (problemSolution) {
+            // Fill editors with solution
+            editor.focus(); // get user focus
+
+            if (isOwner) {
+                // Store retrieved solution in the currentProblemsSolutions
+                currentProblemsSolutions[problemID] = problemSolution;
+
+                // Set the editor value and move cursor
+                editor.setValue(problemSolution, -1);
+            } else if (isMember) {
+                // Set value and make editor read only for members
+                // If no solution, print no solution message
+                editor.setValue((problemSolution.length) ? problemSolution : 'No solution provided!', -1);
+                editor.setReadOnly(true);
+            }
+        },
+        error: function (result) {
+            console.log(result.responseText);
+        }
+    });
+}
+/**
+ * Fill problem answer modal fields once Solution button is clicked
+ *
+ * @param int problemID
+ * @param int sheetID
+ * @param string url for solution file
+ * @param solution_lang
+ */
+function fillAnswerModal(problemID, sheetID, url, solution_lang) {
+    // If no solution_lang, means no previous solution is provided
+    // Assume that c_cpp is going to be used
+    if (!solution_lang.length) solution_lang = "c_cpp";
+
+    // Set selected language in solution_lang menu
+    $("#solution_lang").val(solution_lang);
+
+    // Set editor mode to match selected solution_lang (retrieved from database)
+    editor.getSession().setMode("ace/mode/" + solution_lang);
+
+    // Set form values (problem id and sheet id, used in form submission to store solution)
+    if ($('#problem-id').length && $('#sheet-id').length) {
+        $('#problem-id').val(problemID);
+        $('#sheet-id').val(sheetID);
+    }
+
+    // Check if the solution of this problem hasn't retrieved yet
+    // get it (and inside this fn call, the solution will be stored in currentProblemsSolutions)
+    if (!currentProblemsSolutions[problemID]) {
+        getSolutionFromFile(problemID, url);
+    } else {
+        // If solution exists, render it in the editor
+        editor.setValue(currentProblemsSolutions[problemID], -1);
+    }
+}
+
+/**************************************/
+/*</editor-fold>*/
+
+
+
 /*<editor-fold desc="Notifications">*/
 
 /**
@@ -75,11 +195,11 @@ $(window).on("popstate", function () {
  *
  * @param string csrf token
  */
-function markAllNotificationsRead(token) {
+function markAllNotificationsRead(token, url) {
     $.ajax({
-        type: "PUT",
-        url: 'notifications/mark_all_read',
-        data: {"_token": token, "_method" : "PUT"},
+        type: "POST",
+        url: url,
+        data: {_token: token, _method: "PUT"},
         success: function () {
             // Change icon to light bell
             $("#notifications-icon").removeClass("fa-bell");
@@ -88,6 +208,9 @@ function markAllNotificationsRead(token) {
 
             // Prevent future clicks to execute this function
             $("#notifications-icon").parent()[0].onclick = null;
+        },
+        error: function (result) {
+            console.log(result.responseText);
         }
     });
 }
@@ -99,7 +222,7 @@ function markAllNotificationsRead(token) {
  * @param int notificationID
  * @param object element clicked element
  */
-function cancelNotification(e, token, notificationID, element) {
+function cancelNotification(e, token, url, element) {
     // Prevent click event propagation (such that dropdown menu doesn't
     // close after deleting) notification
     if (!e)
@@ -112,12 +235,11 @@ function cancelNotification(e, token, notificationID, element) {
     else {
         e.cancelBubble = true;
     }
-
     // Send lazy delete request
     $.ajax({
-        type: "DELETE",
-        url: 'notification/' + notificationID,
-        data: {"_token": token},
+        type: "POST",
+        url: url,
+        data: {_token: token, _method: "DELETE"},
         success: function () {
             hideNotificationElement(element);
         }

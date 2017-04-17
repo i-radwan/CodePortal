@@ -85,10 +85,97 @@ class Constants
     ];
 
     // Extra
-    const SINGLE_CONTEST_IS_USER_PARTICIPATING = "leave_btn_visible";
-    const SINGLE_CONTEST_IS_USER_OWNER = "delete_btn_visible";
-    const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
+    const SINGLE_CONTEST_IS_USER_PARTICIPATING = "user_is_participant";
+    const SINGLE_CONTEST_IS_USER_OWNER = "user_is_owner";
     const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
+    const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
+    // ============================================================
+    //endregion
+
+
+    //region groups page
+
+    //
+    // Groups page constants
+    //
+
+    const GROUPS_COUNT_PER_PAGE = 30;
+
+    const GROUPS_GROUPS_KEY = 'groups';
+
+    //
+    // Single group page constants
+    //
+
+    // Main keys
+    const SINGLE_GROUP_GROUP_KEY = "group";
+    const SINGLE_GROUP_MEMBERS_KEY = "members";
+    const SINGLE_GROUP_REQUESTS_KEY = "requests";
+    const SINGLE_GROUP_SHEETS_KEY = "sheets";
+    const SINGLE_GROUP_CONTESTS_KEY = "contests";
+    const SINGLE_GROUP_EXTRA_KEY = "extra";
+
+    // Details keys
+
+    // Group
+    const SINGLE_GROUP_ID_KEY = "id";
+    const SINGLE_GROUP_NAME_KEY = "name";
+    const SINGLE_GROUP_OWNER_KEY = "owner";
+
+    // Extra
+    const SINGLE_GROUP_IS_USER_OWNER = "user_is_owner";
+    const SINGLE_GROUP_IS_USER_MEMBER = "user_is_member";
+    const SINGLE_GROUP_USER_SENT_REQUEST = "user_sent_request";
+
+
+    // Members displayable fields
+    const MEMBERS_DISPLAYED_FIELDS = [
+        self::FLD_USERS_ID,
+        self::FLD_USERS_USERNAME,
+        self::FLD_USERS_EMAIL,
+        self::FLD_USERS_COUNTRY
+    ];
+
+    // Contests displayable fields
+    const CONTESTS_DISPLAYED_FIELDS = [
+        self::FLD_CONTESTS_ID,
+        self::FLD_CONTESTS_NAME,
+        self::FLD_CONTESTS_TIME,
+        self::FLD_CONTESTS_DURATION,
+    ];
+
+    // Requests displayable fields
+    const REQUESTS_DISPLAYED_FIELDS = [
+        self::FLD_USERS_ID,
+        self::FLD_USERS_USERNAME,
+        self::FLD_USERS_EMAIL,
+    ];
+
+    // Sheets displayable fields
+    const SHEETS_DISPLAYED_FIELDS = [
+        self::FLD_SHEETS_ID,
+        self::FLD_SHEETS_NAME
+    ];
+    // ============================================================
+    //endregion
+
+    // Single Sheet page region
+
+    // Main keys
+    const SINGLE_SHEET_SHEET_KEY = "sheet";
+    const SINGLE_SHEET_PROBLEMS_KEY = "problems";
+    const SINGLE_SHEET_EXTRA_KEY = "extra";
+
+
+    // Details keys
+
+    // Sheet
+    const SINGLE_SHEET_ID_KEY = "id";
+    const SINGLE_SHEET_NAME_KEY = "name";
+    const SINGLE_SHEET_GROUP_ID_KEY = "group_id";
+
+    // Extra
+
     // ============================================================
     //endregion
 
@@ -333,6 +420,9 @@ class Constants
     const TBL_TAGS = "tags";
     const TBL_LANGUAGES = "languages";
     const TBL_NOTIFICATIONS = "notifications";
+    const TBL_GROUPS = "groups";
+    const TBL_SHEETS = "sheets";
+    const TBL_SHEETS_PROBLEMS = "sheets_problems";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
@@ -340,6 +430,9 @@ class Constants
     const TBL_CONTEST_PARTICIPANTS = "contest_participants";
     const TBL_CONTEST_ADMINS = "contest_admins";
     const TBL_PROBLEM_TAGS = "problem_tags";
+    const TBL_GROUP_MEMBERS = "groups_members";
+    const TBL_GROUPS_JOIN_REQUESTS = "groups_join_requests";
+    const TBL_GROUPS_CONTESTS = "group_contests";
 
 
     //
@@ -412,6 +505,11 @@ class Constants
     const FLD_QUESTIONS_ANSWER = "answer";
     const FLD_QUESTIONS_ADMIN_ID = "admin_id";
 
+    // Groups
+    const FLD_GROUPS_ID = "id";
+    const FLD_GROUPS_NAME = "name";
+    const FLD_GROUPS_OWNER_ID = "owner_id";
+
     // Judges
     const FLD_JUDGES_ID = "id";
     const FLD_JUDGES_NAME = "name";
@@ -424,6 +522,11 @@ class Constants
     // Languages
     const FLD_LANGUAGES_ID = "id";
     const FLD_LANGUAGES_NAME = "name";
+
+    // Sheets
+    const FLD_SHEETS_ID = "id";
+    const FLD_SHEETS_NAME = "name";
+    const FLD_SHEETS_GROUP_ID = "group_id";
 
 
     //Notifications
@@ -456,6 +559,38 @@ class Constants
     const FLD_PROBLEM_TAGS_PROBLEM_ID = "problem_id";
     const FLD_PROBLEM_TAGS_TAG_ID = "tag_id";
 
+    // Group members
+    const FLD_GROUP_MEMBERS_USER_ID = "user_id";
+    const FLD_GROUP_MEMBERS_GROUP_ID = "group_id";
+
+    // Groups join requests
+    const FLD_GROUPS_JOIN_REQUESTS_USER_ID = "user_id";
+    const FLD_GROUPS_JOIN_REQUESTS_GROUP_ID = "group_id";
+
+    // Sheet problems
+    const FLD_SHEETS_PROBLEMS_SHEET_ID = "sheet_id";
+    const FLD_SHEETS_PROBLEMS_PROBLEM_ID = "problem_id";
+    const FLD_SHEETS_PROBLEMS_SOLUTION = "solution";
+    const FLD_SHEETS_PROBLEMS_SOLUTION_LANG = "solution_lang"; // ToDo to be connected to languages table later
+
+    // Group contests
+    const FLD_GROUP_CONTESTS_GROUP_ID = "group_id";
+    const FLD_GROUP_CONTESTS_CONTEST_ID = "contest_id";
+
     // ============================================================
+    //endregion
+
+    //
+    // Exceptions region
+    //
+
+    // GroupInvitationException
+    const GROUP_INVITATION_EXCEPTION_INVITED = "INVITED";
+
+    const GROUP_INVITATION_EXCEPTION_MSGS = [
+        self::GROUP_INVITATION_EXCEPTION_INVITED => 'This receiver has already received notification regarding this resource',
+    ];
+
+    //=============================================================
     //endregion
 }

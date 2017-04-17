@@ -9,6 +9,8 @@
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
+| NOTE:: Routes order MATTERS
+|
 */
 
 // Homepage routes...
@@ -16,28 +18,30 @@ Route::get('/', 'HomeController@index');
 
 // Profile routes...
 Route::get('profile/{user}', 'UserController@index');
-Route::get('edit','UserController@edit');
-Route::post('edit','UserController@editProfile');
+Route::get('edit', 'UserController@edit');
+Route::post('edit', 'UserController@editProfile');
 
 // Contest routes...
 Route::get('contests', 'ContestController@index');
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
     Route::get('contest/add', 'ContestController@addEditContestView');
+    Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
+
+    // ToDo change those to put/delete requests
     Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
-    Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['can:view-join-contest,contest']);
+    Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
 
-    Route::get('contest/add/tagsautocomplete',array('as' => 'contest/add/tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
-    Route::get('contest/add/organisersautocomplete',array('as' => 'contest/add/organisersautocomplete', 'uses' => 'ContestController@organisersAutoComplete'));
+    Route::get('contest/add/tagsautocomplete', array('as' => 'contest/add/tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
+    Route::get('contest/add/organisersautocomplete', array('as' => 'contest/add/organisersautocomplete', 'uses' => 'ContestController@organisersAutoComplete'));
 
-    Route::post('contest/add/checkRowsSync', 'ContestController@applyProblemsCheckBoxes' );
-    Route::post('contest/add/TagsJudgesFSync', 'ContestController@applyProblemsFilters' );
-    Route::post('contest/add/OrganisersSync', 'ContestController@applyOrganisers' );
+    Route::post('contest/add/checkRowsSync', 'ContestController@applyProblemsCheckBoxes');
+    Route::post('contest/add/TagsJudgesFSync', 'ContestController@applyProblemsFilters');
+    Route::post('contest/add/OrganisersSync', 'ContestController@applyOrganisers');
 
     // Question routes...
     Route::put('contest/question/announce/{question}', 'ContestController@announceQuestion');
@@ -48,11 +52,38 @@ Route::group(['middleware' => 'auth'], function () {
     // Notifications routes...
     Route::put('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
+
+    // Groups routes...
+    Route::get('sheet/solution/{sheet}/{problemID}', 'SheetController@retrieveProblemSolution')->middleware(['can:owner-or-member-group,sheet']);
+    Route::get('sheet/new/{group}', 'SheetController@addSheetView')->middleware(['can:owner-group,group']);
+    Route::get('sheet/edit/{sheet}', 'SheetController@editSheetView')->middleware(['can:owner-group,sheet']);
+    Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-group,sheet']);
+    Route::get('group/contest/new/{group}', 'ContestController@addGroupContestView');
+    Route::get('group/add', 'GroupController@addGroupView');
+    Route::get('group/edit/{group}', 'GroupController@editGroupView')->middleware(['can:owner-group,group']);
+    Route::get('group/{group}', 'GroupController@displayGroup');
+
+    Route::post('sheet/problem/solution', 'SheetController@saveProblemSolution');
+    Route::post('group/add', 'GroupController@addGroup');
+    Route::post('group/edit/{group}', 'GroupController@editGroup')->middleware(['can:owner-group,group']);
+    Route::post('group/join/{group}', 'GroupController@joinGroup');
+    Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);
+    Route::post('sheet/edit/{sheet}', 'SheetController@editSheet')->middleware(['can:owner-group,sheet']);
+    Route::post('group/member/invite/{group}', 'GroupController@inviteMember')->middleware(['can:owner-group,group']);
+
+    Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group'])->middleware(['can:member-group,group,user']);
+    Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
+
+    Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest')->middleware(['can:owner-group,group']);
+    Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest')->middleware(['can:owner-group,group']);
+    Route::put('group/leave/{group}', 'GroupController@leaveGroup')->middleware(['can:member-group,group']);
+
+    // Sheets routes...
+    Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-group,sheet']);
+
 });
 
-//TODO: recheck the exception thrown by the middleware
-Route::get('contest/{contest}', 'ContestController@displayContest');//->middleware(['can:view-join-contest,contest']);
-
+Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
@@ -81,12 +112,6 @@ Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm'
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
-
-//
-Route::any('getData', function(){
-    dd("Roger That");
-});
-
 
 // Errors Routes...
 Route::get('errors/404', function () {

@@ -22,7 +22,17 @@
 			</div>
 			<h3>Personal info</h3>
 
-			<form method="post"  class="form-horizontal" role="form">
+
+
+
+			@if(count($errors)>0)
+			<ul>
+			@foreach($errors->all() as $error)
+			<li class="alert alert-danger">{{$error}}</li>
+			@endforeach
+			</ul>
+			@endif
+			<form method="post"  class="form-horizontal" role="form" action="{{ url('edit') }}">
 			{{ csrf_field() }}
 				<div class="form-group">
 					<label class="col-lg-3 control-label">First name:</label>
@@ -33,54 +43,38 @@
 				<div class="form-group">
 					<label class="col-lg-3 control-label">Last name:</label>
 					<div class="col-lg-8">
-						<input name="LastName"class="form-control" value="user->name" type="text">
+						<input name="LastName"class="form-control" value="{{isset($user->last_name) ? $user->first_name: "" }}" type="text">
+						<input type="hidden" name="id" value="{{$user->id}}">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-3 control-label">Country:</label>
 					<div class="col-lg-8">
-						<input name="Country" class="form-control" value="" type="text">
+						<input name="Country" class="form-control" value="{{$user->country}}" type="text">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-lg-3 control-label">Email:</label>
 					<div class="col-lg-8">
-						<input name="Email" class="form-control" value="{{$user->email}}" type="text">
+						<input name="email" class="form-control" value="{{$user->email}}" type="text">
 					</div>
 				</div>
-				<div class="form-group">
-					<label class="col-lg-3 control-label">Time Zone:</label>
-					<div class="col-lg-8">
-						<div class="ui-select">
-							<select id="user_time_zone" class="form-control">
-								<option value="Hawaii">(GMT-10:00) Hawaii</option>
-								<option value="Alaska">(GMT-09:00) Alaska</option>
-								<option value="Pacific Time (US &amp; Canada)">(GMT-08:00) Pacific Time (US &amp; Canada)</option>
-								<option value="Arizona">(GMT-07:00) Arizona</option>
-								<option value="Mountain Time (US &amp; Canada)">(GMT-07:00) Mountain Time (US &amp; Canada)</option>
-								<option value="Central Time (US &amp; Canada)" selected="selected">(GMT-06:00) Central Time (US &amp; Canada)</option>
-								<option value="Eastern Time (US &amp; Canada)">(GMT-05:00) Eastern Time (US &amp; Canada)</option>
-								<option value="Indiana (East)">(GMT-05:00) Indiana (East)</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
+				<div class="form-group{{ $errors->has(Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
 					<label class="col-md-3 control-label">Username:</label>
 					<div class="col-md-8">
-						<input class="form-control" value="janeuser" type="text">
+						<input name="username" class="form-control" value="{{$user->username}}" type="text">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-3 control-label">Password:</label>
+					<label class="col-md-3 control-label">New Password:</label>
 					<div class="col-md-8">
-						<input class="form-control" value="11111122333" type="password">
+						<input class="form-control" value="" type="password">
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="col-md-3 control-label">Confirm password:</label>
 					<div class="col-md-8">
-						<input class="form-control" value="11111122333" type="password">
+						<input class="form-control" value="" type="password">
 					</div>
 				</div>
 				<div class="form-group">
