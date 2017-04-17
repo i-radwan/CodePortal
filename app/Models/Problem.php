@@ -124,12 +124,13 @@ class Problem extends Model
      */
     public function sheets()
     {
-        return $this->belongsToMany(
-            Sheet::class,
-            Constants::TBL_SHEETS_PROBLEMS,
-            Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID,
-            Constants::FLD_SHEETS_PROBLEMS_SHEET_ID
-        )
+        return
+            $this->belongsToMany(
+                Sheet::class,
+                Constants::TBL_SHEETS_PROBLEMS,
+                Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID,
+                Constants::FLD_SHEETS_PROBLEMS_SHEET_ID
+            )
             ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
             ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)
             ->withTimestamps();

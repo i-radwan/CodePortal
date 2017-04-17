@@ -135,7 +135,7 @@ class Submission extends Model
                 ->where(
                     's' . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
                     '<=',
-                    DB::raw('COALESCE((' . $firstAcceptedQuery->toSql() . '), UNIX_TIMESTAMP())')
+                    DB::raw('COALESCE((' . $firstAcceptedQuery->toSql() . '), ' . $endTime .  ')')
                 )
                 ->mergeBindings($firstAcceptedQuery);
 

@@ -959,6 +959,13 @@ footer {
     font-weight: 300;
 }
 
+.contest-ask-question select {
+    margin: 20px auto 10px auto;
+    font-size: 18px;
+    /*padding: 23px 10px;*/
+    font-weight: 300;
+}
+
 .contest-ask-question button {
     margin: 5px auto;
     font-size: 18px;

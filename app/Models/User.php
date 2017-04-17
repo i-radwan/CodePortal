@@ -181,7 +181,6 @@ class User extends Authenticatable
      */
     public function contestQuestions($contestId)
     {
-
         return $this->questions()
             ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Group;
 use Auth;
-use Mockery\Exception;
 use Session;
 use Redirect;
 use URL;
@@ -17,14 +16,13 @@ use App\Models\Question;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
-use App\Http\Controllers\ProblemController;
 
 class ContestController extends Controller
 {
     /**
      * Show all contests page
      *
-     * @return \Illuminate\View\View $this
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -37,7 +35,9 @@ class ContestController extends Controller
         $data = [];
 
         $data[Constants::CONTESTS_CONTESTS_KEY] =
-            Contest::ofPublic()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
+            Contest::ofPublic()
+                ->orderByDesc(Constants::FLD_CONTESTS_TIME)
+                ->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
 
         // Get all public contests from database
         return view('contests.index')
@@ -51,7 +51,7 @@ class ContestController extends Controller
      * Authorization happens in the defined Gate
      *
      * @param Contest $contest
-     * @return \Illuminate\View\View $this
+     * @return \Illuminate\View\View
      */
     public function displayContest(Contest $contest)
     {
@@ -81,7 +81,7 @@ class ContestController extends Controller
      * Show add/edit contest page
      * @param \Illuminate\Http\Request $request
      *
-     * @return $this
+     * @return \Illuminate\View\View
      */
     public function addEditContestView(Request $request)
     {
@@ -270,8 +270,6 @@ class ContestController extends Controller
     /**
      * Ask question related to the contest problems
      *
-     * ToDo add problem id after @Wael gets problems
-     *
      * @param Request $request
      * @param int $contestID
      * @return \Illuminate\Http\RedirectResponse
@@ -279,15 +277,14 @@ class ContestController extends Controller
     public function addQuestion(Request $request, $contestID)
     {
         $user = Auth::user();
-        $problem = 1; // ToDo get problem from request
 
         // Check if user is a participant
         $contest = $user->participatingContests()->find($contestID);
+        $problem = $contest->problems()->find($request->get(Constants::FLD_QUESTIONS_PROBLEM_ID));
 
         // Check if contest exists (user participating in it) and the contest is running now
         if ($contest && $contest->isRunning()) {
-            // TODO: I think static function is better than the constructor
-            new Question($request->all(), $user, $contest, $problem);
+            Question::askQuestion($request->all(), $user, $contest, $problem);
             return back();
         }
 
@@ -447,10 +444,15 @@ class ContestController extends Controller
      */
     private function getStandingsInfo($contest, &$data)
     {
+        //\DB::enableQueryLog();
+
+        //TODO: fix pagination
         $rawData = $contest
             ->standings()
             ->get();
             //->paginate(Constants::CONTEST_STANDINGS_PER_PAGE, ['*'], 'standings_page');
+
+        //dd(\DB::getQueryLog());
 
         $standings = [];
         $idx = 0;
@@ -484,8 +486,6 @@ class ContestController extends Controller
             --$i;
             ++$idx;
         }
-
-//        dd($standings);
 
         // Set contest status
         $data[Constants::SINGLE_CONTEST_STANDINGS_KEY] = $standings;
@@ -561,7 +561,6 @@ class ContestController extends Controller
         // Set contest questions
         $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements;
     }
-
 
     public static function getProblemsWithFilters($request, $tagNames, $judgesIDs)
     {
