@@ -48,7 +48,8 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, config('rules.user.store_validation_rules'));
+        // Empty validator, actual validation take place in the model itself
+        return Validator::make($data, []);
     }
 
     /**
@@ -65,6 +66,9 @@ class RegisterController extends Controller
             Constants::FLD_USERS_PASSWORD => bcrypt($data[Constants::FLD_USERS_PASSWORD]),
         ]);
 
+        //
+        // TODO: move to profile page instead
+        //
         if ($data[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
             $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $data[Constants::FLD_USERS_CODEFORCES_HANDLE]);
         }
