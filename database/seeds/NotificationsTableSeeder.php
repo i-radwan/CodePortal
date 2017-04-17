@@ -22,7 +22,6 @@ class NotificationsTableSeeder extends Seeder
 
         $limit = 500;
 
-        // ToDo generalize to teams
         $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
 
         // Seed contest notifications

@@ -1009,7 +1009,7 @@ footer {
 
 /*  Contest tabs    */
 .content-tabs {
-    padding: 20px /*ToDo: I think it's better to remove the padding*/
+    padding: 0;
 }
 
 .content-tabs .nav-tabs {
