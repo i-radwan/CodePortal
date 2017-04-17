@@ -428,17 +428,19 @@ class Constants
     const TBL_GROUPS = "groups";
     const TBL_SHEETS = "sheets";
     const TBL_SHEETS_PROBLEMS = "sheets_problems";
+    const TBL_TEAMS = "teams";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
     const TBL_CONTEST_PROBLEMS = "contest_problems";
     const TBL_CONTEST_PARTICIPANTS = "contest_participants";
+    const TBL_CONTEST_TEAMS = "contest_teams";
     const TBL_CONTEST_ADMINS = "contest_admins";
     const TBL_PROBLEM_TAGS = "problem_tags";
     const TBL_GROUP_MEMBERS = "groups_members";
     const TBL_GROUPS_JOIN_REQUESTS = "groups_join_requests";
     const TBL_GROUPS_CONTESTS = "group_contests";
-
+    const TBL_TEAM_MEMBERS = "team_members";
 
     //
     // Fields
@@ -528,13 +530,16 @@ class Constants
     const FLD_LANGUAGES_ID = "id";
     const FLD_LANGUAGES_NAME = "name";
 
+    // Teams
+    const FLD_TEAMS_ID = "id";
+    const FLD_TEAMS_NAME = "name";
+
     // Sheets
     const FLD_SHEETS_ID = "id";
     const FLD_SHEETS_NAME = "name";
     const FLD_SHEETS_GROUP_ID = "group_id";
 
-
-    //Notifications
+    // Notifications
     const FLD_NOTIFICATIONS_ID = "id";
     const FLD_NOTIFICATIONS_SENDER_ID = "sender_id";
     const FLD_NOTIFICATIONS_RECEIVER_ID = "receiver_id";
@@ -542,19 +547,22 @@ class Constants
     const FLD_NOTIFICATIONS_TYPE = "type";                  // From group, contest, team, ...etc
     const FLD_NOTIFICATIONS_STATUS = "status";              // Read, unread
 
-
     // User handles
     const FLD_USER_HANDLES_USER_ID = "user_id";
     const FLD_USER_HANDLES_JUDGE_ID = "judge_id";
     const FLD_USER_HANDLES_HANDLE = "handle";
 
     // Contest problems
-    const FLD_CONTEST_PROBLEMS_PROBLEM_ID = "problem_id";
     const FLD_CONTEST_PROBLEMS_CONTEST_ID = "contest_id";
+    const FLD_CONTEST_PROBLEMS_PROBLEM_ID = "problem_id";
 
     // Contest participants
-    const FLD_CONTEST_PARTICIPANTS_USER_ID = "user_id";
     const FLD_CONTEST_PARTICIPANTS_CONTEST_ID = "contest_id";
+    const FLD_CONTEST_PARTICIPANTS_USER_ID = "user_id";
+
+    // Contest teams
+    const FLD_CONTEST_TEAMS_CONTEST_ID = "contest_id";
+    const FLD_CONTEST_TEAMS_TEAM_ID = "team_id";
 
     // Contest admins
     const FLD_CONTEST_ADMINS_ADMIN_ID = "user_id";
@@ -581,6 +589,10 @@ class Constants
     // Group contests
     const FLD_GROUP_CONTESTS_GROUP_ID = "group_id";
     const FLD_GROUP_CONTESTS_CONTEST_ID = "contest_id";
+
+    // Team members
+    const FLD_TEAM_MEMBERS_TEAM_ID = "team_id";
+    const FLD_TEAM_MEMBERS_USER_ID = "user_id";
 
     // ============================================================
     //endregion

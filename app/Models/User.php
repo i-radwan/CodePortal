@@ -136,6 +136,21 @@ class User extends Authenticatable
     }
 
     /**
+     * Return all the teams of the user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function members()
+    {
+        return $this->belongsToMany(
+            Team::class,
+            Constants::TBL_TEAM_MEMBERS,
+            Constants::FLD_TEAM_MEMBERS_USER_ID,
+            Constants::FLD_TEAM_MEMBERS_TEAM_ID
+        )->withTimestamps();
+    }
+
+    /**
      * Return all the submission of the current user
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

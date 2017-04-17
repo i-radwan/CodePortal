@@ -149,6 +149,21 @@ class Contest extends Model
     }
 
     /**
+     * Return all participating teams of the current contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function participantTeams()
+    {
+        return $this->belongsToMany(
+            Team::class,
+            Constants::TBL_CONTEST_TEAMS,
+            Constants::FLD_CONTEST_TEAMS_CONTEST_ID,
+            Constants::FLD_CONTEST_TEAMS_TEAM_ID
+        )->withTimestamps();
+    }
+
+    /**
      * Return the owner user of the current contest
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
