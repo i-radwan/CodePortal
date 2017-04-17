@@ -48,8 +48,10 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        // Empty validator, actual validation take place in the model itself
-        return Validator::make($data, []);
+        // Extra validation on user model
+        return Validator::make($data, [
+           Constants::FLD_USERS_PASSWORD => 'confirmed',
+        ]);
     }
 
     /**
