@@ -47,6 +47,7 @@ class Notification extends Model
     protected $rules = [
         Constants::FLD_NOTIFICATIONS_SENDER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_NOTIFICATIONS_RECEIVER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
+        Constants::FLD_NOTIFICATIONS_RESOURCE_ID => 'required|resource_exists_in_table',
         Constants::FLD_NOTIFICATIONS_TYPE => 'required|Regex:/([012])/'
     ];
 
@@ -97,8 +98,7 @@ class Notification extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public
-    function sender()
+    public function sender()
     {
         return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_SENDER_ID);
     }
@@ -108,8 +108,7 @@ class Notification extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public
-    function receiver()
+    public function receiver()
     {
         return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_RECEIVER_ID);
     }
@@ -119,8 +118,7 @@ class Notification extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public
-    function resource()
+    public function resource()
     {
         return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }
