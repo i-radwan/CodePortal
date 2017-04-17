@@ -124,4 +124,3 @@ Route::get('errors/404', function () {
 Route::get('errors/401', function () {
     return view('errors.401')->with('pageTitle', 'CodePortal | 401');
 });
-
