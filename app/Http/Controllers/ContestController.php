@@ -433,8 +433,7 @@ class ContestController extends Controller
      */
     private function getProblemsInfo($contest, &$data)
     {
-        //TODO: paginate problems
-        $problems = $contest->problems()->get();
+        $problems = $contest->problemStatistics()->get();
 
         // Set contest problems
         $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY] = $problems;

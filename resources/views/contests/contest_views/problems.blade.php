@@ -13,29 +13,35 @@
 
     <tbody>
         @foreach($problems as $problem)
-            {{--TODO: get verdict of submissions related to the current contest--}}
-            @php($verdict = $problem->simpleVerdict($user))
+            @php
+                $problem = new \App\Models\Problem((array)$problem);
+                $verdict = $problem->simpleVerdict($user);
+                $id = \App\Utilities\Utilities::generateProblemNumber($problem);
+                $link = \App\Utilities\Utilities::generateProblemLink($problem);
+                $judgeData = \App\Utilities\Constants::JUDGES[$problem->judge_id];
+                $judgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
+                $judgeName = $judgeData[\App\Utilities\Constants::JUDGE_NAME_KEY];
 
-            <tr class="{{ $verdict == Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
+                if ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_ACCEPTED)
+                    $style = 'success';
+                elseif ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_WRONG_SUBMISSION)
+                    $style = 'danger';
+                else
+                    $style = '';
+            @endphp
+
+            <tr class="{{ $style }}">
                 {{--ID--}}
-                <td>{{ Utilities::generateProblemNumber($problem) }}</td>
+                <td>{{ $id }}</td>
 
                 {{--Name--}}
-                <td>
-                    <a href="{{ Utilities::generateProblemLink($problem) }}" target="_blank">
-                        {{ $problem->name }}
-                    </a>
-                </td>
+                <td><a href="{{ $link }}" target="_blank">{{ $problem->name }}</a></td>
 
-                {{--TODO: add number of accepted submissions in the current contest--}}
+                {{--Solved Count--}}
                 <td>{{ $problem->solved_count }}</td>
 
                 {{--Judge--}}
-                <td>
-                    <a href="{{ Constants::JUDGES[$problem->judge_id][Constants::JUDGE_LINK_KEY] }}" target="_blank">
-                        {{ Constants::JUDGES[$problem->judge_id][Constants::JUDGE_NAME_KEY] }}
-                    </a>
-                </td>
+                <td><a href="{{ $judgeLink }}" target="_blank">{{ $judgeName }}</a></td>
             </tr>
         @endforeach
     </tbody>
