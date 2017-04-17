@@ -284,6 +284,7 @@ class Contest extends Model
         $query->orderByDesc(Constants::FLD_USERS_SOLVED_COUNT);
         $query->orderBy(Constants::FLD_USERS_PENALTY);
         $query->orderBy(Constants::FLD_USERS_TRAILS_COUNT);
+        $query->orderBy(Constants::FLD_SUBMISSIONS_USER_ID);
         $query->orderBy(Constants::FLD_SUBMISSIONS_PROBLEM_ID);
 
         return $query;
@@ -390,8 +391,8 @@ class Contest extends Model
     {
         // TODO: need to check timestamps accurately
         // TODO: It seems that Codeforces timestamp is leading 4 hours
-        $contestStartTime = 0;//strtotime($this->time);
-        $contestEndTime = 2443014452;//strtotime($this->time . ' + ' . $this->duration . ' minute');
+        $contestStartTime = strtotime($this->time);
+        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
 
         if ($tillFirstAccepted) {
             $joinType = 'leftJoin';
@@ -475,7 +476,7 @@ class Contest extends Model
             "= " .
             "'" . Constants::VERDICT_ACCEPTED . "' " .
             "then " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
+            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME . "` " .
             "- " .
             "UNIX_TIMESTAMP(" .
             "`" . Constants::TBL_CONTESTS . "`.`" . Constants::FLD_CONTESTS_TIME . "`" .

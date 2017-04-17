@@ -125,6 +125,7 @@ class ContestController extends Controller
      * Add new contest to database
      *
      * @param Request $request
+     * @return mixed
      */
     public function addContest(Request $request)
     {
@@ -151,13 +152,12 @@ class ContestController extends Controller
             Session::flash("messages", ["Contest Added Successfully"]);
             return redirect()->action(
                 'ContestController@displayContest', ['id' => $contest->id]
-            );;
+            );
         }
         else{
             Session::flash("messages", ["Sorry, Contest was not added. Please retry later"]);
             return redirect()->action('ContestController@index');;
         }
-
     }
 
     /**
@@ -449,7 +449,8 @@ class ContestController extends Controller
     {
         $rawData = $contest
             ->standings()
-            ->paginate(Constants::CONTEST_STANDINGS_PER_PAGE, ['*'], 'standings_page');
+            ->get();
+            //->paginate(Constants::CONTEST_STANDINGS_PER_PAGE, ['*'], 'standings_page');
 
         $standings = [];
         $idx = 0;

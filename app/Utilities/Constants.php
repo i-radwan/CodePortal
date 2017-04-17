@@ -267,7 +267,7 @@ class Constants
     const VERDICT_COUNT = 18;   // Note: To be incremented manually
 
     const VERDICT_NAMES = [
-        self::VERDICT_FAILED => '0',
+        self::VERDICT_FAILED => 'Failed',
         self::VERDICT_ACCEPTED => 'Accepted',
         self::VERDICT_PARTIAL_ACCEPTED => 'Partial Accepted',
         self::VERDICT_COMPILATION_ERROR => 'Compilation Error',
