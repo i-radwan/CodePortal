@@ -8,17 +8,21 @@
     </thead>
     <tbody>
         @foreach($participants as $participant)
+            @php
+                $userName = $participant[\App\Utilities\Constants::FLD_USERS_USERNAME];
+                $country = $participant[\App\Utilities\Constants::FLD_USERS_COUNTRY];
+            @endphp
+
             <tr>
-                <td>
-                    <a href="{{ url('profile/' . $participant[Constants::FLD_USERS_USERNAME]) }}">
-                        {{ $participant[Constants::FLD_USERS_USERNAME] }}
-                    </a>
-                </td>
-                <td> {{ $participant[Constants::FLD_USERS_COUNTRY] }}</td>
+                {{--Username--}}
+                <td><a href="{{ url('profile/' . $userName) }}">{{ $userName }}</a></td>
+
+                {{--User country--}}
+                <td>{{ $country }}</td>
             </tr>
         @endforeach
     </tbody>
 </table>
 
 {{--Pagination--}}
-{{ $participants->fragment('participants')->render() }}
+{{ $participants->appends(Request::all())->fragment('participants')->render() }}

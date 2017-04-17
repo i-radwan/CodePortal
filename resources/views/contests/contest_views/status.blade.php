@@ -27,6 +27,7 @@
                 $submissionVerdictId = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_VERDICT];
                 $submissionVerdictName = \App\Utilities\Constants::VERDICT_NAMES[$submissionVerdictId];
                 $submissionExecutionTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_EXECUTION_TIME];
+                //TODO: only 2 decimal places
                 $submissionConsumedMemory = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY] / 1024;
                 $submissionLanguage = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_LANGUAGE_NAME];
                 $submissionTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_SUBMISSION_TIME];
@@ -67,4 +68,4 @@
 </table>
 
 {{--Pagination--}}
-{{ $status->fragment('status')->render() }}
+{{ $status->appends(Request::all())->fragment('status')->render() }}

@@ -62,4 +62,4 @@
 </table>
 
 {{--Pagination--}}
-{{--{{ $standings->fragment('standings')->render() }}--}}
+{{--{{ $standings->appends(Request::all())->fragment('standings')->render() }}--}}
