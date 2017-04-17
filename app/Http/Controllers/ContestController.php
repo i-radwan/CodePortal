@@ -130,7 +130,9 @@ class ContestController extends Controller
     {
         $request[Constants::FLD_CONTESTS_OWNER_ID] = Auth::user()->id;
         $contest = new Contest($request->all());
-        $contest->save();
+        $added = false;
+        if($contest->save())
+         $added = true;
         //Get Organisers
         if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
             $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
@@ -145,6 +147,17 @@ class ContestController extends Controller
             $problems = Session::get(Constants::CHECKED_PROBLEMS);
             $contest->problems()->syncWithoutDetaching($problems);
         }
+        if($added){
+            Session::flash("messages", ["Contest Added Successfully"]);
+            return redirect()->action(
+                'ContestController@displayContest', ['id' => $contest->id]
+            );;
+        }
+        else{
+            Session::flash("messages", ["Sorry, Contest was not added. Please retry later"]);
+            return redirect()->action('ContestController@index');;
+        }
+
     }
 
     /**
@@ -420,8 +433,7 @@ class ContestController extends Controller
      */
     private function getProblemsInfo($contest, &$data)
     {
-        //TODO: paginate problems
-        $problems = $contest->problems()->get();
+        $problems = $contest->problemStatistics()->get();
 
         // Set contest problems
         $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY] = $problems;
@@ -435,10 +447,9 @@ class ContestController extends Controller
      */
     private function getStandingsInfo($contest, &$data)
     {
-        //TODO: paginate standings
-//        \DB::enableQueryLog();
-        $rawData = $contest->standings()->get();
-//        dd(\DB::getQueryLog());
+        $rawData = $contest
+            ->standings()
+            ->paginate(Constants::CONTEST_STANDINGS_PER_PAGE, ['*'], 'standings_page');
 
         $standings = [];
         $idx = 0;
@@ -487,10 +498,9 @@ class ContestController extends Controller
      */
     private function getStatusInfo($contest, &$data)
     {
-        //TODO: paginate submissions
-//        \DB::enableQueryLog();
-        $submissions = $contest->submissions()->get();
-//        dd(\DB::getQueryLog());
+        $submissions = $contest
+            ->submissions()
+            ->paginate(Constants::CONTEST_SUBMISSIONS_PER_PAGE, ['*'], 'status_page');
 
         // Set contest status
         $data[Constants::SINGLE_CONTEST_STATUS_KEY] = $submissions;
@@ -507,7 +517,7 @@ class ContestController extends Controller
         $participants = $contest
             ->participants()
             ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
-            ->get();
+            ->paginate(Constants::CONTEST_PARTICIPANTS_PER_PAGE, ['*'], 'participants_page');
 
         // Set contest participants
         $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY] = $participants;

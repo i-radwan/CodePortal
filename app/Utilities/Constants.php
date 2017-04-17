@@ -35,13 +35,16 @@ class Constants
     // ============================================================
     //endregion
 
-    //region contests page
+    //region Contests page
 
     //
     // Contests page constants
     //
 
     const CONTESTS_COUNT_PER_PAGE = 30;
+    const CONTEST_STANDINGS_PER_PAGE = 30;
+    const CONTEST_SUBMISSIONS_PER_PAGE = 30;
+    const CONTEST_PARTICIPANTS_PER_PAGE = 30;
 
     const CONTESTS_PENALTY_PER_WRONG_SUBMISSION = 20;
 
@@ -93,8 +96,7 @@ class Constants
     //endregion
 
 
-    //region groups page
-
+    //region Groups page
     //
     // Groups page constants
     //
@@ -159,12 +161,18 @@ class Constants
     // ============================================================
     //endregion
 
-    // Single Sheet page region
+
+    //region Sheet page
+
+    //
+    // Sheet page constants
+    //
 
     // Main keys
     const SINGLE_SHEET_SHEET_KEY = "sheet";
     const SINGLE_SHEET_PROBLEMS_KEY = "problems";
     const SINGLE_SHEET_EXTRA_KEY = "extra";
+
 
 
     // Details keys
@@ -580,8 +588,11 @@ class Constants
     // ============================================================
     //endregion
 
+
+    //region Exceptions
+
     //
-    // Exceptions region
+    // Exceptions constants
     //
 
     // GroupInvitationException

@@ -30,7 +30,9 @@ class Problem extends Model
      * @var array
      */
     protected $fillable = [
+        Constants::FLD_PROBLEMS_ID,     // Needed in contest problems view
         Constants::FLD_PROBLEMS_NAME,
+        Constants::FLD_PROBLEMS_JUDGE_ID,
         Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
         Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
         Constants::FLD_PROBLEMS_SOLVED_COUNT
@@ -65,6 +67,7 @@ class Problem extends Model
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_SOLVED_COUNT
     ];
 
+
     /**
      * Return the sheets that contain this problem
      *
@@ -77,58 +80,10 @@ class Problem extends Model
             Constants::TBL_SHEETS_PROBLEMS,
             Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID,
             Constants::FLD_SHEETS_PROBLEMS_SHEET_ID
-        )->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
-            ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)->withTimestamps();
-    }
-
-    /**
-     * Return the hosting online judge of the current problem
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function judge()
-    {
-        return $this->belongsTo(Judge::class, Constants::FLD_PROBLEMS_JUDGE_ID);
-    }
-
-    /**
-     * Return the tags of the current problem
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function tags()
-    {
-        return $this->belongsToMany(
-            Tag::class,
-            Constants::TBL_PROBLEM_TAGS,
-            Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
-            Constants::FLD_PROBLEM_TAGS_TAG_ID
-        );
-    }
-
-    /**
-     * Return the contests having the current problem as one of their problems list
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function contests()
-    {
-        return $this->belongsToMany(
-            Contest::class,
-            Constants::TBL_CONTEST_PROBLEMS,
-            Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID,
-            Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID
-        );
-    }
-
-    /**
-     * Return the submissions current problem
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function submissions()
-    {
-        return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_PROBLEM_ID);
+        )
+            ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
+            ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)
+            ->withTimestamps();
     }
 
     /**
@@ -145,25 +100,23 @@ class Problem extends Model
         }
 
         // Count the number of accepted submissions
-        $acceptedSubmissions = $this
+        $submissions = $this
             ->submissions()
             ->where([
                 [Constants::FLD_SUBMISSIONS_USER_ID, '=', $user->id],
                 [Constants::FLD_SUBMISSIONS_VERDICT, '=', Constants::VERDICT_ACCEPTED]
-            ])
-            ->count();
+            ]);
 
-        if ($acceptedSubmissions > 0) {
+        if ($submissions->count() > 0) {
             return Constants::SIMPLE_VERDICT_ACCEPTED;
         }
 
         // Count the total number of submissions
         $submissions = $this
             ->submissions()
-            ->where(Constants::FLD_SUBMISSIONS_USER_ID, '=', $user->id)
-            ->count();
+            ->where(Constants::FLD_SUBMISSIONS_USER_ID, '=', $user->id);
 
-        if ($submissions > 0) {
+        if ($submissions->count() > 0) {
             return Constants::SIMPLE_VERDICT_WRONG_SUBMISSION;
         }
 

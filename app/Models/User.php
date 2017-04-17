@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
+    use ValidateModelData;
 
     /**
      * The table associated with the model.
@@ -30,13 +31,13 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-    Constants::FLD_USERS_EMAIL,
-    Constants::FLD_USERS_PASSWORD,
-    Constants::FLD_USERS_USERNAME,
-    Constants::FLD_USERS_GENDER,
-    Constants::FLD_USERS_BIRTHDATE,
-    Constants::FLD_USERS_PROFILE_PICTURE,
-    Constants::FLD_USERS_COUNTRY
+        Constants::FLD_USERS_EMAIL,
+        Constants::FLD_USERS_PASSWORD,
+        Constants::FLD_USERS_USERNAME,
+        Constants::FLD_USERS_GENDER,
+        Constants::FLD_USERS_BIRTHDATE,
+        Constants::FLD_USERS_PROFILE_PICTURE,
+        Constants::FLD_USERS_COUNTRY
     ];
 
     /**
@@ -45,9 +46,27 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-    Constants::FLD_USERS_PASSWORD,
-    Constants::FLD_USERS_REMEMBER_TOKEN,
+        Constants::FLD_USERS_PASSWORD,
+        Constants::FLD_USERS_REMEMBER_TOKEN,
     ];
+
+    /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    // protected $rules = [
+    //     //TODO: @Abdo add any needed validation rules
+    //     Constants::FLD_USERS_USERNAME => 'required|max:20|unique:' . Constants::TBL_USERS,
+    //     Constants::FLD_USERS_EMAIL => 'required|email|max:50|unique:' . Constants::TBL_USERS,
+    //     Constants::FLD_USERS_PASSWORD => 'required|min:6|confirmed',
+    //     password_confirmation
+    //     Constants::FLD_USERS_FIRST_NAME => 'max:20',
+    //     Constants::FLD_USERS_LAST_NAME => 'max:20',
+    //     Constants::FLD_USERS_GENDER => 'Regex:/([01])/',
+    //     Constants::FLD_USERS_BIRTHDATE => 'date',       //TODO: add more validation on birthdate
+    //     Constants::FLD_USERS_ROLE => 'Regex:/([012])/',
+    // ];
 
     /**
      * Return the handles on different online judges of the current user
@@ -61,7 +80,7 @@ class User extends Authenticatable
             Constants::TBL_USER_HANDLES,
             Constants::FLD_USER_HANDLES_USER_ID,
             Constants::FLD_USER_HANDLES_JUDGE_ID
-            )->withPivot(Constants::FLD_USER_HANDLES_HANDLE);
+        )->withPivot(Constants::FLD_USER_HANDLES_HANDLE);
     }
 
     /**
@@ -118,7 +137,7 @@ class User extends Authenticatable
             Constants::TBL_CONTEST_PARTICIPANTS,
             Constants::FLD_CONTEST_PARTICIPANTS_USER_ID,
             Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID
-            )->withTimestamps();
+        )->withTimestamps();
     }
 
     /**
@@ -133,7 +152,7 @@ class User extends Authenticatable
             Constants::TBL_CONTEST_ADMINS,
             Constants::FLD_CONTEST_ADMINS_ADMIN_ID,
             Constants::FLD_CONTEST_ADMINS_CONTEST_ID
-            );
+        );
     }
 
     /**
@@ -165,7 +184,7 @@ class User extends Authenticatable
     {
 
         return $this->questions()
-        ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
+            ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
     }
 
     /**
@@ -178,7 +197,7 @@ class User extends Authenticatable
     public function answeredQuestions()
     {
         return $this->questions()
-        ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
+            ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
     }
 
     /**
@@ -209,9 +228,12 @@ class User extends Authenticatable
     public function userDisplayableReceivedNotifications()
     {
         return $this->receivedNotifications()
-        ->where(Constants::FLD_NOTIFICATIONS_STATUS, '!=',
-            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED])
-        ->orderBy(Constants::FLD_NOTIFICATIONS_ID, 'desc');
+            ->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+            )
+            ->orderBy(Constants::FLD_NOTIFICATIONS_ID, 'desc');
     }
 
     /**
@@ -221,17 +243,18 @@ class User extends Authenticatable
      */
     public static function getWrongAnswerProblems($user)
     {
-        $userData=User::where('username',$user)->first(); 
-        return $userData->submissions->where('verdict','0')->pluck('problem_id');
+        $userData = User::where('username', $user)->first();
+        return $userData->submissions->where('verdict', '0')->pluck('problem_id');
     }
 
     public static function getSolvedProblems($user)
     {
         //ToDo: for the statistics
-        $userData=User::where('username',$user)->first(); 
-        return $userData->submissions->where('verdict','1')->pluck('problem_id');
+        $userData = User::where('username', $user)->first();
+        return $userData->submissions->where('verdict', '1')->pluck('problem_id');
     }
-    /*
+
+    /**
      * Return user unread notifications
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -239,10 +262,12 @@ class User extends Authenticatable
     public function unreadNotifications()
     {
         return $this->receivedNotifications()
-        ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=',
-            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]);
+            ->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '=',
+                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]
+            );
     }
-
 
     /**
      * Return the groups that the current user has joined
@@ -256,7 +281,7 @@ class User extends Authenticatable
             Constants::TBL_GROUP_MEMBERS,
             Constants::FLD_GROUP_MEMBERS_USER_ID,
             Constants::FLD_GROUP_MEMBERS_GROUP_ID
-            )->withTimestamps();
+        )->withTimestamps();
     }
 
     /**
@@ -268,7 +293,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Group::class, Constants::FLD_GROUPS_OWNER_ID);
     }
-
 
     /**
      * Return the groups that the current user has sent a join request to its admin
@@ -282,7 +306,10 @@ class User extends Authenticatable
             Constants::TBL_GROUPS_JOIN_REQUESTS,
             Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID,
             Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID
-            )->withTimestamps();
+        )->withTimestamps();
     }
+
+
+    
 }
 
