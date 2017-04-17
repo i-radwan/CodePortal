@@ -74,7 +74,7 @@
                     </ul>
 
                     <!-- Tab panes -->
-                    <div class="tab-content">
+                    <div class="tab-content text-center">
                         <div role="tabpanel" class="tab-pane active" id="problems">
                             @include('contests.contest_views.problems')
                         </div>
@@ -87,11 +87,11 @@
                         <div role="tabpanel" class="tab-pane" id="participants">
                             @include('contests.contest_views.participants')
                         </div>
-                        <div role="tabpanel" class="tab-pane  horizontal-scroll" id="questions">
+                        <div role="tabpanel" class="tab-pane horizontal-scroll" id="questions">
                             @if($questions && count($questions))
                                 @include('contests.contest_views.questions')
                             @else
-                                <p class="margin-30px">No questions!</p>
+                                <h3>No questions!</h3>
                             @endif
                         </div>
                     </div>

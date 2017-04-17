@@ -499,10 +499,7 @@ class ContestController extends Controller
      */
     private function getStatusInfo($contest, &$data)
     {
-        //TODO: paginate submissions
-//        \DB::enableQueryLog();
-        $submissions = $contest->submissions()->get();
-//        dd(\DB::getQueryLog());
+        $submissions = $contest->submissions()->paginate(Constants::CONTEST_SUBMISSIONS_PER_PAGE);
 
         // Set contest status
         $data[Constants::SINGLE_CONTEST_STATUS_KEY] = $submissions;

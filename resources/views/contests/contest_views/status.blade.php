@@ -58,3 +58,6 @@
         @endforeach
     </tbody>
 </table>
+
+{{--Pagination--}}
+{{ $status->fragment('status')->render() }}
