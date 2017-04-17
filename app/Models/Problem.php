@@ -44,7 +44,6 @@ class Problem extends Model
      * @var array
      */
     protected $rules = [
-        // TODO: validating super unique key
         Constants::FLD_PROBLEMS_NAME => 'required|max:255',
         Constants::FLD_PROBLEMS_JUDGE_ID => 'integer|required|exists:' . Constants::TBL_JUDGES . ',' . Constants::FLD_JUDGES_ID,
         Constants::FLD_PROBLEMS_JUDGE_ID => 'unique_with:' . Constants::TBL_PROBLEMS . ',' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY . ',' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,

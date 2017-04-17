@@ -285,7 +285,7 @@ class ContestController extends Controller
         // Check if contest exists (user participating in it) and the contest is running now
         if ($contest && $contest->isRunning()) {
             Question::askQuestion($request->all(), $user, $contest, $problem);
-            return back();
+            return Redirect::to(URL::previous() . "#questions");
         }
 
         Session::flash('question-error', 'Sorry, you cannot perform this action right now!');

@@ -576,7 +576,7 @@ class Constants
     const FLD_SHEETS_PROBLEMS_SHEET_ID = "sheet_id";
     const FLD_SHEETS_PROBLEMS_PROBLEM_ID = "problem_id";
     const FLD_SHEETS_PROBLEMS_SOLUTION = "solution";
-    const FLD_SHEETS_PROBLEMS_SOLUTION_LANG = "solution_lang"; // ToDo to be connected to languages table later
+    const FLD_SHEETS_PROBLEMS_SOLUTION_LANG = "solution_lang";
 
     // Group contests
     const FLD_GROUP_CONTESTS_GROUP_ID = "group_id";
