@@ -69,7 +69,7 @@ class GroupController extends Controller
     public function addGroupView()
     {
         return view('groups.add_edit')
-            ->with('formAction', 'group/add')
+            ->with('formAction', 'group/new')
             ->with('btnText', 'Add')
             ->with('pageTitle', config('app.name') . ' | Group');
     }

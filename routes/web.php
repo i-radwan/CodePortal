@@ -18,8 +18,8 @@ Route::get('/', 'HomeController@index');
 
 // Profile routes...
 Route::get('profile/{user}', 'UserController@index');
-Route::get('edit', 'UserController@edit');
-Route::post('edit', 'UserController@editProfile');
+Route::get('edit', 'UserController@edit'); // ToDo: @Abzo auth middleware required, choose better route
+Route::post('edit', 'UserController@editProfile');  // ToDo: @Abzo auth middleware required, choose better route
 
 // Contest routes...
 Route::get('contests', 'ContestController@index');
@@ -36,9 +36,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
 
+    // ToDo: @Samir why use 'as'? , use underscore separated endpoint
     Route::get('contest/add/tagsautocomplete', array('as' => 'contest/add/tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
     Route::get('contest/add/organisersautocomplete', array('as' => 'contest/add/organisersautocomplete', 'uses' => 'ContestController@organisersAutoComplete'));
 
+    // ToDo: endpoints don't follow the same convention !!
     Route::post('contest/add/checkRowsSync', 'ContestController@applyProblemsCheckBoxes');
     Route::post('contest/add/TagsJudgesFSync', 'ContestController@applyProblemsFilters');
     Route::post('contest/add/OrganisersSync', 'ContestController@applyOrganisers');
@@ -53,23 +55,25 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 
-    // Groups routes...
+    // Groups + Sheets routes...
     Route::get('sheet/solution/{sheet}/{problemID}', 'SheetController@retrieveProblemSolution')->middleware(['can:owner-or-member-group,sheet']);
     Route::get('sheet/new/{group}', 'SheetController@addSheetView')->middleware(['can:owner-group,group']);
     Route::get('sheet/edit/{sheet}', 'SheetController@editSheetView')->middleware(['can:owner-group,sheet']);
     Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-group,sheet']);
+
     Route::get('group/contest/new/{group}', 'ContestController@addGroupContestView');
-    Route::get('group/add', 'GroupController@addGroupView');
+    Route::get('group/new', 'GroupController@addGroupView');
     Route::get('group/edit/{group}', 'GroupController@editGroupView')->middleware(['can:owner-group,group']);
     Route::get('group/{group}', 'GroupController@displayGroup');
 
     Route::post('sheet/problem/solution', 'SheetController@saveProblemSolution');
-    Route::post('group/add', 'GroupController@addGroup');
-    Route::post('group/edit/{group}', 'GroupController@editGroup')->middleware(['can:owner-group,group']);
-    Route::post('group/join/{group}', 'GroupController@joinGroup');
-    Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);
     Route::post('sheet/edit/{sheet}', 'SheetController@editSheet')->middleware(['can:owner-group,sheet']);
+    Route::post('sheet/new/{group}', 'SheetController@addSheet')->middleware(['can:owner-group,group']);
+
     Route::post('group/member/invite/{group}', 'GroupController@inviteMember')->middleware(['can:owner-group,group']);
+    Route::post('group/join/{group}', 'GroupController@joinGroup');
+    Route::post('group/edit/{group}', 'GroupController@editGroup')->middleware(['can:owner-group,group']);
+    Route::post('group/new', 'GroupController@addGroup');
 
     Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group'])->middleware(['can:member-group,group,user']);
     Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
