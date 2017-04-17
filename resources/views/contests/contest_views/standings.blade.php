@@ -62,4 +62,4 @@
 </table>
 
 {{--Pagination--}}
-{{ $status->fragment('standings')->render() }}
+{{--{{ $standings->fragment('standings')->render() }}--}}

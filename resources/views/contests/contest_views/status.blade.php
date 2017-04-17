@@ -31,7 +31,7 @@
                 $submissionLanguage = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_LANGUAGE_NAME];
                 $submissionTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_SUBMISSION_TIME];
                 $submissionTime = date('Y-m-d H:i:s', $submissionTime);
-                $style = $submissionVerdictId == Constants::VERDICT_ACCEPTED ? 'success' : '';
+                $style = $submissionVerdictId == \App\Utilities\Constants::VERDICT_ACCEPTED ? 'success' : '';
             @endphp
 
             <tr>

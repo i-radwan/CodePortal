@@ -21,4 +21,4 @@
 </table>
 
 {{--Pagination--}}
-{{ $status->fragment('participants')->render() }}
+{{ $participants->fragment('participants')->render() }}
