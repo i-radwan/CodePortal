@@ -65,40 +65,23 @@ class Contest extends Model
     ];
 
     /**
-     * The basic database columns to be selected when getting the contest users with statistics
+     * The basic database columns to be selected when getting the contest statistics per user
      *
      * @var array
      */
-    protected $basicContestUsersQueryCols = [
+    protected $basicStandingsUsersQueryCols = [
         Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID . ' as ' . Constants::FLD_SUBMISSIONS_USER_ID,
         Constants::TBL_USERS . '.' . Constants::FLD_USERS_USERNAME
     ];
 
     /**
-     * The basic database columns to be selected when getting the contest users problems statistics
+     * The basic database columns to be selected when getting the contest statistics per problem per user
      *
      * @var array
      */
-    protected $basicContestUsersProblemsQueryCols = [
+    protected $basicStandingsUsersProblemsQueryCols = [
         Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID . ' as ' . Constants::FLD_SUBMISSIONS_USER_ID,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_NAME
-    ];
-
-    /**
-     * The basic database columns to be selected when getting the contest standings
-     *
-     * @var array
-     */
-    protected $basicContestStandingsQueryCols = [
-        Constants::TBL_CONTEST_PARTICIPANTS . '.' . Constants::FLD_CONTEST_PARTICIPANTS_USER_ID,
-        Constants::TBL_USERS . '.' . Constants::FLD_USERS_USERNAME,
-        Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_NAME,
-        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_ID
     ];
 
     /**
@@ -110,6 +93,8 @@ class Contest extends Model
         Constants::TBL_USERS . '.' . Constants::FLD_USERS_USERNAME,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_NAME . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_NAME,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
         Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID,
         Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
         Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_EXECUTION_TIME,
@@ -223,6 +208,21 @@ class Contest extends Model
     }
 
     /**
+     * Return all groups related to this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function groups()
+    {
+        return $this->belongsToMany(
+            Contest::class,
+            Constants::TBL_GROUPS_CONTESTS,
+            Constants::FLD_GROUP_CONTESTS_CONTEST_ID,
+            Constants::FLD_GROUP_CONTESTS_GROUP_ID
+        );
+    }
+
+    /**
      * Check if contest is currently running
      *
      * @return bool
@@ -244,127 +244,11 @@ class Contest extends Model
      */
     public function problemStatistics()
     {
-        $query = $this->contestBasicQuery($this->basicContestProblemsQueryCols);
-
-        // Calculate number of accepted submissions
-        $query->addSelect(DB::raw(
-            "sum(case when " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
-            "= " .
-            "'" . Constants::VERDICT_ACCEPTED . "' " .
-            "then 1 else 0 end) as " .
-            "`" . Constants::FLD_PROBLEMS_SOLVED_COUNT . "`"
-        ));
-
-        // Calculate total number of submissions
-        $query->addSelect(DB::raw(
-            "sum(case when " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
-            "is not null " .
-            "then 1 else 0 end) as " .
-            "`" . Constants::FLD_PROBLEMS_TRAILS_COUNT . "`"
-        ));
-
-        $this->contestJoinProblems($query);
-        $this->contestJoinUsers($query);
-        $this->contestLeftJoinSubmissions($query);
-
+        $query = $this->contestBasicQuery($this->basicContestProblemsQueryCols, true);
+        $this->countAcceptedSubmissionsQuery($query, Constants::FLD_PROBLEMS_SOLVED_COUNT);
+        $this->countSubmissionsQuery($query, Constants::FLD_PROBLEMS_TRAILS_COUNT);
         $query->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
         $query->orderBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);    // TODO: order by contest owner problems order
-
-        return $query;
-    }
-
-    /**
-     * Return the users of the current contest along with
-     * the number of solved problems, the number of wrong submissions, and the penalty
-     *
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function userStatistics()
-    {
-        $query = $this->contestBasicQuery($this->basicContestUsersQueryCols);
-
-        // Calculate number of accepted submissions
-        $query->addSelect(DB::raw(
-            "sum(case when " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
-            "= " .
-            "'" . Constants::VERDICT_ACCEPTED . "' " .
-            "then 1 else 0 end) as " .
-            "`" . Constants::FLD_USERS_SOLVED_COUNT . "`"
-        ));
-
-        // Calculate total number of submissions
-        $query->addSelect(DB::raw(
-            "sum(case when " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
-            "is not null " .
-            "then 1 else 0 end) as " .
-            "`" . Constants::FLD_USERS_TRAILS_COUNT . "`"
-        ));
-
-        // Calculate the penalty of the user
-        $query->addSelect(DB::raw(
-            "sum(case when " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
-            "= " .
-            "'" . Constants::VERDICT_ACCEPTED . "' " .
-            "then " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
-            "- " .
-            "UNIX_TIMESTAMP(" .
-            "`" . Constants::TBL_CONTESTS . "`.`" . Constants::FLD_CONTESTS_TIME . "`" .
-            ") " .
-            "else " .
-            Constants::CONTESTS_PENALTY_PER_WRONG_SUBMISSION . " " .
-            "end) as " .
-            "`" . Constants::FLD_USERS_PENALTY . "`"
-        ));
-
-        $this->contestJoinProblems($query);
-        $this->contestJoinUsers($query);
-        $this->contestLeftJoinSubmissionsUntilFirstAccepted($query);
-        $query->groupBy(Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID);
-
-        return $query;
-    }
-
-    /**
-     * Return statistics about the users and their submission
-     *
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function userProblemStatistics()
-    {
-        $query = $this->contestBasicQuery($this->basicContestUsersProblemsQueryCols);
-
-        // Calculate number of accepted submissions
-        $query->addSelect(DB::raw(
-            "sum(case when " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
-            "= " .
-            "'" . Constants::VERDICT_ACCEPTED . "' " .
-            "then 1 else 0 end) as " .
-            "`" . Constants::FLD_PROBLEMS_SOLVED_COUNT . "`"
-        ));
-
-        // Calculate total number of submissions
-        $query->addSelect(DB::raw(
-            "sum(case when " .
-            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
-            "is not null " .
-            "then 1 else 0 end) as " .
-            "`" . Constants::FLD_PROBLEMS_TRAILS_COUNT . "`"
-        ));
-
-        $this->contestJoinProblems($query);
-        $this->contestJoinUsers($query);
-        $this->contestLeftJoinSubmissionsUntilFirstAccepted($query);
-
-        $query->groupBy(Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID);
-        $query->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
-
         return $query;
     }
 
@@ -375,16 +259,32 @@ class Contest extends Model
      */
     public function standings()
     {
-        $t1 = $this->userStatistics();
-        $t2 = $this->userProblemStatistics();
+        // Statistics per user
+        $t1 = $this->contestBasicQuery($this->basicStandingsUsersQueryCols, true);
+        $this->countAcceptedSubmissionsQuery($t1, Constants::FLD_USERS_SOLVED_COUNT);
+        $this->countSubmissionsQuery($t1, Constants::FLD_USERS_TRAILS_COUNT);
+        $this->calculateUsersPenalty($t1, Constants::FLD_USERS_PENALTY);
+        $t1->groupBy(Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID);
 
+        // Statistics per problem per user
+        $t2 = $this->contestBasicQuery($this->basicStandingsUsersProblemsQueryCols, true);
+        $this->countAcceptedSubmissionsQuery($t2, Constants::FLD_PROBLEMS_SOLVED_COUNT);
+        $this->countSubmissionsQuery($t2, Constants::FLD_PROBLEMS_TRAILS_COUNT);
+        $t2->groupBy(Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID);
+        $t2->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
+
+        // Join the two tables
         $query = DB::table(DB::raw(
             "(" . $t1->toSql() . ") as `t1` natural join (" . $t2->toSql() . ") as `t2`"
         ));
 
+        $query->mergeBindings($t1)->mergeBindings($t2);
+
+        // Sort the standings
         $query->orderByDesc(Constants::FLD_USERS_SOLVED_COUNT);
         $query->orderBy(Constants::FLD_USERS_PENALTY);
         $query->orderBy(Constants::FLD_USERS_TRAILS_COUNT);
+        $query->orderBy(Constants::FLD_SUBMISSIONS_USER_ID);
         $query->orderBy(Constants::FLD_SUBMISSIONS_PROBLEM_ID);
 
         return $query;
@@ -397,41 +297,44 @@ class Contest extends Model
      */
     public function submissions()
     {
-        $query = $this->contestBasicQuery($this->basicContestSubmissionsQueryCols);
-        $this->contestJoinProblems($query);
-        $this->contestJoinUsers($query);
-        $this->contestJoinSubmissions($query);
+        $query = $this->contestBasicQuery($this->basicContestSubmissionsQueryCols, false);
 
-        $query
-            ->join(
-                Constants::TBL_LANGUAGES,
-                Constants::TBL_LANGUAGES . '.' . Constants::FLD_LANGUAGES_ID,
-                '=',
-                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_LANGUAGE_ID
-            )
-            ->orderByDesc(
-                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME
-            );
+        // Join with language table
+        $query->join(
+            Constants::TBL_LANGUAGES,
+            Constants::TBL_LANGUAGES . '.' . Constants::FLD_LANGUAGES_ID,
+            '=',
+            Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_LANGUAGE_ID
+        );
 
-
+        $query->orderByDesc(Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME);
         return $query;
     }
 
     /**
-     * Return the basic contest query
+     * Return the basic contest query that joins
+     * the contest with problems, users and submissions
      *
-     * @param array $projections columns to select
+     * @param array $projections Columns to select
+     * @param bool $tillFirstAccepted Whether to join with all submission or with submissions until first accepted
      * @return \Illuminate\Database\Query\Builder
      */
-    private function contestBasicQuery($projections)
+    private function contestBasicQuery($projections, $tillFirstAccepted = false)
     {
-        return DB::table(Constants::TBL_CONTESTS)
-            ->select($projections)
-            ->where(
-                Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID,
-                '=',
-                DB::raw($this->id)
-            );
+        $query = DB::table(Constants::TBL_CONTESTS)->select($projections);
+
+        $this->contestJoinProblems($query);
+        $this->contestJoinUsers($query);
+        $this->contestJoinSubmissions($query, $tillFirstAccepted);
+
+        // Note that this where clause should come after the joining for correct binding
+        $query->where(
+            Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID,
+            '=',
+            $this->id
+        );
+
+        return $query;
     }
 
     /**
@@ -482,17 +385,33 @@ class Contest extends Model
      * Join contest with its related submissions
      *
      * @param \Illuminate\Database\Query\Builder $query
+     * @param bool $tillFirstAccepted Whether to join with all submission or with submissions until first accepted
      */
-    private function contestJoinSubmissions($query)
+    private function contestJoinSubmissions($query, $tillFirstAccepted = false)
     {
         // TODO: need to check timestamps accurately
         // TODO: It seems that Codeforces timestamp is leading 4 hours
         $contestStartTime = strtotime($this->time);
         $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
 
+        if ($tillFirstAccepted) {
+            $joinType = 'leftJoin';
+            $submissions = Submission::tillFirstAccepted($contestStartTime, $contestEndTime);
+            $submissionsTable = DB::raw('(' . $submissions->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`');
+            $query->mergeBindings($submissions);
+        }
+        else {
+            $joinType = 'join';
+            $submissionsTable = Constants::TBL_SUBMISSIONS;
+            $query->whereBetween(
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
+                [$contestStartTime, $contestEndTime]
+            );
+        }
+
         $query
-            ->join(
-                Constants::TBL_SUBMISSIONS,
+            ->$joinType(
+                $submissionsTable,
                 function ($join) {
                     $join->on(
                         Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
@@ -506,130 +425,64 @@ class Contest extends Model
                     );
                 }
             );
-//            ->whereBetween(
-//                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-//                [$contestStartTime, $contestEndTime]
-//            );
     }
 
     /**
-     * Left join contest with its related submissions
+     * Count the total number of submissions in the given contest query
      *
      * @param \Illuminate\Database\Query\Builder $query
+     * @param string $columnAlias
      */
-    private function contestLeftJoinSubmissions($query)
+    private function countSubmissionsQuery($query, $columnAlias)
     {
-        // TODO: need to check timestamps accurately
-        // TODO: It seems that Codeforces timestamp is leading 4 hours
-        $contestStartTime = strtotime($this->time);
-        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
-
-        $query
-            ->leftJoin(
-                Constants::TBL_SUBMISSIONS,
-                function ($join) {
-                    $join->on(
-                        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
-                        '=',
-                        Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID
-                    );
-                    $join->on(
-                        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
-                        '=',
-                        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
-                    );
-                }
-            );
-//            ->whereBetween(
-//                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-//                [$contestStartTime, $contestEndTime]
-//            );
+        $query->addSelect(DB::raw(
+            "sum(case when " .
+            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
+            "is not null " .
+            "then 1 else 0 end) as " .
+            "`" . $columnAlias . "`"
+        ));
     }
 
     /**
-     * Left join contest with its related submissions until the first accepted submission
+     * Count the number of accepted submissions in the given contest query
      *
      * @param \Illuminate\Database\Query\Builder $query
+     * @param string $columnAlias
      */
-    private function contestLeftJoinSubmissionsUntilFirstAccepted($query)
+    private function countAcceptedSubmissionsQuery($query, $columnAlias)
     {
-        // TODO: need to check timestamps accurately
-        // TODO: It seems that Codeforces timestamp is leading 4 hours
-        $contestStartTime = strtotime($this->time);
-        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
-
-        $firstAcceptedQuery =
-            DB::table(Constants::TBL_SUBMISSIONS)
-                ->select(
-                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME
-                )
-                ->whereColumn(
-                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
-                    '=',
-                    's' . '.' . Constants::FLD_SUBMISSIONS_USER_ID
-                )
-                ->whereColumn(
-                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
-                    '=',
-                    's' . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID
-                )
-                ->where(
-                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_VERDICT,
-                    '=',
-                    DB::raw("'" . Constants::VERDICT_ACCEPTED . "'")
-                )
-//                ->whereBetween(
-//                    Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-//                    [$contestStartTime, $contestEndTime]
-//                )
-                ->orderBy(
-                    Constants::FLD_SUBMISSIONS_SUBMISSION_TIME
-                )
-                ->limit(1);
-
-        $submissionsQuery =
-            DB::table(Constants::TBL_SUBMISSIONS . ' as ' . 's')
-                ->where(
-                    's' . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-                    '<=',
-                    DB::raw('COALESCE((' . $firstAcceptedQuery->toSql() . '), UNIX_TIMESTAMP())')
-                );
-
-        $query
-            ->leftJoin(
-                DB::raw('(' . $submissionsQuery->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`'),
-                function ($join) {
-                    $join->on(
-                        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
-                        '=',
-                        Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID
-                    );
-                    $join->on(
-                        Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
-                        '=',
-                        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
-                    );
-                }
-            );
-//            ->whereBetween(
-//                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
-//                [$contestStartTime, $contestEndTime]
-//            );
+        $query->addSelect(DB::raw(
+            "sum(case when " .
+            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
+            "= " .
+            "'" . Constants::VERDICT_ACCEPTED . "' " .
+            "then 1 else 0 end) as " .
+            "`" . $columnAlias . "`"
+        ));
     }
 
-
     /**
-     * Return all groups related to this contest
+     * Calculate the penalty of the users in the given contest query
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param string $columnAlias
      */
-    public function groups()
+    private function calculateUsersPenalty($query, $columnAlias)
     {
-        return $this->belongsToMany(
-            Contest::class,
-            Constants::TBL_GROUPS_CONTESTS,
-            Constants::FLD_GROUP_CONTESTS_CONTEST_ID,
-            Constants::FLD_GROUP_CONTESTS_GROUP_ID
-        );
+        $query->addSelect(DB::raw(
+            "sum(case when " .
+            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_VERDICT . "` " .
+            "= " .
+            "'" . Constants::VERDICT_ACCEPTED . "' " .
+            "then " .
+            "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME . "` " .
+            "- " .
+            "UNIX_TIMESTAMP(" .
+            "`" . Constants::TBL_CONTESTS . "`.`" . Constants::FLD_CONTESTS_TIME . "`" .
+            ") " .
+            "else 0 end) as " .
+            "`" . $columnAlias . "`"
+        ));
     }
 }

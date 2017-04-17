@@ -16,35 +16,50 @@
     </thead>
 
     @php($user = Auth::user())
+
     {{--Problems--}}
     <tbody>
         {{--TODO: @Samir add checkboxes When adding new contest view--}}
         @foreach($problems as $problem)
-            @php($verdict = $problem->simpleVerdict($user))
+            @php
+                $verdict = $problem->simpleVerdict($user);
+                $id = \App\Utilities\Utilities::generateProblemNumber($problem);
+                $link = \App\Utilities\Utilities::generateProblemLink($problem);
+                $judgeData = \App\Utilities\Constants::JUDGES[$problem->judge_id];
+                $judgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
+                $judgeName = $judgeData[\App\Utilities\Constants::JUDGE_NAME_KEY];
 
-            <tr class="{{ $verdict == Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
+                if ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_ACCEPTED)
+                    $style = 'success';
+                elseif ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_WRONG_SUBMISSION)
+                    $style = 'danger';
+                else
+                    $style = '';
+            @endphp
+
+            <tr class="{{ $style }}">
+                {{--Checkbox--}}
                 @if(isset($checkBoxes) && $checkBoxes = 'true')
-                    <td><input class="checkState" type="checkbox" value="{{ ($problem->id) }}" onclick="syncProblemState()" {{(isset($checkedRows)) ? in_array($problem->id,$checkedRows) ? "checked":"" : ""}}></td>
+                    <td>
+                        <input class="checkState"
+                               type="checkbox"
+                               value="{{ ($problem->id) }}"
+                               onclick="syncProblemState()"
+                               {{ isset($checkedRows) ? (in_array($problem->id, $checkedRows) ? 'checked' : '') : ''}}>
+                    </td>
                 @endif
+
                 {{--ID--}}
-                <td>{{ Utilities::generateProblemNumber($problem) }}</td>
+                <td>{{ $id }}</td>
 
                 {{--Name--}}
-                <td>
-                    <a href="{{ Utilities::generateProblemLink($problem) }}" target="_blank">
-                        {{ $problem->name }}
-                    </a>
-                </td>
+                <td><a href="{{ $link }}" target="_blank">{{ $problem->name }}</a></td>
 
-                {{--# Accepted--}}
+                {{--Solved Count--}}
                 <td>{{ $problem->solved_count }}</td>
 
                 {{--Judge--}}
-                <td>
-                    <a href="{{ Constants::JUDGES[$problem->judge_id][Constants::JUDGE_LINK_KEY] }}" target="_blank">
-                        {{ Constants::JUDGES[$problem->judge_id][Constants::JUDGE_NAME_KEY] }}
-                    </a>
-                </td>
+                <td><a href="{{ $judgeLink }}" target="_blank">{{ $judgeName }}</a></td>
 
                 {{--Tags--}}
                 <td>

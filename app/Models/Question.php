@@ -42,32 +42,44 @@ class Question extends Model
      * @var array
      */
     protected $rules = [
-        //TODO: validate that the problem belongs to the contest
         Constants::FLD_QUESTIONS_CONTEST_ID => 'required|integer|exists:' . Constants::TBL_CONTESTS . ',' . Constants::FLD_CONTESTS_ID,
         Constants::FLD_QUESTIONS_PROBLEM_ID => 'required|integer|exists:' . Constants::TBL_PROBLEMS . ',' . Constants::FLD_PROBLEMS_ID,
         Constants::FLD_QUESTIONS_USER_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_QUESTIONS_TITLE => 'required|max:255',
         Constants::FLD_QUESTIONS_CONTENT => 'required|min:50',
-        Constants::FLD_QUESTIONS_STATUS => 'Regex:/([01])/'
+        Constants::FLD_QUESTIONS_STATUS => 'Regex:/([01])/',
     ];
 
     /**
-     * Question constructor. Used to save question and associate user and contest to it
+     * The rules to check against before saving the answer of a question
+     *
+     * @var array
+     */
+    protected $answerQuestionRules = [
+        Constants::FLD_QUESTIONS_ANSWER => 'required',
+        Constants::FLD_QUESTIONS_ADMIN_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID
+    ];
+
+    /**
+     * Ask a new question and associate user, contest and problem to it
      *
      * @param array $attributes
      * @param User $user
      * @param Contest $contest
      * @param Problem $problem
      */
-    public function __construct(array $attributes = [], $user = null, $contest = null, $problem = null)
+    public static function askQuestion(array $attributes = [], $user = null, $contest = null, $problem = null)
     {
-        parent::__construct($attributes);
-        if ($user != null && $contest != null && $problem != null) {
-            $this->user()->associate($user);
-            $this->contest()->associate($contest);
-            $this->problem()->associate($problem);
-            $this->save();
+        if (!$user || !$contest || !$problem) {
+            return;
         }
+
+        $q = new Question($attributes);
+
+        $q->user()->associate($user);
+        $q->contest()->associate($contest);
+        $q->problem()->associate($problem);
+        $q->save();
     }
 
     /**
@@ -126,10 +138,9 @@ class Question extends Model
         $this->attributes[Constants::FLD_QUESTIONS_ANSWER] = $newAnswer;
 
         // Validate against rules
-        $v = Validator::make($this->attributes, config('rules.question.store_answer_validation_rules'));
-        $v->validate();
+        Validator::make($this->attributes, $this->answerQuestionRules)->validate();
 
-        // Save
-        return parent::save();
+        // Save the answer
+        $this->save();
     }
 }
