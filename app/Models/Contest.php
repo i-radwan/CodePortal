@@ -130,7 +130,7 @@ class Contest extends Model
             Constants::TBL_CONTEST_PROBLEMS,
             Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
             Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID
-        );
+        )->withPivot(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
     }
 
     /**
@@ -263,7 +263,7 @@ class Contest extends Model
         $this->countAcceptedSubmissionsQuery($query, Constants::FLD_PROBLEMS_SOLVED_COUNT);
         $this->countSubmissionsQuery($query, Constants::FLD_PROBLEMS_TRAILS_COUNT);
         $query->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
-        $query->orderBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);    // TODO: order by contest owner problems order
+        $query->orderBy(Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
         return $query;
     }
 
@@ -414,8 +414,7 @@ class Contest extends Model
             $submissions = Submission::tillFirstAccepted($contestStartTime, $contestEndTime);
             $submissionsTable = DB::raw('(' . $submissions->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`');
             $query->mergeBindings($submissions);
-        }
-        else {
+        } else {
             $joinType = 'join';
             $submissionsTable = Constants::TBL_SUBMISSIONS;
             $query->whereBetween(

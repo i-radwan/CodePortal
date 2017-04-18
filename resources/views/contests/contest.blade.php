@@ -25,12 +25,15 @@
     <div class="container">
         <div class="panel panel-default">
 
-            {{--Contest leave/delete/join links--}}
+            {{--Contest leave/delete/reorder/join links--}}
             @if($isOwner)
                 <a onclick="return confirm('Are you sure want to delete the contest?\nThis cannot be undone')"
                    href="{{ url('/contest/delete/' . $contestID) }}">
                     <span class="btn btn-link text-dark pull-right margin-5px">Delete</span>
                 </a>
+
+                <span class="btn btn-link text-dark pull-right margin-5px"
+                      onclick="toggleSortableStatus();">Reorder</span>
             @endif
             @if($isParticipant)
                 <a onclick="return confirm('Are you sure want to leave the contest?')"
@@ -76,6 +79,11 @@
                     <!-- Tab panes -->
                     <div class="tab-content text-center">
                         <div role="tabpanel" class="tab-pane active" id="problems">
+                            <button
+                                    type="submit" class="btn btn-primary pull-right problems-reorder-view save"
+                                    onclick="saveProblemsOrderToDB('{{url('contest/reorder/'.$contestID)}}', '{{csrf_token()}}')">
+                                Save
+                            </button>
                             @include('contests.contest_views.problems')
                         </div>
                         <div role="tabpanel" class="tab-pane" id="standings">

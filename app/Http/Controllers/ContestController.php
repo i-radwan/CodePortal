@@ -132,8 +132,8 @@ class ContestController extends Controller
         $request[Constants::FLD_CONTESTS_OWNER_ID] = Auth::user()->id;
         $contest = new Contest($request->all());
         $added = false;
-        if($contest->save())
-         $added = true;
+        if ($contest->save())
+            $added = true;
         //Get Organisers
         if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
             $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
@@ -147,14 +147,16 @@ class ContestController extends Controller
         if (Session::has(Constants::CHECKED_PROBLEMS)) {
             $problems = Session::get(Constants::CHECKED_PROBLEMS);
             $contest->problems()->syncWithoutDetaching($problems);
+            // Set initial problems order
+            $this->updateContestProblemsOrder($contest, $problems);
+
         }
-        if($added){
+        if ($added) {
             Session::flash("messages", ["Contest Added Successfully"]);
             return redirect()->action(
                 'ContestController@displayContest', ['id' => $contest->id]
             );
-        }
-        else{
+        } else {
             Session::flash("messages", ["Sorry, Contest was not added. Please retry later"]);
             return redirect()->action('ContestController@index');;
         }
@@ -265,6 +267,22 @@ class ContestController extends Controller
         $user = Auth::user();
         $user->participatingContests()->syncWithoutDetaching([$contest->id]);
         return back();
+    }
+
+    /**
+     * Reorder problems in a contest
+     *
+     * Authorization happens in the defined Gate (owner-group)
+     *
+     * @param Request $request
+     * @param Contest $contest
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reorderContest(Request $request, Contest $contest)
+    {
+        $problemsIDsNewOrder = $request->get('problems_order');
+        $this->updateContestProblemsOrder($contest, $problemsIDsNewOrder);
+        return response()->json(['status' => 204], 200);
     }
 
     /**
@@ -450,7 +468,7 @@ class ContestController extends Controller
         $rawData = $contest
             ->standings()
             ->get();
-            //->paginate(Constants::CONTEST_STANDINGS_PER_PAGE, ['*'], 'standings_page');
+        //->paginate(Constants::CONTEST_STANDINGS_PER_PAGE, ['*'], 'standings_page');
 
         //dd(\DB::getQueryLog());
 
@@ -565,5 +583,23 @@ class ContestController extends Controller
     public static function getProblemsWithFilters($request, $tagNames, $judgesIDs)
     {
         return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); //Returning the Problems Data
+    }
+
+
+    /**
+     * Update contest problems order in DB
+     *
+     * @param Contest $contest
+     * @param $problemIDs
+     */
+    private function updateContestProblemsOrder(Contest $contest, $problemIDs)
+    {
+        $i = 1;
+        foreach ($problemIDs as $problemID) {
+            $problemPivot = $contest->problems()->find($problemID)->pivot;
+            $problemPivot[Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER] = $i;
+            $problemPivot->save();
+            $i++;
+        }
     }
 }

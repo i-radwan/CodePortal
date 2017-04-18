@@ -390,3 +390,86 @@ $('.pagination > li').click(function () {
 });
 /**************************************/
 /*</editor-fold>*/
+
+/*<editor-fold desc="Contest problems sort">*/
+
+// Flag to indicate if the table is in sort mode or not
+var isTableSortable = false;
+// Array to store the last contest problem IDs order
+var newSortedIDsArray = [];
+
+/**
+ * Toggle all views related to reordering contest problems
+ */
+function toggleSortableStatus() {
+
+    $('.problems-reorder-view').fadeToggle();
+
+    if (isTableSortable) {
+        $('#contest-problems-tbody').sortable("disable");
+    } else {
+        $('#contest-problems-tbody').sortable({
+            helper: fixHelperModified,
+            stop: updateIndex,
+            handle: 'td.problems-reorder-view > .fa-bars',
+            cursor: 'move',
+        }).disableSelection();
+    }
+}
+
+/**
+ * Keep element width the same while dragging
+ *
+ * @param e
+ * @param tr
+ */
+var fixHelperModified = function (e, tr) {
+    var $originals = tr.children();
+    var $helper = tr.clone();
+    $helper.children().each(function (index) {
+        $(this).width($originals.eq(index).width())
+    });
+    return $helper;
+}
+/**
+ * Update row index in the array by clearing it first then refill with the new order
+ * The problem-id is fetched from html data binding
+ *
+ * @param e
+ * @param ui
+ */
+var updateIndex = function (e, ui) {
+    newSortedIDsArray = [];
+    $('td.index', ui.item.parent()).each(function () {
+        newSortedIDsArray.push($(this).data('problem-id'));
+    });
+};
+
+/**
+ * Send save problems order request to backend
+ *
+ * @param url
+ * @param token
+ */
+function saveProblemsOrderToDB(url, token) {
+    if (newSortedIDsArray.length) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {_token: token, _method: "PUT", problems_order: newSortedIDsArray},
+            success: function (result) {
+                if (result.status == 204)
+                    location.reload();
+                else alert('Something went wrong!')
+            },
+            error: function () {
+                alert('Something went wrong!');
+            }
+        });
+    } else {
+        alert('No changes have been made!');
+    }
+}
+
+/**************************************/
+/*</editor-fold>*/
