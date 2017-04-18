@@ -234,7 +234,7 @@ class GroupController extends Controller
         $user = Auth::user();
 
         // Check if user has valid (non-deleted) invitation for joining this group
-        $groupsInvitation = $user->userDisplayableReceivedNotifications()
+        $groupsInvitation = $user->displayableReceivedNotifications()
             ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
             ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group[Constants::FLD_GROUPS_ID])->first();
 
@@ -274,7 +274,7 @@ class GroupController extends Controller
     {
         if ($user) {
             // Remove user invitation for the same reason in the joinGroup function
-            $user->userDisplayableReceivedNotifications()
+            $user->displayableReceivedNotifications()
                 ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
                 ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group[Constants::FLD_GROUPS_ID])
                 ->update([Constants::FLD_NOTIFICATIONS_STATUS =>

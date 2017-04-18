@@ -136,23 +136,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Return all the teams of the user
-     *
-     * ToDo: I think the name isn't semantic enough
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function teams()
-    {
-        return $this->belongsToMany(
-            Team::class,
-            Constants::TBL_TEAM_MEMBERS,
-            Constants::FLD_TEAM_MEMBERS_USER_ID,
-            Constants::FLD_TEAM_MEMBERS_TEAM_ID
-        )->withTimestamps();
-    }
-
-    /**
      * Return all the submission of the current user
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -248,7 +231,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the notifications sent by this user
+     * Return the notifications sent to this user
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -258,11 +241,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Return user non-deleted notifications sorted by id desc.
+     * Return user non-deleted notifications sorted by id in descending order
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userDisplayableReceivedNotifications()
+    public function displayableReceivedNotifications()
     {
         return $this->receivedNotifications()
             ->where(
@@ -270,7 +253,7 @@ class User extends Authenticatable
                 '!=',
                 Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
             )
-            ->orderBy(Constants::FLD_NOTIFICATIONS_ID, 'desc');
+            ->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
     }
 
     /**
@@ -340,9 +323,24 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             Group::class,
-            Constants::TBL_GROUPS_JOIN_REQUESTS,
+            Constants::TBL_GROUP_JOIN_REQUESTS,
             Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID,
             Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID
+        )->withTimestamps();
+    }
+
+    /**
+     * Return all the teams that the current user has joined
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function joiningTeams()
+    {
+        return $this->belongsToMany(
+            Team::class,
+            Constants::TBL_TEAM_MEMBERS,
+            Constants::FLD_TEAM_MEMBERS_USER_ID,
+            Constants::FLD_TEAM_MEMBERS_TEAM_ID
         )->withTimestamps();
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Utilities\Constants;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 class Group extends Model
@@ -54,7 +54,6 @@ class Group extends Model
         return $this->belongsTo(User::class, Constants::FLD_GROUPS_OWNER_ID);
     }
 
-
     /**
      * Return all members of this group
      *
@@ -79,7 +78,7 @@ class Group extends Model
     {
         return $this->belongsToMany(
             Contest::class,
-            Constants::TBL_GROUPS_CONTESTS,
+            Constants::TBL_GROUP_CONTESTS,
             Constants::FLD_GROUP_CONTESTS_GROUP_ID,
             Constants::FLD_GROUP_CONTESTS_CONTEST_ID
         );
@@ -94,12 +93,11 @@ class Group extends Model
     {
         return $this->belongsToMany(
             User::class,
-            Constants::TBL_GROUPS_JOIN_REQUESTS,
+            Constants::TBL_GROUP_JOIN_REQUESTS,
             Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID,
             Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID
         )->withTimestamps();
     }
-
 
     /**
      * Return the group sheets
@@ -110,7 +108,6 @@ class Group extends Model
     {
         return $this->hasMany(Sheet::class, Constants::FLD_SHEETS_GROUP_ID);
     }
-
 
     /**
      * Scope a query to only include groups with the given name
@@ -124,6 +121,7 @@ class Group extends Model
         if ($name == null || $name == "") {
             return $query;
         }
+
         $query->where(
             Constants::TBL_GROUPS . '.' . Constants::FLD_GROUPS_NAME,
             'LIKE',
@@ -132,7 +130,6 @@ class Group extends Model
 
         return $query;
     }
-
 
     /**
      * Delete the group after removing all of its relations records
@@ -170,5 +167,4 @@ class Group extends Model
 
         return parent::delete();
     }
-
 }

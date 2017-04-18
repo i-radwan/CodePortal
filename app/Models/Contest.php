@@ -232,7 +232,7 @@ class Contest extends Model
     {
         return $this->belongsToMany(
             Contest::class,
-            Constants::TBL_GROUPS_CONTESTS,
+            Constants::TBL_GROUP_CONTESTS,
             Constants::FLD_GROUP_CONTESTS_CONTEST_ID,
             Constants::FLD_GROUP_CONTESTS_GROUP_ID
         );

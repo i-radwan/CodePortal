@@ -50,13 +50,16 @@ class Sheet extends Model
      */
     public function problems()
     {
-        return $this->belongsToMany(
-            Problem::class,
-            Constants::TBL_SHEETS_PROBLEMS,
-            Constants::FLD_SHEETS_PROBLEMS_SHEET_ID,
-            Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID
-        )->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
-            ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)->withTimestamps();
+        return $this
+            ->belongsToMany(
+                Problem::class,
+                Constants::TBL_SHEET_PROBLEMS,
+                Constants::FLD_SHEET_PROBLEMS_SHEET_ID,
+                Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID
+            )
+            ->withPivot(Constants::FLD_SHEET_PROBLEMS_SOLUTION)
+            ->withPivot(Constants::FLD_SHEET_PROBLEMS_SOLUTION_LANG)
+            ->withTimestamps();
     }
 
     /**
@@ -92,5 +95,4 @@ class Sheet extends Model
         $this->problems()->detach();
         return parent::delete();
     }
-
 }

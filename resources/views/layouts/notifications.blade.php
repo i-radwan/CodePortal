@@ -1,4 +1,4 @@
-@php($notifications = Auth::user()->userDisplayableReceivedNotifications()->get())
+@php($notifications = Auth::user()->displayableReceivedNotifications()->get())
 @php($unreadCount = count(Auth::user()->unreadNotifications()->get()))
 
 @if(count($notifications))
