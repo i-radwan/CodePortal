@@ -347,6 +347,9 @@ class Constants
     // Database constants
     //
 
+    //
+    // TODO: I think there is no need for the string constants below
+    //
     const ACCOUNT_ROLE_USER_KEY = "USER";
     const ACCOUNT_ROLE_ADMIN_KEY = "ADMIN";
     const ACCOUNT_ROLE_SUPER_ADMIN_KEY = "SUPER_ADMIN";

@@ -21,8 +21,8 @@ class UsersTableSeeder extends Seeder
 
         for ($i = 0; $i < $limit; ++$i) {
             DB::table(Constants::TBL_USERS)->insert([
-                Constants::FLD_USERS_USERNAME => !$i ? "asd" : $faker->userName,
-                Constants::FLD_USERS_EMAIL => $faker->email,
+                Constants::FLD_USERS_USERNAME => !$i ? "asd" : $faker->unique()->userName,
+                Constants::FLD_USERS_EMAIL => $faker->unique()->email,
                 Constants::FLD_USERS_PASSWORD => bcrypt('asdasd'),
                 Constants::FLD_USERS_COUNTRY => $faker->country,
                 Constants::FLD_USERS_GENDER => $faker->randomElement(Constants::USER_GENDER),

@@ -266,6 +266,7 @@ class User extends Authenticatable
      */
     public function displayableReceivedNotifications()
     {
+        // TODO: what about using Laravel's soft delete methods?
         return $this->receivedNotifications()
             ->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
