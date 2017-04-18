@@ -285,9 +285,6 @@ document.getElementById("private").value  = sessionStorage.getItem("visibility")
 //Tags AutoComplete
 //First : get the tagsList from the view
 var tagsList = document.getElementById("tagsList");
-//Call the typeahead autoComplete Function
-// it takes (the url to get the data fot autocompletion , the list from th view, the name of the unordered list from the view,
-//0:Means Tags autoCompletion 1: Means  Organisers autoCompletion, the organisers Sync list URl, the organisers token)
 
 //Call typeahead for Tags autoCompletion
 $('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, "tags[]", 0,"",""));
@@ -296,7 +293,15 @@ var organisersList = document.getElementById("organisers_list");
 //Call typeahead for Organisers autoCompletion
 $('input.organisersAuto').typeahead(autoComplete($("#organisers_auto").data('organisers-path'), organisersList, "organisers[]", 1,$("#organisers_auto").data('organisers-sync-path'), $("#organisers_auto").data('organisers-token') ));
 
+
+/**
+ * This function saves the selected filters (selected Tags and Selected judges) to the session
+ * It takes url of syncing filters, the token
+ * @param url
+ * @param token
+ */
 function applyFilters(url, token) {
+    //Get the current filters from the view
     var filters = getCurrentFilters();
     $.ajax({
         // url: "{{Request::url()}}/TagsJudgesFSync",
@@ -309,28 +314,27 @@ function applyFilters(url, token) {
         success: function (data) {
         }
     });
-
+    //Clear other filtering in URL queries
     document.getElementById("clearTableLink").click();
 }
-//Wait for deletion icon Press
+//Wait for Tags deletion icon Press
 $(document).on('mousedown', '.tags-close-icon', function (item) {
     $(this).parent().remove();
 });
-//get Current Entered Form Data
-//    function getEnteredFormData() {
-//        var conName = document.getElementById("name").value;
-//        var conDate = document.getElementById("time").value;
-//        var conDur = document.getElementById("duration").value;
-//        var conVis = document.getElementById("private").value;
-//        return {
-//            name : conName,
-//            date : conDate,
-//            duration: conDur,
-//            visibility : conVis
-//        };
-//    }
+
 
 //Auto Complete Functions
+/**
+ * the typeahead autoComplete Function
+ *
+ * @param path the url to get the data fot autocompletion
+ * @param list the list from th view
+ * @param arrName the name of the unordered list from the view
+ * @param type 0:Means Tags autoCompletion 1: Means  Organisers autoCompletion
+ * @param syncURL the organisers Sync list URl (if applicable)
+ * @param token the organisers token (if applicable)
+ * @returns {{source: source, updater: updater}}
+ */
 function autoComplete(path, list, arrName, type, syncURL, token) {
     return ({
         source: function (query, process) {
@@ -372,6 +376,9 @@ function autoComplete(path, list, arrName, type, syncURL, token) {
         }
     });
 }
+//This Function saves the selected organisers in the session
+//it takes the url and the token
+//It's called by typeahead autoComplete function
 function applyOrganisers(url, token) {
     var mOrganisers = getListInfo(organisersList);
     $.ajax({
@@ -387,7 +394,7 @@ function applyOrganisers(url, token) {
     });
 }
 
-//Wait for deletion key
+//Wait for organisers deletion icon in the selected organisers list
 $(document).on('mousedown', '.organiser-close-icon', function (item) {
     $(this).parent().remove();
     applyOrganisers();
