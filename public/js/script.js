@@ -502,7 +502,7 @@ var fixHelperModified = function (e, tr) {
         $(this).width($originals.eq(index).width())
     });
     return $helper;
-}
+};
 /**
  * Update row index in the array by clearing it first then refill with the new order
  * The problem-id is fetched from html data binding
