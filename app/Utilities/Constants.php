@@ -216,7 +216,7 @@ class Constants
             ]
         ],
         self::JUDGE_UVA_ID => [
-            self::JUDGE_NAME_KEY => "UVa Online Judge",
+            self::JUDGE_NAME_KEY => "UVa",
             self::JUDGE_LINK_KEY => "https://uva.onlinejudge.org/",
             self::JUDGE_PROBLEM_LINK_KEY => "https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}",
             self::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY => [

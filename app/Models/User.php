@@ -142,7 +142,7 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function members()
+    public function teams()
     {
         return $this->belongsToMany(
             Team::class,

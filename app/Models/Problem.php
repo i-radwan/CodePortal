@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -230,8 +231,22 @@ class Problem extends Model
             return $query;
         }
 
+        // ORing tags
+//        $query
+//            ->distinct()
+//            ->join(
+//                Constants::TBL_PROBLEM_TAGS,
+//                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
+//                '=',
+//                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
+//            )
+//            ->whereIn(
+//                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID,
+//                $tagsIDs
+//            );
+
+        // ANDing tags
         $query
-            ->distinct()
             ->join(
                 Constants::TBL_PROBLEM_TAGS,
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
@@ -241,6 +256,14 @@ class Problem extends Model
             ->whereIn(
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID,
                 $tagsIDs
+            )
+            ->groupBy(
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
+            )
+            ->having(
+                DB::raw('COUNT(*)'),
+                '=',
+                count($tagsIDs)
             );
 
         return $query;
