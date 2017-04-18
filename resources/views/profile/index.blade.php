@@ -1,3 +1,6 @@
+
+
+{!! Charts::assets() !!}
 @extends('layouts.app')
 
 @section('content')
@@ -21,22 +24,24 @@
          <h4>Problems Solved  <span class="label label-default">{{ $counter }}</span></h4>
        </div>
      </div>
-    </div>
-      <div class="col-md-5">
-          FOR NOTIFICATION
+   </div>
+   <div class="col-md-5">
+    FOR NOTIFICATION
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-7">
+    FOR STATISTICS
+    {!! $chart->render() !!}
+
+  </div>
+  <div class="col-md-5 ">
+    <div class="panel panel-default">
+      <div class="panel-heading">Problems to solve</div>
+      <div class="panel-body problems-panel-body">
+        @include("problems.table")</div>
       </div>
- </div>
-    <div class="row">
-        <div class="col-md-7">
-            FOR STATISTICS
-        </div>
-        <div class="col-md-5 ">
-            <div class="panel panel-default">
-                <div class="panel-heading">Problems to solve</div>
-    <div class="panel-body problems-panel-body">
-                @include("problems.table")</div>
-            </div>
-        </div>
     </div>
+  </div>
 </div>
 @endsection
