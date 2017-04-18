@@ -20,7 +20,7 @@
 				<img <img src="{{ asset('images/' . $user->profile_picture)}}" class="avatar img-circle" onerror=this.src="/images/profile/UserDefault.png" width="200" height="200" alt="avatar">
 				
 				<label class="control-label"></label>
-				<input type="file" class="file" name="imageFile">
+				<input type="file" class="file" name="profile_picture">
 				
 			</div>
 		</div>
@@ -61,6 +61,8 @@
 						<input name="email" class="form-control" value="{{$user->email}}" type="text">
 					</div>
 				</div>
+               
+                   
 				<div class="form-group{{ $errors->has(Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
 					<label class="col-md-3 control-label">Username:</label>
 					<div class="col-md-8">
@@ -70,13 +72,13 @@
 				<div class="form-group">
 					<label class="col-md-3 control-label">New Password:</label>
 					<div class="col-md-8">
-						<input class="form-control" value="" type="password">
+						<input name="password"  class="form-control" value="" type="password">
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-3 control-label">Confirm password:</label>
+					<label class="col-md-3 control-label">Confirm New password:</label>
 					<div class="col-md-8">
-						<input class="form-control" value="" type="password">
+						<input name="ConfirmPassword"  class="form-control" value="" type="password">
 					</div>
 				</div>
 				<div class="form-group">

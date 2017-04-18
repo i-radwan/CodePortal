@@ -13,19 +13,22 @@
         @if((\Auth::user()->username)==$userName)
 
 
-        <a href="{{ url('edit') }}" class="btn btn-link pull-right btn-sm RbtnMargin" role="button">edit
+      <a href="{{ url('edit') }}" class="btn btn-link pull-right btn-sm RbtnMargin " role="button">edit
           <i class="fa fa-gear"></i> </a>
+        @endif
+        
 
-
-          @endif
+          
           <div class="container">
            <br> <img class="thumbnail img-responsive"
            src="{{ asset('images/'.$userData->profile_picture)}}"  alt="profile pic"
            onerror=this.src="/images/profile/UserDefault.png" width="200" height="300"> 
          </div>
          <div class="panel-body">
-           <h3>{{ $userName }}</h3>   
+           <h3>{{ $userName }}</h3> 
+           @if(($userData->created_at)!=NULL)  
            <h5><i class="fa fa-clock-o"></i> Joined {{ $date }}</h5>
+           @endif
            <h4>Total Solved Problems <span class="label label-default">{{ $counter }}</span></h4>
          </div>
        </div>
