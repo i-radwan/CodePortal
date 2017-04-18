@@ -59,8 +59,8 @@ class User extends Authenticatable
     protected $rules = [
         //TODO: @Abdo add any needed validation rules
         //TODO: fix username/email conflict in update/register
-        //Constants::FLD_USERS_USERNAME => 'required|max:20|unique:' . Constants::TBL_USERS,
-        //Constants::FLD_USERS_EMAIL => 'required|email|max:50|unique:' . Constants::TBL_USERS,
+        Constants::FLD_USERS_USERNAME => 'required|max:20|unique:' . Constants::TBL_USERS,
+        Constants::FLD_USERS_EMAIL => 'required|email|max:50|unique:' . Constants::TBL_USERS,
         Constants::FLD_USERS_PASSWORD => 'required|min:6',
         Constants::FLD_USERS_FIRST_NAME => 'nullable|max:20',
         Constants::FLD_USERS_LAST_NAME => 'nullable|max:20',
