@@ -60,11 +60,12 @@ class User extends Authenticatable
         Constants::FLD_USERS_USERNAME => 'required|max:20|unique:' . Constants::TBL_USERS,
         Constants::FLD_USERS_EMAIL => 'required|email|max:50|unique:' . Constants::TBL_USERS,
         Constants::FLD_USERS_PASSWORD => 'required|min:6',
-        Constants::FLD_USERS_FIRST_NAME => 'max:20',
-        Constants::FLD_USERS_LAST_NAME => 'max:20',
-        Constants::FLD_USERS_GENDER => 'Regex:/([01])/',
-        Constants::FLD_USERS_BIRTHDATE => 'date',       //TODO: add more validation on birthdate
+        Constants::FLD_USERS_FIRST_NAME => 'nullable|max:20',
+        Constants::FLD_USERS_LAST_NAME => 'nullable|max:20',
+        Constants::FLD_USERS_GENDER => 'nullable|Regex:/([01])/',
+        Constants::FLD_USERS_BIRTHDATE => 'nullable|date',       //TODO: add more validation on birthdate
         Constants::FLD_USERS_ROLE => 'Regex:/([012])/',
+        //Constants::FLD_USERS_PROFILE_PICTURE=> 'nullable|mimes:jpg,jpeg,png', //its unseen
     ];
 
     /**

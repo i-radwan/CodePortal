@@ -28,7 +28,6 @@
                 $judgeData = \App\Utilities\Constants::JUDGES[$problem->judge_id];
                 $judgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
                 $judgeName = $judgeData[\App\Utilities\Constants::JUDGE_NAME_KEY];
-
                 if ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_ACCEPTED)
                     $style = 'success';
                 elseif ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_WRONG_SUBMISSION)
@@ -77,5 +76,4 @@
 
 {{--Pagination--}}
 {{ $problems->appends(Request::all())->render() }}
-
 

@@ -26,6 +26,7 @@ class ContestsTableSeeder extends Seeder
 
         $limit = 200;
 
+
         // Get all user IDs
         $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
         // Get all team IDs
@@ -40,6 +41,7 @@ class ContestsTableSeeder extends Seeder
                 Constants::FLD_CONTESTS_DURATION => $faker->numberBetween(30, 340),
             ]);
         }
+
 
         // Get all contest IDs
         $contestIDs = Contest::all()->pluck(Constants::FLD_CONTESTS_ID)->toArray();
@@ -57,6 +59,7 @@ class ContestsTableSeeder extends Seeder
 
             };
         }
+
 
         // Set problems orders
         $firstContestID = Contest::first()->id;
@@ -104,6 +107,7 @@ class ContestsTableSeeder extends Seeder
                     Constants::FLD_CONTEST_TEAMS_CONTEST_ID => $faker->randomElement($contestIDs),
                     Constants::FLD_CONTEST_TEAMS_TEAM_ID => $faker->randomElement($teamIDs),
                 ]);
+
             } catch (\Illuminate\Database\QueryException $e) {
 
             };

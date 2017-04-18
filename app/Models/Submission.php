@@ -1,29 +1,23 @@
 <?php
-
 namespace App\Models;
-
 use DB;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
-
 class Submission extends Model
 {
     use ValidateModelData;
-
     /**
      * The table associated with the model.
      *
      * @var string
      */
     protected $table = Constants::TBL_SUBMISSIONS;
-
     /**
      * The primary key of the table associated with the model.
      *
      * @var string
      */
     protected $primaryKey = Constants::FLD_SUBMISSIONS_ID;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -39,7 +33,6 @@ class Submission extends Model
         Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY,
         Constants::FLD_SUBMISSIONS_VERDICT
     ];
-
     /**
      * The rules to check against before saving the model
      *
@@ -55,7 +48,6 @@ class Submission extends Model
         Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => 'required|integer|min:0',
         Constants::FLD_SUBMISSIONS_VERDICT => 'integer|required|min:0|max:' . Constants::VERDICT_COUNT
     ];
-
     /**
      * Return the owner user of the current submission
      *
@@ -65,7 +57,6 @@ class Submission extends Model
     {
         return $this->belongsTo(User::class, Constants::FLD_SUBMISSIONS_USER_ID);
     }
-
     /**
      * Return the problem related to the current submission
      *
@@ -75,7 +66,6 @@ class Submission extends Model
     {
         return $this->belongsTo(Problem::class, Constants::FLD_SUBMISSIONS_PROBLEM_ID);
     }
-
     /**
      * Return the programming language of the current submission
      *
@@ -85,7 +75,6 @@ class Submission extends Model
     {
         return $this->belongsTo(Language::class, Constants::FLD_SUBMISSIONS_LANGUAGE_ID);
     }
-
     /**
      * Return all submissions between the given interval of time
      * until the first accepted submission for a user per problem
@@ -124,7 +113,6 @@ class Submission extends Model
                     Constants::FLD_SUBMISSIONS_SUBMISSION_TIME
                 )
                 ->limit(1);
-
         $query =
             DB::table(Constants::TBL_SUBMISSIONS . ' as ' . 's')
                 ->where(
@@ -138,7 +126,6 @@ class Submission extends Model
                     DB::raw('COALESCE((' . $firstAcceptedQuery->toSql() . '), ' . $endTime .  ')')
                 )
                 ->mergeBindings($firstAcceptedQuery);
-
         return $query;
     }
 }
