@@ -41,10 +41,10 @@
                 {{--Checkbox--}}
                 @if(isset($checkBoxes) && $checkBoxes = 'true')
                     <td>
-                        <input class="checkState"
+                        <input class="check_state"
                                type="checkbox"
                                value="{{ ($problem->id) }}"
-                               onclick="syncProblemState()"
+                               onclick="syncProblemState('{{Request::url()}}/check_problems_rows_sync','{{csrf_token()}}')"
                                {{ isset($checkedRows) ? (in_array($problem->id, $checkedRows) ? 'checked' : '') : ''}}>
                     </td>
                 @endif
@@ -78,29 +78,4 @@
 {{--Pagination--}}
 {{ $problems->appends(Request::all())->render() }}
 
-<script  type = "text/javascript">
-    function syncProblemState() {
-        //get the check boxes in each page
-        var checkedStates = [];
-        var checkedRows = [];
-        var j = 0;
-        var checkboxes = document.getElementsByClassName('checkState');
-        for(var i=0; checkboxes[i]; ++i){
-            checkedRows[j] = checkboxes[i].value;
-            checkedStates[j] = (checkboxes[i].checked == true) ? 1:0;
-            j = j + 1;
-        }
-        $.ajax({
-            url: "{{Request::url()}}/checkRowsSync",
-            type: 'POST',
-            data: {
-                _token: "{{csrf_token()}}",
-                checkedRows : checkedRows,
-                checkedStates : checkedStates
-            },
-            success: function(data){
-                console.log(data);
-            }
-        });
-    }
-</script>
+

@@ -279,7 +279,10 @@ function hideNotificationElement(element) {
 
 //Tags AutoComplete parameters
 var tagsList = document.getElementById("tagsList");
-$('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, "tags[]", 0));
+$('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, "tags[]", 0,"",""));
+//Organisers List
+var organisersList = document.getElementById("organisers_list");
+$('input.organisersAuto').typeahead(autoComplete($("#organisers_auto").data('organisers-path'), organisersList, "organisers[]", 1,$("#organisers_auto").data('organisers-sync-path'), $("#organisers_auto").data('organisers-token') ));
 
 function applyFilters(url, token) {
     var filters = getCurrentFilters();
@@ -294,10 +297,10 @@ function applyFilters(url, token) {
         success: function (data) {
         }
     });
-//        location.reload();
+
     document.getElementById("clearTableLink").click();
 }
-//Wait for deletion key
+//Wait for deletion icon Press
 $(document).on('mousedown', '.tags-close-icon', function (item) {
     $(this).parent().remove();
 });
@@ -315,8 +318,8 @@ $(document).on('mousedown', '.tags-close-icon', function (item) {
 //        };
 //    }
 
-//Tags AutoComplete parameters
-function autoComplete(path, list, arrName, type) {
+//Auto Complete Functions
+function autoComplete(path, list, arrName, type, syncURL, token) {
     return ({
         source: function (query, process) {
             return $.get(path, {query: query}, function (data) {
@@ -324,7 +327,7 @@ function autoComplete(path, list, arrName, type) {
             })
         },
         updater: function (item) {
-            //Get the current values of list items in the unordered list 'tagsList'
+            //Get the current values of list items in the unordered list
             var currentItems = list.getElementsByTagName('li');
             var itemName = (item.name) ? item.name : item;
             //check if it's already included
@@ -340,7 +343,7 @@ function autoComplete(path, list, arrName, type) {
                 var entry = document.createElement('li');
                 entry.setAttribute("name", arrName);
                 entry.setAttribute("value", itemName);
-                //Add the item name and the delete button
+                //Add the item name and the delete button according to the send type
                 if (type == 1)
                     var text = '<button class="organiser-close-icon "></button>';
                 else
@@ -348,7 +351,7 @@ function autoComplete(path, list, arrName, type) {
                 entry.innerHTML = text + itemName;
                 list.appendChild(entry);
                 if (type == 1) {
-                    applyOrganisers();
+                    applyOrganisers(syncURL, token);
                 }
 
             }
@@ -357,6 +360,26 @@ function autoComplete(path, list, arrName, type) {
         }
     });
 }
+function applyOrganisers(url, token) {
+    var mOrganisers = getListInfo(organisersList);
+    $.ajax({
+        // url: "{{Request::url()}}/organisersSync",
+        url: url,
+        type: 'POST',
+        data: {
+            _token: token,
+            mOrganisers: mOrganisers,
+        },
+        success: function (data) {
+        }
+    });
+}
+
+//Wait for deletion key
+$(document).on('mousedown', '.organiser-close-icon', function (item) {
+    $(this).parent().remove();
+    applyOrganisers();
+});
 function getListInfo(list) {
     //Reading list elements
     var currentItems = list.getElementsByTagName('li');
@@ -383,10 +406,39 @@ function getCurrentFilters() {
     return ({'cTags': tags, 'cJudges': judges});
 }
 
+function syncProblemState(syncURL, token) {
+    //get the check boxes in each page
+    var checkedStates = [];
+    var checkedRows = [];
+    var j = 0;
+    var checkboxes = document.getElementsByClassName('check_state');
+    for(var i=0; checkboxes[i]; ++i){
+        checkedRows[j] = checkboxes[i].value;
+        checkedStates[j] = (checkboxes[i].checked == true) ? 1:0;
+        j = j + 1;
+    }
+    $.ajax({
+
+        url: syncURL,
+        type: 'POST',
+        data: {
+            _token: token,
+            checkedRows : checkedRows,
+            checkedStates : checkedStates
+        },
+        success: function(data){
+            console.log(data);
+        }
+    });
+}
+
 // ToDo re-polishing needed
 $('.pagination > li').click(function () {
-    // ToDo save form
+    // ToDo save form We have heere a problem of a pagination in all the project
     sessionStorage.setItem("name", $("#name").val());
+    sessionStorage.setItem("time", $("#time").val());
+    sessionStorage.setItem("duration", $("#duration").val());
+    sessionStorage.setItem("visibility", $("#private").val());
 });
 /**************************************/
 /*</editor-fold>*/
