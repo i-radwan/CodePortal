@@ -18,7 +18,7 @@
                 {{--TODO: get rank from database--}}
                 <td>{{ $loop->index + 1 }}</td>
                 <td>{{ $row[\App\Utilities\Constants::FLD_USERS_USERNAME] }}</td>
-                <td>{{ $row[\App\Utilities\Constants::FLD_USERS_SOLVED_COUNT] }}</td>
+                <td>{{ $row[\App\Utilities\Constants::FLD_USERS_SOLVED_COUNT] }} / {{ $row[\App\Utilities\Constants::FLD_USERS_TRAILS_COUNT] }}</td>
                 <td>{{ $row[\App\Utilities\Constants::FLD_USERS_PENALTY] }}</td>
 
                 @foreach($row[\App\Utilities\Constants::TBL_PROBLEMS] as $problem)

@@ -448,7 +448,9 @@ class ContestController extends Controller
      */
     private function getProblemsInfo($contest, &$data)
     {
+//        \DB::enableQueryLog();
         $problems = $contest->problemStatistics()->get();
+//        dd(\DB::getQueryLog());
 
         // Set contest problems
         $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY] = $problems;
