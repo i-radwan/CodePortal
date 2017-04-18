@@ -214,16 +214,6 @@ class Contest extends Model
     }
 
     /**
-     * Return the notifications pointing at this contest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
-    }
-
-    /**
      * Return all groups related to this contest
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -235,7 +225,17 @@ class Contest extends Model
             Constants::TBL_GROUP_CONTESTS,
             Constants::FLD_GROUP_CONTESTS_CONTEST_ID,
             Constants::FLD_GROUP_CONTESTS_GROUP_ID
-        );
+        )->withTimestamps();
+    }
+
+    /**
+     * Return the notifications pointing at this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }
 
     /**
@@ -264,7 +264,6 @@ class Contest extends Model
         $this->countAcceptedSubmissionsQuery($query, Constants::FLD_PROBLEMS_SOLVED_COUNT);
         $this->countSubmissionsQuery($query, Constants::FLD_PROBLEMS_TRAILS_COUNT);
         $query->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
-
         $query->orderBy(Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
         return $query;
     }
@@ -500,7 +499,4 @@ class Contest extends Model
             "`" . $columnAlias . "`"
         ));
     }
-
-
-    
 }

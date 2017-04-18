@@ -19,11 +19,11 @@ class CreateSheetProblemsTable extends Migration
             $table->unsignedInteger(Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID);
             $table->string(Constants::FLD_SHEET_PROBLEMS_SOLUTION);
             $table->string(Constants::FLD_SHEET_PROBLEMS_SOLUTION_LANG)->default("c_cpp"); //TODO: remove or add constant
+            $table->timestamps();
             $table->primary(array(
                 Constants::FLD_SHEET_PROBLEMS_SHEET_ID,
                 Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID
             ));
-            $table->timestamps();
         });
     }
 

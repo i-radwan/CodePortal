@@ -50,8 +50,8 @@ class Sheet extends Model
      */
     public function problems()
     {
-        return $this
-            ->belongsToMany(
+        return
+            $this->belongsToMany(
                 Problem::class,
                 Constants::TBL_SHEET_PROBLEMS,
                 Constants::FLD_SHEET_PROBLEMS_SHEET_ID,

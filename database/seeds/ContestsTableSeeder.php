@@ -26,7 +26,6 @@ class ContestsTableSeeder extends Seeder
 
         $limit = 200;
 
-
         // Get all user IDs
         $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
         // Get all team IDs
@@ -41,7 +40,6 @@ class ContestsTableSeeder extends Seeder
                 Constants::FLD_CONTESTS_DURATION => $faker->numberBetween(30, 340),
             ]);
         }
-
 
         // Get all contest IDs
         $contestIDs = Contest::all()->pluck(Constants::FLD_CONTESTS_ID)->toArray();

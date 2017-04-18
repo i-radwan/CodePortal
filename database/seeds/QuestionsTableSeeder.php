@@ -18,7 +18,6 @@ class QuestionsTableSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-
         // Get all contest IDs
         $contestIDs = Contest::all()->pluck(Constants::FLD_CONTESTS_ID)->toArray();
 

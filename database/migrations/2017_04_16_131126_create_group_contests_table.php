@@ -7,7 +7,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateGroupContestsTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -18,6 +17,7 @@ class CreateGroupContestsTable extends Migration
         Schema::create(Constants::TBL_GROUP_CONTESTS, function (Blueprint $table) {
             $table->unsignedInteger(Constants::FLD_GROUP_CONTESTS_GROUP_ID);
             $table->unsignedInteger(Constants::FLD_GROUP_CONTESTS_CONTEST_ID);
+            $table->timestamps();
             $table->primary(array(
                 Constants::FLD_GROUP_CONTESTS_GROUP_ID,
                 Constants::FLD_GROUP_CONTESTS_CONTEST_ID

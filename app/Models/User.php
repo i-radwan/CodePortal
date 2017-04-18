@@ -147,6 +147,24 @@ class User extends Authenticatable
     }
 
     /**
+     * Return all the wrong submission of the current user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public static function getWrongAnswerProblems($user)
+    {
+        $userData = User::where('username', $user)->first();
+        return $userData->submissions->where('verdict', '0')->pluck('problem_id');
+    }
+
+    public static function getSolvedProblems($user)
+    {
+        //ToDo: for the statistics
+        $userData = User::where('username', $user)->first();
+        return $userData->submissions->where('verdict', '1')->pluck('problem_id');
+    }
+
+    /**
      * Return the contests that the current user participated in
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -255,24 +273,6 @@ class User extends Authenticatable
                 Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
             )
             ->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
-    }
-
-    /**
-     * Return all the wrong submission of the current user
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public static function getWrongAnswerProblems($user)
-    {
-        $userData = User::where('username', $user)->first();
-        return $userData->submissions->where('verdict', '0')->pluck('problem_id');
-    }
-
-    public static function getSolvedProblems($user)
-    {
-        //ToDo: for the statistics
-        $userData = User::where('username', $user)->first();
-        return $userData->submissions->where('verdict', '1')->pluck('problem_id');
     }
 
     /**
