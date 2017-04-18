@@ -803,16 +803,8 @@ footer {
     text-align: left;
 }
 
-.problems-table-head {
-    text-align: center;
-}
-
 .problems-table-head-sortable {
     position: relative;
-}
-
-.problems-table-head-tags {
-    width: 20%;
 }
 
 .problems-table-sorting-arrow-asc {
