@@ -360,13 +360,13 @@ class Contest extends Model
     private function contestJoinProblems($query)
     {
         $query
-            ->join(
+            ->leftJoin(
                 Constants::TBL_CONTEST_PROBLEMS,
                 Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
                 '=',
                 Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID
             )
-            ->join(
+            ->leftJoin(
                 Constants::TBL_PROBLEMS,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
                 '=',
@@ -382,13 +382,13 @@ class Contest extends Model
     private function contestJoinUsers($query)
     {
         $query
-            ->join(
+            ->leftJoin(
                 Constants::TBL_CONTEST_PARTICIPANTS,
                 Constants::TBL_CONTEST_PARTICIPANTS . '.' . Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID,
                 '=',
                 Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID
             )
-            ->join(
+            ->leftJoin(
                 Constants::TBL_USERS,
                 Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID,
                 '=',
@@ -410,13 +410,11 @@ class Contest extends Model
         $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
 
         if ($tillFirstAccepted) {
-            $joinType = 'leftJoin';
             $submissions = Submission::tillFirstAccepted($contestStartTime, $contestEndTime);
             $submissionsTable = DB::raw('(' . $submissions->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`');
             $query->mergeBindings($submissions);
         }
         else {
-            $joinType = 'join';
             $submissionsTable = Constants::TBL_SUBMISSIONS;
             $query->whereBetween(
                 Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
@@ -425,7 +423,7 @@ class Contest extends Model
         }
 
         $query
-            ->$joinType(
+            ->leftJoin(
                 $submissionsTable,
                 function ($join) {
                     $join->on(

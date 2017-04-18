@@ -14,6 +14,8 @@
     <tbody>
         @foreach($problems as $problem)
             @php
+                $problem = (array)$problem;
+                $trailsCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_TRAILS_COUNT];
                 $problem = new \App\Models\Problem((array)$problem);
                 $verdict = $problem->simpleVerdict($user);
                 $id = \App\Utilities\Utilities::generateProblemNumber($problem);
@@ -38,7 +40,7 @@
                 <td><a href="{{ $link }}" target="_blank">{{ $problem->name }}</a></td>
 
                 {{--Solved Count--}}
-                <td>{{ $problem->solved_count }}</td>
+                <td>{{ $problem->solved_count }} / {{ $trailsCount }}</td>
 
                 {{--Judge--}}
                 <td><a href="{{ $judgeLink }}" target="_blank">{{ $judgeName }}</a></td>
