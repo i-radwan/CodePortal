@@ -20,7 +20,7 @@
             <div class="search-wrapper">
                 <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off"
                        onkeypress="return event.keyCode != 13;"
-                       data-tags-path="{{route('contest/add/tagsautocomplete')}}"
+                       data-tags-path="{{route('contest/add/tags_auto_complete')}}"
                        data-old-tags="{{(session(Constants::CONTESTS_PROBLEMS_FILTERS))?implode(",", session(Constants::CONTESTS_PROBLEMS_FILTERS)[\App\Utilities\Constants::CONTESTS_CHECKED_TAGS]):''}}"/>
                 <button class="close-icon" type="reset"></button>
             </div>
@@ -39,30 +39,9 @@
         {{--Apply filters & Clear buttons--}}
         <p>
             <input class="btn btn-default" value="Apply Filters"
-                   onclick="applyFilters('{{Request::url()}}/TagsJudgesFSync', '{{csrf_token()}}')"/>
+                   onclick="applyFilters('{{Request::url()}}/Tags_judges_filters_sync', '{{csrf_token()}}')"/>
             <a href="{{ Request::url() }}" class="btn btn-link text-dark pull-right contest_clear_problems_filters"
                id="clearTableLink">Clear</a>
         </p>
     </div>
 </div>
-{{--Problems Count--}}
-{{--@if(isset($checkedRows))--}}
-{{--<div class="panel panel-default problems-filters-panel">--}}
-{{--<div class="panel-body">--}}
-{{--<div class="container">--}}
-{{--Problems Count: {{count($checkedRows)}}--}}
-{{--</div>--}}
-{{--</div>--}}
-{{--<hr>--}}
-{{--<div class="panel-body">--}}
-{{--<div class="container">--}}
-{{--Problems:--}}
-{{--<ul>--}}
-{{--@foreach( $checkedRows as $problemRow)--}}
-{{--<li>{{($problemRow)}}</li>--}}
-{{--@endforeach--}}
-{{--</ul>--}}
-{{--</div>--}}
-{{--</div>--}}
-{{--</div>--}}
-{{--@endif--}}
