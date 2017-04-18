@@ -276,12 +276,24 @@ function hideNotificationElement(element) {
 /*</editor-fold>*/
 
 /*<editor-fold desc="Add contest">*/
+//Retrieve from Java sessionStorage the previous Entered Form Data
+document.getElementById("name").value  = sessionStorage.getItem("name");
+document.getElementById("time").value  = sessionStorage.getItem("time");
+document.getElementById("duration").value  = sessionStorage.getItem("duration");
+document.getElementById("private").value  = sessionStorage.getItem("visibility");
 
-//Tags AutoComplete parameters
+//Tags AutoComplete
+//First : get the tagsList from the view
 var tagsList = document.getElementById("tagsList");
+//Call the typeahead autoComplete Function
+// it takes (the url to get the data fot autocompletion , the list from th view, the name of the unordered list from the view,
+//0:Means Tags autoCompletion 1: Means  Organisers autoCompletion, the organisers Sync list URl, the organisers token)
+
+//Call typeahead for Tags autoCompletion
 $('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, "tags[]", 0,"",""));
 //Organisers List
 var organisersList = document.getElementById("organisers_list");
+//Call typeahead for Organisers autoCompletion
 $('input.organisersAuto').typeahead(autoComplete($("#organisers_auto").data('organisers-path'), organisersList, "organisers[]", 1,$("#organisers_auto").data('organisers-sync-path'), $("#organisers_auto").data('organisers-token') ));
 
 function applyFilters(url, token) {
@@ -434,6 +446,7 @@ function syncProblemState(syncURL, token) {
 
 // ToDo re-polishing needed
 $('.pagination > li').click(function () {
+    console.log("oijwoifjweiofjio");
     // ToDo save form We have heere a problem of a pagination in all the project
     sessionStorage.setItem("name", $("#name").val());
     sessionStorage.setItem("time", $("#time").val());
