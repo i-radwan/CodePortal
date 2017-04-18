@@ -12,7 +12,7 @@
 
     @php($user = Auth::user())
 
-    <tbody class="contest-problems-tbody">
+    <tbody id="contest-problems-tbody">
     @foreach($problems as $problem)
         @php
             $problem = (array)$problem;
