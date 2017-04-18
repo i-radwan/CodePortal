@@ -99,6 +99,7 @@
                             @if($questions && count($questions))
                                 @include('contests.contest_views.questions')
                             @else
+
                                 <h3>No questions!</h3>
                             @endif
                         </div>

@@ -19,8 +19,8 @@ class GroupsTableSeeder extends Seeder
     {
         // Delete previous records
         DB::table(Constants::TBL_GROUPS)->delete();
-        DB::table(Constants::TBL_GROUPS_CONTESTS)->delete();
-        DB::table(Constants::TBL_GROUPS_JOIN_REQUESTS)->delete();
+        DB::table(Constants::TBL_GROUP_CONTESTS)->delete();
+        DB::table(Constants::TBL_GROUP_JOIN_REQUESTS)->delete();
         DB::table(Constants::TBL_GROUP_MEMBERS)->delete();
 
         $faker = Faker\Factory::create();
@@ -42,7 +42,7 @@ class GroupsTableSeeder extends Seeder
 
         for ($i = 0; $i < $limit; $i++) {
             try {
-                DB::table(Constants::TBL_GROUPS_JOIN_REQUESTS)->insert([
+                DB::table(Constants::TBL_GROUP_JOIN_REQUESTS)->insert([
                     Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID => $faker->randomElement($groupIDs),
                     Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID => $faker->randomElement($userIDs)
                 ]);
@@ -60,7 +60,7 @@ class GroupsTableSeeder extends Seeder
         for ($i = 0; $i < $limit; $i++) {
             try {
 
-                DB::table(Constants::TBL_GROUPS_CONTESTS)->insert([
+                DB::table(Constants::TBL_GROUP_CONTESTS)->insert([
                     Constants::FLD_GROUP_CONTESTS_GROUP_ID => $faker->randomElement($groupIDs),
                     Constants::FLD_GROUP_CONTESTS_CONTEST_ID => $faker->randomElement($contestIDs)
                 ]);
@@ -82,8 +82,8 @@ class GroupsTableSeeder extends Seeder
         for ($i = 0; $i < $limit; $i++) {
             try {
                 DB::table(Constants::TBL_SHEETS)->insert([
-                    Constants::FLD_SHEETS_PROBLEMS_SHEET_ID => $faker->randomElement($sheetIDs),
-                    Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID => $faker->randomElement($problemIDs),
+                    Constants::FLD_SHEET_PROBLEMS_SHEET_ID => $faker->randomElement($sheetIDs),
+                    Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID => $faker->randomElement($problemIDs),
                 ]);
             } catch (\Illuminate\Database\QueryException $e) {
             };

@@ -1,13 +1,12 @@
 <?php
 
+use App\Utilities\Constants;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use App\Utilities\Constants;
 
 class CreateGroupContestsTable extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -15,14 +14,14 @@ class CreateGroupContestsTable extends Migration
      */
     public function up()
     {
-        Schema::create(Constants::TBL_GROUPS_CONTESTS, function (Blueprint $table) {
+        Schema::create(Constants::TBL_GROUP_CONTESTS, function (Blueprint $table) {
             $table->unsignedInteger(Constants::FLD_GROUP_CONTESTS_GROUP_ID);
             $table->unsignedInteger(Constants::FLD_GROUP_CONTESTS_CONTEST_ID);
+            $table->timestamps();
             $table->primary(array(
-                    Constants::FLD_GROUP_CONTESTS_GROUP_ID,
-                    Constants::FLD_GROUP_CONTESTS_CONTEST_ID
-                )
-            );
+                Constants::FLD_GROUP_CONTESTS_GROUP_ID,
+                Constants::FLD_GROUP_CONTESTS_CONTEST_ID
+            ));
         });
     }
 
@@ -33,6 +32,6 @@ class CreateGroupContestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(Constants::TBL_GROUPS_CONTESTS);
+        Schema::dropIfExists(Constants::TBL_GROUP_CONTESTS);
     }
 }

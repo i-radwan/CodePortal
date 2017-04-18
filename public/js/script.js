@@ -288,13 +288,18 @@ const contestDurationSessionKey = 'contest_duration_session_key';
 const contestPrivateVisibilitySessionKey = 'contest_private_visibility_session_key';
 
 //Tags AutoComplete
+
 //First : get the tagsList from the view
 var tagsList = document.getElementById("tagsList");
 
 //Call typeahead for Tags autoCompletion
 $('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, 0));
+
+//Organisers AutoComplete
+
 //Organisers List
 var organisersList = document.getElementById("organisers-list");
+
 //Call typeahead for Organisers autoCompletion
 $('input.organisers-auto').typeahead(autoComplete($("#organisers-auto").data('organisers-path'), organisersList, 1));
 

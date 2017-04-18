@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use DB;
@@ -93,6 +92,16 @@ class Problem extends Model
     }
 
     /**
+     * Return the submissions current problem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_PROBLEM_ID);
+    }
+
+    /**
      * Return the contests having the current problem as one of their problems list
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -108,16 +117,6 @@ class Problem extends Model
     }
 
     /**
-     * Return the submissions current problem
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function submissions()
-    {
-        return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_PROBLEM_ID);
-    }
-
-    /**
      * Return the sheets that contain this problem
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -127,13 +126,13 @@ class Problem extends Model
         return
             $this->belongsToMany(
                 Sheet::class,
-                Constants::TBL_SHEETS_PROBLEMS,
-                Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID,
-                Constants::FLD_SHEETS_PROBLEMS_SHEET_ID
+                Constants::TBL_SHEET_PROBLEMS,
+                Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID,
+                Constants::FLD_SHEET_PROBLEMS_SHEET_ID
             )
-                ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
-                ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)
-                ->withTimestamps();
+            ->withPivot(Constants::FLD_SHEET_PROBLEMS_SOLUTION)
+            ->withPivot(Constants::FLD_SHEET_PROBLEMS_SOLUTION_LANG)
+            ->withTimestamps();
     }
 
     /**

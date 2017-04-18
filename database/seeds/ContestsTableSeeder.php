@@ -58,6 +58,7 @@ class ContestsTableSeeder extends Seeder
             };
         }
 
+
         // Set problems orders
         $firstContestID = Contest::first()->id;
         for ($j = 0; $j < Contest::count(); $j++) {
@@ -104,6 +105,7 @@ class ContestsTableSeeder extends Seeder
                     Constants::FLD_CONTEST_TEAMS_CONTEST_ID => $faker->randomElement($contestIDs),
                     Constants::FLD_CONTEST_TEAMS_TEAM_ID => $faker->randomElement($teamIDs),
                 ]);
+
             } catch (\Illuminate\Database\QueryException $e) {
 
             };

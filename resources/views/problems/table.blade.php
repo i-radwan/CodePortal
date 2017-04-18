@@ -77,4 +77,3 @@
 {{--Pagination--}}
 {{ $problems->appends(Request::all())->render() }}
 
-

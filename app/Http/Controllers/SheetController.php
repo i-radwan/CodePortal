@@ -57,7 +57,7 @@ class SheetController extends Controller
         return view('groups.sheet_views.add_edit')
             ->with('action', 'Edit')
             ->with('sheetName', $sheet[Constants::FLD_SHEETS_NAME])
-            ->with('problemsIDs', implode(",", $sheet->problems()->pluck(Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID)->toArray()))
+            ->with('problemsIDs', implode(",", $sheet->problems()->pluck(Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID)->toArray()))
             ->with('url', 'sheet/edit/' . $sheet[Constants::FLD_SHEETS_ID])
             ->with('pageTitle', config('app.name') . ' | Sheet');
     }

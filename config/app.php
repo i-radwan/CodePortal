@@ -140,6 +140,7 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
@@ -178,6 +179,9 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ValidatorServiceProvider::class,
         Felixkiss\UniqueWithValidator\ServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
+
+
     ],
 
     /*
@@ -193,6 +197,7 @@ return [
 
     'aliases' => [
 
+        'Charts' => ConsoleTVs\Charts\Facades\Charts::class,
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
@@ -226,8 +231,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Utilities'   => App\Utilities\Utilities::class,
-        'Constants'   => App\Utilities\Constants::class,
+        'Utilities' => App\Utilities\Utilities::class,
+        'Constants' => App\Utilities\Constants::class,
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];
