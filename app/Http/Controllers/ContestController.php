@@ -26,12 +26,6 @@ class ContestController extends Controller
      */
     public function index()
     {
-        //Forget CheckedProblems
-        //Forget ProblemsFilters
-        Session::forget(Constants::CHECKED_PROBLEMS);
-        Session::forget(Constants::CONTESTS_PROBLEMS_FILTERS);
-        Session::forget(Constants::CONTESTS_MENTIONED_ORGANISERS);
-
         $data = [];
 
         $data[Constants::CONTESTS_CONTESTS_KEY] =
@@ -79,31 +73,35 @@ class ContestController extends Controller
 
     /**
      * Show add/edit contest page
-     * @param \Illuminate\Http\Request $request
      *
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
     public function addEditContestView(Request $request)
     {
-        if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS))
-            $mOrganisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
-        else $mOrganisers = [];
-        if (Session::has(Constants::CONTESTS_PROBLEMS_FILTERS)) {
-            $cjudges = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cJudges'] : [];
-            $ctags = isset(Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags']) ? Session::get(Constants::CONTESTS_PROBLEMS_FILTERS)['cTags'] : [];
-        } else {
-            $cjudges = [];
-            $ctags = [];
+        // Check server sessions for saved filters data (i.e. tags, organisers, judges)
+        $tags = $judges = [];
+        // Search and fill session data to send with request
+//        dd(Session::has(Constants::CONTESTS_SELECTED_JUDGES));
+        if (Session::has(Constants::CONTESTS_SELECTED_FILTERS)) {
+            if (isset(Session::get(Constants::CONTESTS_SELECTED_FILTERS)[Constants::CONTESTS_SELECTED_JUDGES])) {
+                $judges = Session::get(Constants::CONTESTS_SELECTED_FILTERS)[Constants::CONTESTS_SELECTED_JUDGES];
+            }
+            if (isset(Session::get(Constants::CONTESTS_SELECTED_FILTERS)[Constants::CONTESTS_SELECTED_TAGS])) {
+                $tags = Session::get(Constants::CONTESTS_SELECTED_FILTERS)[Constants::CONTESTS_SELECTED_TAGS];
+            }
         }
-        $problems = self::getProblemsWithFilters($request, $ctags, $cjudges);
+
+        // Get problems with applied filters
+        $problems = self::getProblemsWithFilters($request, $tags, $judges);
+
+
         return view('contests.add_edit')
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
-            ->with(Constants::CHECKED_PROBLEMS, Session::get(Constants::CHECKED_PROBLEMS))
-            ->with(Constants::CONTESTS_CHECKED_TAGS, $ctags)
-            ->with(Constants::CONTESTS_CHECKED_JUDGES, $cjudges)
-            ->with(Constants::CONTESTS_MENTIONED_ORGANISERS, $mOrganisers)
+            ->with(Constants::CONTESTS_SELECTED_TAGS, $tags)
+            ->with(Constants::CONTESTS_SELECTED_JUDGES, $judges)
             ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
@@ -129,36 +127,41 @@ class ContestController extends Controller
      */
     public function addContest(Request $request)
     {
-        $request[Constants::FLD_CONTESTS_OWNER_ID] = Auth::user()->id;
+        // Create contest object
         $contest = new Contest($request->all());
-        $added = false;
-        if ($contest->save())
-            $added = true;
-        //Get Organisers
-        if (Session::has(Constants::CONTESTS_MENTIONED_ORGANISERS)) {
-            $organisers = Session::get(Constants::CONTESTS_MENTIONED_ORGANISERS);
-            $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
+
+        // Assign owner
+        $contest->owner()->associate(Auth::user());
+
+        if ($contest->save()) {
+
+            //Get Organisers and problems
+
             //Save Organisers
+            $organisers = explode(",", $request->get('organisers'));
+            $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
             foreach ($organisers as $organiser) {
                 $contest->organizers()->save($organiser);
             }
-        }
-        //Add Problems
-        if (Session::has(Constants::CHECKED_PROBLEMS)) {
-            $problems = Session::get(Constants::CHECKED_PROBLEMS);
+
+            //Add Problems
+            $problems = explode(",", $request->get('problems_ids'));
             $contest->problems()->syncWithoutDetaching($problems);
+
             // Set initial problems order
             $this->updateContestProblemsOrder($contest, $problems);
 
-        }
-        if ($added) {
+            // Flush sessions
+            Session::forget([Constants::CONTESTS_SELECTED_FILTERS]);
+
+            // Return success message
             Session::flash("messages", ["Contest Added Successfully"]);
             return redirect()->action(
                 'ContestController@displayContest', ['id' => $contest->id]
             );
-        } else {
+        } else {        // return error message
             Session::flash("messages", ["Sorry, Contest was not added. Please retry later"]);
-            return redirect()->action('ContestController@index');;
+            return redirect()->action('ContestController@index');
         }
     }
 
@@ -172,56 +175,36 @@ class ContestController extends Controller
 
     }
 
-    public function tagsAutoComplete(Request $request)
+    /**
+     * Retrieve tags by name for auto complete
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function tagsAutoComplete()
     {
         $data = Tag::select('name')->get();
         return response()->json($data);
-
     }
 
-    public function organisersAutoComplete(Request $request)
+    /**
+     * Retrieve usernames for auto complete
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function organisersAutoComplete()
     {
-        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])->get([]);
+        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])->get();
         return response()->json($data);
     }
 
-    public function applyProblemsCheckBoxes(Request $request)
-    {
-
-        if (Session::has(Constants::CHECKED_PROBLEMS))
-            $currentInSession = Session::get(Constants::CHECKED_PROBLEMS);
-        else
-            $currentInSession = [];
-        $j = count($currentInSession);
-        $checkedRows = $request->get('checkedRows'); //TODO @Samir Change That
-        $checkedStates = $request->get('checkedStates');
-        for ($i = 0; $i < count($checkedRows); $i = $i + 1) {
-            $isFound = in_array($checkedRows[$i], $currentInSession);
-            if ($checkedStates[$i]) {//If it's checked
-                if (!($isFound)) {
-                    $currentInSession[$j] = $checkedRows[$i];
-                    $j = $j + 1;
-                }
-            } else { //Check if it's in the current session
-                if ($isFound) { //Remove
-                    $currentInSession = array_diff($currentInSession, [$checkedRows[$i]]);
-                }
-            }
-        }
-        Session::put(Constants::CHECKED_PROBLEMS, $currentInSession);
-        return $currentInSession;
-    }
-
+    /**
+     * Save problems filters (tags, judges) into server session to later retrieval
+     *
+     * @param Request $request
+     */
     public function applyProblemsFilters(Request $request)
     {
-        Session::put(Constants::CONTESTS_PROBLEMS_FILTERS, $request->get(Constants::CONTESTS_PROBLEMS_FILTERS));
-        return;
-
-    }
-
-    public function applyOrganisers(Request $request)
-    {
-        Session::put(Constants::CONTESTS_MENTIONED_ORGANISERS, $request->get(Constants::CONTESTS_MENTIONED_ORGANISERS));
+        Session::put(Constants::CONTESTS_SELECTED_FILTERS, $request->get(Constants::CONTESTS_SELECTED_FILTERS));
         return;
     }
 
@@ -235,7 +218,9 @@ class ContestController extends Controller
     {
         // Check if current auth. user is the owner of the contest
         // TODO: delete contest data from all tables
-        if (Auth::check() && $contest->owner->id == Auth::user()->id) {
+        if (Auth::check() && $contest->owner[Constants::FLD_USERS_ID]
+            == Auth::user()[Constants::FLD_USERS_ID]
+        ) {
             $contest->delete();
         }
         return redirect('contests/');
@@ -320,8 +305,8 @@ class ContestController extends Controller
     {
         // Check if question exists
         if ($question) {
-            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
-                $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
+            if (\Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
+                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
                 $question->save();
             }
         }
@@ -339,8 +324,8 @@ class ContestController extends Controller
     {
         // Check if question exists
         if ($question) {
-            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
-                $question->status = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
+            if (\Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
+                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
                 $question->save();
             }
         }
@@ -386,10 +371,10 @@ class ContestController extends Controller
 
         if ($user && $contest->owner) {
             // Check if the user is the owner of this contest
-            $isUserOwner = ($contest->owner->id == $user->id);
+            $isUserOwner = ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]);
 
             // Check if the user has joined this contest
-            $isUserParticipating = ($contest->participants()->find($user->id) != null);
+            $isUserParticipating = ($contest->participants()->find($user[Constants::FLD_USERS_ID]) != null);
         }
 
         // Set data values
@@ -408,13 +393,13 @@ class ContestController extends Controller
         $contestInfo = [];
 
         // Get contest id
-        $contestInfo[Constants::SINGLE_CONTEST_ID_KEY] = $contest->id;
+        $contestInfo[Constants::SINGLE_CONTEST_ID_KEY] = $contest[Constants::FLD_CONTESTS_ID];
 
         // Get contest name
-        $contestInfo[Constants::SINGLE_CONTEST_NAME_KEY] = $contest->name;
+        $contestInfo[Constants::SINGLE_CONTEST_NAME_KEY] = $contest[Constants::FLD_CONTESTS_NAME];
 
         // Get owner name
-        $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY] = $contest->owner->username;
+        $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY] = $contest->owner[Constants::FLD_USERS_USERNAME];
 
         // Get organizers array
         $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY] =
@@ -422,11 +407,11 @@ class ContestController extends Controller
 
         // Get duration in hrs:mins format
         $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY] =
-            Utilities::convertMinsToHoursMins($contest->duration);
+            Utilities::convertMinsToHoursMins($contest[Constants::FLD_CONTESTS_DURATION]);
 
         // Get time and convert to familiar format
         $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY] =
-            date('D M d, H:i', strtotime($contest->time));
+            date('D M d, H:i', strtotime($contest[Constants::FLD_CONTESTS_TIME]));
 
         // Get contest running status
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS]
@@ -434,7 +419,7 @@ class ContestController extends Controller
 
         // Is user an organizer?
         $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_AN_ORGANIZER]
-            = Auth::check() ? (Auth::user()->organizingContests()->find($contest->id) != null) : false;
+            = Auth::check() ? (Auth::user()->organizingContests()->find($contest[Constants::FLD_CONTESTS_ID]) != null) : false;
 
         // Set contest info
         $data[Constants::SINGLE_CONTEST_CONTEST_KEY] = $contestInfo;
@@ -458,6 +443,8 @@ class ContestController extends Controller
 
     /**
      * Get contest standings data
+     *
+     * ToDo comment function content
      *
      * @param Contest $contest
      * @param array $data
@@ -582,8 +569,20 @@ class ContestController extends Controller
         $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY] = $announcements;
     }
 
+    /**
+     * Get the problems filtered by tags and judges
+     *
+     * @param $request
+     * @param $tagNames
+     * @param $judgesIDs
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public static function getProblemsWithFilters($request, $tagNames, $judgesIDs)
     {
+        if (count($tagNames) > 0)
+            $tagNames = explode(",", $tagNames);
+        if (count($judgesIDs) > 0)
+            $judgesIDs = explode(",", $judgesIDs);
         return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); //Returning the Problems Data
     }
 

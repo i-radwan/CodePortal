@@ -35,6 +35,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define("view-join-contest", function ($user, $contest) {
             $canViewAndJoin = false;
 
+            // Check if owner
+            if ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) return true;
+
             // Check if contest is public
             $canViewAndJoin |= ($contest->visibility == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]);
 

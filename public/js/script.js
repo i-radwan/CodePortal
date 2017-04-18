@@ -276,22 +276,27 @@ function hideNotificationElement(element) {
 /*</editor-fold>*/
 
 /*<editor-fold desc="Add contest">*/
-//Retrieve from Java sessionStorage the previous Entered Form Data
-document.getElementById("name").value  = sessionStorage.getItem("name");
-document.getElementById("time").value  = sessionStorage.getItem("time");
-document.getElementById("duration").value  = sessionStorage.getItem("duration");
-document.getElementById("private").value  = sessionStorage.getItem("visibility");
+
+// Session constants
+const problemsIDsSessionKey = 'problems_ids_session_key';
+const tagsSessionKey = 'tags_session_key';
+const judgesSessionKey = 'judges_session_key';
+const organizersSessionKey = 'organizers_session_key';
+const contestNameSessionKey = 'contest_name_session_key';
+const contestTimeSessionKey = 'contest_time_session_key';
+const contestDurationSessionKey = 'contest_duration_session_key';
+const contestPrivateVisibilitySessionKey = 'contest_private_visibility_session_key';
 
 //Tags AutoComplete
 //First : get the tagsList from the view
 var tagsList = document.getElementById("tagsList");
 
 //Call typeahead for Tags autoCompletion
-$('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, "tags[]", 0,"",""));
+$('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, 0));
 //Organisers List
-var organisersList = document.getElementById("organisers_list");
+var organisersList = document.getElementById("organisers-list");
 //Call typeahead for Organisers autoCompletion
-$('input.organisersAuto').typeahead(autoComplete($("#organisers_auto").data('organisers-path'), organisersList, "organisers[]", 1,$("#organisers_auto").data('organisers-sync-path'), $("#organisers_auto").data('organisers-token') ));
+$('input.organisers-auto').typeahead(autoComplete($("#organisers-auto").data('organisers-path'), organisersList, 1));
 
 
 /**
@@ -302,14 +307,17 @@ $('input.organisersAuto').typeahead(autoComplete($("#organisers_auto").data('org
  */
 function applyFilters(url, token) {
     //Get the current filters from the view
-    var filters = getCurrentFilters();
+    var filters =
+        {
+            'selected_tags': JSON.parse(sessionStorage.getItem(tagsSessionKey)).join(),
+            'selected_judges': JSON.parse(sessionStorage.getItem(judgesSessionKey)).join()
+        };
     $.ajax({
-        // url: "{{Request::url()}}/TagsJudgesFSync",
         url: url,
         type: 'POST',
         data: {
             _token: token,
-            cProblemsFilters: filters,
+            'selected_filters': filters,
         },
         success: function (data) {
         }
@@ -317,11 +325,6 @@ function applyFilters(url, token) {
     //Clear other filtering in URL queries
     document.getElementById("clearTableLink").click();
 }
-//Wait for Tags deletion icon Press
-$(document).on('mousedown', '.tags-close-icon', function (item) {
-    $(this).parent().remove();
-});
-
 
 //Auto Complete Functions
 /**
@@ -329,13 +332,10 @@ $(document).on('mousedown', '.tags-close-icon', function (item) {
  *
  * @param path the url to get the data fot autocompletion
  * @param list the list from th view
- * @param arrName the name of the unordered list from the view
- * @param type 0:Means Tags autoCompletion 1: Means  Organisers autoCompletion
- * @param syncURL the organisers Sync list URl (if applicable)
- * @param token the organisers token (if applicable)
+ * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion
  * @returns {{source: source, updater: updater}}
  */
-function autoComplete(path, list, arrName, type, syncURL, token) {
+function autoComplete(path, list, type) {
     return ({
         source: function (query, process) {
             return $.get(path, {query: query}, function (data) {
@@ -343,123 +343,219 @@ function autoComplete(path, list, arrName, type, syncURL, token) {
             })
         },
         updater: function (item) {
-            //Get the current values of list items in the unordered list
-            var currentItems = list.getElementsByTagName('li');
-            var itemName = (item.name) ? item.name : item;
-            //check if it's already included
-            var notFound = true;
-            console.log(currentItems, itemName);
-            for (var i = 0; i < currentItems.length; i++) {
-                if (currentItems[i].textContent.trim() == itemName.trim()) {
-                    notFound = false;
-                }
-            }
-            if (notFound) {
-                //Create a new list item li
-                var entry = document.createElement('li');
-                entry.setAttribute("name", arrName);
-                entry.setAttribute("value", itemName);
-                //Add the item name and the delete button according to the send type
-                if (type == 1)
-                    var text = '<button class="organiser-close-icon "></button>';
-                else
-                    var text = '<button class="tags-close-icon "></button>';
-                entry.innerHTML = text + itemName;
-                list.appendChild(entry);
-                if (type == 1) {
-                    applyOrganisers(syncURL, token);
-                }
+            // Get selected item name
+            var itemName = item.name;
 
+            var isFound;
+            // Sync auto-completed element with session
+            if (type == 1) { // Organizers
+                isFound = syncDataWithSession(organizersSessionKey, itemName, false);
             }
+            else if (type == 0) { // Tags
+                isFound = syncDataWithSession(tagsSessionKey, itemName, false);
+            }
+
+            // Add the element to view
+            if (!isFound) {
+                renderElementsFromSession(itemName, list, type);
+            }
+
             //Don't return the item name back in order not to keep it in the text box field
             return;
         }
     });
 }
-//This Function saves the selected organisers in the session
-//it takes the url and the token
-//It's called by typeahead autoComplete function
-function applyOrganisers(url, token) {
-    var mOrganisers = getListInfo(organisersList);
-    $.ajax({
-        // url: "{{Request::url()}}/organisersSync",
-        url: url,
-        type: 'POST',
-        data: {
-            _token: token,
-            mOrganisers: mOrganisers,
-        },
-        success: function (data) {
-        }
-    });
-}
 
 //Wait for organisers deletion icon in the selected organisers list
-$(document).on('mousedown', '.organiser-close-icon', function (item) {
+$(document).on('mousedown', '.organiser-close-icon, .tag-close-icon', function (event) {
+
+    // Remove view
     $(this).parent().remove();
-    applyOrganisers();
+
+    // Get element type
+    var type = $(event.target).data('type');
+    var elementName = $(event.target).data('name');
+
+    // Detach from session
+    if (type == 1) { // Organizers
+        syncDataWithSession(organizersSessionKey, elementName, true);
+    }
+    else if (type == 0) { // Tags
+        syncDataWithSession(tagsSessionKey, elementName, true);
+    }
 });
-function getListInfo(list) {
-    //Reading list elements
-    var currentItems = list.getElementsByTagName('li');
-    var elements = [];
-    for (var i = 0; i < currentItems.length; i++) {
-        elements[i] = currentItems[i].textContent;
-    }
-    return elements;
-}
-function getCurrentFilters() {
-    //Reading Tags
-    var tags = getListInfo(tagsList);
-    //Reading Judges info
-    var judges = [];
-    var j = 0;
-    var checkboxes = document.getElementsByClassName('judgeState');
-    for (var i = 0; checkboxes[i]; ++i) {
-        if (checkboxes[i].checked) {
-            judges[j] = checkboxes[i].value;
-            j = j + 1;
+
+/**
+ * Sync given data with the session stored by the given key (if not exists, else if exists,
+ * remove the element from session)
+ *
+ * @param sessionKey
+ * @param elementValue
+ * @return boolean isFound: true if the element was fond before
+ */
+function syncDataWithSession(sessionKey, elementValue, detaching) {
+    var isFound = false;
+    // Get saved problems ids
+    var savedValues = sessionStorage.getItem(sessionKey);
+
+    if (savedValues) { // check if there're any stored IDs
+
+        // Convert to array
+        var savedValuesArray = JSON.parse(savedValues);
+
+        // Check for elementValue existance
+        var idx = savedValuesArray.indexOf(elementValue);
+
+        if (savedValuesArray.indexOf(elementValue) == -1) // Add elementValue
+            savedValuesArray.push(elementValue);
+        else {      // Item Found
+            if (detaching)
+                savedValuesArray.splice(idx, 1);
+            isFound = true;
         }
+    } else { // if null create array and push element
+        savedValuesArray = [];
+        savedValuesArray.push(elementValue);
     }
-    //Then you have now judges and tags
-    return ({'cTags': tags, 'cJudges': judges});
+
+    // Save to session
+    sessionStorage.setItem(sessionKey, JSON.stringify(savedValuesArray));
+
+    return isFound;
 }
 
-function syncProblemState(syncURL, token) {
-    //get the check boxes in each page
-    var checkedStates = [];
-    var checkedRows = [];
-    var j = 0;
-    var checkboxes = document.getElementsByClassName('check_state');
-    for(var i=0; checkboxes[i]; ++i){
-        checkedRows[j] = checkboxes[i].value;
-        checkedStates[j] = (checkboxes[i].checked == true) ? 1:0;
-        j = j + 1;
-    }
-    $.ajax({
+/**
+ * Retrieve lists (e.g. tags, organizers) from session in order to render them
+ *
+ * @param sessionKey
+ * @param list
+ * @param type
+ */
+function retrieveListsFromSession(sessionKey, list, type) {
+    var savedValues = sessionStorage.getItem(sessionKey);
 
-        url: syncURL,
-        type: 'POST',
-        data: {
-            _token: token,
-            checkedRows : checkedRows,
-            checkedStates : checkedStates
-        },
-        success: function(data){
-            console.log(data);
+    if (savedValues) { // check if there're any stored IDs
+
+        // Convert to array
+        var savedValuesArray = JSON.parse(savedValues);
+
+        // Loop and render
+        savedValuesArray.forEach(function (itemName) {
+            renderElementsFromSession(itemName, list, type);
+        });
+    }
+}
+/**
+ * Append new element to the DOM tree
+ *
+ * @param itemName
+ * @param list
+ * @param type
+ */
+function renderElementsFromSession(itemName, list, type) {
+
+    // Create new DOM element and assign basic attributes
+    var entry = document.createElement('li');
+    entry.setAttribute("value", itemName);
+
+    // Add the item name and the delete button according to the send type
+    // (tag or organizer)
+    if (type == 1) {
+        var text = '<button class="organiser-close-icon" data-name="' + itemName + '" data-type="1"></button>';
+    } else if (type == 0) {
+        var text = '<button class="tag-close-icon" data-name="' + itemName + '" data-type="0"></button>';
+    }
+
+    // Add element content and append to view
+    entry.innerHTML = text + itemName;
+    list.appendChild(entry);
+}
+
+$(document).ready(function () {
+
+    // Render saved data from session
+    if ($("#add-edit-contest-form").length) { // Check if in add/edit contest view
+
+        // Recheck selected problems IDs checkboxes
+        var savedProblemsIDs = sessionStorage.getItem(problemsIDsSessionKey);
+
+        if (savedProblemsIDs) { // check if there're any stored IDs
+
+            // Convert to array
+            var savedProblemsIDsArray = JSON.parse(savedProblemsIDs);
+
+            // Loop over IDs
+            savedProblemsIDsArray.forEach(function (element) {
+                $("#problem-checkbox-" + element).prop('checked', true);
+            });
         }
-    });
-}
 
-// ToDo re-polishing needed
-$('.pagination > li').click(function () {
-    console.log("oijwoifjweiofjio");
-    // ToDo save form We have heere a problem of a pagination in all the project
-    sessionStorage.setItem("name", $("#name").val());
-    sessionStorage.setItem("time", $("#time").val());
-    sessionStorage.setItem("duration", $("#duration").val());
-    sessionStorage.setItem("visibility", $("#private").val());
+        // Recheck selected judges IDs checkboxes
+        var savedJudgesIDs = sessionStorage.getItem(judgesSessionKey);
+
+        if (savedJudgesIDs) { // check if there're any stored IDs
+
+            // Convert to array
+            var savedJudgesIDsArray = JSON.parse(savedJudgesIDs);
+
+            // Loop over IDs
+            savedJudgesIDsArray.forEach(function (element) {
+                $("#judge-checkbox-" + element).prop('checked', true);
+            });
+        }
+
+        // Fill tags, organisers lists
+        retrieveListsFromSession(tagsSessionKey, tagsList, 0);
+        retrieveListsFromSession(organizersSessionKey, organisersList, 1);
+
+        // Fill form basic fields
+        $("#name").val(sessionStorage.getItem(contestNameSessionKey));
+        $("#time").val(sessionStorage.getItem(contestTimeSessionKey));
+        $("#duration").val(sessionStorage.getItem(contestDurationSessionKey));
+        $("#private").val(sessionStorage.getItem(contestPrivateVisibilitySessionKey));
+
+        // Set form fields on change listeners
+        $("#name").change(function () {
+            sessionStorage.setItem(contestNameSessionKey, $("#name").val());
+        });
+        $("#time").change(function () {
+            sessionStorage.setItem(contestTimeSessionKey, $("#time").val());
+        });
+        $("#duration").change(function () {
+            sessionStorage.setItem(contestDurationSessionKey, $("#duration").val());
+        });
+        if (sessionStorage.getItem(contestPrivateVisibilitySessionKey) == 1) {
+            $("#private").prop('checked', true);
+        } else {
+            $("#public").prop('checked', true);
+        }
+        $("#private").change(function () {
+            sessionStorage.setItem(contestPrivateVisibilitySessionKey, 1);
+        });
+        $("#public").change(function () {
+            sessionStorage.setItem(contestPrivateVisibilitySessionKey, 0);
+        });
+    }
 });
+
+/**
+ * Set hidden inputs values from sessions, then clear sessions
+ */
+function moveSessionDataToHiddenFields() {
+    // Set value
+    $("#organisers-ids-hidden").val(JSON.parse(sessionStorage.getItem(organizersSessionKey)).join());
+    $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(problemsIDsSessionKey)).join());
+
+    // Clear sessions
+    sessionStorage.setItem(problemsIDsSessionKey, "");
+    sessionStorage.setItem(tagsSessionKey, "");
+    sessionStorage.setItem(judgesSessionKey, "");
+    sessionStorage.setItem(organizersSessionKey, "");
+    sessionStorage.setItem(contestNameSessionKey, "");
+    sessionStorage.setItem(contestTimeSessionKey, "");
+    sessionStorage.setItem(contestDurationSessionKey, "");
+    sessionStorage.setItem(contestPrivateVisibilitySessionKey, "");
+}
 /**************************************/
 /*</editor-fold>*/
 

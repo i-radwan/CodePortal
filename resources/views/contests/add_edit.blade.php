@@ -10,15 +10,17 @@
                     </div>
 
                     <div class="panel-body">
-                        <form class="form-horizontal" role="form" method="POST" action="{{ url('contest/add') }}">
+                        <form class="form-horizontal" id="add-edit-contest-form" role="form" method="POST"
+                              action="{{ url('contest/add') }}">
                             {{ csrf_field() }}
-
+                            <input type="hidden" id="problems-ids-hidden" name="problems_ids"/>
+                            <input type="hidden" id="organisers-ids-hidden" name="organisers"/>
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} has-feedback">
                                 <label for="name" class="col-md-4 control-label">Name</label>
 
                                 <div class="col-md-6">
                                     <input id="name" type="text" class="form-control" name="name"
-                                           value="{{ old('name') }}" placeholder="Name"  required autofocus>
+                                           value="{{ old('name') }}" placeholder="Name" required autofocus>
 
                                     @if ($errors->has('name'))
                                         <span class="help-block">
@@ -86,7 +88,7 @@
                                 <label for="problems" class="col-md-12 control-label" style="text-align: center">Problems</label>
                                 <br>
                                 <br>
-                                <div class = "col-md-4" >
+                                <div class="col-md-4">
                                     @include("contests.contest_views.add_edit_filter")
                                 </div>
                                 <div class="col-md-8">
@@ -99,9 +101,9 @@
                                 </div>
                             </div>
                             <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
-                                <label for="organizers" class="col-md-4 control-label" >Organizers</label>
-                                <div class = "col-md-6">
-                                @include("contests.contest_views.organisers")
+                                <label for="organizers" class="col-md-4 control-label">Organizers</label>
+                                <div class="col-md-6">
+                                    @include("contests.contest_views.organisers")
                                 </div>
                                 <div class="col-md-6">
                                     @if ($errors->has('organizers'))
@@ -113,7 +115,8 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
+                                    <button onclick="moveSessionDataToHiddenFields()" type="submit"
+                                            class="btn btn-primary">
                                         Add
                                     </button>
                                 </div>

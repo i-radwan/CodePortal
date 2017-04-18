@@ -711,7 +711,7 @@ footer {
     cursor: pointer;
 }
 
-.tags-close-icon {
+.tag-close-icon {
     border: 1px solid transparent;
     background-color: transparent;
     display: inline-block;
@@ -720,7 +720,7 @@ footer {
     cursor: pointer;
 }
 
-.tags-close-icon:after {
+.tag-close-icon:after {
     content: "X";
     display: block;
     width: 17px;

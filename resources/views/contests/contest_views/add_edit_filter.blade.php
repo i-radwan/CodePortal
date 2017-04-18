@@ -6,8 +6,11 @@
             @foreach ($judges as $judge)
                 <div class="checkbox">
                     <label>
-                        <input class="judgeState" type="checkbox" {{ in_array($judge->id, $cJudges) ? 'checked' : '' }}
-                        value="{{ $judge->id }}">
+                        <input class="judgeState" type="checkbox"
+                               {{ in_array($judge->id, $judges->toArray()) ? 'checked' : '' }}
+                               value="{{ $judge->id }}"
+                               id="judge-checkbox-{{ $judge->id }}"
+                               onchange="syncDataWithSession(judgesSessionKey, '{{ $judge->id }}', true)">
                         {{ $judge->name }}
                     </label>
                 </div>
@@ -20,19 +23,12 @@
             <div class="search-wrapper">
                 <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off"
                        onkeypress="return event.keyCode != 13;"
-                       data-tags-path="{{route('contest/add/tags_auto_complete')}}"
-                       data-old-tags="{{(Session::has(Constants::CONTESTS_PROBLEMS_FILTERS) && isset(Session::get(\App\Utilities\Constants::CONTESTS_PROBLEMS_FILTERS)[\App\Utilities\Constants::CONTESTS_CHECKED_TAGS]))?implode(",", session(Constants::CONTESTS_PROBLEMS_FILTERS)[\App\Utilities\Constants::CONTESTS_CHECKED_TAGS]):''}}"/>
+                       data-tags-path="{{route('contest/add/tags_auto_complete')}}"/>
                 <button class="close-icon" type="reset"></button>
             </div>
             <div class="container">
                 <ul id="tagsList" class="tags-list" name="tags[]">
-                    {{--Adding Previously Checked $tags--}}
-                    @if( isset($cTags) )
-                        @foreach( $cTags as $tag)
-                            <li name="tags[]" value="{{$tag}}">
-                                <button class="tags-close-icon "></button>{{$tag}} </li>
-                        @endforeach
-                    @endif
+
                 </ul>
             </div>
         </div>

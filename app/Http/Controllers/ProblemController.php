@@ -117,7 +117,7 @@ class ProblemController extends Controller
     }
 
     /**
-     * This Function gets the problems to the ContestController with the applied filters
+     * Get the problems to the ContestController with the applied filters
      * @param       $request
      * @param       $tagsNames array of tagsNames
      * @param       $judgesIDs array of JudgesIds
