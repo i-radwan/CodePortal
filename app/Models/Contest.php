@@ -81,7 +81,8 @@ class Contest extends Model
      */
     protected $basicStandingsUsersProblemsQueryCols = [
         Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID . ' as ' . Constants::FLD_SUBMISSIONS_USER_ID,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_ID
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
+        Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER
     ];
 
     /**
@@ -300,7 +301,7 @@ class Contest extends Model
         $query->orderBy(Constants::FLD_USERS_PENALTY);
         $query->orderBy(Constants::FLD_USERS_TRAILS_COUNT);
         $query->orderBy(Constants::FLD_SUBMISSIONS_USER_ID);
-        $query->orderBy(Constants::FLD_SUBMISSIONS_PROBLEM_ID);
+        $query->orderBy(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
 
         return $query;
     }
