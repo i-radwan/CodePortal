@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
     Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
+    Route::put('contest/reorder/{contest}', 'ContestController@reorderContest')->middleware(['can:owner-contest,contest']);
+
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
 

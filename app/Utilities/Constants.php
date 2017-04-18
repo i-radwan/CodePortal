@@ -555,6 +555,7 @@ class Constants
     // Contest problems
     const FLD_CONTEST_PROBLEMS_CONTEST_ID = "contest_id";
     const FLD_CONTEST_PROBLEMS_PROBLEM_ID = "problem_id";
+    const FLD_CONTEST_PROBLEMS_PROBLEM_ORDER = "problem_order";
 
     // Contest participants
     const FLD_CONTEST_PARTICIPANTS_CONTEST_ID = "contest_id";

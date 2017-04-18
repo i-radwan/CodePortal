@@ -40,8 +40,6 @@ class Notification extends Model
     /**
      * The rules to check against before saving the model
      *
-     * ToDo @IAR custom validation for resource_id (must exists in one of the resources tables)
-     *
      * @var array
      */
     protected $rules = [

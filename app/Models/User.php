@@ -138,6 +138,8 @@ class User extends Authenticatable
     /**
      * Return all the teams of the user
      *
+     * ToDo: I think the name isn't semantic enough
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function teams()
@@ -213,6 +215,7 @@ class User extends Authenticatable
     /**
      * Return all questions asked by the current user in the given contest
      *
+     * @param int $contestId
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function contestQuestions($contestId)

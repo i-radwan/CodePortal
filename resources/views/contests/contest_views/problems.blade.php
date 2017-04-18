@@ -1,17 +1,18 @@
 {{--Display single contest problems info--}}
 <table class="table table-bordered table-hover text-center">
     <thead>
-        <tr>
-            <th class="text-center">ID</th>
-            <th class="text-center">Name</th>
-            <th class="text-center">Solved</th>
-            <th class="text-center">Judge</th>
-        </tr>
+    <tr>
+        <th class="text-center problems-reorder-view">#</th>
+        <th class="text-center">ID</th>
+        <th class="text-center">Name</th>
+        <th class="text-center">Solved</th>
+        <th class="text-center">Judge</th>
+    </tr>
     </thead>
 
     @php($user = Auth::user())
 
-    <tbody>
+    <tbody contest-problems-tbody>
         @foreach($problems as $problem)
             @php
                 $problem = (array)$problem;
@@ -33,6 +34,10 @@
             @endphp
 
             <tr class="{{ $style }}">
+                {{--Reorder view--}}
+                <td class="problems-reorder-view index" data-problem-id="{{$problem->id}}"><i class="fa fa-bars"
+                                                                                              aria-hidden="true"></i></td>
+
                 {{--ID--}}
                 <td>{{ $id }}</td>
 

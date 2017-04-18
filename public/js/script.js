@@ -275,3 +275,201 @@ function hideNotificationElement(element) {
 /**************************************/
 /*</editor-fold>*/
 
+/*<editor-fold desc="Add contest">*/
+
+//Tags AutoComplete parameters
+var tagsList = document.getElementById("tagsList");
+$('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, "tags[]", 0));
+
+function applyFilters(url, token) {
+    var filters = getCurrentFilters();
+    $.ajax({
+        // url: "{{Request::url()}}/TagsJudgesFSync",
+        url: url,
+        type: 'POST',
+        data: {
+            _token: token,
+            cProblemsFilters: filters,
+        },
+        success: function (data) {
+        }
+    });
+//        location.reload();
+    document.getElementById("clearTableLink").click();
+}
+//Wait for deletion key
+$(document).on('mousedown', '.tags-close-icon', function (item) {
+    $(this).parent().remove();
+});
+//get Current Entered Form Data
+//    function getEnteredFormData() {
+//        var conName = document.getElementById("name").value;
+//        var conDate = document.getElementById("time").value;
+//        var conDur = document.getElementById("duration").value;
+//        var conVis = document.getElementById("private").value;
+//        return {
+//            name : conName,
+//            date : conDate,
+//            duration: conDur,
+//            visibility : conVis
+//        };
+//    }
+
+//Tags AutoComplete parameters
+function autoComplete(path, list, arrName, type) {
+    return ({
+        source: function (query, process) {
+            return $.get(path, {query: query}, function (data) {
+                return process(data);
+            })
+        },
+        updater: function (item) {
+            //Get the current values of list items in the unordered list 'tagsList'
+            var currentItems = list.getElementsByTagName('li');
+            var itemName = (item.name) ? item.name : item;
+            //check if it's already included
+            var notFound = true;
+            console.log(currentItems, itemName);
+            for (var i = 0; i < currentItems.length; i++) {
+                if (currentItems[i].textContent.trim() == itemName.trim()) {
+                    notFound = false;
+                }
+            }
+            if (notFound) {
+                //Create a new list item li
+                var entry = document.createElement('li');
+                entry.setAttribute("name", arrName);
+                entry.setAttribute("value", itemName);
+                //Add the item name and the delete button
+                if (type == 1)
+                    var text = '<button class="organiser-close-icon "></button>';
+                else
+                    var text = '<button class="tags-close-icon "></button>';
+                entry.innerHTML = text + itemName;
+                list.appendChild(entry);
+                if (type == 1) {
+                    applyOrganisers();
+                }
+
+            }
+            //Don't return the item name back in order not to keep it in the text box field
+            return;
+        }
+    });
+}
+function getListInfo(list) {
+    //Reading list elements
+    var currentItems = list.getElementsByTagName('li');
+    var elements = [];
+    for (var i = 0; i < currentItems.length; i++) {
+        elements[i] = currentItems[i].textContent;
+    }
+    return elements;
+}
+function getCurrentFilters() {
+    //Reading Tags
+    var tags = getListInfo(tagsList);
+    //Reading Judges info
+    var judges = [];
+    var j = 0;
+    var checkboxes = document.getElementsByClassName('judgeState');
+    for (var i = 0; checkboxes[i]; ++i) {
+        if (checkboxes[i].checked) {
+            judges[j] = checkboxes[i].value;
+            j = j + 1;
+        }
+    }
+    //Then you have now judges and tags
+    return ({'cTags': tags, 'cJudges': judges});
+}
+
+// ToDo re-polishing needed
+$('.pagination > li').click(function () {
+    // ToDo save form
+    sessionStorage.setItem("name", $("#name").val());
+});
+/**************************************/
+/*</editor-fold>*/
+
+/*<editor-fold desc="Contest problems sort">*/
+
+// Flag to indicate if the table is in sort mode or not
+var isTableSortable = false;
+// Array to store the last contest problem IDs order
+var newSortedIDsArray = [];
+
+/**
+ * Toggle all views related to reordering contest problems
+ */
+function toggleSortableStatus() {
+
+    $('.problems-reorder-view').fadeToggle();
+
+    if (isTableSortable) {
+        $('#contest-problems-tbody').sortable("disable");
+    } else {
+        $('#contest-problems-tbody').sortable({
+            helper: fixHelperModified,
+            stop: updateIndex,
+            handle: 'td.problems-reorder-view > .fa-bars',
+            cursor: 'move',
+        }).disableSelection();
+    }
+}
+
+/**
+ * Keep element width the same while dragging
+ *
+ * @param e
+ * @param tr
+ */
+var fixHelperModified = function (e, tr) {
+    var $originals = tr.children();
+    var $helper = tr.clone();
+    $helper.children().each(function (index) {
+        $(this).width($originals.eq(index).width())
+    });
+    return $helper;
+}
+/**
+ * Update row index in the array by clearing it first then refill with the new order
+ * The problem-id is fetched from html data binding
+ *
+ * @param e
+ * @param ui
+ */
+var updateIndex = function (e, ui) {
+    newSortedIDsArray = [];
+    $('td.index', ui.item.parent()).each(function () {
+        newSortedIDsArray.push($(this).data('problem-id'));
+    });
+};
+
+/**
+ * Send save problems order request to backend
+ *
+ * @param url
+ * @param token
+ */
+function saveProblemsOrderToDB(url, token) {
+    if (newSortedIDsArray.length) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {_token: token, _method: "PUT", problems_order: newSortedIDsArray},
+            success: function (result) {
+                if (result.status == 204)
+                    location.reload();
+                else alert('Something went wrong!')
+            },
+            error: function () {
+                alert('Something went wrong!');
+            }
+        });
+    } else {
+        alert('No changes have been made!');
+    }
+}
+
+/**************************************/
+/*</editor-fold>*/
