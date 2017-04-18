@@ -21,7 +21,7 @@
                 <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off"
                        onkeypress="return event.keyCode != 13;"
                        data-tags-path="{{route('contest/add/tags_auto_complete')}}"
-                       data-old-tags="{{(session(Constants::CONTESTS_PROBLEMS_FILTERS))?implode(",", session(Constants::CONTESTS_PROBLEMS_FILTERS)[\App\Utilities\Constants::CONTESTS_CHECKED_TAGS]):''}}"/>
+                       data-old-tags="{{(Session::has(Constants::CONTESTS_PROBLEMS_FILTERS) && isset(Session::get(\App\Utilities\Constants::CONTESTS_PROBLEMS_FILTERS)[\App\Utilities\Constants::CONTESTS_CHECKED_TAGS]))?implode(",", session(Constants::CONTESTS_PROBLEMS_FILTERS)[\App\Utilities\Constants::CONTESTS_CHECKED_TAGS]):''}}"/>
                 <button class="close-icon" type="reset"></button>
             </div>
             <div class="container">
