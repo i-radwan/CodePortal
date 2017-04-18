@@ -18,7 +18,7 @@
 
                                 <div class="col-md-6">
                                     <input id="name" type="text" class="form-control" name="name"
-                                           value="{{ old('name') }}" placeholder="Name" required autofocus>
+                                           value="{{ old('name') }}" placeholder="Name"  required autofocus>
 
                                     @if ($errors->has('name'))
                                         <span class="help-block">

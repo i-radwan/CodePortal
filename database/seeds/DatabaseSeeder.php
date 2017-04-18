@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
 
         // Sync problems
 
-        Artisan::call("sync-judge:problems", ["--judge" => "codeforces"]);
-        Artisan::call("sync-judge:problems", ["--judge" => "uva"]);
-        Artisan::call("sync-judge:problems", ["--judge" => "live-archive"]);
+        //Artisan::call("sync-judge:problems", ["--judge" => "codeforces"]);
+        //Artisan::call("sync-judge:problems", ["--judge" => "uva"]);
+        //Artisan::call("sync-judge:problems", ["--judge" => "live-archive"]);
 
 
         // Sync submissions

@@ -50,6 +50,12 @@ class AuthServiceProvider extends ServiceProvider
             return $canViewAndJoin;
         });
 
+        // Owner of contest
+        Gate::define("owner-contest", function ($user, $contestID) {
+            // Check if user is owner
+            return ($user->owningContests()->find($contestID));
+        });
+
         // Owner or organizer of contest
         Gate::define("owner-organizer-contest", function ($user, $contestID) {
             // Check if user is organizer or owner

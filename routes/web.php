@@ -33,17 +33,19 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
     Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
+    Route::put('contest/reorder/{contest}', 'ContestController@reorderContest')->middleware(['can:owner-contest,contest']);
+
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
 
     // ToDo: @Samir why use 'as'? , use underscore separated endpoint
-    Route::get('contest/add/tagsautocomplete', array('as' => 'contest/add/tagsautocomplete', 'uses' => 'ContestController@tagsAutoComplete'));
-    Route::get('contest/add/organisersautocomplete', array('as' => 'contest/add/organisersautocomplete', 'uses' => 'ContestController@organisersAutoComplete'));
+    Route::get('contest/add/tags_auto_complete', array('as' => 'contest/add/tags_auto_complete', 'uses' => 'ContestController@tagsAutoComplete'));
+    Route::get('contest/add/organisers_auto_complete', array('as' => 'contest/add/organisers_auto_complete', 'uses' => 'ContestController@organisersAutoComplete'));
 
-    // ToDo: endpoints don't follow the same convention !!
-    Route::post('contest/add/checkRowsSync', 'ContestController@applyProblemsCheckBoxes');
-    Route::post('contest/add/TagsJudgesFSync', 'ContestController@applyProblemsFilters');
-    Route::post('contest/add/OrganisersSync', 'ContestController@applyOrganisers');
+
+    Route::post('contest/add/check_problems_rows_sync', 'ContestController@applyProblemsCheckBoxes');
+    Route::post('contest/add/Tags_judges_filters_sync', 'ContestController@applyProblemsFilters');
+    Route::post('contest/add/Organisers_sync', 'ContestController@applyOrganisers');
 
     // Question routes...
     Route::put('contest/question/announce/{question}', 'ContestController@announceQuestion');

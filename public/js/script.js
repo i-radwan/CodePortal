@@ -275,3 +275,273 @@ function hideNotificationElement(element) {
 /**************************************/
 /*</editor-fold>*/
 
+/*<editor-fold desc="Add contest">*/
+//Retrieve from Java sessionStorage the previous Entered Form Data
+document.getElementById("name").value  = sessionStorage.getItem("name");
+document.getElementById("time").value  = sessionStorage.getItem("time");
+document.getElementById("duration").value  = sessionStorage.getItem("duration");
+document.getElementById("private").value  = sessionStorage.getItem("visibility");
+
+//Tags AutoComplete
+//First : get the tagsList from the view
+var tagsList = document.getElementById("tagsList");
+
+//Call typeahead for Tags autoCompletion
+$('input.tagsAuto').typeahead(autoComplete($("#tagsAuto").data('tags-path'), tagsList, "tags[]", 0,"",""));
+//Organisers List
+var organisersList = document.getElementById("organisers_list");
+//Call typeahead for Organisers autoCompletion
+$('input.organisersAuto').typeahead(autoComplete($("#organisers_auto").data('organisers-path'), organisersList, "organisers[]", 1,$("#organisers_auto").data('organisers-sync-path'), $("#organisers_auto").data('organisers-token') ));
+
+
+/**
+ * This function saves the selected filters (selected Tags and Selected judges) to the session
+ * It takes url of syncing filters, the token
+ * @param url
+ * @param token
+ */
+function applyFilters(url, token) {
+    //Get the current filters from the view
+    var filters = getCurrentFilters();
+    $.ajax({
+        // url: "{{Request::url()}}/TagsJudgesFSync",
+        url: url,
+        type: 'POST',
+        data: {
+            _token: token,
+            cProblemsFilters: filters,
+        },
+        success: function (data) {
+        }
+    });
+    //Clear other filtering in URL queries
+    document.getElementById("clearTableLink").click();
+}
+//Wait for Tags deletion icon Press
+$(document).on('mousedown', '.tags-close-icon', function (item) {
+    $(this).parent().remove();
+});
+
+
+//Auto Complete Functions
+/**
+ * the typeahead autoComplete Function
+ *
+ * @param path the url to get the data fot autocompletion
+ * @param list the list from th view
+ * @param arrName the name of the unordered list from the view
+ * @param type 0:Means Tags autoCompletion 1: Means  Organisers autoCompletion
+ * @param syncURL the organisers Sync list URl (if applicable)
+ * @param token the organisers token (if applicable)
+ * @returns {{source: source, updater: updater}}
+ */
+function autoComplete(path, list, arrName, type, syncURL, token) {
+    return ({
+        source: function (query, process) {
+            return $.get(path, {query: query}, function (data) {
+                return process(data);
+            })
+        },
+        updater: function (item) {
+            //Get the current values of list items in the unordered list
+            var currentItems = list.getElementsByTagName('li');
+            var itemName = (item.name) ? item.name : item;
+            //check if it's already included
+            var notFound = true;
+            console.log(currentItems, itemName);
+            for (var i = 0; i < currentItems.length; i++) {
+                if (currentItems[i].textContent.trim() == itemName.trim()) {
+                    notFound = false;
+                }
+            }
+            if (notFound) {
+                //Create a new list item li
+                var entry = document.createElement('li');
+                entry.setAttribute("name", arrName);
+                entry.setAttribute("value", itemName);
+                //Add the item name and the delete button according to the send type
+                if (type == 1)
+                    var text = '<button class="organiser-close-icon "></button>';
+                else
+                    var text = '<button class="tags-close-icon "></button>';
+                entry.innerHTML = text + itemName;
+                list.appendChild(entry);
+                if (type == 1) {
+                    applyOrganisers(syncURL, token);
+                }
+
+            }
+            //Don't return the item name back in order not to keep it in the text box field
+            return;
+        }
+    });
+}
+//This Function saves the selected organisers in the session
+//it takes the url and the token
+//It's called by typeahead autoComplete function
+function applyOrganisers(url, token) {
+    var mOrganisers = getListInfo(organisersList);
+    $.ajax({
+        // url: "{{Request::url()}}/organisersSync",
+        url: url,
+        type: 'POST',
+        data: {
+            _token: token,
+            mOrganisers: mOrganisers,
+        },
+        success: function (data) {
+        }
+    });
+}
+
+//Wait for organisers deletion icon in the selected organisers list
+$(document).on('mousedown', '.organiser-close-icon', function (item) {
+    $(this).parent().remove();
+    applyOrganisers();
+});
+function getListInfo(list) {
+    //Reading list elements
+    var currentItems = list.getElementsByTagName('li');
+    var elements = [];
+    for (var i = 0; i < currentItems.length; i++) {
+        elements[i] = currentItems[i].textContent;
+    }
+    return elements;
+}
+function getCurrentFilters() {
+    //Reading Tags
+    var tags = getListInfo(tagsList);
+    //Reading Judges info
+    var judges = [];
+    var j = 0;
+    var checkboxes = document.getElementsByClassName('judgeState');
+    for (var i = 0; checkboxes[i]; ++i) {
+        if (checkboxes[i].checked) {
+            judges[j] = checkboxes[i].value;
+            j = j + 1;
+        }
+    }
+    //Then you have now judges and tags
+    return ({'cTags': tags, 'cJudges': judges});
+}
+
+function syncProblemState(syncURL, token) {
+    //get the check boxes in each page
+    var checkedStates = [];
+    var checkedRows = [];
+    var j = 0;
+    var checkboxes = document.getElementsByClassName('check_state');
+    for(var i=0; checkboxes[i]; ++i){
+        checkedRows[j] = checkboxes[i].value;
+        checkedStates[j] = (checkboxes[i].checked == true) ? 1:0;
+        j = j + 1;
+    }
+    $.ajax({
+
+        url: syncURL,
+        type: 'POST',
+        data: {
+            _token: token,
+            checkedRows : checkedRows,
+            checkedStates : checkedStates
+        },
+        success: function(data){
+            console.log(data);
+        }
+    });
+}
+
+// ToDo re-polishing needed
+$('.pagination > li').click(function () {
+    console.log("oijwoifjweiofjio");
+    // ToDo save form We have heere a problem of a pagination in all the project
+    sessionStorage.setItem("name", $("#name").val());
+    sessionStorage.setItem("time", $("#time").val());
+    sessionStorage.setItem("duration", $("#duration").val());
+    sessionStorage.setItem("visibility", $("#private").val());
+});
+/**************************************/
+/*</editor-fold>*/
+
+/*<editor-fold desc="Contest problems sort">*/
+
+// Flag to indicate if the table is in sort mode or not
+var isTableSortable = false;
+// Array to store the last contest problem IDs order
+var newSortedIDsArray = [];
+
+/**
+ * Toggle all views related to reordering contest problems
+ */
+function toggleSortableStatus() {
+
+    $('.problems-reorder-view').fadeToggle();
+
+    if (isTableSortable) {
+        $('#contest-problems-tbody').sortable("disable");
+    } else {
+        $('#contest-problems-tbody').sortable({
+            helper: fixHelperModified,
+            stop: updateIndex,
+            handle: 'td.problems-reorder-view > .fa-bars',
+            cursor: 'move',
+        }).disableSelection();
+    }
+}
+
+/**
+ * Keep element width the same while dragging
+ *
+ * @param e
+ * @param tr
+ */
+var fixHelperModified = function (e, tr) {
+    var $originals = tr.children();
+    var $helper = tr.clone();
+    $helper.children().each(function (index) {
+        $(this).width($originals.eq(index).width())
+    });
+    return $helper;
+};
+/**
+ * Update row index in the array by clearing it first then refill with the new order
+ * The problem-id is fetched from html data binding
+ *
+ * @param e
+ * @param ui
+ */
+var updateIndex = function (e, ui) {
+    newSortedIDsArray = [];
+    $('td.index', ui.item.parent()).each(function () {
+        newSortedIDsArray.push($(this).data('problem-id'));
+    });
+};
+
+/**
+ * Send save problems order request to backend
+ *
+ * @param url
+ * @param token
+ */
+function saveProblemsOrderToDB(url, token) {
+    if (newSortedIDsArray.length) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {_token: token, _method: "PUT", problems_order: newSortedIDsArray},
+            success: function (result) {
+                if (result.status == 204)
+                    location.reload();
+                else alert('Something went wrong!')
+            },
+            error: function () {
+                alert('Something went wrong!');
+            }
+        });
+    } else {
+        alert('No changes have been made!');
+    }
+}
+
+/**************************************/
+/*</editor-fold>*/

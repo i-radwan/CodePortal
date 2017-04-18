@@ -55,11 +55,26 @@ class ContestsTableSeeder extends Seeder
                     Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID => $faker->randomElement($contestIDs),
                     Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID => $faker->randomElement($problemIDs),
                 ]);
-            }
-            catch (\Illuminate\Database\QueryException $e) {
+            } catch (\Illuminate\Database\QueryException $e) {
 
             };
         }
+
+
+        // Set problems orders
+        $firstContestID = Contest::first()->id;
+        for ($j = 0; $j < Contest::count(); $j++) {
+            $i = 1;
+            $contest = Contest::find($firstContestID + $j);
+            $problemIDs = $contest->problems()->pluck('id')->toArray();
+            foreach ($problemIDs as $problemID) {
+                $problemPivot = $contest->problems()->find($problemID)->pivot;
+                $problemPivot[Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER] = $i;
+                $problemPivot->save();
+                $i++;
+            }
+        }
+
         // Contests Organizers
         for ($i = 0; $i < $limit * 3; ++$i) {
             // Insert if only not exists
@@ -68,8 +83,7 @@ class ContestsTableSeeder extends Seeder
                     Constants::FLD_CONTEST_ADMINS_ADMIN_ID => $faker->randomElement($userIDs),
                     Constants::FLD_CONTEST_ADMINS_CONTEST_ID => $faker->randomElement($contestIDs),
                 ]);
-            }
-            catch (\Illuminate\Database\QueryException $e) {
+            } catch (\Illuminate\Database\QueryException $e) {
 
             };
         }
@@ -81,8 +95,7 @@ class ContestsTableSeeder extends Seeder
                     Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID => $faker->randomElement($contestIDs),
                     Constants::FLD_CONTEST_PARTICIPANTS_USER_ID => $faker->randomElement($userIDs),
                 ]);
-            }
-            catch (\Illuminate\Database\QueryException $e) {
+            } catch (\Illuminate\Database\QueryException $e) {
 
             };
         }
@@ -95,8 +108,7 @@ class ContestsTableSeeder extends Seeder
                     Constants::FLD_CONTEST_TEAMS_TEAM_ID => $faker->randomElement($teamIDs),
                 ]);
 
-            }
-            catch (\Illuminate\Database\QueryException $e) {
+            } catch (\Illuminate\Database\QueryException $e) {
 
             };
         }

@@ -1006,6 +1006,19 @@ footer {
     background: rgba(238, 255, 230, 0.38);
 }
 
+.problems-reorder-view {
+    display: none;
+}
+
+td.problems-reorder-view > .fa-bars {
+    color: #959595;
+    cursor: move;
+}
+
+.problems-reorder-view.save {
+    margin-bottom: 15px;
+}
+
 /*  Contest tabs    */
 .content-tabs {
     padding: 0;

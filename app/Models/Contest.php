@@ -81,7 +81,8 @@ class Contest extends Model
      */
     protected $basicStandingsUsersProblemsQueryCols = [
         Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID . ' as ' . Constants::FLD_SUBMISSIONS_USER_ID,
-        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_ID
+        Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID . ' as ' . Constants::FLD_SUBMISSIONS_PROBLEM_ID,
+        Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER
     ];
 
     /**
@@ -130,7 +131,7 @@ class Contest extends Model
             Constants::TBL_CONTEST_PROBLEMS,
             Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
             Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID
-        );
+        )->withPivot(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
     }
 
     /**
@@ -263,8 +264,8 @@ class Contest extends Model
         $this->countAcceptedSubmissionsQuery($query, Constants::FLD_PROBLEMS_SOLVED_COUNT);
         $this->countSubmissionsQuery($query, Constants::FLD_PROBLEMS_TRAILS_COUNT);
         $query->groupBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);
-        $query->orderBy(Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID);    // TODO: order by contest owner problems order
 
+        $query->orderBy(Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
         return $query;
     }
 
@@ -301,7 +302,7 @@ class Contest extends Model
         $query->orderBy(Constants::FLD_USERS_PENALTY);
         $query->orderBy(Constants::FLD_USERS_TRAILS_COUNT);
         $query->orderBy(Constants::FLD_SUBMISSIONS_USER_ID);
-        $query->orderBy(Constants::FLD_SUBMISSIONS_PROBLEM_ID);
+        $query->orderBy(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
 
         return $query;
     }
@@ -361,13 +362,13 @@ class Contest extends Model
     private function contestJoinProblems($query)
     {
         $query
-            ->join(
+            ->leftJoin(
                 Constants::TBL_CONTEST_PROBLEMS,
                 Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
                 '=',
                 Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID
             )
-            ->join(
+            ->leftJoin(
                 Constants::TBL_PROBLEMS,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
                 '=',
@@ -383,13 +384,13 @@ class Contest extends Model
     private function contestJoinUsers($query)
     {
         $query
-            ->join(
+            ->leftJoin(
                 Constants::TBL_CONTEST_PARTICIPANTS,
                 Constants::TBL_CONTEST_PARTICIPANTS . '.' . Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID,
                 '=',
                 Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID
             )
-            ->join(
+            ->leftJoin(
                 Constants::TBL_USERS,
                 Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID,
                 '=',
@@ -411,13 +412,11 @@ class Contest extends Model
         $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
 
         if ($tillFirstAccepted) {
-            $joinType = 'leftJoin';
             $submissions = Submission::tillFirstAccepted($contestStartTime, $contestEndTime);
             $submissionsTable = DB::raw('(' . $submissions->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`');
             $query->mergeBindings($submissions);
         }
         else {
-            $joinType = 'join';
             $submissionsTable = Constants::TBL_SUBMISSIONS;
             $query->whereBetween(
                 Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,
@@ -426,7 +425,7 @@ class Contest extends Model
         }
 
         $query
-            ->$joinType(
+            ->leftJoin(
                 $submissionsTable,
                 function ($join) {
                     $join->on(

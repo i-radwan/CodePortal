@@ -93,7 +93,7 @@ class Problem extends Model
             Constants::TBL_CONTEST_PROBLEMS,
             Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID,
             Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID
-        );
+        )->withPivot(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
     }
     /**
      * Return the submissions current problem
@@ -118,9 +118,9 @@ class Problem extends Model
                 Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID,
                 Constants::FLD_SHEETS_PROBLEMS_SHEET_ID
             )
-            ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
-            ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)
-            ->withTimestamps();
+                ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
+                ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)
+                ->withTimestamps();
     }
     /**
      * Return the simple verdict of the current problem for the given user,
