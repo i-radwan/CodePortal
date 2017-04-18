@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 
 use App\Utilities\Constants;
@@ -23,6 +24,7 @@ class UserController extends Controller
      */
     public function index($user)
     {
+
       $chart = Charts::multi('bar', 'material')
             // Setup the chart settings
        ->title("My Cool Chart")
@@ -59,6 +61,7 @@ class UserController extends Controller
             
 
     	return view('profile.index', ['userName' => $user])->with('pageTitle', config('app.name'). ' | '. $user)->withDate(UserController::userDate($user))->with('problems', UserController::userWrongSubmissions($user))->with('counter',UserController::userNumberOfSolvedProblems($user))->with('chart',$chart);
+
     }
     public function statistics()
     {
@@ -89,11 +92,15 @@ class UserController extends Controller
      */
     public function edit()
     {
+
         $user=\Auth::user();
         return view('profile.edit')->with('pageTitle', config('app.name').'|'.$user->username)->with('user',$user);
+
     }
+
     public function editProfile(Request $request)
     {
+
         //FirstName ,LastName,Country,Email,Username
         //ToDO gender ,country drop down ,password,picture,birthdate
 
@@ -117,24 +124,30 @@ class UserController extends Controller
         $id=$user->username;
         return redirect('profile/'.$id);
         //dd($request->all()['id']);  
+
     }
+
     public function userDate($user)
     {
-     $userData= User::where('username',$user)->first();
-     $userInfo=$userData->toArray();
-     $dateCreated = $userInfo['created_at']; 
-     $dateCreatedArr = preg_split ("/[\s-]+/", $dateCreated); 
-     $dt = Carbon::create($dateCreatedArr['0'], $dateCreatedArr['1'],$dateCreatedArr['2']);
-     $date= $dt->toFormattedDateString(); 
-     return $date;
- }
- public function userWrongSubmissions($user){
-    $problemsArr = User::getWrongAnswerProblems($user);
-    return   Problem::whereIn('id', $problemsArr)->paginate(4);
-}
-public function userNumberOfSolvedProblems($user){
-    return  count(User::getSolvedProblems($user));
-}
+        $userData = User::where('username', $user)->first();
+        $userInfo = $userData->toArray();
+        $dateCreated = $userInfo['created_at'];
+        $dateCreatedArr = preg_split("/[\s-]+/", $dateCreated);
+        $dt = Carbon::create($dateCreatedArr['0'], $dateCreatedArr['1'], $dateCreatedArr['2']);
+        $date = $dt->toFormattedDateString();
+        return $date;
+    }
+
+    public function userWrongSubmissions($user)
+    {
+        $problemsArr = User::getWrongAnswerProblems($user);
+        return Problem::whereIn('id', $problemsArr)->paginate(4);
+    }
+
+    public function userNumberOfSolvedProblems($user)
+    {
+        return count(User::getSolvedProblems($user));
+    }
 
 
 }

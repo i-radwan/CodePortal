@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -44,7 +45,6 @@ class Problem extends Model
      * @var array
      */
     protected $rules = [
-        // TODO: validating super unique key
         Constants::FLD_PROBLEMS_NAME => 'required|max:255',
         Constants::FLD_PROBLEMS_JUDGE_ID => 'integer|required|exists:' . Constants::TBL_JUDGES . ',' . Constants::FLD_JUDGES_ID,
         Constants::FLD_PROBLEMS_JUDGE_ID => 'unique_with:' . Constants::TBL_PROBLEMS . ',' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY . ',' . Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY,
@@ -75,12 +75,13 @@ class Problem extends Model
      */
     public function sheets()
     {
-        return $this->belongsToMany(
-            Sheet::class,
-            Constants::TBL_SHEETS_PROBLEMS,
-            Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID,
-            Constants::FLD_SHEETS_PROBLEMS_SHEET_ID
-        )
+        return
+            $this->belongsToMany(
+                Sheet::class,
+                Constants::TBL_SHEETS_PROBLEMS,
+                Constants::FLD_SHEETS_PROBLEMS_PROBLEM_ID,
+                Constants::FLD_SHEETS_PROBLEMS_SHEET_ID
+            )
             ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION)
             ->withPivot(Constants::FLD_SHEETS_PROBLEMS_SOLUTION_LANG)
             ->withTimestamps();
@@ -181,8 +182,22 @@ class Problem extends Model
             return $query;
         }
 
+        // ORing tags
+//        $query
+//            ->distinct()
+//            ->join(
+//                Constants::TBL_PROBLEM_TAGS,
+//                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
+//                '=',
+//                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
+//            )
+//            ->whereIn(
+//                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID,
+//                $tagsIDs
+//            );
+
+        // ANDing tags
         $query
-            ->distinct()
             ->join(
                 Constants::TBL_PROBLEM_TAGS,
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
@@ -192,6 +207,14 @@ class Problem extends Model
             ->whereIn(
                 Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID,
                 $tagsIDs
+            )
+            ->groupBy(
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
+            )
+            ->having(
+                DB::raw('COUNT(*)'),
+                '=',
+                count($tagsIDs)
             );
 
         return $query;

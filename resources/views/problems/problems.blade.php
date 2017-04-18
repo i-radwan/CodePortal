@@ -4,13 +4,13 @@
         @if($problems->count())
             @include('problems.table')
         @else
-            <p class="margin-30px">
+            <h4 class="margin-30px">
                 No problems!
                 @if(count(Request::get(Constants::URL_QUERY_JUDGES_KEY)) || count(Request::get(Constants::URL_QUERY_TAGS_KEY)) || strlen(Request::get(Constants::URL_QUERY_SEARCH_KEY)))
                     <br/>
                     please change the applied filters
                 @endif
-            </p>
+            </h4>
         @endif
     </div>
 </div>

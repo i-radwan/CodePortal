@@ -1,17 +1,12 @@
 <?php
-
 namespace App\Utilities;
-
 class Constants
 {
     //region Problems page
-
     //
     // Problems page constants
     //
-
     const PROBLEMS_COUNT_PER_PAGE = 30;
-
     const URL_QUERY_SEARCH_KEY = "q";
     const URL_QUERY_JUDGES_KEY = "judges";
     const URL_QUERY_TAGS_KEY = "tags";
@@ -19,12 +14,10 @@ class Constants
     const URL_QUERY_SORT_PARAM_KEY = "sort";
     const URL_QUERY_SORT_ORDER_KEY = "order";
     const URL_QUERY_PAGE_KEY = "page";
-
     const URL_QUERY_SORT_PARAM_ID_KEY = "id";
     const URL_QUERY_SORT_PARAM_NAME_KEY = "name";
     const URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY = "acceptedCount";
     const URL_QUERY_SORT_PARAM_JUDGE_KEY = "judge";
-
     const PROBLEMS_SORT_PARAMS = [
         self::URL_QUERY_SORT_PARAM_ID_KEY => self::FLD_PROBLEMS_ID,
         self::URL_QUERY_SORT_PARAM_NAME_KEY => self::FLD_PROBLEMS_NAME,
@@ -34,26 +27,19 @@ class Constants
     ];
     // ============================================================
     //endregion
-
     //region Contests page
-
     //
     // Contests page constants
     //
-
     const CONTESTS_COUNT_PER_PAGE = 30;
     const CONTEST_STANDINGS_PER_PAGE = 30;
     const CONTEST_SUBMISSIONS_PER_PAGE = 30;
     const CONTEST_PARTICIPANTS_PER_PAGE = 30;
-
     const CONTESTS_PENALTY_PER_WRONG_SUBMISSION = 20;
-
     const CONTESTS_CONTESTS_KEY = 'contests';
-
     //
     // Single contest page constants
     //
-
     // Main keys
     const SINGLE_CONTEST_CONTEST_KEY = "contest";
     const SINGLE_CONTEST_PROBLEMS_KEY = "problems";
@@ -62,9 +48,7 @@ class Constants
     const SINGLE_CONTEST_PARTICIPANTS_KEY = "participants";
     const SINGLE_CONTEST_QUESTIONS_KEY = "questions";
     const SINGLE_CONTEST_EXTRA_KEY = "extra";
-
     // Details keys
-
     // Contest
     const SINGLE_CONTEST_ID_KEY = "id";
     const SINGLE_CONTEST_NAME_KEY = "name";
@@ -72,7 +56,6 @@ class Constants
     const SINGLE_CONTEST_ORGANIZERS_KEY = "organizers";
     const SINGLE_CONTEST_TIME_KEY = "time";
     const SINGLE_CONTEST_DURATION_KEY = "duration";
-
     const CHECKED_PROBLEMS = "checkedRows";
     const CONTESTS_PROBLEMS_FILTERS = "cProblemsFilters";
     const CONTESTS_CHECKED_JUDGES = "cJudges";
@@ -80,13 +63,11 @@ class Constants
     const CONTESTS_MENTIONED_ORGANISERS = "mOrganisers";
     const CONTEST_AUTO_COMPLETE_ORGANISERS = 1;
     const CONTEST_AUTO_COMPLETE_TAGS = 0;
-
     // Participants
     const PARTICIPANTS_DISPLAYED_FIELDS = [
         self::FLD_USERS_USERNAME,
         self::FLD_USERS_COUNTRY
     ];
-
     // Extra
     const SINGLE_CONTEST_IS_USER_PARTICIPATING = "user_is_participant";
     const SINGLE_CONTEST_IS_USER_OWNER = "user_is_owner";
@@ -94,21 +75,15 @@ class Constants
     const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
     // ============================================================
     //endregion
-
-
     //region Groups page
     //
     // Groups page constants
     //
-
     const GROUPS_COUNT_PER_PAGE = 30;
-
     const GROUPS_GROUPS_KEY = 'groups';
-
     //
     // Single group page constants
     //
-
     // Main keys
     const SINGLE_GROUP_GROUP_KEY = "group";
     const SINGLE_GROUP_MEMBERS_KEY = "members";
@@ -116,20 +91,15 @@ class Constants
     const SINGLE_GROUP_SHEETS_KEY = "sheets";
     const SINGLE_GROUP_CONTESTS_KEY = "contests";
     const SINGLE_GROUP_EXTRA_KEY = "extra";
-
     // Details keys
-
     // Group
     const SINGLE_GROUP_ID_KEY = "id";
     const SINGLE_GROUP_NAME_KEY = "name";
     const SINGLE_GROUP_OWNER_KEY = "owner";
-
     // Extra
     const SINGLE_GROUP_IS_USER_OWNER = "user_is_owner";
     const SINGLE_GROUP_IS_USER_MEMBER = "user_is_member";
     const SINGLE_GROUP_USER_SENT_REQUEST = "user_sent_request";
-
-
     // Members displayable fields
     const MEMBERS_DISPLAYED_FIELDS = [
         self::FLD_USERS_ID,
@@ -137,7 +107,6 @@ class Constants
         self::FLD_USERS_EMAIL,
         self::FLD_USERS_COUNTRY
     ];
-
     // Contests displayable fields
     const CONTESTS_DISPLAYED_FIELDS = [
         self::FLD_CONTESTS_ID,
@@ -145,14 +114,12 @@ class Constants
         self::FLD_CONTESTS_TIME,
         self::FLD_CONTESTS_DURATION,
     ];
-
     // Requests displayable fields
     const REQUESTS_DISPLAYED_FIELDS = [
         self::FLD_USERS_ID,
         self::FLD_USERS_USERNAME,
         self::FLD_USERS_EMAIL,
     ];
-
     // Sheets displayable fields
     const SHEETS_DISPLAYED_FIELDS = [
         self::FLD_SHEETS_ID,
@@ -160,49 +127,35 @@ class Constants
     ];
     // ============================================================
     //endregion
-
-
     //region Sheet page
-
     //
     // Sheet page constants
     //
-
     // Main keys
     const SINGLE_SHEET_SHEET_KEY = "sheet";
     const SINGLE_SHEET_PROBLEMS_KEY = "problems";
     const SINGLE_SHEET_EXTRA_KEY = "extra";
-
-
-
     // Details keys
-
     // Sheet
     const SINGLE_SHEET_ID_KEY = "id";
     const SINGLE_SHEET_NAME_KEY = "name";
     const SINGLE_SHEET_GROUP_ID_KEY = "group_id";
-
     // Extra
-
     // ============================================================
     //endregion
-
     //region Judges
-
     //
     // Judges constants
     //
     const JUDGE_CODEFORCES_ID = 1;
     const JUDGE_UVA_ID = 2;
     const JUDGE_LIVE_ARCHIVE_ID = 3;
-
     const JUDGE_NAME_KEY = "name";
     const JUDGE_LINK_KEY = "link";
     const JUDGE_PROBLEM_LINK_KEY = "problemLink";
     const JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY = "problemLinkAttr";
     const JUDGE_PROBLEM_NUMBER_FORMAT_KEY = "problemNumberFormat";
     const JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY = "problemNumberFormatAttr";
-
     const JUDGES = [
         self::JUDGE_CODEFORCES_ID => [
             self::JUDGE_NAME_KEY => "Codeforces",
@@ -219,7 +172,7 @@ class Constants
             ]
         ],
         self::JUDGE_UVA_ID => [
-            self::JUDGE_NAME_KEY => "UVa Online Judge",
+            self::JUDGE_NAME_KEY => "UVa",
             self::JUDGE_LINK_KEY => "https://uva.onlinejudge.org/",
             self::JUDGE_PROBLEM_LINK_KEY => "https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}",
             self::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY => [
@@ -243,11 +196,9 @@ class Constants
             ]
         ]
     ];
-
     //
     // Submission verdicts & languages
     //
-
     // Full list verdicts
     const VERDICT_FAILED = '0';
     const VERDICT_ACCEPTED = '1';
@@ -268,9 +219,8 @@ class Constants
     const VERDICT_REJECTED = '16';
     const VERDICT_UNKNOWN = '17';
     const VERDICT_COUNT = 18;   // Note: To be incremented manually
-
     const VERDICT_NAMES = [
-        self::VERDICT_FAILED => '0',
+        self::VERDICT_FAILED => 'Failed',
         self::VERDICT_ACCEPTED => 'Accepted',
         self::VERDICT_PARTIAL_ACCEPTED => 'Partial Accepted',
         self::VERDICT_COMPILATION_ERROR => 'Compilation Error',
@@ -289,12 +239,10 @@ class Constants
         self::VERDICT_REJECTED => 'Rejected',
         self::VERDICT_UNKNOWN => 'Unknown',
     ];
-
     // Simple list of verdicts
     const SIMPLE_VERDICT_NOT_SOLVED = 0;
     const SIMPLE_VERDICT_ACCEPTED = 1;
     const SIMPLE_VERDICT_WRONG_SUBMISSION = 2;
-
     // Codeforces submission verdicts
     const CODEFORCES_SUBMISSION_VERDICTS = [
         "FAILED" => self::VERDICT_FAILED,
@@ -316,7 +264,6 @@ class Constants
         "REJECTED" => self::VERDICT_REJECTED,
         "UNKNOWN" => self::VERDICT_UNKNOWN
     ];
-
     // uHunt submission verdicts
     const UHUNT_SUBMISSION_VERDICTS = [
         "10" => self::VERDICT_FAILED,
@@ -332,7 +279,6 @@ class Constants
         "80" => self::VERDICT_PRESENTATION_ERROR,
         "90" => self::VERDICT_ACCEPTED,
     ];
-
     // uHunt submission languages
     const UHUNT_SUBMISSION_LANGUAGES = [
         "1" => "ANSI C",
@@ -343,13 +289,10 @@ class Constants
     ];
     // ============================================================
     //endregion
-
     //region Database
-
     //
     // Database constants
     //
-
     const ACCOUNT_ROLE_USER_KEY = "USER";
     const ACCOUNT_ROLE_ADMIN_KEY = "ADMIN";
     const ACCOUNT_ROLE_SUPER_ADMIN_KEY = "SUPER_ADMIN";
@@ -358,14 +301,12 @@ class Constants
         self::ACCOUNT_ROLE_ADMIN_KEY => '1',
         self::ACCOUNT_ROLE_SUPER_ADMIN_KEY => '2'
     ];
-
     const GENDER_MALE_KEY = "MALE";
     const GENDER_FEMALE_KEY = "FEMALE";
     const USER_GENDER = [
         self::GENDER_MALE_KEY => '0',
         self::GENDER_FEMALE_KEY => '1'
     ];
-
     const CONTEST_PARTICIPANT_ROLE_USER_KEY = "USER";
     const CONTEST_PARTICIPANT_ROLE_OWNER_KEY = "OWNER";
     const CONTEST_PARTICIPANT_ROLE_ADMIN_KEY = "ADMIN";
@@ -374,21 +315,18 @@ class Constants
         self::CONTEST_PARTICIPANT_ROLE_OWNER_KEY => '1',
         self::CONTEST_PARTICIPANT_ROLE_ADMIN_KEY => '2'
     ];
-
     const CONTEST_VISIBILITY_PUBLIC_KEY = "PUBLIC";
     const CONTEST_VISIBILITY_PRIVATE_KEY = "PRIVATE";
     const CONTEST_VISIBILITY = [
         self::CONTEST_VISIBILITY_PUBLIC_KEY => '0',
         self::CONTEST_VISIBILITY_PRIVATE_KEY => '1'
     ];
-
     const QUESTION_STATUS_NORMAL_KEY = "NORMAL";
     const QUESTION_STATUS_ANNOUNCEMENT_KEY = "ANNOUNCEMENT";
     const QUESTION_STATUS = [
         self::QUESTION_STATUS_NORMAL_KEY => '0',
         self::QUESTION_STATUS_ANNOUNCEMENT_KEY => '1'
     ];
-
     const NOTIFICATION_STATUS_READ = "READ";
     const NOTIFICATION_STATUS_UNREAD = "UNREAD";
     const NOTIFICATION_STATUS_DELETED = "DELETED";
@@ -397,7 +335,6 @@ class Constants
         self::NOTIFICATION_STATUS_READ => '1',
         self::NOTIFICATION_STATUS_DELETED => '2'
     ];
-
     const NOTIFICATION_TYPE_CONTEST = "CONTEST";
     const NOTIFICATION_TYPE_GROUP = "GROUP";
     const NOTIFICATION_TYPE_TEAM = "TEAM";
@@ -406,17 +343,14 @@ class Constants
         self::NOTIFICATION_TYPE_GROUP => '1',
         self::NOTIFICATION_TYPE_TEAM => '2'
     ];
-
     const NOTIFICATION_TEXT = [
         self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_CONTEST] => "You're invited to join the private contest: ",
         self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_GROUP] => "You're invited to join the private group: ",
         self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_TEAM] => "You're invited to join the private team: ",
     ];
-
     //
     // Tables
     //
-
     // Model tables
     const TBL_USERS = "users";
     const TBL_PASSWORD_RESETS = "password_resets";
@@ -431,22 +365,21 @@ class Constants
     const TBL_GROUPS = "groups";
     const TBL_SHEETS = "sheets";
     const TBL_SHEETS_PROBLEMS = "sheets_problems";
-
+    const TBL_TEAMS = "teams";
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
     const TBL_CONTEST_PROBLEMS = "contest_problems";
     const TBL_CONTEST_PARTICIPANTS = "contest_participants";
+    const TBL_CONTEST_TEAMS = "contest_teams";
     const TBL_CONTEST_ADMINS = "contest_admins";
     const TBL_PROBLEM_TAGS = "problem_tags";
     const TBL_GROUP_MEMBERS = "groups_members";
     const TBL_GROUPS_JOIN_REQUESTS = "groups_join_requests";
     const TBL_GROUPS_CONTESTS = "group_contests";
-
-
+    const TBL_TEAM_MEMBERS = "team_members";
     //
     // Fields
     //
-
     // Users
     const FLD_USERS_ID = "id";
     const FLD_USERS_USERNAME = "username";
@@ -466,12 +399,10 @@ class Constants
     const FLD_USERS_CODEFORCES_HANDLE = "codeforces_handle";        // Used in sign up & profile pages
     const FLD_USERS_UVA_HANDLE = "uva_handle";                      // Used in sign up & profile pages
     const FLD_USERS_LIVE_ARCHIVE_HANDLE = "live_archive_handle";    // Used in sign up & profile pages
-
     // Password resets
     const FLD_PASSWORD_RESETS_EMAIL = "email";
     const FLD_PASSWORD_RESETS_TOKEN = "token";
     const FLD_PASSWORD_RESETS_CREATED_AT = "created_at";
-
     // Contests
     const FLD_CONTESTS_ID = "id";
     const FLD_CONTESTS_OWNER_ID = "owner_id";
@@ -479,7 +410,6 @@ class Constants
     const FLD_CONTESTS_TIME = "time";
     const FLD_CONTESTS_DURATION = "duration";
     const FLD_CONTESTS_VISIBILITY = "visibility";
-
     // Problems
     const FLD_PROBLEMS_ID = "id";
     const FLD_PROBLEMS_JUDGE_ID = "judge_id";
@@ -488,7 +418,6 @@ class Constants
     const FLD_PROBLEMS_NAME = "name";
     const FLD_PROBLEMS_SOLVED_COUNT = "solved_count";
     const FLD_PROBLEMS_TRAILS_COUNT = "trials_count";                   // Derived attribute
-
     // Submissions
     const FLD_SUBMISSIONS_ID = "id";
     const FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID = "judge_submission_id";
@@ -501,7 +430,6 @@ class Constants
     const FLD_SUBMISSIONS_VERDICT = "verdict";
     const FLD_SUBMISSIONS_PROBLEM_NAME = "problem_name";            // Derived attribute
     const FLD_SUBMISSIONS_LANGUAGE_NAME = "language_name";          // Derived attribute
-
     // Questions
     const FLD_QUESTIONS_ID = "id";
     const FLD_QUESTIONS_USER_ID = "user_id";
@@ -512,96 +440,81 @@ class Constants
     const FLD_QUESTIONS_STATUS = "status";
     const FLD_QUESTIONS_ANSWER = "answer";
     const FLD_QUESTIONS_ADMIN_ID = "admin_id";
-
     // Groups
     const FLD_GROUPS_ID = "id";
     const FLD_GROUPS_NAME = "name";
     const FLD_GROUPS_OWNER_ID = "owner_id";
-
     // Judges
     const FLD_JUDGES_ID = "id";
     const FLD_JUDGES_NAME = "name";
     const FLD_JUDGES_LINK = "link";
-
     // Tags
     const FLD_TAGS_ID = "id";
     const FLD_TAGS_NAME = "name";
-
     // Languages
     const FLD_LANGUAGES_ID = "id";
     const FLD_LANGUAGES_NAME = "name";
-
+    // Teams
+    const FLD_TEAMS_ID = "id";
+    const FLD_TEAMS_NAME = "name";
     // Sheets
     const FLD_SHEETS_ID = "id";
     const FLD_SHEETS_NAME = "name";
     const FLD_SHEETS_GROUP_ID = "group_id";
-
-
-    //Notifications
+    // Notifications
     const FLD_NOTIFICATIONS_ID = "id";
     const FLD_NOTIFICATIONS_SENDER_ID = "sender_id";
     const FLD_NOTIFICATIONS_RECEIVER_ID = "receiver_id";
     const FLD_NOTIFICATIONS_RESOURCE_ID = "resource_id";    // Group id, contest id, ...etc
     const FLD_NOTIFICATIONS_TYPE = "type";                  // From group, contest, team, ...etc
     const FLD_NOTIFICATIONS_STATUS = "status";              // Read, unread
-
-
     // User handles
     const FLD_USER_HANDLES_USER_ID = "user_id";
     const FLD_USER_HANDLES_JUDGE_ID = "judge_id";
     const FLD_USER_HANDLES_HANDLE = "handle";
-
     // Contest problems
-    const FLD_CONTEST_PROBLEMS_PROBLEM_ID = "problem_id";
     const FLD_CONTEST_PROBLEMS_CONTEST_ID = "contest_id";
-
+    const FLD_CONTEST_PROBLEMS_PROBLEM_ID = "problem_id";
     // Contest participants
-    const FLD_CONTEST_PARTICIPANTS_USER_ID = "user_id";
     const FLD_CONTEST_PARTICIPANTS_CONTEST_ID = "contest_id";
-
+    const FLD_CONTEST_PARTICIPANTS_USER_ID = "user_id";
+    // Contest teams
+    const FLD_CONTEST_TEAMS_CONTEST_ID = "contest_id";
+    const FLD_CONTEST_TEAMS_TEAM_ID = "team_id";
     // Contest admins
     const FLD_CONTEST_ADMINS_ADMIN_ID = "user_id";
     const FLD_CONTEST_ADMINS_CONTEST_ID = "contest_id";
-
     // Problem tags
     const FLD_PROBLEM_TAGS_PROBLEM_ID = "problem_id";
     const FLD_PROBLEM_TAGS_TAG_ID = "tag_id";
-
     // Group members
     const FLD_GROUP_MEMBERS_USER_ID = "user_id";
     const FLD_GROUP_MEMBERS_GROUP_ID = "group_id";
-
     // Groups join requests
     const FLD_GROUPS_JOIN_REQUESTS_USER_ID = "user_id";
     const FLD_GROUPS_JOIN_REQUESTS_GROUP_ID = "group_id";
-
     // Sheet problems
     const FLD_SHEETS_PROBLEMS_SHEET_ID = "sheet_id";
     const FLD_SHEETS_PROBLEMS_PROBLEM_ID = "problem_id";
     const FLD_SHEETS_PROBLEMS_SOLUTION = "solution";
-    const FLD_SHEETS_PROBLEMS_SOLUTION_LANG = "solution_lang"; // ToDo to be connected to languages table later
-
+    const FLD_SHEETS_PROBLEMS_SOLUTION_LANG = "solution_lang";
     // Group contests
     const FLD_GROUP_CONTESTS_GROUP_ID = "group_id";
     const FLD_GROUP_CONTESTS_CONTEST_ID = "contest_id";
-
+    // Team members
+    const FLD_TEAM_MEMBERS_TEAM_ID = "team_id";
+    const FLD_TEAM_MEMBERS_USER_ID = "user_id";
     // ============================================================
     //endregion
-
-
     //region Exceptions
-
     //
     // Exceptions constants
     //
-
     // GroupInvitationException
     const GROUP_INVITATION_EXCEPTION_INVITED = "INVITED";
-
     const GROUP_INVITATION_EXCEPTION_MSGS = [
         self::GROUP_INVITATION_EXCEPTION_INVITED => 'This receiver has already received notification regarding this resource',
     ];
-
     //=============================================================
     //endregion
 }

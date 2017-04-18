@@ -1,17 +1,17 @@
-<table class="table table-bordered">
+<table class="table table-bordered table-hover">
     {{--Headings--}}
     <thead>
         <tr>
             @if(isset($checkBoxes) && $checkBoxes = 'true')
                 <th data-field="state" data-checkbox="true"></th>
             @endif
-            @include('problems.sortable_heading', ['title' => 'ID', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ID_KEY])
-            @include('problems.sortable_heading', ['title' => 'Name', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_NAME_KEY])
-            @include('problems.sortable_heading', ['title' => '#Acc.', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY])
-            @include('problems.sortable_heading', ['title' => 'Judge', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_JUDGE_KEY])
+            @include('problems.sortable_heading', ['title' => 'ID', 'width' => '7%', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ID_KEY])
+            @include('problems.sortable_heading', ['title' => 'Name', 'width' => '46%', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_NAME_KEY])
+            @include('problems.sortable_heading', ['title' => '#Acc.', 'width' => '7%', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY])
+            @include('problems.sortable_heading', ['title' => 'Judge', 'width' => '10%', 'sortParam' => Constants::URL_QUERY_SORT_PARAM_JUDGE_KEY])
 
             {{--Tags--}}
-            <th class="problems-table-head problems-table-head-tags">Tags</th>
+            <th class="text-center" width="30%">Tags</th>
         </tr>
     </thead>
 
@@ -28,7 +28,6 @@
                 $judgeData = \App\Utilities\Constants::JUDGES[$problem->judge_id];
                 $judgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
                 $judgeName = $judgeData[\App\Utilities\Constants::JUDGE_NAME_KEY];
-
                 if ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_ACCEPTED)
                     $style = 'success';
                 elseif ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_WRONG_SUBMISSION)

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="panel panel-default groups-panel">
-            <a href="{{ url('/group/add') }}">
+            <a href="{{ url('/group/new') }}">
                 <span class="btn btn-link text-dark pull-right margin-5px">New</span>
             </a>
             <span onclick="$('.group-search-box').slideToggle();"

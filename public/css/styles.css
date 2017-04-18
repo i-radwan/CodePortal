@@ -803,16 +803,8 @@ footer {
     text-align: left;
 }
 
-.problems-table-head {
-    text-align: center;
-}
-
 .problems-table-head-sortable {
     position: relative;
-}
-
-.problems-table-head-tags {
-    width: 20%;
 }
 
 .problems-table-sorting-arrow-asc {
@@ -958,6 +950,13 @@ footer {
     font-weight: 300;
 }
 
+.contest-ask-question select {
+    margin: 20px auto 10px auto;
+    font-size: 18px;
+    /*padding: 23px 10px;*/
+    font-weight: 300;
+}
+
 .contest-ask-question button {
     margin: 5px auto;
     font-size: 18px;
@@ -1009,7 +1008,7 @@ footer {
 
 /*  Contest tabs    */
 .content-tabs {
-    padding: 20px /*ToDo: I think it's better to remove the padding*/
+    padding: 0;
 }
 
 .content-tabs .nav-tabs {

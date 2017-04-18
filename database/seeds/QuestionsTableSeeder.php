@@ -43,15 +43,14 @@ class QuestionsTableSeeder extends Seeder
                     Constants::FLD_QUESTIONS_USER_ID => $userID,
                     Constants::FLD_QUESTIONS_PROBLEM_ID => $problemID,
                     Constants::FLD_QUESTIONS_CONTEST_ID => $contest->id,
-                    Constants::FLD_QUESTIONS_TITLE => $faker->title,
+                    Constants::FLD_QUESTIONS_TITLE => $faker->text,
                     Constants::FLD_QUESTIONS_CONTENT => $faker->text,
                     Constants::FLD_QUESTIONS_STATUS => $faker->randomElement(Constants::QUESTION_STATUS),
                     Constants::FLD_QUESTIONS_ANSWER => $faker->text,
                     Constants::FLD_QUESTIONS_ADMIN_ID => $organizerID,
 
                 ]);
-            }
-            else {
+            } else {
                 // Insert question without answer
                 DB::table(Constants::TBL_QUESTIONS)->insert([
                     Constants::FLD_QUESTIONS_USER_ID => $userID,

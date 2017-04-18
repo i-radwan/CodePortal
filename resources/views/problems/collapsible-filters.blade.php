@@ -1,11 +1,11 @@
 <div class="panel panel-default problems-filters-panel">
     <div class="panel-heading">
-        <a class="text-dark" data-toggle="collapse" href="#collapseBody">
+        <a class="text-dark" data-toggle="collapse" href="#filters">
             Filters
         </a>
     </div>
 
-    <div id="collapseBody" class="panel-collapse collapse in">
+    <div id="filters" class="panel-collapse collapse in">
         <div class="panel-body">
             <form action="{{ Request::url() }}" method="get" role="form">
 
@@ -44,7 +44,7 @@
                     <h4>Tags:</h4>
                     <div class="row">
                         @foreach ($tags as $tag)
-                            <div class="col-sm-3 checkbox" style="margin-top: 0">
+                            <div class="col-sm-3 checkbox" style="margin-top: 0; margin-bottom: 5px">
                                 <label>
                                     <input type="checkbox" {{ in_array($tag->id, Request::get(Constants::URL_QUERY_TAGS_KEY, [])) ? 'checked' : '' }}
                                            name="{{ Constants::URL_QUERY_TAGS_KEY }}[]"

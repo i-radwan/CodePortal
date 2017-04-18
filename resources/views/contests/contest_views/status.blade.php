@@ -22,13 +22,13 @@
                 $submissionProblemName = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_PROBLEM_NAME];
                 $submissionProblemLink = \App\Utilities\Utilities::generateProblemLink(new \App\Models\Problem($submission));
                 $submissionJudgeID = $submission[\App\Utilities\Constants::FLD_PROBLEMS_JUDGE_ID];
-                $submissionJudgeName = \App\Utilities\Constants::JUDGES[$submissionJudgeID][\App\Utilities\Constants::JUDGE_NAME_KEY];
-                $submissionJudgeLink = \App\Utilities\Constants::JUDGES[$submissionJudgeID][\App\Utilities\Constants::JUDGE_LINK_KEY];
+                $judgeData = \App\Utilities\Constants::JUDGES[$submissionJudgeID];
+                $submissionJudgeName = $judgeData[\App\Utilities\Constants::JUDGE_NAME_KEY];
+                $submissionJudgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
                 $submissionVerdictId = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_VERDICT];
                 $submissionVerdictName = \App\Utilities\Constants::VERDICT_NAMES[$submissionVerdictId];
                 $submissionExecutionTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_EXECUTION_TIME];
-                //TODO: only 2 decimal places
-                $submissionConsumedMemory = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY] / 1024;
+                $submissionConsumedMemory = round($submission[\App\Utilities\Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY] / 1024);
                 $submissionLanguage = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_LANGUAGE_NAME];
                 $submissionTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_SUBMISSION_TIME];
                 $submissionTime = date('Y-m-d H:i:s', $submissionTime);
