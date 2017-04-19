@@ -230,20 +230,6 @@ class Problem extends Model
             return $query;
         }
 
-        // ORing tags
-//        $query
-//            ->distinct()
-//            ->join(
-//                Constants::TBL_PROBLEM_TAGS,
-//                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_PROBLEM_ID,
-//                '=',
-//                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID
-//            )
-//            ->whereIn(
-//                Constants::TBL_PROBLEM_TAGS . '.' . Constants::FLD_PROBLEM_TAGS_TAG_ID,
-//                $tagsIDs
-//            );
-
         // ANDing tags
         $query
             ->join(
