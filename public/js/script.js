@@ -51,6 +51,9 @@ var app = {
 
     //endregion
 
+    // Retrieve all tags from db, such that auto complete doesn't touch the database
+    // each time a new letter is typed
+    allTagsList: [],
     // ==================================================
     //                 MAIN FUNCTIONS
     // ==================================================
@@ -120,6 +123,9 @@ var app = {
 
         // Add/Edit contest page
         if ($("#add-edit-contest-page-hidden-element").length) {
+
+            // Fetch all tags
+            app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
             app.configureTagsOrganisersLists();
@@ -224,6 +230,7 @@ var app = {
         });
         //endregion
     },
+
     /**
      * Retrieve problem solution from url
      *
@@ -257,6 +264,7 @@ var app = {
             }
         });
     },
+
     /**
      * Fill problem answer modal fields once Solution button is clicked
      *
@@ -321,6 +329,7 @@ var app = {
             }
         });
     },
+
     /**
      * Lazy delete certain notification
      * @param e
@@ -353,6 +362,7 @@ var app = {
         });
         return false;
     },
+
     /**
      * Hide the notification element from notifications panel once deleted successfully
      *
@@ -383,16 +393,28 @@ var app = {
     //            ADD/EDIT CONTEST FUNCTIONS
     // ==================================================
     /**
+     * Fetch all tags from db and save to local variable
+     * to avoid database touching each time
+     */
+    fetchAllTagsFromDB: function () {
+        // Send request to path in tags-path data attr
+        $.get($("#tagsAuto").data('tags-path'), function (data) {
+            app.allTagsList = data;
+        });
+    },
+    /**
      * Configure lists and allow auto complete
      */
     configureTagsOrganisersLists: function () {
+
         // Tags AutoComplete
 
         // Define tag lists and apply autocomplete to it
         this.tagsList = document.getElementById("tagsList");
 
         // Call typeahead for Tags autoCompletion
-        $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0));
+        $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0, app.allTagsList));
+
 
         // Organisers AutoComplete
 
@@ -403,6 +425,7 @@ var app = {
         $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
 
     },
+
     /**
      * Fill contest add/edit fields from the stored session
      */
@@ -494,6 +517,8 @@ var app = {
                 'selected_tags': selected_tags,
                 'selected_judges': selected_judges
             };
+
+        // Send request to server in order to save filters to server session
         $.ajax({
             url: url,
             type: 'POST',
@@ -510,6 +535,7 @@ var app = {
             }
         });
     },
+
     /**
      * Clear problems filters from the server and client session
      * @param url
@@ -541,12 +567,23 @@ var app = {
      * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion
      * @returns {{source: source, updater: updater}}
      */
-    autoComplete: function (path, list, type) {
+    autoComplete: function (path, list, type, downloadedList) {
         return ({
             source: function (query, process) {
-                return $.get(path, {query: query}, function (data) {
-                    return process(data);
-                })
+                // if tags auto complete, just process the saved array
+                if (type == 0) {
+                    return process(downloadedList);
+                }
+                // if organizers, request the array from server
+                else if (type == 1) {
+                    // Use this threshold to prevent looking for username
+                    // using the first letter only (a lot of possibilities exist)
+                    if (query.length >= 2) {
+                        return $.get(path, {query: query}, function (data) {
+                            return process(data);
+                        });
+                    }
+                }
             },
             updater: function (item) {
                 // Get selected item name
@@ -668,6 +705,9 @@ var app = {
         // Clear sessions
         app.clearSession();
     },
+    /**
+     * Bind close button to clear item from given list in sessionStorage
+     */
     bindCloseButtonClick: function () {
         // Wait for delete icon click
         $(document).on('mousedown', '.organiser-close-icon, .tag-close-icon', function (event) {
