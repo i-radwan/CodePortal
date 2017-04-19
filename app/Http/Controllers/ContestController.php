@@ -189,11 +189,15 @@ class ContestController extends Controller
     /**
      * Retrieve usernames for auto complete
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function organisersAutoComplete()
+    public function organisersAutoComplete(Request $request)
     {
-        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])->get();
+        $query = $request->get('query');
+        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])
+            ->where(Constants::FLD_USERS_USERNAME, 'LIKE', "%$query%")
+            ->get();
         return response()->json($data);
     }
 

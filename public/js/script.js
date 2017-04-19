@@ -51,6 +51,9 @@ var app = {
 
     //endregion
 
+    // Retrieve all tags from db, such that auto complete doesn't touch the database
+    // each time a new letter is typed
+    allTagsList: [],
     // ==================================================
     //                 MAIN FUNCTIONS
     // ==================================================
@@ -120,6 +123,9 @@ var app = {
 
         // Add/Edit contest page
         if ($("#add-edit-contest-page-hidden-element").length) {
+
+            // Fetch all tags
+            app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
             app.configureTagsOrganisersLists();
@@ -386,7 +392,16 @@ var app = {
     // ==================================================
     //            ADD/EDIT CONTEST FUNCTIONS
     // ==================================================
-
+    /**
+     * Fetch all tags from db and save to local variable
+     * to avoid database touching each time
+     */
+    fetchAllTagsFromDB: function () {
+        // Send request to path in tags-path data attr
+        $.get($("#tagsAuto").data('tags-path'), function (data) {
+            app.allTagsList = data;
+        });
+    },
     /**
      * Configure lists and allow auto complete
      */
@@ -398,7 +413,7 @@ var app = {
         this.tagsList = document.getElementById("tagsList");
 
         // Call typeahead for Tags autoCompletion
-        $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0));
+        $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0, app.allTagsList));
 
 
         // Organisers AutoComplete
@@ -552,12 +567,23 @@ var app = {
      * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion
      * @returns {{source: source, updater: updater}}
      */
-    autoComplete: function (path, list, type) {
+    autoComplete: function (path, list, type, downloadedList) {
         return ({
             source: function (query, process) {
-                return $.get(path, {query: query}, function (data) {
-                    return process(data);
-                })
+                // if tags auto complete, just process the saved array
+                if (type == 0) {
+                    return process(downloadedList);
+                }
+                // if organizers, request the array from server
+                else if (type == 1) {
+                    // Use this threshold to prevent looking for username
+                    // using the first letter only (a lot of possibilities exist)
+                    if (query.length >= 2) {
+                        return $.get(path, {query: query}, function (data) {
+                            return process(data);
+                        });
+                    }
+                }
             },
             updater: function (item) {
                 // Get selected item name
