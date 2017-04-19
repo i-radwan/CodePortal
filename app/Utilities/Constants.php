@@ -73,11 +73,11 @@ class Constants
     const SINGLE_CONTEST_TIME_KEY = "time";
     const SINGLE_CONTEST_DURATION_KEY = "duration";
 
-    const CHECKED_PROBLEMS = "checkedRows";
-    const CONTESTS_PROBLEMS_FILTERS = "cProblemsFilters";
-    const CONTESTS_CHECKED_JUDGES = "cJudges";
-    const CONTESTS_CHECKED_TAGS = "cTags";
-    const CONTESTS_MENTIONED_ORGANISERS = "mOrganisers";
+    // Add/edit contest page keys
+    const CONTESTS_SELECTED_FILTERS = "selected_filters";
+    const CONTESTS_SELECTED_JUDGES = "selected_judges";
+    const CONTESTS_SELECTED_TAGS = "selected_tags";
+    const CONTESTS_SELECTED_ORGANISERS = "selected_organisers";
     const CONTEST_AUTO_COMPLETE_ORGANISERS = 1;
     const CONTEST_AUTO_COMPLETE_TAGS = 0;
 
@@ -347,6 +347,9 @@ class Constants
     // Database constants
     //
 
+    //
+    // TODO: I think there is no need for the string constants below
+    //
     const ACCOUNT_ROLE_USER_KEY = "USER";
     const ACCOUNT_ROLE_ADMIN_KEY = "ADMIN";
     const ACCOUNT_ROLE_SUPER_ADMIN_KEY = "SUPER_ADMIN";
@@ -424,11 +427,10 @@ class Constants
     const TBL_JUDGES = "judges";
     const TBL_TAGS = "tags";
     const TBL_LANGUAGES = "languages";
-    const TBL_NOTIFICATIONS = "notifications";
     const TBL_GROUPS = "groups";
     const TBL_SHEETS = "sheets";
-    const TBL_SHEETS_PROBLEMS = "sheets_problems";
     const TBL_TEAMS = "teams";
+    const TBL_NOTIFICATIONS = "notifications";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
@@ -437,9 +439,10 @@ class Constants
     const TBL_CONTEST_TEAMS = "contest_teams";
     const TBL_CONTEST_ADMINS = "contest_admins";
     const TBL_PROBLEM_TAGS = "problem_tags";
-    const TBL_GROUP_MEMBERS = "groups_members";
-    const TBL_GROUPS_JOIN_REQUESTS = "groups_join_requests";
-    const TBL_GROUPS_CONTESTS = "group_contests";
+    const TBL_GROUP_MEMBERS = "group_members";
+    const TBL_GROUP_CONTESTS = "group_contests";
+    const TBL_GROUP_JOIN_REQUESTS = "group_join_requests";
+    const TBL_SHEET_PROBLEMS = "sheet_problems";
     const TBL_TEAM_MEMBERS = "team_members";
 
     //
@@ -486,7 +489,7 @@ class Constants
     const FLD_PROBLEMS_JUDGE_SECOND_KEY = "judge_second_key";
     const FLD_PROBLEMS_NAME = "name";
     const FLD_PROBLEMS_SOLVED_COUNT = "solved_count";
-    const FLD_PROBLEMS_TRAILS_COUNT = "trials_count";                   // Derived attribute
+    const FLD_PROBLEMS_TRAILS_COUNT = "trials_count";               // Derived attribute
 
     // Submissions
     const FLD_SUBMISSIONS_ID = "id";
@@ -512,11 +515,6 @@ class Constants
     const FLD_QUESTIONS_ANSWER = "answer";
     const FLD_QUESTIONS_ADMIN_ID = "admin_id";
 
-    // Groups
-    const FLD_GROUPS_ID = "id";
-    const FLD_GROUPS_NAME = "name";
-    const FLD_GROUPS_OWNER_ID = "owner_id";
-
     // Judges
     const FLD_JUDGES_ID = "id";
     const FLD_JUDGES_NAME = "name";
@@ -530,14 +528,19 @@ class Constants
     const FLD_LANGUAGES_ID = "id";
     const FLD_LANGUAGES_NAME = "name";
 
-    // Teams
-    const FLD_TEAMS_ID = "id";
-    const FLD_TEAMS_NAME = "name";
+    // Groups
+    const FLD_GROUPS_ID = "id";
+    const FLD_GROUPS_NAME = "name";
+    const FLD_GROUPS_OWNER_ID = "owner_id";
 
     // Sheets
     const FLD_SHEETS_ID = "id";
     const FLD_SHEETS_NAME = "name";
     const FLD_SHEETS_GROUP_ID = "group_id";
+
+    // Teams
+    const FLD_TEAMS_ID = "id";
+    const FLD_TEAMS_NAME = "name";
 
     // Notifications
     const FLD_NOTIFICATIONS_ID = "id";
@@ -577,19 +580,19 @@ class Constants
     const FLD_GROUP_MEMBERS_USER_ID = "user_id";
     const FLD_GROUP_MEMBERS_GROUP_ID = "group_id";
 
-    // Groups join requests
+    // Group contests
+    const FLD_GROUP_CONTESTS_GROUP_ID = "group_id";
+    const FLD_GROUP_CONTESTS_CONTEST_ID = "contest_id";
+
+    // Group join requests
     const FLD_GROUPS_JOIN_REQUESTS_USER_ID = "user_id";
     const FLD_GROUPS_JOIN_REQUESTS_GROUP_ID = "group_id";
 
     // Sheet problems
-    const FLD_SHEETS_PROBLEMS_SHEET_ID = "sheet_id";
-    const FLD_SHEETS_PROBLEMS_PROBLEM_ID = "problem_id";
-    const FLD_SHEETS_PROBLEMS_SOLUTION = "solution";
-    const FLD_SHEETS_PROBLEMS_SOLUTION_LANG = "solution_lang";
-
-    // Group contests
-    const FLD_GROUP_CONTESTS_GROUP_ID = "group_id";
-    const FLD_GROUP_CONTESTS_CONTEST_ID = "contest_id";
+    const FLD_SHEET_PROBLEMS_SHEET_ID = "sheet_id";
+    const FLD_SHEET_PROBLEMS_PROBLEM_ID = "problem_id";
+    const FLD_SHEET_PROBLEMS_SOLUTION = "solution";
+    const FLD_SHEET_PROBLEMS_SOLUTION_LANG = "solution_lang";
 
     // Team members
     const FLD_TEAM_MEMBERS_TEAM_ID = "team_id";
@@ -604,7 +607,7 @@ class Constants
     // Exceptions constants
     //
 
-    // GroupInvitationException
+    // Group Invitation Exception
     const GROUP_INVITATION_EXCEPTION_INVITED = "INVITED";
 
     const GROUP_INVITATION_EXCEPTION_MSGS = [

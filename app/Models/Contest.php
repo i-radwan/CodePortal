@@ -214,16 +214,6 @@ class Contest extends Model
     }
 
     /**
-     * Return the notifications pointing at this contest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
-    }
-
-    /**
      * Return all groups related to this contest
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -232,10 +222,20 @@ class Contest extends Model
     {
         return $this->belongsToMany(
             Contest::class,
-            Constants::TBL_GROUPS_CONTESTS,
+            Constants::TBL_GROUP_CONTESTS,
             Constants::FLD_GROUP_CONTESTS_CONTEST_ID,
             Constants::FLD_GROUP_CONTESTS_GROUP_ID
-        );
+        )->withTimestamps();
+    }
+
+    /**
+     * Return the notifications pointing at this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }
 
     /**

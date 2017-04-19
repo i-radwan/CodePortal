@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Contest;
 use App\Models\Group;
+use App\Utilities\Constants;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,14 +22,16 @@ class ValidatorServiceProvider extends ServiceProvider
         Validator::extend('resource_exists_in_table', function ($attribute, $value, $parameters, $validator) {
             $validatorData = $validator->getData(); // Contains data in request
 
-            $type = $validatorData['type'];
-            $resourceID = $validatorData['resource_id'];
+            $type = $validatorData[Constants::FLD_NOTIFICATIONS_TYPE];
+            $resourceID = $validatorData[Constants::FLD_NOTIFICATIONS_RESOURCE_ID];
 
             if ($type == 0) { // Check if exists in contests
                 return Contest::find($resourceID);
-            } else if ($type == 1) { // Check if exists in groups
+            }
+            if ($type == 1) { // Check if exists in groups
                 return Group::find($resourceID);
             }
+
             return false;
         }, "Resource id doesn't exist!");
     }

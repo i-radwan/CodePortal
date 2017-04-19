@@ -19,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,600" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    {{--Custom Styling--}}
+    <!-- Custom Styling -->
     <link href="/css/styles.css" rel="stylesheet">
 
     <!-- Scripts -->

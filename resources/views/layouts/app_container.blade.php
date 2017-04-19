@@ -16,7 +16,7 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet">
 
-    {{--Custom Styling--}}
+    <!-- Custom Styling -->
     <link href="/css/styles.css" rel="stylesheet">
 
     <!-- Scripts -->
@@ -26,11 +26,12 @@
 </head>
 
 <body>
-    @yield('content')
+@yield('content')
 
-    <!-- Scripts -->
-    <script src="/js/jquery-3.1.1.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/script.js"></script>
+<!-- Scripts -->
+<script src="/js/jquery-3.1.1.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/script.js"></script>
+
 </body>
 </html>
