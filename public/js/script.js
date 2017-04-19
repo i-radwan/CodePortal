@@ -224,6 +224,7 @@ var app = {
         });
         //endregion
     },
+
     /**
      * Retrieve problem solution from url
      *
@@ -257,6 +258,7 @@ var app = {
             }
         });
     },
+
     /**
      * Fill problem answer modal fields once Solution button is clicked
      *
@@ -321,6 +323,7 @@ var app = {
             }
         });
     },
+
     /**
      * Lazy delete certain notification
      * @param e
@@ -353,6 +356,7 @@ var app = {
         });
         return false;
     },
+
     /**
      * Hide the notification element from notifications panel once deleted successfully
      *
@@ -382,10 +386,12 @@ var app = {
     // ==================================================
     //            ADD/EDIT CONTEST FUNCTIONS
     // ==================================================
+
     /**
      * Configure lists and allow auto complete
      */
     configureTagsOrganisersLists: function () {
+
         // Tags AutoComplete
 
         // Define tag lists and apply autocomplete to it
@@ -393,6 +399,7 @@ var app = {
 
         // Call typeahead for Tags autoCompletion
         $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0));
+
 
         // Organisers AutoComplete
 
@@ -403,6 +410,7 @@ var app = {
         $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
 
     },
+
     /**
      * Fill contest add/edit fields from the stored session
      */
@@ -494,6 +502,8 @@ var app = {
                 'selected_tags': selected_tags,
                 'selected_judges': selected_judges
             };
+
+        // Send request to server in order to save filters to server session
         $.ajax({
             url: url,
             type: 'POST',
@@ -510,6 +520,7 @@ var app = {
             }
         });
     },
+
     /**
      * Clear problems filters from the server and client session
      * @param url
@@ -668,6 +679,9 @@ var app = {
         // Clear sessions
         app.clearSession();
     },
+    /**
+     * Bind close button to clear item from given list in sessionStorage
+     */
     bindCloseButtonClick: function () {
         // Wait for delete icon click
         $(document).on('mousedown', '.organiser-close-icon, .tag-close-icon', function (event) {

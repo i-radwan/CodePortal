@@ -130,7 +130,8 @@ class ProblemController extends Controller
         //ToDO (Samir) improve the function "do something towards sortParams
         $searchStr = "";
         $tagsIDs = (count(Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)->get()) == 0) ? null : Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)->get();
-        $tagsIDs = $tagsIDs->pluck(Constants::FLD_TAGS_ID)->toArray();
+        if ($tagsIDs)
+            $tagsIDs = $tagsIDs->pluck(Constants::FLD_TAGS_ID)->toArray();
         $judgesIDs = count($judgesIDs) == 0 ? null : $judgesIDs;
         $sortParam = $request->get(Constants::URL_QUERY_SORT_PARAM_KEY);
         if ($sortParam && !array_key_exists($sortParam, Constants::PROBLEMS_SORT_PARAMS)) {
