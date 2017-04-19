@@ -16,7 +16,8 @@
 
                                 <div class="col-md-6">
                                     <input id="name" type="text" class="form-control" name="name"
-                                           value="{{ (isset($group->name))?$group->name:old('name') }}" placeholder="Name"
+                                           value="{{ (isset($group->name))?$group->name:old('name') }}"
+                                           placeholder="Name"
                                            required
                                            autofocus>
 
@@ -40,4 +41,6 @@
             </div>
         </div>
     </div>
+    <span class="page-distinguishing-element" id="add-edit-group-page-hidden-element"></span>
+
 @endsection

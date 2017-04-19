@@ -12,4 +12,5 @@
             </div>
         </div>
     </div>
+    <span class="page-distinguishing-element" id="contests-page-hidden-element"></span>
 @endsection

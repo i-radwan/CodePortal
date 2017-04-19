@@ -10,7 +10,7 @@
                                {{ in_array($judge->id, $judges->toArray()) ? 'checked' : '' }}
                                value="{{ $judge->id }}"
                                id="judge-checkbox-{{ $judge->id }}"
-                               onchange="syncDataWithSession(judgesSessionKey, '{{ $judge->id }}', true)">
+                               onchange="app.syncDataWithSession(app.judgesSessionKey, '{{ $judge->id }}', true)">
                         {{ $judge->name }}
                     </label>
                 </div>
@@ -35,9 +35,11 @@
         {{--Apply filters & Clear buttons--}}
         <p>
             <input class="btn btn-default" value="Apply Filters"
-                   onclick="applyFilters('{{Request::url()}}/tags_judges_filters_sync', '{{csrf_token()}}')"/>
-            <a href="{{ Request::url() }}" class="btn btn-link text-dark pull-right contest_clear_problems_filters"
-               id="clearTableLink">Clear</a>
+                   onclick="app.applyFilters('{{Request::url()}}/tags_judges_filters_sync', '{{csrf_token()}}', '{{ Request::url() }}')"/>
+
+            <span onclick="app.clearProblemsFilters('{{Request::url()}}/tags_judges_filters_detach', '{{csrf_token()}}', '{{ Request::url() }}')"
+                  class="btn btn-link text-dark pull-right"
+                  id="clear-table-sorting-link">Clear</span>
         </p>
     </div>
 </div>

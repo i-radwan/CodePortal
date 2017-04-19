@@ -44,7 +44,7 @@
                     <input class="check_state"
                            type="checkbox"
                            id="problem-checkbox-{{ $rawID }}"
-                           onclick="syncDataWithSession(problemsIDsSessionKey, '{{ $rawID }}', true)">
+                           onclick="app.syncDataWithSession(app.problemsIDsSessionKey, '{{ $rawID }}', true)">
                 </td>
             @endif
 

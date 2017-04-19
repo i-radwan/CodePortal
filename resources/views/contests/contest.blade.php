@@ -36,7 +36,7 @@
                     </button>
                 </form>
                 <span class="btn btn-link text-dark pull-right margin-5px"
-                      onclick="toggleSortableStatus();">Reorder</span>
+                      onclick="app.toggleSortableStatus();">Reorder</span>
             @endif
             @if($isParticipant)
                 <form action="{{url('contest/leave/'.$contestID)}}"
@@ -93,7 +93,7 @@
                         <div role="tabpanel" class="tab-pane active" id="problems">
                             <button
                                     type="submit" class="btn btn-primary pull-right problems-reorder-view save"
-                                    onclick="saveProblemsOrderToDB('{{url('contest/reorder/'.$contestID)}}', '{{csrf_token()}}')">
+                                    onclick="app.saveProblemsOrderToDB('{{url('contest/reorder/'.$contestID)}}', '{{csrf_token()}}')">
                                 Save
                             </button>
                             @include('contests.contest_views.problems')
@@ -130,4 +130,6 @@
         @endif
 
     </div>
+    <span class="page-distinguishing-element" id="single-contest-page-hidden-element"></span>
+
 @endsection

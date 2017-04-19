@@ -7,7 +7,7 @@
         {{--Notifications bell icon--}}
         <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"
            {{--If there's unread notifications, mark them read once clicked--}}
-           @if($unreadCount) onclick="markAllNotificationsRead('{{ csrf_token() }}', '{{ url('notifications/mark_all_read') }}');" @endif >
+           @if($unreadCount) onclick="app.markAllNotificationsRead('{{ csrf_token() }}', '{{ url('notifications/mark_all_read') }}');" @endif >
             <i id="notifications-icon"
                class="notifications-icon fa fa-bell{{($unreadCount)?' dark-red':'-o'}}"
                aria-hidden="true">
@@ -63,7 +63,7 @@
                     {{--Notification cancel icon--}}
                     <i class="fa fa-times notification-delete"
                        aria-hidden="true"
-                       onclick="cancelNotification(event, '{{ csrf_token() }}', '{{ url("notification/".$notification->id) }}', this);">
+                       onclick="app.cancelNotification(event, '{{ csrf_token() }}', '{{ url("notification/".$notification->id) }}', this);">
                     </i>
                 </li>
 

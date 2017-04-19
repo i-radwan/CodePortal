@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/add/tags_judges_filters_sync', 'ContestController@applyProblemsFilters');
+    Route::post('contest/add/tags_judges_filters_detach', 'ContestController@clearProblemsFilters');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
     Route::post('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 

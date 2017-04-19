@@ -1,6 +1,5 @@
-@php($solution_lang = $problem->pivot->solution_lang)
 <select name="solution_lang" id="solution_lang"
-        onchange="editor.getSession().setMode('ace/mode/'+ this.options[this.selectedIndex].value);">
+        onchange="app.editor.getSession().setMode('ace/mode/'+ this.options[this.selectedIndex].value);">
     <option value="c_cpp">C/C++</option>
     <option value="java">Java</option>
     <option value="python">Python</option>
