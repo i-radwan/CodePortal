@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notification;
 use Auth;
+use App\Models\Notification;
 use App\Utilities\Constants;
 
 class NotificationController extends Controller
@@ -34,6 +34,7 @@ class NotificationController extends Controller
     public function deleteNotification(Notification $notification)
     {
         $user = Auth::user();
+
         // Find the notification and update status
         if ($user) {
             if ($user->receivedNotifications()->find($notification))

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Group;
 use App\Models\Sheet;
+use App\Models\Team;
 use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Support\Facades\Gate;
@@ -131,6 +132,12 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             return false;
+        });
+
+        // Member of team
+        Gate::define("member-team", function (User $user, Team $team) {
+            // Check if user is member of the team
+            return ($user->joiningTeams()->find($team[Constants::FLD_GROUPS_ID]));
         });
     }
 }
