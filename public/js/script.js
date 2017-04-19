@@ -128,13 +128,33 @@ var app = {
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureTagsOrganisersLists();
+            app.configureTagsOrganisersLists(true, true);
 
             // Render saved data from session into form
             app.fillContestFormFromSession();
 
             // Item delete from session
             app.bindCloseButtonClick();
+        }
+
+        // Problems filters
+        if ($("#problems-page-hidden-element").length) {
+            // Set different tagsSessionKey for problems page
+            // to maintain the tags stored for add/edit contest
+            app.tagsSessionKey = 'problems_filters_tags_session_key';
+
+            // Clear this session
+            sessionStorage.setItem(app.tagsSessionKey, '');
+
+            // Fetch all tags
+            app.fetchAllTagsFromDB();
+
+            // Configure lists and autocomplete typeahead
+            app.configureTagsOrganisersLists(true, false);
+
+            // Retrieve tags from session to view
+            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
+
         }
     },
 
@@ -400,30 +420,33 @@ var app = {
         // Send request to path in tags-path data attr
         $.get($("#tagsAuto").data('tags-path'), function (data) {
             app.allTagsList = data;
+            console.log(app.allTagsList);
         });
     },
     /**
      * Configure lists and allow auto complete
+     *
+     * @param tags: bind tags with auto complete
+     * @param organisers: bind organisers with auto complete
      */
-    configureTagsOrganisersLists: function () {
+    configureTagsOrganisersLists: function (tags, organisers) {
 
         // Tags AutoComplete
-
-        // Define tag lists and apply autocomplete to it
-        this.tagsList = document.getElementById("tagsList");
-
-        // Call typeahead for Tags autoCompletion
-        $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0, app.allTagsList));
-
+        if (tags) {
+            // Define tag lists and apply autocomplete to it
+            this.tagsList = document.getElementById("tagsList");
+            // Call typeahead for Tags autoCompletion
+            $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0));
+        }
 
         // Organisers AutoComplete
+        if (organisers) {
+            //Organisers List
+            this.organisersList = document.getElementById("organisers-list");
 
-        //Organisers List
-        this.organisersList = document.getElementById("organisers-list");
-
-        //Call typeahead for Organisers autoCompletion
-        $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
-
+            //Call typeahead for Organisers autoCompletion
+            $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
+        }
     },
 
     /**
@@ -567,12 +590,12 @@ var app = {
      * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion
      * @returns {{source: source, updater: updater}}
      */
-    autoComplete: function (path, list, type, downloadedList) {
+    autoComplete: function (path, list, type) {
         return ({
             source: function (query, process) {
                 // if tags auto complete, just process the saved array
                 if (type == 0) {
-                    return process(downloadedList);
+                    return process(app.allTagsList);
                 }
                 // if organizers, request the array from server
                 else if (type == 1) {
@@ -743,6 +766,17 @@ var app = {
     },
 
 
+    // ==================================================
+    //        PROBLEMS PAGE FILTERS FUNCTIONS
+    // ==================================================
+
+    /**
+     * Set problems filters hidden inputs values from sessions, then clear sessions
+     */
+    moveProblemsFiltersSessionDataToHiddenFields: function () {
+        // Set value
+        $("#tags").val(JSON.parse(sessionStorage.getItem(app.tagsSessionKey)).join());
+    },
     // ==================================================
     //        CONTEST PROBLEMS SORT FUNCTIONS
     // ==================================================

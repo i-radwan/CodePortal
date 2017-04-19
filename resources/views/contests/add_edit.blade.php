@@ -15,6 +15,8 @@
                             {{ csrf_field() }}
                             <input type="hidden" id="problems-ids-hidden" name="problems_ids"/>
                             <input type="hidden" id="organisers-ids-hidden" name="organisers"/>
+
+                            {{--Name--}}
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} has-feedback">
                                 <label for="name" class="col-md-4 control-label">Name</label>
 
@@ -29,6 +31,8 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{--Time--}}
                             <div class="form-group{{ $errors->has('time') ? ' has-error' : '' }} has-feedback">
                                 <label for="time" class="col-md-4 control-label">Time</label>
 
@@ -43,6 +47,8 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{--Duration--}}
                             <div class="form-group{{ $errors->has('duration') ? ' has-error' : '' }} has-feedback">
                                 <label for="duration" class="col-md-4 control-label">Duration</label>
 
@@ -57,6 +63,8 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{--Visibility--}}
                             <div class="form-group{{ $errors->has('visibility') ? ' has-error' : '' }} has-feedback">
                                 <label for="duration" class="col-md-4 control-label">Visibility</label>
                                 <div class="col-md-6 visibility-div">
@@ -84,6 +92,8 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{--Problems--}}
                             <div class="form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
                                 <label for="problems" class="col-md-12 control-label" style="text-align: center">Problems</label>
                                 <br>
@@ -100,6 +110,8 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{--Organisers--}}
                             <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
                                 <label for="organizers" class="col-md-4 control-label">Organizers</label>
                                 <div class="col-md-6">
@@ -113,6 +125,8 @@
                                     @endif
                                 </div>
                             </div>
+
+                            {{--Submit--}}
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <button onclick="app.moveSessionDataToHiddenFields()" type="submit"

@@ -663,14 +663,14 @@ footer {
 /*====================================*/
 /*====== ADD/EDIT CONTEST PAGE =======*/
 /*====================================*/
-.search-box, .close-icon, .search-wrapper {
+.search-box, .close-icon {
     position: relative;
     padding: 6px;
 }
 
 .search-wrapper {
-    width: 85%;
-
+    width: 90%;
+    margin: 0 auto;
 }
 
 .search-box {

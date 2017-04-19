@@ -23,7 +23,7 @@
             <div class="search-wrapper">
                 <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off"
                        onkeypress="return event.keyCode != 13;"
-                       data-tags-path="{{url('contest/add/tags_auto_complete')}}"/>
+                       data-tags-path="{{url('tags_auto_complete')}}"/>
                 <button class="close-icon" type="reset"></button>
             </div>
             <div class="container">

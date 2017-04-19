@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Contests routes
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
-    Route::get('contest/add/tags_auto_complete', 'ContestController@tagsAutoComplete');
+    Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete');
     Route::get('contest/add/organisers_auto_complete', 'ContestController@organisersAutoComplete');
 
     Route::post('contest/add', 'ContestController@addContest');

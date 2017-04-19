@@ -54,12 +54,20 @@ class ProblemController extends Controller
     /**
      * Return parsed tag filters from the url query
      *
-     * @return array Array of tags ids
+     * @return array Array of tags name
      */
     public function getTagsFilter()
     {
         if (request()->has(Constants::URL_QUERY_TAG_KEY)) {
-            return [request()->get(Constants::URL_QUERY_TAG_KEY)];
+
+            // Get tags names as array
+            $tagsNames = explode(",", request()->get(Constants::URL_QUERY_TAG_KEY));
+            // Get tags IDs from names
+            $tagsIDs = Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)
+                ->get()
+                ->pluck(Constants::FLD_TAGS_ID)
+                ->toArray();
+            return $tagsIDs;
         }
 
         return request()->get(Constants::URL_QUERY_TAGS_KEY);
