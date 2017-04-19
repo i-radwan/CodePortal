@@ -603,6 +603,7 @@ var app = {
                     // using the first letter only (a lot of possibilities exist)
                     if (query.length >= 2) {
                         return $.get(path, {query: query}, function (data) {
+                            console.log(path);
                             return process(data);
                         });
                     }
@@ -699,23 +700,17 @@ var app = {
      * @param list
      * @param type
      */
-    tagsWidth: 300
-    ,
     renderElementsFromSession: function (itemName, list, type) {
 
         // Create new DOM element and assign basic attributes
         var entry = document.createElement('span');
-        entry.className += ' tag label label-success';
+        entry.className += ' element label label-success';
 
         // Add element content and append to view
-        entry.innerHTML = itemName + '<span onclick="app.closeButtonClick(this)" data-role="remove" data-name="' + itemName + '" data-type="0"></span>';
-        app.tagsWidth += $(entry).width();
-        if (app.tagsWidth > $(list).width() - 20) {
-            // list.appendChild(document.createElement('br'));
-        }
+        entry.innerHTML = itemName + '<span onclick="app.closeButtonClick(this)" data-role="remove" data-name="' + itemName + '" data-type="' + type + '"></span>';
+
         list.appendChild(entry);
 
-        console.log(list.clientWidth, entry.clientWidth);
     },
     /**
      * Set hidden inputs values from sessions, then clear sessions

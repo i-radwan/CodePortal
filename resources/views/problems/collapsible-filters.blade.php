@@ -42,18 +42,18 @@
 
                 {{--Tags search bar--}}
                 <div id="custom-search-input">
-                    <div class="input-group tags-input-group">
+                    <div class="input-group autocomplete-input-group">
                         <input type="hidden" id="{{\App\Utilities\Constants::URL_QUERY_TAGS_KEY}}"
                                name="{{ \App\Utilities\Constants::URL_QUERY_TAG_KEY }}">
                         <input id="tags-auto" type="text" class="form-control tags-auto search-box"
-                               placeholder="Tag Name"
+                               placeholder="Tag name..."
                                onkeypress="return event.keyCode != 13;"
                                data-tags-path="{{url('tags_auto_complete')}}"
                                autocomplete="off">
 
                     </div>
                 </div>
-                <div id="tags-list" class="tags-list">
+                <div id="tags-list" class="autocomplete-list">
 
                 </div>
                 <hr/>
