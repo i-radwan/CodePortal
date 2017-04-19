@@ -40,22 +40,21 @@
                     @endforeach
                 </div>
 
-                {{--Tags checkboxes--}}
-                <div class="container" style="padding: 0">
-                    <h4>Tags:</h4>
-                    <input type="hidden" id="{{\App\Utilities\Constants::URL_QUERY_TAGS_KEY}}"
-                           name="{{ \App\Utilities\Constants::URL_QUERY_TAG_KEY }}">
-                    <div class="search-wrapper input-group">
-                        <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag"
-                               autocomplete="off"
+                {{--Tags search bar--}}
+                <div id="custom-search-input">
+                    <div class="input-group tags-input-group">
+                        <input type="hidden" id="{{\App\Utilities\Constants::URL_QUERY_TAGS_KEY}}"
+                               name="{{ \App\Utilities\Constants::URL_QUERY_TAG_KEY }}">
+                        <input id="tags-auto" type="text" class="form-control tags-auto search-box"
+                               placeholder="Tag Name"
                                onkeypress="return event.keyCode != 13;"
-                               data-tags-path="{{url('tags_auto_complete')}}"/>
-                    </div>
-                    <div class="container">
-                        <ul id="tagsList" class="tags-list">
+                               data-tags-path="{{url('tags_auto_complete')}}"
+                               autocomplete="off">
 
-                        </ul>
                     </div>
+                </div>
+                <div id="tags-list" class="tags-list">
+
                 </div>
                 <hr/>
 

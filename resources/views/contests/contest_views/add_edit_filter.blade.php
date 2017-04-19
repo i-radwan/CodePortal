@@ -19,17 +19,20 @@
         <hr>
         <div>
             {{--Tags AutoComplete--}}
-            Tags:
-            <div class="search-wrapper">
-                <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off"
-                       onkeypress="return event.keyCode != 13;"
-                       data-tags-path="{{url('tags_auto_complete')}}"/>
-                <button class="close-icon" type="reset"></button>
-            </div>
-            <div class="container">
-                <ul id="tagsList" class="tags-list" name="tags[]">
+            <div id="custom-search-input">
+                <div class="input-group tags-input-group">
+                    <input type="hidden" id="{{\App\Utilities\Constants::URL_QUERY_TAGS_KEY}}"
+                           name="{{ \App\Utilities\Constants::URL_QUERY_TAG_KEY }}">
+                    <input id="tags-auto" type="text" class="form-control tags-auto search-box"
+                           placeholder="Tag Name"
+                           onkeypress="return event.keyCode != 13;"
+                           data-tags-path="{{url('tags_auto_complete')}}"
+                           autocomplete="off">
 
-                </ul>
+                </div>
+            </div>
+            <div id="tags-list" class="tags-list">
+
             </div>
         </div>
         {{--Apply filters & Clear buttons--}}

@@ -134,7 +134,7 @@ var app = {
             app.fillContestFormFromSession();
 
             // Item delete from session
-            app.bindCloseButtonClick();
+            app.closeButtonClick();
         }
 
         // Problems filters
@@ -418,7 +418,7 @@ var app = {
      */
     fetchAllTagsFromDB: function () {
         // Send request to path in tags-path data attr
-        $.get($("#tagsAuto").data('tags-path'), function (data) {
+        $.get($("#tags-auto").data('tags-path'), function (data) {
             app.allTagsList = data;
             console.log(app.allTagsList);
         });
@@ -434,9 +434,9 @@ var app = {
         // Tags AutoComplete
         if (tags) {
             // Define tag lists and apply autocomplete to it
-            this.tagsList = document.getElementById("tagsList");
+            this.tagsList = document.getElementById("tags-list");
             // Call typeahead for Tags autoCompletion
-            $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0));
+            $('input.tags-auto').typeahead(app.autoComplete($("#tags-auto").data('tags-path'), app.tagsList, 0));
         }
 
         // Organisers AutoComplete
@@ -699,23 +699,23 @@ var app = {
      * @param list
      * @param type
      */
+    tagsWidth: 300
+    ,
     renderElementsFromSession: function (itemName, list, type) {
 
         // Create new DOM element and assign basic attributes
-        var entry = document.createElement('li');
-        entry.setAttribute("value", itemName);
-
-        // Add the item name and the delete button according to the send type
-        // (tag or organizer)
-        if (type == 1) {
-            var text = '<button class="organiser-close-icon" data-name="' + itemName + '" data-type="1"></button>';
-        } else if (type == 0) {
-            var text = '<button class="tag-close-icon" data-name="' + itemName + '" data-type="0"></button>';
-        }
+        var entry = document.createElement('span');
+        entry.className += ' tag label label-success';
 
         // Add element content and append to view
-        entry.innerHTML = text + itemName;
+        entry.innerHTML = itemName + '<span onclick="app.closeButtonClick(this)" data-role="remove" data-name="' + itemName + '" data-type="0"></span>';
+        app.tagsWidth += $(entry).width();
+        if (app.tagsWidth > $(list).width() - 20) {
+            // list.appendChild(document.createElement('br'));
+        }
         list.appendChild(entry);
+
+        console.log(list.clientWidth, entry.clientWidth);
     },
     /**
      * Set hidden inputs values from sessions, then clear sessions
@@ -731,25 +731,21 @@ var app = {
     /**
      * Bind close button to clear item from given list in sessionStorage
      */
-    bindCloseButtonClick: function () {
-        // Wait for delete icon click
-        $(document).on('mousedown', '.organiser-close-icon, .tag-close-icon', function (event) {
+    closeButtonClick: function (element) {
+        // Remove view
+        $(element).parent().remove();
 
-            // Remove view
-            $(this).parent().remove();
+        // Get element type
+        var type = $(element).data('type');
+        var elementName = $(element).data('name');
 
-            // Get element type
-            var type = $(event.target).data('type');
-            var elementName = $(event.target).data('name');
-
-            // Detach from session
-            if (type == 1) { // Organizers
-                app.syncDataWithSession(app.organizersSessionKey, elementName, true);
-            }
-            else if (type == 0) { // Tags
-                app.syncDataWithSession(app.tagsSessionKey, elementName, true);
-            }
-        });
+        // Detach from session
+        if (type == 1) { // Organizers
+            app.syncDataWithSession(app.organizersSessionKey, elementName, true);
+        }
+        else if (type == 0) { // Tags
+            app.syncDataWithSession(app.tagsSessionKey, elementName, true);
+        }
     },
     /**
      * Clear client side sessions
