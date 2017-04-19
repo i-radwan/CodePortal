@@ -27,23 +27,35 @@
 
             {{--Contest leave/delete/reorder/join links--}}
             @if($isOwner)
-                <a onclick="return confirm('Are you sure want to delete the contest?\nThis cannot be undone')"
-                   href="{{ url('/contest/delete/' . $contestID) }}">
-                    <span class="btn btn-link text-dark pull-right margin-5px">Delete</span>
-                </a>
-
+                <form action="{{url('contest/delete/'.$contestID)}}"
+                      method="post">{{method_field('DELETE')}}
+                    {{csrf_field()}}
+                    <button
+                            onclick="return confirm('Are you sure want to delete the contest?\nThis cannot be undone')"
+                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Delete
+                    </button>
+                </form>
                 <span class="btn btn-link text-dark pull-right margin-5px"
                       onclick="toggleSortableStatus();">Reorder</span>
             @endif
             @if($isParticipant)
-                <a onclick="return confirm('Are you sure want to leave the contest?')"
-                   href="{{ url('/contest/leave/' . $contestID) }}">
-                    <span class="btn btn-link text-dark pull-right margin-5px">Leave</span>
-                </a>
+                <form action="{{url('contest/leave/'.$contestID)}}"
+                      method="post">{{method_field('PUT')}}
+                    {{csrf_field()}}
+                    <button
+                            onclick="return confirm('Are you sure want to leave this contest?')"
+                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Leave
+                    </button>
+                </form>
             @elseif(Auth::check())
-                <a href="{{ url('/contest/join/' . $contestID) }}">
-                    <span class="btn btn-link text-dark pull-right margin-5px">Join</span>
-                </a>
+                <form action="{{url('contest/join/'.$contestID)}}"
+                      method="post">
+                    {{csrf_field()}}
+                    <button
+                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Join
+                    </button>
+                </form>
+
             @endif
 
             <div class="panel-heading">{{ $contestName }}</div>

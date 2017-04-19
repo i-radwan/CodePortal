@@ -9,13 +9,6 @@
     </div>
     <div class="container">
         <ul id="organisers-list" class="tags-list">
-            {{--Adding Previously Checked $Organisers--}}
-            {{--@if( isset($mOrganisers) )--}}
-                {{--@foreach( $mOrganisers as $organiser)--}}
-                    {{--<li name="organisers[]" value="{{$organiser}}">--}}
-                        {{--<button class="organiser-close-icon "></button>{{$organiser}} </li>--}}
-                {{--@endforeach--}}
-            {{--@endif--}}
         </ul>
     </div>
 </div>
