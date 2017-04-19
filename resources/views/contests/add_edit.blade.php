@@ -115,7 +115,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button onclick="moveSessionDataToHiddenFields()" type="submit"
+                                    <button onclick="app.moveSessionDataToHiddenFields()" type="submit"
                                             class="btn btn-primary">
                                         Add
                                     </button>
@@ -127,4 +127,5 @@
             </div>
         </div>
     </div>
+    <span class="page-distinguishing-element" id="add-edit-contest-page-hidden-element"></span>
 @endsection

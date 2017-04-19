@@ -205,6 +205,14 @@ class ContestController extends Controller
     public function applyProblemsFilters(Request $request)
     {
         Session::put(Constants::CONTESTS_SELECTED_FILTERS, $request->get(Constants::CONTESTS_SELECTED_FILTERS));
+    }
+
+    /**
+     * Clear problems filters (tags, judges) from server session
+     */
+    public function clearProblemsFilters()
+    {
+        Session::forget(Constants::CONTESTS_SELECTED_FILTERS);
         return;
     }
 
@@ -583,7 +591,7 @@ class ContestController extends Controller
             $tagNames = explode(",", $tagNames);
         if (count($judgesIDs) > 0)
             $judgesIDs = explode(",", $judgesIDs);
-        return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); //Returning the Problems Data
+        return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); // Returning the Problems Data
     }
 
 

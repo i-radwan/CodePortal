@@ -47,7 +47,7 @@
                                     <button class="btn btn-primary"
                                             data-toggle="modal"
                                             data-target="#problem-solution-model"
-                                            onclick="fillAnswerModal('{{$problem->id}}', '{{$sheetID}}', '{{url("sheet/solution/$sheetID/".$problem->id)}}', '{{$problem->pivot->solution_lang}}');">
+                                            onclick="app.fillAnswerModal('{{$problem->id}}', '{{$sheetID}}', '{{url("sheet/solution/$sheetID/".$problem->id)}}', '{{$problem->pivot->solution_lang}}');">
                                         Solution
                                     </button>
                                 </td>
@@ -62,4 +62,6 @@
         </div>
         @include('groups.sheet_views.answer_problem_modal')
     </div>
+    <span class="page-distinguishing-element" id="sheet-page-hidden-element"></span>
+
 @endsection
