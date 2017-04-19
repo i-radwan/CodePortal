@@ -18,11 +18,6 @@ class DatabaseSeeder extends Seeder
         Artisan::call("sync-judge:problems", ["--judge" => "uva"]);
         Artisan::call("sync-judge:problems", ["--judge" => "live-archive"]);
 
-        // Sync submissions
-        //Artisan::call("sync-judge:submissions", ["--judge" => "codeforces", "user-id" => "Momentum"]);
-        //Artisan::call("sync-judge:submissions", ["--judge" => "uva"]);
-        //Artisan::call("sync-judge:submissions", ["--judge" => "live-archive"]);
-
         // Seed users
         $this->call(UsersTableSeeder::class);
 

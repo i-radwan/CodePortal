@@ -193,7 +193,8 @@ function fillAnswerModal(problemID, sheetID, url, solution_lang) {
  * Send Ajax request to mark all user notifications as READ once the user clicks the
  * notifications icon in the header
  *
- * @param string csrf token
+ * @param string csrf_token
+ * @param string url
  */
 function markAllNotificationsRead(token, url) {
     $.ajax({
@@ -217,10 +218,11 @@ function markAllNotificationsRead(token, url) {
 
 /**
  * Lazy delete certain notification
- *
- * @param string csrf token
- * @param int notificationID
- * @param object element clicked element
+ * @param e
+ * @param token
+ * @param url
+ * @param element
+ * @returns {boolean}
  */
 function cancelNotification(e, token, url, element) {
     // Prevent click event propagation (such that dropdown menu doesn't
@@ -331,7 +333,6 @@ function applyFilters(url, token) {
     document.getElementById("clearTableLink").click();
 }
 
-//Auto Complete Functions
 /**
  * the typeahead autoComplete Function
  *
