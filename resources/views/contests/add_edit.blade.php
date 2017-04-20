@@ -10,7 +10,8 @@
                     </div>
 
                     <div class="panel-body">
-                        <form class="form-horizontal" id="add-edit-contest-form" role="form" method="POST"
+                        <form class="form-horizontal add-edit-contest-form" id="add-edit-contest-form" role="form"
+                              method="POST"
                               action="{{ url('contest/add') }}">
                             {{ csrf_field() }}
                             <input type="hidden" id="problems-ids-hidden" name="problems_ids"/>
@@ -18,9 +19,9 @@
 
                             {{--Name--}}
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} has-feedback">
-                                <label for="name" class="col-md-4 control-label">Name</label>
+                                <label for="name" class="col-md-2 control-label">Name</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-10">
                                     <input id="name" type="text" class="form-control" name="name"
                                            value="{{ old('name') }}" placeholder="Name" required autofocus>
 
@@ -34,9 +35,9 @@
 
                             {{--Time--}}
                             <div class="form-group{{ $errors->has('time') ? ' has-error' : '' }} has-feedback">
-                                <label for="time" class="col-md-4 control-label">Time</label>
+                                <label for="time" class="col-md-2 control-label">Time</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-10">
                                     <input id="time" type="datetime" class="form-control datetimepicker" name="time"
                                            value="{{ old('time') }}" placeholder="Time" required>
 
@@ -50,9 +51,9 @@
 
                             {{--Duration--}}
                             <div class="form-group{{ $errors->has('duration') ? ' has-error' : '' }} has-feedback">
-                                <label for="duration" class="col-md-4 control-label">Duration</label>
+                                <label for="duration" class="col-md-2 control-label">Duration</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-10">
                                     <input id="duration" type="number" class="form-control" name="duration"
                                            value="{{ old('duration') }}" placeholder="Duration (mins)..." required>
 
@@ -66,8 +67,8 @@
 
                             {{--Visibility--}}
                             <div class="form-group{{ $errors->has('visibility') ? ' has-error' : '' }} has-feedback">
-                                <label for="duration" class="col-md-4 control-label">Visibility</label>
-                                <div class="col-md-6 visibility-div">
+                                <label for="duration" class="col-md-2 control-label">Visibility</label>
+                                <div class="col-md-10 visibility-div">
                                     <ul>
                                         <li>
                                             <input type="radio" value="0" id="public" name="visibility" checked>
@@ -93,31 +94,11 @@
                                 </div>
                             </div>
 
-                            {{--Problems--}}
-                            <div class="form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
-                                <label for="problems" class="col-md-12 control-label" style="text-align: center">Problems</label>
-                                <br>
-                                <br>
-                                <div class="col-md-4">
-                                    @include("contests.contest_views.add_edit_filter")
-                                </div>
-                                <div class="col-md-8">
-                                    @include("problems.table")
-                                    @if ($errors->has('problems'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('problems') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-
                             {{--Organisers--}}
                             <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
-                                <label for="organizers" class="col-md-4 control-label">Organizers</label>
-                                <div class="col-md-6">
+                                <label for="organizers" class="col-md-2 control-label text-left">Organizers</label>
+                                <div class="col-md-10">
                                     @include("contests.contest_views.organisers")
-                                </div>
-                                <div class="col-md-6">
                                     @if ($errors->has('organizers'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('organizers') }}</strong>
@@ -126,9 +107,24 @@
                                 </div>
                             </div>
 
+                            {{--Problems--}}
+                            <div class="add-edit-contest-problems-wrapper form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
+                                <div class="row col-md-12">
+                                    <label for="problems" class="control-label text-center">Problems</label>
+
+                                    @include("contests.contest_views.add_edit_filter")
+                                    @include("problems.table")
+                                    @if ($errors->has('problems'))
+                                        <span class="help-block text-left">
+                                            <strong>{{ $errors->first('problems') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
                             {{--Submit--}}
                             <div class="form-group">
-                                <div class="col-md-6 col-md-offset-4">
+                                <div class="col-md-12 text-center">
                                     <button onclick="app.moveSessionDataToHiddenFields()" type="submit"
                                             class="btn btn-primary">
                                         Add
