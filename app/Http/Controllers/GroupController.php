@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\GroupInvitationException;
+use App\Exceptions\InvitationException;
 use App\Models\Group;
 use App\Models\Notification;
 use App\Models\User;
@@ -198,7 +198,7 @@ class GroupController extends Controller
             }
             return back()->with('messages', [$request->get('username') . ' invited successfully!']);
 
-        } catch (GroupInvitationException $e) {
+        } catch (InvitationException $e) {
             // If the user is alreay invited the make function throws this exception
             return back()->withErrors([$request->get('username') . ' is already invited!']);
         }
@@ -234,7 +234,7 @@ class GroupController extends Controller
         $user = Auth::user();
 
         // Check if user has valid (non-deleted) invitation for joining this group
-        $groupsInvitation = $user->userDisplayableReceivedNotifications()
+        $groupsInvitation = $user->displayableReceivedNotifications()
             ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
             ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group[Constants::FLD_GROUPS_ID])->first();
 
@@ -274,7 +274,7 @@ class GroupController extends Controller
     {
         if ($user) {
             // Remove user invitation for the same reason in the joinGroup function
-            $user->userDisplayableReceivedNotifications()
+            $user->displayableReceivedNotifications()
                 ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
                 ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group[Constants::FLD_GROUPS_ID])
                 ->update([Constants::FLD_NOTIFICATIONS_STATUS =>

@@ -6,3 +6,5 @@
     @include('home.quotes', $quotes)
     @include('home.sponsors', $sponsors)
 @endsection
+
+<span class="page-distinguishing-element" id="home-page-hidden-element"></span>

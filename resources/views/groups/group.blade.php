@@ -141,4 +141,5 @@
             </div>
         </div>
     </div>
+    <span class="page-distinguishing-element" id="single-group-page-hidden-element"></span>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Group;
 use App\Models\Sheet;
+use App\Models\Team;
 use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Support\Facades\Gate;
@@ -33,21 +34,24 @@ class AuthServiceProvider extends ServiceProvider
         // User can view and join contest if and only if the contest
         // is public, or the user has non-deleted invitation regarding this contest
         Gate::define("view-join-contest", function ($user, $contest) {
-            $canViewAndJoin = false;
+            // Check if owner
+            if ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) return true;
 
             // Check if contest is public
-            $canViewAndJoin |= ($contest->visibility == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]);
-
-            if ($canViewAndJoin) return true; // To avoid next query if already true
+            if ($contest->visibility == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]) {
+                return true;
+            }
 
             // Check if user is invited to private contest
-            $contestsInvitations = $user->userDisplayableReceivedNotifications()
+            $contestsInvitationsCount = $user->displayableReceivedNotifications()
                 ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST])
-                ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $contest->id)->get();
+                ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $contest->id)->count();
 
-            $canViewAndJoin |= (count($contestsInvitations) > 0);
+            if ($contestsInvitationsCount > 0) {
+                return true;
+            }
 
-            return $canViewAndJoin;
+            return false;
         });
 
         // Owner of contest
@@ -59,8 +63,11 @@ class AuthServiceProvider extends ServiceProvider
         // Owner or organizer of contest
         Gate::define("owner-organizer-contest", function ($user, $contestID) {
             // Check if user is organizer or owner
-            return (($user->organizingContests()->find($contestID) ||
-                $user->owningContests()->find($contestID)));
+            // TODO: what about sending the Contest Model to check its owner?
+            return (
+                $user->organizingContests()->find($contestID) ||
+                $user->owningContests()->find($contestID)
+            );
         });
 
         // Owner of group/sheet
@@ -73,28 +80,35 @@ class AuthServiceProvider extends ServiceProvider
                 if ($group = Group::find($resource[Constants::FLD_SHEETS_GROUP_ID])) {
 
                     // Check if user is organizer or owner
-                    if ($user->owningGroups()->find($group[Constants::FLD_GROUPS_ID])) return true;
+                    if ($user->owningGroups()->find($group[Constants::FLD_GROUPS_ID])) {
+                        return true;
+                    }
                 }
+
                 return false;
-            } // If resource is group
-            else if ($resource instanceof Group) {
+            }
+
+            // If resource is group
+            if ($resource instanceof Group) {
 
                 // Check if user is owner
                 return ($user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID]));
             }
+
             return false;
         });
 
         // Member of group
         Gate::define("member-group", function (User $user, Group $group, User $member = null) {
-            $member = ($member) ? $member : $user;
-            // Check if user is member and not owner
-            if (!$member->owningGroups()->find($group[Constants::FLD_GROUPS_ID])
-                && $member->joiningGroups()->find($group[Constants::FLD_GROUPS_ID])
-            ) return true;
-            return false;
+            $member = ($member) ? $member : $user;  // TODO: what is this? xD
 
+            // Check if user is member and not owner
+            return (
+                !$member->owningGroups()->find($group[Constants::FLD_GROUPS_ID]) &&
+                $member->joiningGroups()->find($group[Constants::FLD_GROUPS_ID])
+            );
         });
+
         // Owner or member of group
         Gate::define("owner-or-member-group", function ($currentUser, $resource, $user = null) {
             // If not user is specified, use the system injected currentUser
@@ -102,18 +116,28 @@ class AuthServiceProvider extends ServiceProvider
 
             // If resource is sheet
             if ($resource instanceof Sheet) {
-                // Check if user is owner of sheet's group
-                if ($user->owningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID])
-                    || $user->joiningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID])
-                ) return true;
-                return false;
-            } else if ($resource instanceof Group) { // If resource is group
-                // Check if user is member or owner
-                if ($user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID])
-                    || $user->joiningGroups()->find($resource[Constants::FLD_GROUPS_ID])
-                ) return true;
+                // Check if user is owner or member of sheet's group
+                return (
+                    $user->owningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID]) ||
+                    $user->joiningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID])
+                );
             }
+
+            if ($resource instanceof Group) { // If resource is group
+                // Check if user is member or owner
+                return (
+                    $user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID]) ||
+                    $user->joiningGroups()->find($resource[Constants::FLD_GROUPS_ID])
+                );
+            }
+
             return false;
+        });
+
+        // Member of team
+        Gate::define("member-team", function (User $user, Team $team) {
+            // Check if user is member of the team
+            return ($user->joiningTeams()->find($team[Constants::FLD_GROUPS_ID]));
         });
     }
 }

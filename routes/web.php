@@ -21,40 +21,53 @@ Route::get('profile/{user}', 'UserController@index');
 Route::get('edit', 'UserController@edit'); // ToDo: @Abzo auth middleware required, choose better route
 Route::post('edit', 'UserController@editProfile');  // ToDo: @Abzo auth middleware required, choose better route
 
+// Teams routes...
+// TODO: to be merged with profile routes and to add middlewares
+Route::get('profile/{user}/teams', 'TeamController@index');
+Route::get('teams/create', 'TeamController@create');
+Route::get('teams/{team}/edit', 'TeamController@edit');
+Route::post('teams', 'TeamController@store');
+Route::post('teams/{team}', 'TeamController@update');
+Route::post('teams/{team}/invite', 'TeamController@inviteMember');
+Route::delete('teams/{team}/remove/{user}', 'TeamController@removeMember');
+Route::delete('teams/{team}/invitations/{user}/cancel', 'TeamController@cancelInvitation');
+Route::put('teams/{team}/invitations/{user}/accept', 'TeamController@acceptInvitation');
+Route::put('teams/{team}/invitations/{user}/reject', 'TeamController@rejectInvitation');
+Route::delete('teams/{team}', 'TeamController@destroy');
+
 // Contest routes...
 Route::get('contests', 'ContestController@index');
 
 Route::group(['middleware' => 'auth'], function () {
+
+    // Contests routes
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
-
-    // ToDo change those to put/delete requests
-    Route::get('contest/delete/{contest}', 'ContestController@deleteContest');
-    Route::get('contest/leave/{contest}', 'ContestController@leaveContest');
-    Route::get('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
-
-    Route::put('contest/reorder/{contest}', 'ContestController@reorderContest')->middleware(['can:owner-contest,contest']);
+    Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete');
+    Route::get('contest/add/organisers_auto_complete', 'ContestController@usersAutoComplete');
+    Route::get('contest/add/invitees_auto_complete', 'ContestController@usersAutoComplete');
 
     Route::post('contest/add', 'ContestController@addContest');
+    Route::post('contest/add/tags_judges_filters_sync', 'ContestController@applyProblemsFilters');
+    Route::post('contest/add/tags_judges_filters_detach', 'ContestController@clearProblemsFilters');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
+    Route::post('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
-    // ToDo: @Samir why use 'as'? , use underscore separated endpoint
-    Route::get('contest/add/tags_auto_complete', array('as' => 'contest/add/tags_auto_complete', 'uses' => 'ContestController@tagsAutoComplete'));
-    Route::get('contest/add/organisers_auto_complete', array('as' => 'contest/add/organisers_auto_complete', 'uses' => 'ContestController@organisersAutoComplete'));
+    Route::put('contest/reorder/{contest}', 'ContestController@reorderContest')->middleware(['can:owner-contest,contest']);
+    Route::put('contest/leave/{contest}', 'ContestController@leaveContest');
 
-
-    Route::post('contest/add/check_problems_rows_sync', 'ContestController@applyProblemsCheckBoxes');
-    Route::post('contest/add/Tags_judges_filters_sync', 'ContestController@applyProblemsFilters');
-    Route::post('contest/add/Organisers_sync', 'ContestController@applyOrganisers');
+    Route::delete('contest/delete/{contest}', 'ContestController@deleteContest');
 
     // Question routes...
     Route::put('contest/question/announce/{question}', 'ContestController@announceQuestion');
     Route::put('contest/question/renounce/{question}', 'ContestController@renounceQuestion');
+
     Route::post('contest/question/answer', 'ContestController@answerQuestion');
     Route::post('contest/question/{contestID}', 'ContestController@addQuestion');
 
     // Notifications routes...
     Route::put('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
+
     Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
 
     // Groups + Sheets routes...
@@ -77,16 +90,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('group/edit/{group}', 'GroupController@editGroup')->middleware(['can:owner-group,group']);
     Route::post('group/new', 'GroupController@addGroup');
 
-    Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group'])->middleware(['can:member-group,group,user']);
-    Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
-
     Route::put('group/request/accept/{group}/{user}', 'GroupController@acceptRequest')->middleware(['can:owner-group,group']);
     Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest')->middleware(['can:owner-group,group']);
     Route::put('group/leave/{group}', 'GroupController@leaveGroup')->middleware(['can:member-group,group']);
 
-    // Sheets routes...
+    Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group'])->middleware(['can:member-group,group,user']);
+    Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
     Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-group,sheet']);
-
 });
 
 Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['contestAccessAuth:view-join-contest,contest']);

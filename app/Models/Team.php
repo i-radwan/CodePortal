@@ -42,6 +42,21 @@ class Team extends Model
     ];
 
     /**
+     * Delete the model from the database and its associated data
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        $this->members()->detach();
+        $this->participatingContests()->detach();
+
+        // TODO: remove notifications when added
+
+        return parent::delete();
+    }
+
+    /**
      * Return all the members of the team
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -53,6 +68,21 @@ class Team extends Model
             Constants::TBL_TEAM_MEMBERS,
             Constants::FLD_TEAM_MEMBERS_TEAM_ID,
             Constants::FLD_TEAM_MEMBERS_USER_ID
+        )->withTimestamps();
+    }
+
+    /**
+     * Return all the users invited to the team
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitedUsers()
+    {
+        return $this->belongsToMany(
+            User::class,
+            Constants::TBL_TEAM_INVITATIONS,
+            Constants::FLD_TEAM_INVITATIONS_TEAM_ID,
+            Constants::FLD_TEAM_INVITATIONS_USER_ID
         )->withTimestamps();
     }
 

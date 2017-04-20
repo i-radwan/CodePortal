@@ -55,7 +55,6 @@ class User extends Authenticatable
      *
      * @var array
      */
-
     protected $rules = [
         //TODO: @Abdo add any needed validation rules
         Constants::FLD_USERS_USERNAME => 'required|max:20|unique:' . Constants::TBL_USERS,
@@ -138,23 +137,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Return all the teams of the user
-     *
-     * ToDo: I think the name isn't semantic enough
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function teams()
-    {
-        return $this->belongsToMany(
-            Team::class,
-            Constants::TBL_TEAM_MEMBERS,
-            Constants::FLD_TEAM_MEMBERS_USER_ID,
-            Constants::FLD_TEAM_MEMBERS_TEAM_ID
-        )->withTimestamps();
-    }
-
-    /**
      * Return all the submission of the current user
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -162,6 +144,24 @@ class User extends Authenticatable
     public function submissions()
     {
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_USER_ID);
+    }
+
+    /**
+     * Return all the wrong submission of the current user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public static function getWrongAnswerProblems($user)
+    {
+        $userData = User::where('username', $user)->first();
+        return $userData->submissions->where('verdict', '0')->pluck('problem_id');
+    }
+
+    public static function getSolvedProblems($user)
+    {
+        //ToDo: for the statistics
+        $userData = User::where('username', $user)->first();
+        return $userData->submissions->where('verdict', '1')->pluck('problem_id');
     }
 
     /**
@@ -250,7 +250,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the notifications sent by this user
+     * Return the notifications sent to this user
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -260,37 +260,20 @@ class User extends Authenticatable
     }
 
     /**
-     * Return user non-deleted notifications sorted by id desc.
+     * Return user non-deleted notifications sorted by id in descending order
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userDisplayableReceivedNotifications()
+    public function displayableReceivedNotifications()
     {
+        // TODO: what about using Laravel's soft delete methods?
         return $this->receivedNotifications()
             ->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
                 Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
             )
-            ->orderBy(Constants::FLD_NOTIFICATIONS_ID, 'desc');
-    }
-
-    /**
-     * Return all the wrong submission of the current user
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public static function getWrongAnswerProblems($user)
-    {
-        $userData = User::where('username', $user)->first();
-        return $userData->submissions->where('verdict', '0')->pluck('problem_id');
-    }
-
-    public static function getSolvedProblems($user)
-    {
-        //ToDo: for the statistics
-        $userData = User::where('username', $user)->first();
-        return $userData->submissions->where('verdict', '1')->pluck('problem_id');
+            ->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
     }
 
     /**
@@ -342,12 +325,39 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(
             Group::class,
-            Constants::TBL_GROUPS_JOIN_REQUESTS,
+            Constants::TBL_GROUP_JOIN_REQUESTS,
             Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID,
             Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID
         )->withTimestamps();
     }
 
+    /**
+     * Return all the teams that the current user has joined
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function joiningTeams()
+    {
+        return $this->belongsToMany(
+            Team::class,
+            Constants::TBL_TEAM_MEMBERS,
+            Constants::FLD_TEAM_MEMBERS_USER_ID,
+            Constants::FLD_TEAM_MEMBERS_TEAM_ID
+        )->withTimestamps();
+    }
 
-    
+    /**
+     * Return all the teams that the current user has been invited to join
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitingTeams()
+    {
+        return $this->belongsToMany(
+            Team::class,
+            Constants::TBL_TEAM_INVITATIONS,
+            Constants::FLD_TEAM_INVITATIONS_USER_ID,
+            Constants::FLD_TEAM_INVITATIONS_TEAM_ID
+        )->withTimestamps();
+    }
 }

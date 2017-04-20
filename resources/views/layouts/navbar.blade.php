@@ -51,12 +51,10 @@
                     @else
                         {{--Notifications panel--}}
                         @include('layouts.notifications')
-                        {{--/Notifications panel--}}
 
                         {{--Profile panel--}}
                         <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button"
-                               aria-expanded="false">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                                 {{ Auth::user()->username }} <span class="caret"></span>
                             </a>
 
@@ -72,8 +70,7 @@
                                         Logout
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                          style="display: none;">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         {{ csrf_field() }}
                                     </form>
                                 </li>

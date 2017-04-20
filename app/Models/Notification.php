@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Exceptions\GroupInvitationException;
 use App\Utilities\Constants;
+use App\Exceptions\InvitationException;
 use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
@@ -51,45 +51,46 @@ class Notification extends Model
 
     /**
      * Create and save new notification
-     *
      * Notification maker function.
      *
      * @param array $attributes
      * @param User $sender
      * @param User $receiver
-     * @param Team /Group/Contest $resource
+     * @param Team|Group|Contest $resource
      * @param int $type
-     * @param bool $duplicationAllowed , allow resending the same notification to the same user twice
-     * @throws GroupInvitationException
+     * @param bool $duplicationAllowed Whether resending the same notification to the same user twice is allowed
+     * @throws InvitationException
      */
     public static function make($attributes, User $sender, User $receiver, $resource, $type, $duplicationAllowed = false)
     {
-        if ($sender != null && $receiver != null && $resource != null && $type != null) {
-
-            // Check if user already received this notification
-            if (!$duplicationAllowed) {
-
-                // Get same resource notifications count
-                $prevNotificationsCount = $receiver->receivedNotifications()
-                    ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $resource->id)
-                    ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', $type)->count();
-
-                if ($prevNotificationsCount > 0)
-                    throw new GroupInvitationException(
-                        Constants::GROUP_INVITATION_EXCEPTION_MSGS
-                        [Constants::GROUP_INVITATION_EXCEPTION_INVITED]); // Stop and prevent saving new one
-            }
-
-            // Save the notification after checking the duplication
-            $notification = new Notification($attributes);
-            $notification->sender()->associate($sender);
-            $notification->receiver()->associate($receiver);
-            $notification->resource()->associate($resource);
-            $notification[Constants::FLD_NOTIFICATIONS_TYPE] = $type;
-            $notification->save();
+        if ($sender == null || $receiver == null || $resource == null || $type == null) {
+            return;
         }
-    }
 
+        // Check if user already received this notification
+        if (!$duplicationAllowed) {
+            // Get same resource notifications count
+            $prevNotificationsCount = $receiver->receivedNotifications()
+                ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $resource->id)
+                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', $type)
+                ->count();
+
+            if ($prevNotificationsCount > 0) {
+                // Stop and prevent saving new one
+                throw new InvitationException(
+                    Constants::INVITATION_EXCEPTION_MSGS[Constants::INVITATION_EXCEPTION_INVITED]
+                );
+            }
+        }
+
+        // Save the notification after checking the duplication
+        $notification = new Notification($attributes);
+        $notification->sender()->associate($sender);
+        $notification->receiver()->associate($receiver);
+        $notification->resource()->associate($resource);
+        $notification[Constants::FLD_NOTIFICATIONS_TYPE] = $type;
+        $notification->save();
+    }
 
     /**
      * Returns the user who sent this notification
@@ -118,6 +119,7 @@ class Notification extends Model
      */
     public function resource()
     {
+        // TODO: I think we need to check the resource type to assign the relationship class
         return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }
 }

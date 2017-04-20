@@ -54,15 +54,23 @@ class ProblemController extends Controller
     /**
      * Return parsed tag filters from the url query
      *
-     * @return array Array of tags ids
+     * @return array Array of tags name
      */
     public function getTagsFilter()
     {
         if (request()->has(Constants::URL_QUERY_TAG_KEY)) {
-            return [request()->get(Constants::URL_QUERY_TAG_KEY)];
+
+            // Get tags names as array
+            $tagsNames = explode(",", request()->get(Constants::URL_QUERY_TAG_KEY));
+            // Get tags IDs from names
+            $tagsIDs = Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)
+                ->get()
+                ->pluck(Constants::FLD_TAGS_ID)
+                ->toArray();
+            return $tagsIDs;
         }
 
-        return request()->get(Constants::URL_QUERY_TAGS_KEY);
+        return request()->get(Constants::URL_QUERY_TAG_KEY);
     }
 
     /**
@@ -117,7 +125,7 @@ class ProblemController extends Controller
     }
 
     /**
-     * This Function gets the problems to the ContestController with the applied filters
+     * Get the problems to the ContestController with the applied filters
      * @param       $request
      * @param       $tagsNames array of tagsNames
      * @param       $judgesIDs array of JudgesIds
@@ -125,10 +133,11 @@ class ProblemController extends Controller
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getProblemsToContestController($request, $tagsNames, $judgesIDs, $sortParam = []){
+    public static function getProblemsToContestController($request, $tagsNames, $judgesIDs, $sortParam = [])
+    {
         //ToDO (Samir) improve the function "do something towards sortParams
         $searchStr = "";
-        $tagsIDs = (count(Tag::whereIn('name', $tagsNames)->get()) == 0) ? null : Tag::whereIn('name', $tagsNames)->get();
+        $tagsIDs = (count(Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)->get()) == 0) ? null : Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)->get()->pluck(Constants::FLD_TAGS_ID)->toArray();
         $judgesIDs = count($judgesIDs) == 0 ? null : $judgesIDs;
         $sortParam = $request->get(Constants::URL_QUERY_SORT_PARAM_KEY);
         if ($sortParam && !array_key_exists($sortParam, Constants::PROBLEMS_SORT_PARAMS)) {
