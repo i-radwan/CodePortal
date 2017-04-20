@@ -62,17 +62,29 @@
 					</div>
 				</div>
                
-                   
-				<div class="form-group{{ $errors->has(Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
+                    
+                    				<div class="form-group{{ $errors->has(Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
 					<label class="col-md-3 control-label">Username:</label>
 					<div class="col-md-8">
 						<input name="username" class="form-control" value="{{$user->username}}" type="text">
 					</div>
 				</div>
+
+                <label class="col-lg-3 control-label" for="gender">Gender:   &#160;</label>
+                    <div class="controls col-lg-8 ">
+                       <label class="radio inline" for="gender-0">
+                         <input id="gender-0" name="gender" value="Male" checked="checked" type="radio">Male
+                        </label>
+                       <label class="radio inline" for="gender-1">
+                         <input id="gender-1" name="gender" value="Female" type="radio">Female
+                       </label>
+                       <br>
+                    </div>
+                    
 				<div class="form-group">
 					<label class="col-md-3 control-label">New Password:</label>
 					<div class="col-md-8">
-						<input name="password"  class="form-control" value="" type="password">
+						<input autocomplete="off" name="password"  class="form-control" value="" type="password">
 					</div>
 				</div>
 				<div class="form-group">
