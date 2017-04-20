@@ -431,6 +431,9 @@ class Constants
     const TBL_SHEETS = "sheets";
     const TBL_TEAMS = "teams";
     const TBL_NOTIFICATIONS = "notifications";
+    const TBL_BLOGS = "blogs";
+    const TBL_POSTS = "posts";
+    const TBL_COMMENTS = "comments";
 
     // Pivot tables
     const TBL_USER_HANDLES = "user_handles";
@@ -598,6 +601,22 @@ class Constants
     const FLD_TEAM_MEMBERS_TEAM_ID = "team_id";
     const FLD_TEAM_MEMBERS_USER_ID = "user_id";
 
+    //Blogs
+    const FLD_BLOGS_BLOG_ID =  "id";
+    const FLD_BLOGS_OWNER_ID = "owner_id";
+
+    //POSTS
+    const FLD_POSTS_POST_ID = "id";
+    const FLD_POSTS_BLOG_ID = "blog_id";
+    const FLD_POSTS_BODY = "body";
+
+    //Comments
+    const FLD_COMMENTS_COMMENT_ID = "id";
+    const FLD_COMMENTS_USER_ID = "user_id";
+    const FLD_COMMENTS_POST_ID = "post_id";
+    const FLD_COMMENTS_BODY = "body";
+    const FLD_COMMENTS_UP_VOTES = "upvote";
+    const FLD_COMMENTS_DOWN_VOTES = "downvote";
     // ============================================================
     //endregion
 
