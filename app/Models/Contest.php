@@ -361,13 +361,13 @@ class Contest extends Model
     private function contestJoinProblems($query)
     {
         $query
-            ->leftJoin(
+            ->join(
                 Constants::TBL_CONTEST_PROBLEMS,
                 Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
                 '=',
                 Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID
             )
-            ->leftJoin(
+            ->join(
                 Constants::TBL_PROBLEMS,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
                 '=',
