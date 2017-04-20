@@ -143,9 +143,6 @@ var app = {
             // to maintain the tags stored for add/edit contest
             app.tagsSessionKey = 'problems_filters_tags_session_key';
 
-            // Clear this session
-            sessionStorage.setItem(app.tagsSessionKey, '');
-
             // Fetch all tags
             app.fetchAllTagsFromDB();
 
@@ -155,6 +152,8 @@ var app = {
             // Retrieve tags from session to view
             app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
 
+            // Toggle filters more div if query contains tags or judges
+            app.toggleFiltersPanel();
         }
     },
 
@@ -768,6 +767,25 @@ var app = {
         // Set value
         $("#tags").val(JSON.parse(sessionStorage.getItem(app.tagsSessionKey)).join());
     },
+    /**
+     * Check if the url query contains judges/tags, then toggle the panel
+     */
+    toggleFiltersPanel: function () {
+        var queries = app.getUrlVars();
+        // If the URL queries contain judges/tags
+        // or the session of applied tags still holds some tags (so the problems now
+        // are actually filtered)
+        // , show more filters panel
+        var areTagsApplied = (queries['tag'] && queries['tag'] != '');
+        var areJudgesApplied = (queries['judges%5B%5D'] && queries['judges%5B%5D'] != '');
+        var tagsInSession = sessionStorage.getItem('problems_filters_tags_session_key');
+        var doesSessionContainTags = (tagsInSession) ? (tagsInSession != '[]' && tagsInSession != '') : false;
+
+        if (areTagsApplied || areJudgesApplied || doesSessionContainTags) {
+            $('#more-filters-button').html('less');
+            $('#hidden-filters').slideToggle();
+        }
+    },
     // ==================================================
     //        CONTEST PROBLEMS SORT FUNCTIONS
     // ==================================================
@@ -843,6 +861,22 @@ var app = {
         } else {
             alert('No changes have been made!');
         }
+    },
+
+    // ==================================================
+    //              UTILITIES FUNCTIONS
+    // ==================================================
+
+    /**
+     * Read a page's GET URL variables and return them as an associative array.
+     */
+    getUrlVars: function () {
+        var queries = {};
+        $.each(document.location.search.substr(1).split('&'), function (c, q) {
+            var i = q.split('=');
+            queries[i[0].toString()] = i[1].toString();
+        });
+        return queries;
     }
 };
 

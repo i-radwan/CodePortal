@@ -749,6 +749,14 @@ footer {
     margin-left: -2px;
 }
 
+.hidden-filters {
+    display: none;
+}
+
+.more-filters-button {
+    margin-top: 10px;
+}
+
 .problems-filters-panel h4 {
     margin-top: 20px;
 }

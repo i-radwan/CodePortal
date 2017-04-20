@@ -70,7 +70,7 @@ class ProblemController extends Controller
             return $tagsIDs;
         }
 
-        return request()->get(Constants::URL_QUERY_TAGS_KEY);
+        return request()->get(Constants::URL_QUERY_TAG_KEY);
     }
 
     /**

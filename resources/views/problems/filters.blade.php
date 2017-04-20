@@ -1,4 +1,4 @@
-<div class="panel panel-default problems-filters-panel">
+§<div class="panel panel-default problems-filters-panel">
     <div class="panel-heading">Filters</div>
 
 
