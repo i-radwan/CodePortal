@@ -9,6 +9,7 @@ var app = {
     tagsSessionKey: 'tags_session_key',
     judgesSessionKey: 'judges_session_key',
     organizersSessionKey: 'organizers_session_key',
+    inviteesSessionKey: 'invitees_session_key',
     contestNameSessionKey: 'contest_name_session_key',
     contestTimeSessionKey: 'contest_time_session_key',
     contestDurationSessionKey: 'contest_duration_session_key',
@@ -38,6 +39,7 @@ var app = {
 
     tagsList: {},
     organisersList: {},
+    inviteesList: {},
 
     //endregion
 
@@ -128,7 +130,7 @@ var app = {
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureTagsOrganisersLists(true, true);
+            app.configureAutoCompleteLists(true, true, true);
 
             // Render saved data from session into form
             app.fillContestFormFromSession();
@@ -147,7 +149,7 @@ var app = {
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureTagsOrganisersLists(true, false);
+            app.configureAutoCompleteLists(true, false, false);
 
             // Retrieve tags from session to view
             app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
@@ -428,7 +430,7 @@ var app = {
      * @param tags: bind tags with auto complete
      * @param organisers: bind organisers with auto complete
      */
-    configureTagsOrganisersLists: function (tags, organisers) {
+    configureAutoCompleteLists: function (tags, organisers, invitees) {
 
         // Tags AutoComplete
         if (tags) {
@@ -445,6 +447,15 @@ var app = {
 
             //Call typeahead for Organisers autoCompletion
             $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
+        }
+
+        // Invitees AutoComplete
+        if (invitees) {
+            //Organisers List
+            this.inviteesList = document.getElementById("invitees-list");
+
+            //Call typeahead for Organisers autoCompletion
+            $('input.invitees-auto').typeahead(app.autoComplete($("#invitees-auto").data('invitees-path'), app.inviteesList, 2));
         }
     },
 
@@ -486,6 +497,7 @@ var app = {
             // Fill tags, organisers lists
             app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
             app.retrieveListsFromSession(app.organizersSessionKey, app.organisersList, 1);
+            app.retrieveListsFromSession(app.inviteesSessionKey, app.inviteesList, 2);
 
             // Fill form basic fields
             $("#name").val(sessionStorage.getItem(app.contestNameSessionKey));
@@ -508,10 +520,12 @@ var app = {
             } else {
                 $("#public").prop('checked', true);
             }
-            $("#private").change(function () {
+            $("#private_visibility").change(function () {
+                $("#invitees-input-div").show();
                 sessionStorage.setItem(app.contestPrivateVisibilitySessionKey, 1);
             });
-            $("#public").change(function () {
+            $("#public_visibility").change(function () {
+                $("#invitees-input-div").hide();
                 sessionStorage.setItem(app.contestPrivateVisibilitySessionKey, 0);
             });
         }
@@ -565,20 +579,25 @@ var app = {
      * @param redirectURL
      */
     clearProblemsFilters: function (url, token, redirectURL) {
-        // Clear session
-        app.clearSession();
 
-        // Send clear request
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _token: token,
-            },
-            success: function () {
-                window.location.replace(redirectURL);
-            }
-        });
+        // Confirm first
+        if (confirm("Are you sure?\nThis will clear all saved data including organizers,tags, ..etc!")) {
+
+            // Clear session
+            app.clearSession();
+
+            // Send clear request
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    _token: token,
+                },
+                success: function () {
+                    window.location.replace(redirectURL);
+                }
+            });
+        }
     },
 
     /**
@@ -586,7 +605,7 @@ var app = {
      *
      * @param path the url to get the data fot autocompletion
      * @param list the list from th view
-     * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion
+     * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion, 2: Invitees list
      * @returns {{source: source, updater: updater}}
      */
     autoComplete: function (path, list, type) {
@@ -597,12 +616,12 @@ var app = {
                     return process(app.allTagsList);
                 }
                 // if organizers, request the array from server
-                else if (type == 1) {
+                else if (type == 1 || type == 2) {
                     // Use this threshold to prevent looking for username
                     // using the first letter only (a lot of possibilities exist)
                     if (query.length >= 2) {
                         return $.get(path, {query: query}, function (data) {
-                            console.log(path);
+                            console.log(data);
                             return process(data);
                         });
                     }
@@ -614,7 +633,11 @@ var app = {
 
                 var isFound;
                 // Sync auto-completed element with session
-                if (type == 1) { // Organizers
+                if (type == 2) { // Invitees
+                    isFound = app.syncDataWithSession(app.inviteesSessionKey, itemName, false);
+                }
+                // Sync auto-completed element with session
+                else if (type == 1) { // Organizers
                     isFound = app.syncDataWithSession(app.organizersSessionKey, itemName, false);
                 }
                 else if (type == 0) { // Tags
@@ -716,8 +739,14 @@ var app = {
      */
     moveSessionDataToHiddenFields: function () {
         // Set value
-        $("#organisers-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.organizersSessionKey)).join());
-        $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.problemsIDsSessionKey)).join());
+        if (sessionStorage.getItem(app.organizersSessionKey))
+            $("#organisers-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.organizersSessionKey)).join());
+
+        if (sessionStorage.getItem(app.inviteesSessionKey))
+            $("#invitees-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.inviteesSessionKey)).join());
+
+        if (sessionStorage.getItem(app.problemsIDsSessionKey))
+            $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.problemsIDsSessionKey)).join());
 
         // Clear sessions
         app.clearSession();
@@ -734,7 +763,10 @@ var app = {
         var elementName = $(element).data('name');
 
         // Detach from session
-        if (type == 1) { // Organizers
+        if (type == 2) { // Organizers
+            app.syncDataWithSession(app.inviteesSessionKey, elementName, true);
+        }// Detach from session
+        else if (type == 1) { // Organizers
             app.syncDataWithSession(app.organizersSessionKey, elementName, true);
         }
         else if (type == 0) { // Tags
@@ -749,6 +781,7 @@ var app = {
         sessionStorage.setItem(app.tagsSessionKey, "");
         sessionStorage.setItem(app.judgesSessionKey, "");
         sessionStorage.setItem(app.organizersSessionKey, "");
+        sessionStorage.setItem(app.inviteesSessionKey, "");
         sessionStorage.setItem(app.contestNameSessionKey, "");
         sessionStorage.setItem(app.contestTimeSessionKey, "");
         sessionStorage.setItem(app.contestDurationSessionKey, "");

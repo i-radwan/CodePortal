@@ -668,8 +668,11 @@ footer {
 }
 
 .add-edit-contest-problems-wrapper > .row {
-    /*width: 90%;*/
     margin: 0 auto;
+}
+
+.invitees-input-div {
+    display: none;
 }
 
 .autocomplete-input-group {

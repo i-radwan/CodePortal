@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
 use Auth;
 use Session;
 use Redirect;
@@ -13,6 +12,8 @@ use App\Models\Tag;
 use App\Models\Judge;
 use App\Models\Contest;
 use App\Models\Question;
+use App\Models\Group;
+use App\Models\Notification;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use Illuminate\Http\Request;
@@ -143,6 +144,19 @@ class ContestController extends Controller
             foreach ($organisers as $organiser) {
                 $contest->organizers()->save($organiser);
             }
+            // Send notifications to Invitees if private contest
+            if ($request->get('visibility') == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PRIVATE_KEY]) {
+
+                // Get invitees
+                $invitees = explode(",", $request->get('invitees'));
+                $invitees = User::whereIn('username', $invitees)->get(); //It's a Collection but a Model is needed
+
+                foreach ($invitees as $invitee) {
+                    // Send notifications
+                    Notification::make([], Auth::user(), $invitee, $contest,
+                        Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST], false);
+                }
+            }
 
             //Add Problems
             $problems = explode(",", $request->get('problems_ids'));
@@ -192,7 +206,7 @@ class ContestController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function organisersAutoComplete(Request $request)
+    public function usersAutoComplete(Request $request)
     {
         $query = $request->get('query');
         $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])
