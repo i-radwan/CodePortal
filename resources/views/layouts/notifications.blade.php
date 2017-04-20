@@ -63,7 +63,7 @@
                     {{--Notification cancel icon--}}
                     <i class="fa fa-times notification-delete"
                        aria-hidden="true"
-                       onclick="app.cancelNotification(event, '{{ csrf_token() }}', '{{ url("notification/".$notification->id) }}', this);">
+                       onclick="app.cancelNotification(event, '{{ csrf_token() }}', '{{ url("notification/" . $notification->id) }}', this);">
                     </i>
                 </li>
 

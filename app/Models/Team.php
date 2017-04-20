@@ -72,6 +72,21 @@ class Team extends Model
     }
 
     /**
+     * Return all the users invited to the team
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitedUsers()
+    {
+        return $this->belongsToMany(
+            User::class,
+            Constants::TBL_TEAM_INVITATIONS,
+            Constants::FLD_TEAM_INVITATIONS_TEAM_ID,
+            Constants::FLD_TEAM_INVITATIONS_USER_ID
+        )->withTimestamps();
+    }
+
+    /**
      * Return the contests that the current team participated in
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

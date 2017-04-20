@@ -444,6 +444,7 @@ class Constants
     const TBL_GROUP_JOIN_REQUESTS = "group_join_requests";
     const TBL_SHEET_PROBLEMS = "sheet_problems";
     const TBL_TEAM_MEMBERS = "team_members";
+    const TBL_TEAM_INVITATIONS = "team_invitations";
 
     //
     // Fields
@@ -598,6 +599,10 @@ class Constants
     const FLD_TEAM_MEMBERS_TEAM_ID = "team_id";
     const FLD_TEAM_MEMBERS_USER_ID = "user_id";
 
+    // Team invitations
+    const FLD_TEAM_INVITATIONS_TEAM_ID = "team_id";
+    const FLD_TEAM_INVITATIONS_USER_ID = "user_id";
+
     // ============================================================
     //endregion
 
@@ -608,10 +613,9 @@ class Constants
     //
 
     // Group Invitation Exception
-    const GROUP_INVITATION_EXCEPTION_INVITED = "INVITED";
-
-    const GROUP_INVITATION_EXCEPTION_MSGS = [
-        self::GROUP_INVITATION_EXCEPTION_INVITED => 'This receiver has already received notification regarding this resource',
+    const INVITATION_EXCEPTION_INVITED = "INVITED";
+    const INVITATION_EXCEPTION_MSGS = [
+        self::INVITATION_EXCEPTION_INVITED => 'This receiver has already received notification regarding this resource',
     ];
 
     //=============================================================

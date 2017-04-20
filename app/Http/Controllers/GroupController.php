@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\GroupInvitationException;
+use App\Exceptions\InvitationException;
 use App\Models\Group;
 use App\Models\Notification;
 use App\Models\User;
@@ -198,7 +198,7 @@ class GroupController extends Controller
             }
             return back()->with('messages', [$request->get('username') . ' invited successfully!']);
 
-        } catch (GroupInvitationException $e) {
+        } catch (InvitationException $e) {
             // If the user is alreay invited the make function throws this exception
             return back()->withErrors([$request->get('username') . ' is already invited!']);
         }

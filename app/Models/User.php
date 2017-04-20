@@ -345,4 +345,19 @@ class User extends Authenticatable
             Constants::FLD_TEAM_MEMBERS_TEAM_ID
         )->withTimestamps();
     }
+
+    /**
+     * Return all the teams that the current user has been invited to join
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitingTeams()
+    {
+        return $this->belongsToMany(
+            Team::class,
+            Constants::TBL_TEAM_INVITATIONS,
+            Constants::FLD_TEAM_INVITATIONS_USER_ID,
+            Constants::FLD_TEAM_INVITATIONS_TEAM_ID
+        )->withTimestamps();
+    }
 }

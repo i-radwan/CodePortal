@@ -27,27 +27,6 @@
                         </div>
                     </div>
 
-                    {{-- Members --}}
-                    {{--TODO: validate--}}
-                    {{--TODO: replace with autocomplete--}}
-                    <div class="form-group{{ $errors->has('members') ? ' has-error' : '' }}">
-                        <label for="email" class="col-md-4 control-label">Members</label>
-
-                        <div class="col-md-6">
-                            <input id="email" type="text" class="form-control"
-                                   name="members"
-                                   value="{{ old('members', $teamMembers) }}"
-                                   placeholder="Members"
-                                   required>
-
-                            @if ($errors->has('members'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('members') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
                     {{--Submit Button--}}
                     <div class="form-group">
                         <div class="col-md-6 col-md-offset-4">

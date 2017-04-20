@@ -22,11 +22,17 @@ Route::get('edit', 'UserController@edit'); // ToDo: @Abzo auth middleware requir
 Route::post('edit', 'UserController@editProfile');  // ToDo: @Abzo auth middleware required, choose better route
 
 // Teams routes...
+// TODO: to be merged with profile routes and to add middlewares
 Route::get('profile/{user}/teams', 'TeamController@index');
 Route::get('teams/create', 'TeamController@create');
 Route::get('teams/{team}/edit', 'TeamController@edit');
 Route::post('teams', 'TeamController@store');
 Route::post('teams/{team}', 'TeamController@update');
+Route::post('teams/{team}/invite', 'TeamController@inviteMember');
+Route::delete('teams/{team}/remove/{user}', 'TeamController@removeMember');
+Route::delete('teams/{team}/invitations/{user}/cancel', 'TeamController@cancelInvitation');
+Route::put('teams/{team}/invitations/{user}/accept', 'TeamController@acceptInvitation');
+Route::put('teams/{team}/invitations/{user}/reject', 'TeamController@rejectInvitation');
 Route::delete('teams/{team}', 'TeamController@destroy');
 
 // Contest routes...
