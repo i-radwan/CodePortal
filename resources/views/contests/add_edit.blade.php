@@ -16,6 +16,7 @@
                             {{ csrf_field() }}
                             <input type="hidden" id="problems-ids-hidden" name="problems_ids"/>
                             <input type="hidden" id="organisers-ids-hidden" name="organisers"/>
+                            <input type="hidden" id="invitees-ids-hidden" name="invitees"/>
 
                             {{--Name--}}
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} has-feedback">
@@ -71,19 +72,18 @@
                                 <div class="col-md-10 visibility-div">
                                     <ul>
                                         <li>
-                                            <input type="radio" value="0" id="public" name="visibility" checked>
-                                            <label for="public">Public</label>
+                                            <input type="radio" value="0" id="public_visibility" name="visibility"
+                                                   checked>
+                                            <label for="public_visibility">Public</label>
 
                                             <div class="check"></div>
                                         </li>
 
                                         <li>
-                                            <input type="radio" value="1" id="private" name="visibility">
-                                            <label for="private">Private</label>
+                                            <input type="radio" value="1" id="private_visibility" name="visibility">
+                                            <label for="private_visibility">Private</label>
 
-                                            <div class="check">
-                                                <div class="inside"></div>
-                                            </div>
+                                            <div class="check"></div>
                                         </li>
                                     </ul>
                                     @if ($errors->has('visibility'))
@@ -93,7 +93,6 @@
                                     @endif
                                 </div>
                             </div>
-
                             {{--Organisers--}}
                             <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
                                 <label for="organizers" class="col-md-2 control-label text-left">Organizers</label>
@@ -102,6 +101,20 @@
                                     @if ($errors->has('organizers'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('organizers') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{--Invitees (to be invited to private contest)--}}
+                            <div id="invitees-input-div"
+                                 class="invitees-input-div form-group{{ $errors->has('invitees') ? ' has-error' : '' }} has-feedback">
+                                <label for="invitees" class="col-md-2 control-label text-left">Invitees</label>
+                                <div class="col-md-10">
+                                    @include("contests.contest_views.invitees")
+                                    @if ($errors->has('invitees'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('invitees') }}</strong>
                                     </span>
                                     @endif
                                 </div>

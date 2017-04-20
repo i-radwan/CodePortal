@@ -44,7 +44,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
     Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete');
-    Route::get('contest/add/organisers_auto_complete', 'ContestController@organisersAutoComplete');
+    Route::get('contest/add/organisers_auto_complete', 'ContestController@usersAutoComplete');
+    Route::get('contest/add/invitees_auto_complete', 'ContestController@usersAutoComplete');
 
     Route::post('contest/add', 'ContestController@addContest');
     Route::post('contest/add/tags_judges_filters_sync', 'ContestController@applyProblemsFilters');

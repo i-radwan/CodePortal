@@ -37,7 +37,8 @@
 
             <span onclick="app.clearProblemsFilters('{{Request::url()}}/tags_judges_filters_detach', '{{csrf_token()}}', '{{ Request::url() }}')"
                   class="btn btn-link text-dark pull-right"
-                  id="clear-table-sorting-link">Clear</span>
+                  id="clear-table-sorting-link"
+            >Clear</span>
         </p>
     </div>
 </div>
