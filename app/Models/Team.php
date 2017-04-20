@@ -42,6 +42,21 @@ class Team extends Model
     ];
 
     /**
+     * Delete the model from the database and its associated data
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        $this->members()->detach();
+        $this->participatingContests()->detach();
+
+        // TODO: remove notifications when added
+
+        return parent::delete();
+    }
+
+    /**
      * Return all the members of the team
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

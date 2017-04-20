@@ -128,13 +128,32 @@ var app = {
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureTagsOrganisersLists();
+            app.configureTagsOrganisersLists(true, true);
 
             // Render saved data from session into form
             app.fillContestFormFromSession();
 
             // Item delete from session
-            app.bindCloseButtonClick();
+            app.closeButtonClick();
+        }
+
+        // Problems filters
+        if ($("#problems-page-hidden-element").length) {
+            // Set different tagsSessionKey for problems page
+            // to maintain the tags stored for add/edit contest
+            app.tagsSessionKey = 'problems_filters_tags_session_key';
+
+            // Fetch all tags
+            app.fetchAllTagsFromDB();
+
+            // Configure lists and autocomplete typeahead
+            app.configureTagsOrganisersLists(true, false);
+
+            // Retrieve tags from session to view
+            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
+
+            // Toggle filters more div if query contains tags or judges
+            app.toggleFiltersPanel();
         }
     },
 
@@ -398,32 +417,35 @@ var app = {
      */
     fetchAllTagsFromDB: function () {
         // Send request to path in tags-path data attr
-        $.get($("#tagsAuto").data('tags-path'), function (data) {
+        $.get($("#tags-auto").data('tags-path'), function (data) {
             app.allTagsList = data;
+            console.log(app.allTagsList);
         });
     },
     /**
      * Configure lists and allow auto complete
+     *
+     * @param tags: bind tags with auto complete
+     * @param organisers: bind organisers with auto complete
      */
-    configureTagsOrganisersLists: function () {
+    configureTagsOrganisersLists: function (tags, organisers) {
 
         // Tags AutoComplete
-
-        // Define tag lists and apply autocomplete to it
-        this.tagsList = document.getElementById("tagsList");
-
-        // Call typeahead for Tags autoCompletion
-        $('input.tagsAuto').typeahead(app.autoComplete($("#tagsAuto").data('tags-path'), app.tagsList, 0, app.allTagsList));
-
+        if (tags) {
+            // Define tag lists and apply autocomplete to it
+            this.tagsList = document.getElementById("tags-list");
+            // Call typeahead for Tags autoCompletion
+            $('input.tags-auto').typeahead(app.autoComplete($("#tags-auto").data('tags-path'), app.tagsList, 0));
+        }
 
         // Organisers AutoComplete
+        if (organisers) {
+            //Organisers List
+            this.organisersList = document.getElementById("organisers-list");
 
-        //Organisers List
-        this.organisersList = document.getElementById("organisers-list");
-
-        //Call typeahead for Organisers autoCompletion
-        $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
-
+            //Call typeahead for Organisers autoCompletion
+            $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
+        }
     },
 
     /**
@@ -567,12 +589,12 @@ var app = {
      * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion
      * @returns {{source: source, updater: updater}}
      */
-    autoComplete: function (path, list, type, downloadedList) {
+    autoComplete: function (path, list, type) {
         return ({
             source: function (query, process) {
                 // if tags auto complete, just process the saved array
                 if (type == 0) {
-                    return process(downloadedList);
+                    return process(app.allTagsList);
                 }
                 // if organizers, request the array from server
                 else if (type == 1) {
@@ -580,6 +602,7 @@ var app = {
                     // using the first letter only (a lot of possibilities exist)
                     if (query.length >= 2) {
                         return $.get(path, {query: query}, function (data) {
+                            console.log(path);
                             return process(data);
                         });
                     }
@@ -679,20 +702,14 @@ var app = {
     renderElementsFromSession: function (itemName, list, type) {
 
         // Create new DOM element and assign basic attributes
-        var entry = document.createElement('li');
-        entry.setAttribute("value", itemName);
-
-        // Add the item name and the delete button according to the send type
-        // (tag or organizer)
-        if (type == 1) {
-            var text = '<button class="organiser-close-icon" data-name="' + itemName + '" data-type="1"></button>';
-        } else if (type == 0) {
-            var text = '<button class="tag-close-icon" data-name="' + itemName + '" data-type="0"></button>';
-        }
+        var entry = document.createElement('span');
+        entry.className += ' element label label-success';
 
         // Add element content and append to view
-        entry.innerHTML = text + itemName;
+        entry.innerHTML = itemName + '<span onclick="app.closeButtonClick(this)" data-role="remove" data-name="' + itemName + '" data-type="' + type + '"></span>';
+
         list.appendChild(entry);
+
     },
     /**
      * Set hidden inputs values from sessions, then clear sessions
@@ -708,25 +725,21 @@ var app = {
     /**
      * Bind close button to clear item from given list in sessionStorage
      */
-    bindCloseButtonClick: function () {
-        // Wait for delete icon click
-        $(document).on('mousedown', '.organiser-close-icon, .tag-close-icon', function (event) {
+    closeButtonClick: function (element) {
+        // Remove view
+        $(element).parent().remove();
 
-            // Remove view
-            $(this).parent().remove();
+        // Get element type
+        var type = $(element).data('type');
+        var elementName = $(element).data('name');
 
-            // Get element type
-            var type = $(event.target).data('type');
-            var elementName = $(event.target).data('name');
-
-            // Detach from session
-            if (type == 1) { // Organizers
-                app.syncDataWithSession(app.organizersSessionKey, elementName, true);
-            }
-            else if (type == 0) { // Tags
-                app.syncDataWithSession(app.tagsSessionKey, elementName, true);
-            }
-        });
+        // Detach from session
+        if (type == 1) { // Organizers
+            app.syncDataWithSession(app.organizersSessionKey, elementName, true);
+        }
+        else if (type == 0) { // Tags
+            app.syncDataWithSession(app.tagsSessionKey, elementName, true);
+        }
     },
     /**
      * Clear client side sessions
@@ -743,6 +756,36 @@ var app = {
     },
 
 
+    // ==================================================
+    //        PROBLEMS PAGE FILTERS FUNCTIONS
+    // ==================================================
+
+    /**
+     * Set problems filters hidden inputs values from sessions, then clear sessions
+     */
+    moveProblemsFiltersSessionDataToHiddenFields: function () {
+        // Set value
+        $("#tags").val(JSON.parse(sessionStorage.getItem(app.tagsSessionKey)).join());
+    },
+    /**
+     * Check if the url query contains judges/tags, then toggle the panel
+     */
+    toggleFiltersPanel: function () {
+        var queries = app.getUrlVars();
+        // If the URL queries contain judges/tags
+        // or the session of applied tags still holds some tags (so the problems now
+        // are actually filtered)
+        // , show more filters panel
+        var areTagsApplied = (queries['tag'] && queries['tag'] != '');
+        var areJudgesApplied = (queries['judges%5B%5D'] && queries['judges%5B%5D'] != '');
+        var tagsInSession = sessionStorage.getItem('problems_filters_tags_session_key');
+        var doesSessionContainTags = (tagsInSession) ? (tagsInSession != '[]' && tagsInSession != '') : false;
+
+        if (areTagsApplied || areJudgesApplied || doesSessionContainTags) {
+            $('#more-filters-button').html('less');
+            $('#hidden-filters').slideToggle();
+        }
+    },
     // ==================================================
     //        CONTEST PROBLEMS SORT FUNCTIONS
     // ==================================================
@@ -818,6 +861,22 @@ var app = {
         } else {
             alert('No changes have been made!');
         }
+    },
+
+    // ==================================================
+    //              UTILITIES FUNCTIONS
+    // ==================================================
+
+    /**
+     * Read a page's GET URL variables and return them as an associative array.
+     */
+    getUrlVars: function () {
+        var queries = {};
+        $.each(document.location.search.substr(1).split('&'), function (c, q) {
+            var i = q.split('=');
+            queries[i[0].toString()] = i[1].toString();
+        });
+        return queries;
     }
 };
 

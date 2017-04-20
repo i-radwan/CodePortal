@@ -75,5 +75,7 @@
 </table>
 
 {{--Pagination--}}
-{{ $problems->appends(Request::all())->render() }}
+<div class="text-center">
+    {{ $problems->appends(Request::all())->render() }}
+</div>
 

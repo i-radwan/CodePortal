@@ -21,6 +21,14 @@ Route::get('profile/{user}', 'UserController@index');
 Route::get('edit', 'UserController@edit'); // ToDo: @Abzo auth middleware required, choose better route
 Route::post('edit', 'UserController@editProfile');  // ToDo: @Abzo auth middleware required, choose better route
 
+// Teams routes...
+Route::get('profile/{user}/teams', 'TeamController@index');
+Route::get('teams/create', 'TeamController@create');
+Route::get('teams/{team}/edit', 'TeamController@edit');
+Route::post('teams', 'TeamController@store');
+Route::post('teams/{team}', 'TeamController@update');
+Route::delete('teams/{team}', 'TeamController@destroy');
+
 // Contest routes...
 Route::get('contests', 'ContestController@index');
 
@@ -29,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Contests routes
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
-    Route::get('contest/add/tags_auto_complete', 'ContestController@tagsAutoComplete');
+    Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete');
     Route::get('contest/add/organisers_auto_complete', 'ContestController@organisersAutoComplete');
 
     Route::post('contest/add', 'ContestController@addContest');

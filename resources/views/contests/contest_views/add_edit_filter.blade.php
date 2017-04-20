@@ -17,20 +17,18 @@
             @endforeach
         </div>
         <hr>
-        <div>
-            {{--Tags AutoComplete--}}
-            Tags:
-            <div class="search-wrapper">
-                <input id="tagsAuto" type="text" class="tagsAuto search-box" placeholder="Enter Tag" autocomplete="off"
+        {{--Tags AutoComplete--}}
+        <div id="custom-search-input">
+            <div class="input-group autocomplete-input-group">
+                <input id="tags-auto" type="text" class="form-control tags-auto search-box"
+                       placeholder="Tag name..."
                        onkeypress="return event.keyCode != 13;"
-                       data-tags-path="{{url('contest/add/tags_auto_complete')}}"/>
-                <button class="close-icon" type="reset"></button>
+                       data-tags-path="{{url('tags_auto_complete')}}"
+                       autocomplete="off">
             </div>
-            <div class="container">
-                <ul id="tagsList" class="tags-list" name="tags[]">
+        </div>
+        <div id="tags-list" class="autocomplete-list">
 
-                </ul>
-            </div>
         </div>
         {{--Apply filters & Clear buttons--}}
         <p>
