@@ -197,6 +197,7 @@ class ContestController extends Controller
         $query = $request->get('query');
         $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])
             ->where(Constants::FLD_USERS_USERNAME, 'LIKE', "%$query%")
+            ->where(Constants::FLD_USERS_USERNAME, '!=', Auth::user()[Constants::FLD_USERS_USERNAME])
             ->get();
         return response()->json($data);
     }
