@@ -45,6 +45,63 @@ class Group extends Model
     ];
 
     /**
+     * Delete the model from the database and its related data
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        // Remove sheets
+        foreach ($this->sheets()->get() as $sheet) {
+            $sheet->delete();
+        }
+
+        // Remove contests
+        foreach ($this->contests()->get() as $contest) {
+            $contest->delete();
+        }
+
+        $this->contests()->detach();
+        $this->members()->detach();
+        $this->membershipSeekers()->detach();   // Remove join requests
+        $this->sentInvitations()->delete();     // TODO: to be tested
+
+        // Remove notifications
+//        Notification::destroy(Notification::where(
+//                Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $this->id)
+//                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=',
+//                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
+//                ->pluck(Constants::FLD_NOTIFICATIONS_ID));
+
+        return parent::delete();
+    }
+
+    /**
+     * Return all contests related to this group
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function contests()
+    {
+        return $this->belongsToMany(
+            Contest::class,
+            Constants::TBL_GROUP_CONTESTS,
+            Constants::FLD_GROUP_CONTESTS_GROUP_ID,
+            Constants::FLD_GROUP_CONTESTS_CONTEST_ID
+        )->withTimestamps();
+    }
+
+    /**
+     * Return the group sheets
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sheets()
+    {
+        return $this->hasMany(Sheet::class, Constants::FLD_SHEETS_GROUP_ID);
+    }
+
+    /**
      * Return the owner user of this group
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -70,21 +127,6 @@ class Group extends Model
     }
 
     /**
-     * Return all contests related to this group
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function contests()
-    {
-        return $this->belongsToMany(
-            Contest::class,
-            Constants::TBL_GROUP_CONTESTS,
-            Constants::FLD_GROUP_CONTESTS_GROUP_ID,
-            Constants::FLD_GROUP_CONTESTS_CONTEST_ID
-        )->withTimestamps();
-    }
-
-    /**
      * Return all users who sent requests to join this group
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -100,13 +142,46 @@ class Group extends Model
     }
 
     /**
-     * Return the group sheets
+     * Return all invited user to this group
+     *
+     * TODO: not tested yet
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitedUsers()
+    {
+        // TODO: add pivot table fields as needed
+        return
+            $this->belongsToMany(
+                User::class,
+                Constants::TBL_NOTIFICATIONS,
+                Constants::FLD_NOTIFICATIONS_RESOURCE_ID,
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID
+            )->where(
+                Constants::FLD_NOTIFICATIONS_TYPE,
+                '=',
+                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
+            );
+    }
+
+    /**
+     * Return all invitations sent from this group
+     *
+     * TODO: not tested yet
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function sheets()
+    public function sentInvitations()
     {
-        return $this->hasMany(Sheet::class, Constants::FLD_SHEETS_GROUP_ID);
+        // TODO: add pivot table fields as needed
+        return
+            $this
+                ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
+                ->where(
+                    Constants::FLD_NOTIFICATIONS_TYPE,
+                    '=',
+                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
+                );
     }
 
     /**
@@ -129,42 +204,5 @@ class Group extends Model
         );
 
         return $query;
-    }
-
-    /**
-     * Delete the group after removing all of its relations records
-     *
-     * @return bool|null
-     */
-    public function delete()
-    {
-        // Remove sheets
-        $sheets = Sheet::where(Constants::FLD_SHEETS_GROUP_ID, '=', $this->id)->get();
-        foreach ($sheets as $sheet) {
-            $sheet->delete();
-        }
-        // Remove join requests
-        $this->membershipSeekers()->detach();
-
-        // Remove contests
-        $contests = $this->contests()->get();
-        foreach ($contests as $contest) {
-            $contest->delete();
-        }
-        $this->contests()->detach();
-
-        // Remove members
-        $this->members()->detach();
-
-        // Remove notifications
-        Notification::destroy(
-            Notification::
-            where(
-                Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $this->id)
-                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=',
-                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
-                ->pluck(Constants::FLD_NOTIFICATIONS_ID));
-
-        return parent::delete();
     }
 }

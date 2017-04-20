@@ -44,6 +44,30 @@ class Sheet extends Model
     ];
 
     /**
+     * Delete the model from the database and its related data
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        // TODO: do we need to store a file for the solution or just a big text in the database?
+        // Iterate over problems
+        foreach ($this->problems()->get() as $problem) {
+            // Get solution file and delete it
+            $solutionFile = $problem->pivot->solution;
+
+            if ($solutionFile) {
+                unlink("code/$solutionFile");
+            }
+        }
+
+        // Detach problems from relationship
+        $this->problems()->detach();
+
+        return parent::delete();
+    }
+
+    /**
      * Return all problems of this sheet
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -70,29 +94,5 @@ class Sheet extends Model
     public function group()
     {
         return $this->belongsTo(Group::class, Constants::FLD_SHEETS_GROUP_ID);
-    }
-
-    /**
-     * Delete the sheet after removing all of its relations records
-     *
-     * @return bool|null
-     */
-    public function delete()
-    {
-        // Delete problems solutions code files
-        $problems = $this->problems();
-
-        // Iterate over problems
-        foreach ($problems->get() as $problem) {
-
-            // Get solution file and delete it
-            $solutionFile = $problem->pivot->solution;
-            if ($solutionFile)
-                unlink("code/$solutionFile");
-        }
-
-        // Detach problems from relationship
-        $this->problems()->detach();
-        return parent::delete();
     }
 }

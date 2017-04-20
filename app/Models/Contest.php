@@ -105,6 +105,23 @@ class Contest extends Model
     ];
 
     /**
+     * Delete the model from the database and its related data
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        $this->problems()->detach();
+        $this->organizers()->detach();
+        $this->participants()->detach();
+        $this->participantTeams()->detach();
+
+        // TODO: remove notifications when added
+
+        return parent::delete();
+    }
+
+    /**
      * Return public visible contests only
      *
      * @param Builder $query
