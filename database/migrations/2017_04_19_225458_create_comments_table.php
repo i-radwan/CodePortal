@@ -13,18 +13,17 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        //const FLD_COMMENTS_COMMENT_ID = "id";
-//        const FLD_COMMENTS_USER_ID = "user_id";
-//        const FLD_COMMENTS_POST_ID = "post_id";
-//        const FLD_COMMENTS_BODY = "body";
-//        const FLD_COMMENTS_UP_VOTES = "upvote";
-//        const FLD_COMMENTS_DOWN_VOTES = "downvote";
-//        Schema::create(Constants::TBL_POSTS, function (Blueprint $table) {
-//            $table->increments(Constants::FLD_POSTS_POST_ID);
-//            $table->unsignedInteger(Constants::FLD_POSTS_BLOG_ID);
-//            $table->text(Constants::FLD_POSTS_BODY);
-//            $table->timestamps();
-//        });
+        //
+        Schema::create(\App\Utilities\Constants::TBL_COMMENTS, function (Blueprint $table) {
+            $table->increments(\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID);
+            $table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_POST_ID);
+            $table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_USER_ID);
+            $table->char(\App\Utilities\Constants::FLD_COMMENTS_TITLE, 50);
+            $table->text(\App\Utilities\Constants::FLD_COMMENTS_BODY);
+            $table->integer(\App\Utilities\Constants::FLD_COMMENTS_UP_VOTES)->default(0);
+            $table->integer(\App\Utilities\Constants::FLD_COMMENTS_DOWN_VOTES)->default(0);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -35,5 +34,7 @@ class CreateCommentsTable extends Migration
     public function down()
     {
         //
+        Schema::dropIfExists(\App\Utilities\Constants::TBL_COMMENTS);
+
     }
 }

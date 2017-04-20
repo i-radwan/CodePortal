@@ -447,6 +447,7 @@ class Constants
     const TBL_GROUP_JOIN_REQUESTS = "group_join_requests";
     const TBL_SHEET_PROBLEMS = "sheet_problems";
     const TBL_TEAM_MEMBERS = "team_members";
+    const TBL_COMMENTS_REPLIES = "comments_replies";
 
     //
     // Fields
@@ -607,17 +608,28 @@ class Constants
 
     //POSTS
     const FLD_POSTS_POST_ID = "id";
-    const FLD_POSTS_BLOG_ID = "blog_id";
+    const FLD_POSTS_OWNER_ID = "owner_id";
+    const FLD_POSTS_TITLE = "title";
     const FLD_POSTS_BODY = "body";
+    const FLD_POSTS_UP_VOTES = "up_vote";
+    const FLD_POSTS_DOWN_VOTES = "down_vote";
 
     //Comments
     const FLD_COMMENTS_COMMENT_ID = "id";
     const FLD_COMMENTS_USER_ID = "user_id";
     const FLD_COMMENTS_POST_ID = "post_id";
+    const FLD_COMMENTS_TITLE = "title";
     const FLD_COMMENTS_BODY = "body";
-    const FLD_COMMENTS_UP_VOTES = "upvote";
-    const FLD_COMMENTS_DOWN_VOTES = "downvote";
+    const FLD_COMMENTS_UP_VOTES = "up_vote";
+    const FLD_COMMENTS_DOWN_VOTES = "down_vote";
+
+    //Comments Replies
+//    const FLD_COMMENTS_REPLIES_ID = "id";
+    const FLD_COMMENTS_REPLIES_COMMENT_ID  = "comment_id";
+    const FLD_COMMENTS_REPLIES_REPLY_ID = "comment_id";
+
     // ============================================================
+
     //endregion
 
     //region Exceptions
