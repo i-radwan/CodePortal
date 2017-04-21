@@ -50,8 +50,6 @@ class Sheet extends Model
      */
     public function delete()
     {
-        // TODO: do we need to store a file for the solution or just a big text in the database?
-        // Iterate over problems
         foreach ($this->problems()->get() as $problem) {
             // Get solution file and delete it
             $solutionFile = $problem->pivot->solution;
@@ -61,7 +59,6 @@ class Sheet extends Model
             }
         }
 
-        // Detach problems from relationship
         $this->problems()->detach();
 
         return parent::delete();

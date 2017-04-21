@@ -64,14 +64,7 @@ class Group extends Model
         $this->contests()->detach();
         $this->members()->detach();
         $this->membershipSeekers()->detach();   // Remove join requests
-        $this->sentInvitations()->delete();     // TODO: to be tested
-
-        // Remove notifications
-//        Notification::destroy(Notification::where(
-//                Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $this->id)
-//                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=',
-//                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
-//                ->pluck(Constants::FLD_NOTIFICATIONS_ID));
+        $this->notifications()->delete();       // Remove sent invitations
 
         return parent::delete();
     }
@@ -142,9 +135,39 @@ class Group extends Model
     }
 
     /**
-     * Return all invited user to this group
+     * Return all notifications pointing at this group
      *
-     * TODO: not tested yet
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        // TODO: add pivot table fields as needed
+        return
+            $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
+                ->where(
+                    Constants::FLD_NOTIFICATIONS_TYPE,
+                    '=',
+                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
+                );
+    }
+
+    /**
+     * Return all pending invitations sent from this group
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentPendingInvitations()
+    {
+        // TODO: add pivot table fields as needed
+        return $this->notifications()->where(
+            Constants::FLD_NOTIFICATIONS_STATUS,
+            '!=',
+            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+        );
+    }
+
+    /**
+     * Return all invited pending users to this group
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -161,27 +184,12 @@ class Group extends Model
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
                 Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
+            )
+            ->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
             );
-    }
-
-    /**
-     * Return all invitations sent from this group
-     *
-     * TODO: not tested yet
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function sentInvitations()
-    {
-        // TODO: add pivot table fields as needed
-        return
-            $this
-                ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
-                ->where(
-                    Constants::FLD_NOTIFICATIONS_TYPE,
-                    '=',
-                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
-                );
     }
 
     /**

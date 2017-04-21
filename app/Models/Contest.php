@@ -115,8 +115,7 @@ class Contest extends Model
         $this->organizers()->detach();
         $this->participants()->detach();
         $this->participantTeams()->detach();
-
-        // TODO: remove notifications when added
+        $this->notifications()->delete();
 
         return parent::delete();
     }
@@ -246,13 +245,61 @@ class Contest extends Model
     }
 
     /**
-     * Return the notifications pointing at this contest
+     * Return all notifications pointing at this contest
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function notifications()
     {
-        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
+        return
+            $this
+                ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
+                ->where(
+                    Constants::FLD_NOTIFICATIONS_TYPE,
+                    '=',
+                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST]
+                );
+    }
+
+    /**
+     * Return all pending invitations sent from this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentPendingInvitations()
+    {
+        // TODO: add pivot table fields as needed
+        return $this->notifications()->where(
+            Constants::FLD_NOTIFICATIONS_STATUS,
+            '!=',
+            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+        );
+    }
+
+    /**
+     * Return all invited pending users to this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitedUsers()
+    {
+        // TODO: add pivot table fields as needed
+        return
+            $this->belongsToMany(
+                User::class,
+                Constants::TBL_NOTIFICATIONS,
+                Constants::FLD_NOTIFICATIONS_RESOURCE_ID,
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID
+            )->where(
+                Constants::FLD_NOTIFICATIONS_TYPE,
+                '=',
+                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST]
+            )
+            ->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+            );
     }
 
     /**

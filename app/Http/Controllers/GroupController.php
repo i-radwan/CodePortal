@@ -34,7 +34,6 @@ class GroupController extends Controller
             ->with('pageTitle', config('app.name') . ' | Groups');
     }
 
-
     /**
      * Show single group page
      *
