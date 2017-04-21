@@ -45,7 +45,7 @@
 				<div class="form-group">
 					<label class="col-lg-3 control-label">Last name:</label>
 					<div class="col-lg-8">
-						<input name="LastName"class="form-control" value="{{isset($user->last_name) ? $user->first_name: "" }}" type="text">
+						<input name="LastName"class="form-control" value="{{isset($user->last_name) ? $user->last_name: "" }}" type="text">
 						<input type="hidden" name="id" value="{{$user->id}}">
 					</div>
 				</div>
