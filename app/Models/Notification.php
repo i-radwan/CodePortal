@@ -30,15 +30,14 @@ class Notification extends Model
      * @var array
      */
     protected $fillable = [
-        Constants::FLD_NOTIFICATIONS_SENDER_ID,
-        Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
-        Constants::FLD_NOTIFICATIONS_RESOURCE_ID,
         Constants::FLD_NOTIFICATIONS_TYPE,
         Constants::FLD_NOTIFICATIONS_STATUS
     ];
 
     /**
      * The rules to check against before saving the model
+     *
+     * TODO: recheck all validations
      *
      * @var array
      */
@@ -53,7 +52,6 @@ class Notification extends Model
      * Create and save new notification
      * Notification maker function.
      *
-     * @param array $attributes
      * @param User $sender
      * @param User $receiver
      * @param Team|Group|Contest $resource
@@ -61,7 +59,7 @@ class Notification extends Model
      * @param bool $duplicationAllowed Whether resending the same notification to the same user twice is allowed
      * @throws InvitationException
      */
-    public static function make($attributes, User $sender, User $receiver, $resource, $type, $duplicationAllowed = false)
+    public static function make(User $sender, User $receiver, $resource, $type, $duplicationAllowed = false)
     {
         if ($sender == null || $receiver == null || $resource == null || $type == null) {
             return;
@@ -84,7 +82,7 @@ class Notification extends Model
         }
 
         // Save the notification after checking the duplication
-        $notification = new Notification($attributes);
+        $notification = new Notification();
         $notification->sender()->associate($sender);
         $notification->receiver()->associate($receiver);
         $notification->resource()->associate($resource);
@@ -119,7 +117,20 @@ class Notification extends Model
      */
     public function resource()
     {
-        // TODO: I think we need to check the resource type to assign the relationship class
-        return $this->belongsTo(User::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
+        switch ($this[Constants::FLD_NOTIFICATIONS_TYPE]) {
+            case Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST]:
+                $class = Contest::class;
+                break;
+            case Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]:
+                $class = Group::class;
+                break;
+            case Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM]:
+                $class = Team::class;
+                break;
+            default:
+                return;
+        }
+
+        return $this->belongsTo($class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
     }
 }
