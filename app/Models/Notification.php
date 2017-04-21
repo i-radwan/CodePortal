@@ -44,7 +44,7 @@ class Notification extends Model
     protected $rules = [
         Constants::FLD_NOTIFICATIONS_SENDER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_NOTIFICATIONS_RECEIVER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
-        Constants::FLD_NOTIFICATIONS_RESOURCE_ID => 'required|resource_exists_in_table',
+        //Constants::FLD_NOTIFICATIONS_RESOURCE_ID => 'required|resource_exists_in_table',
         Constants::FLD_NOTIFICATIONS_TYPE => 'required|Regex:/([012])/'
     ];
 
@@ -83,10 +83,10 @@ class Notification extends Model
 
         // Save the notification after checking the duplication
         $notification = new Notification();
+        $notification[Constants::FLD_NOTIFICATIONS_TYPE] = $type;
         $notification->sender()->associate($sender);
         $notification->receiver()->associate($receiver);
         $notification->resource()->associate($resource);
-        $notification[Constants::FLD_NOTIFICATIONS_TYPE] = $type;
         $notification->save();
     }
 

@@ -133,7 +133,13 @@ class AuthServiceProvider extends ServiceProvider
         // Member of team
         Gate::define("member-team", function (User $user, Team $team) {
             // Check if user is member of the team
-            return ($user->joiningTeams()->find($team[Constants::FLD_GROUPS_ID]));
+            return ($team->members()->find($user[Constants::FLD_USERS_ID]));
+        });
+
+        // Invitee of team
+        Gate::define("invitee-team", function (User $user, Team $team) {
+            // Check if user is invited to join the team
+            return ($team->invitedUsers()->find($user[Constants::FLD_USERS_ID]));
         });
     }
 }
