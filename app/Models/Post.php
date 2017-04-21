@@ -53,7 +53,7 @@ class Post extends Model
      * Get Comments for this Post with hierarchy
      */
     public function comments(){
-        return $this->hasMany(Comment::class)->where(Constants::FLD_COMMENTS_PARENT_ID, null); //ToDo: Samir Change that to  a more efficient Way
+        return  $this->hasMany(Comment::class)->where(Constants::FLD_COMMENTS_PARENT_ID, null); //ToDo: Samir Change that to  a more efficient Way
     }
 
 

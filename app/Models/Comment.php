@@ -51,7 +51,8 @@ class Comment extends Model
         Constants::FLD_COMMENTS_BODY => 'required|min:3',
         Constants::FLD_POSTS_TITLE => 'required|min:0',
         Constants::FLD_COMMENTS_USER_ID => 'required|exists:'. Constants::TBL_USERS. ','. Constants::FLD_USER_HANDLES_USER_ID,
-        Constants::FLD_COMMENTS_POST_ID => 'required|exists:'. Constants::TBL_POSTS . ','. Constants::FLD_POSTS_POST_ID
+        Constants::FLD_COMMENTS_POST_ID => 'required|exists:'. Constants::TBL_POSTS . ','. Constants::FLD_POSTS_POST_ID,
+        Constants::FLD_COMMENTS_PARENT_ID => 'nullable|exists' . Constants::TBL_COMMENTS . ','. Constants::FLD_COMMENTS_COMMENT_ID,
     ];
 
     /*
