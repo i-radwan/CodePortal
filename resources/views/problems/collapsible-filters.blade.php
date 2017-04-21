@@ -1,11 +1,9 @@
 <div class="panel panel-default problems-filters-panel">
     <div class="panel-heading">
-        <a class="text-dark" data-toggle="collapse" href="#filters">
-            Filters
-        </a>
+        Filters
     </div>
 
-    <div id="filters" class="panel-collapse collapse in">
+    <div id="filters" class="panel-collapse">
         <div class="panel-body">
             <form action="{{ Request::url() }}" method="get" role="form">
 

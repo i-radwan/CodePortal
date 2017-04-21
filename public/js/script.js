@@ -128,6 +128,9 @@ var app = {
         // Add/Edit contest page
         if ($("#add-edit-contest-page-hidden-element").length) {
 
+            // Sync server session filters with client session filters
+            app.getFiltersFromElementAndFormat($("#add-edit-contest-page-hidden-element"));
+
             // Fetch all tags
             app.fetchAllTagsFromDB();
 
@@ -141,21 +144,24 @@ var app = {
         // Add/Edit sheet page
         if ($("#add-edit-sheet-page-hidden-element").length) {
 
+            // Set the session keys for sheets problems
+            app.problemsIDsSessionKey = 'sheets_problems_ids_session_key';
+            app.tagsSessionKey = 'sheets_tags_ids_session_key';
+            app.judgesSessionKey = 'sheets_judges_ids_session_key';
+
+            // Sync server session filters with client session filters
+            app.getFiltersFromElementAndFormat($("#add-edit-sheet-page-hidden-element"));
+
             // Fetch all tags
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
             app.configureAutoCompleteLists(true, false, false);
 
-            // Set the session keys for sheets problems
-            app.problemsIDsSessionKey = 'sheets_problems_ids_session_key';
-            app.tagsSessionKey = 'sheets_tags_ids_session_key';
-            app.judgesSessionKey = 'sheets_judges_ids_session_key';
-
             // Fill judges checkboxes
             app.fillJudgesCheckboxes();
 
-            // Fill tags, organisers lists
+            // Fill tags
             app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
 
             // Fill problems checkboxes
@@ -1005,6 +1011,44 @@ var app = {
             queries[i[0].toString()] = i[1].toString();
         });
         return queries;
+    },
+    /**
+     * When the data provided by php contains data (e.g. filters) that should be
+     * in sync with local session, but the user removed this session, we've to
+     * make sure that the sync happens in this function
+     *
+     * @param sessionKey
+     * @param array
+     */
+    syncDataFromRequestToSession: function (sessionKey, array) {
+        if (!sessionStorage.getItem(sessionKey) && array.length > 0) {
+
+            console.log(array);
+            // Set to session
+            sessionStorage.setItem(sessionKey, array);
+        }
+    },
+    /**
+     * Get the filters stored in server session (via php binding to data-X attributes)
+     * and then format these filters to match javascript session format
+     *
+     * @param element
+     */
+    getFiltersFromElementAndFormat: function (element) {
+
+        // Get php selected tags,judges from the data binding attribute
+        // and convert to javascript format
+        var selected_tags = '["' + element.data('selected-tags').replace(',', '","') + '"]';
+        var selected_judges;
+        try {
+            selected_judges = '["' + element.data('selected-judges').replace(',', '","') + '"]';
+        } catch (e) {
+            selected_judges = '["' + element.data('selected-judges') + '"]';
+        }
+
+        // Sync with session
+        app.syncDataFromRequestToSession(app.tagsSessionKey, selected_tags);
+        app.syncDataFromRequestToSession(app.judgesSessionKey, selected_judges);
     }
 };
 

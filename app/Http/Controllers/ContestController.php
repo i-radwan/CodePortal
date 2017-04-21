@@ -85,10 +85,14 @@ class ContestController extends Controller
 
         $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
 
+        // Are filters applied (to inform user that there're filters applied from previous visit)
+        $areFiltersApplied = count($tags) || count($judges);
+
         return view('contests.add_edit')
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
+            ->with('filtersApplied', $areFiltersApplied)
             ->with('formURL', url('contest/add'))
             ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
@@ -301,7 +305,8 @@ class ContestController extends Controller
     public function joinContest(Contest $contest)
     {
         $user = Auth::user();
-        $user->participatingContests()->syncWithoutDetaching([$contest->id]);
+        $user->participatingContests()
+            ->syncWithoutDetaching([$contest[Constants::FLD_CONTESTS_ID]]);
         return back();
     }
 

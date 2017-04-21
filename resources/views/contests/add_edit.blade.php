@@ -157,5 +157,7 @@
             </div>
         </div>
     </div>
-    <span class="page-distinguishing-element" id="add-edit-contest-page-hidden-element"></span>
+    <span class="page-distinguishing-element" id="add-edit-contest-page-hidden-element"
+          data-selected-tags="{{($selected_tags)?$selected_tags:''}}"
+          data-selected-judges="{{($selected_judges)?$selected_judges:''}}"></span>
 @endsection
