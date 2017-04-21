@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class BlogController extends Controller
@@ -13,6 +14,6 @@ class BlogController extends Controller
      */
     public function index()
     {
-        return view('blogs.index')->with('pageTitle', config('app.name'). ' | Blogs');
+        return view('blogs.index')->with('pageTitle', config('app.name'). ' | Blogs')->with('posts', POST::all() );
     }
 }

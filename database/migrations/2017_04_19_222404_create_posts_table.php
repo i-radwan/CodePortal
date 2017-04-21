@@ -22,6 +22,7 @@ class CreatePostsTable extends Migration
             $table->integer(\App\Utilities\Constants::FLD_POSTS_UP_VOTES)->default(0);
             $table->integer(\App\Utilities\Constants::FLD_POSTS_DOWN_VOTES)->default(0);
             $table->timestamps();
+
         });
     }
 

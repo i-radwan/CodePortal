@@ -618,6 +618,7 @@ class Constants
     const FLD_COMMENTS_COMMENT_ID = "id";
     const FLD_COMMENTS_USER_ID = "user_id";
     const FLD_COMMENTS_POST_ID = "post_id";
+    const FLD_COMMENTS_PARENT_ID = "parent_id";
     const FLD_COMMENTS_TITLE = "title";
     const FLD_COMMENTS_BODY = "body";
     const FLD_COMMENTS_UP_VOTES = "up_vote";
@@ -626,7 +627,7 @@ class Constants
     //Comments Replies
 //    const FLD_COMMENTS_REPLIES_ID = "id";
     const FLD_COMMENTS_REPLIES_COMMENT_ID  = "comment_id";
-    const FLD_COMMENTS_REPLIES_REPLY_ID = "comment_id";
+    const FLD_COMMENTS_REPLIES_REPLY_ID = "reply_id";
 
     // ============================================================
 

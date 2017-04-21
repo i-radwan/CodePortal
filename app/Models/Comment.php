@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Models;
+
+use DB;
+use App\Utilities\Constants;
+use App\Models\User;
+use App\Models\Post;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\VarDumper\Caster\ConstStub;
+
+class Comment extends Model
+{
+    //Add Validation
+    use ValidateModelData;
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = Constants::TBL_COMMENTS;
+
+    /**
+     * The primary key of the table associated with the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = Constants::FLD_COMMENTS_COMMENT_ID;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        Constants::FLD_COMMENTS_POST_ID,
+        Constants::FLD_COMMENTS_USER_ID, //ToDO @SAMIR see if that changed
+        Constants::FLD_COMMENTS_TITLE,
+        Constants::FLD_COMMENTS_BODY,
+    ];
+
+    /**
+     * The rules to check against before saving the model
+     *
+     * @var array
+     */
+    protected $rules = [
+
+        Constants::FLD_COMMENTS_BODY => 'required|min:3',
+        Constants::FLD_POSTS_TITLE => 'required|min:0',
+        Constants::FLD_COMMENTS_USER_ID => 'required|exists:'. Constants::TBL_USERS. ','. Constants::FLD_USER_HANDLES_USER_ID,
+        Constants::FLD_COMMENTS_POST_ID => 'required|exists:'. Constants::TBL_POSTS . ','. Constants::FLD_POSTS_POST_ID
+    ];
+
+    /*
+     * Get all replies to that Comment
+     * @return Comments Collection
+     */
+    public function replies(){
+        return $this->hasMany(Comment::class, Constants::FLD_COMMENTS_PARENT_ID);
+    }
+
+}

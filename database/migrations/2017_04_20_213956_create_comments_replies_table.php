@@ -18,6 +18,7 @@ class CreateCommentsRepliesTable extends Migration
             $table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_REPLIES_COMMENT_ID);
             $table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_REPLIES_REPLY_ID);
             $table->primary([\App\Utilities\Constants::FLD_COMMENTS_REPLIES_COMMENT_ID, \App\Utilities\Constants::FLD_COMMENTS_REPLIES_REPLY_ID]);
+
         });
     }
 
