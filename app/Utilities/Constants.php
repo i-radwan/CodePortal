@@ -41,6 +41,7 @@ class Constants
     // Contests page constants
     //
 
+    const CONTESTS_PROBLEMS_MAX_COUNT = 10; // Corresponding to javascript constant
     const CONTESTS_COUNT_PER_PAGE = 30;
     const CONTEST_STANDINGS_PER_PAGE = 30;
     const CONTEST_SUBMISSIONS_PER_PAGE = 30;

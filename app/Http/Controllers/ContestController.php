@@ -178,8 +178,13 @@ class ContestController extends Controller
                 }
             }
 
-            //Add Problems
+            // Add Problems
             $problems = explode(",", $request->get('problems_ids'));
+
+            // Limit problems array to limit
+            $problems = array_slice($problems, 0, Constants::CONTESTS_PROBLEMS_MAX_COUNT);
+
+            // Sync problems
             $contest->problems()->syncWithoutDetaching($problems);
 
             // Set initial problems order

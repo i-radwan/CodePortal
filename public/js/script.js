@@ -15,6 +15,8 @@ var app = {
     contestDurationSessionKey: 'contest_duration_session_key',
     contestPrivateVisibilitySessionKey: 'contest_private_visibility_session_key',
 
+    contestProblemsMaxCount: 10,
+
 
     // ==================================================
     //                    Variables
@@ -705,9 +707,10 @@ var app = {
      *
      * @param sessionKey
      * @param elementValue
+     * @param checkbox
      * @return boolean isFound: true if the element was fond before
      */
-    syncDataWithSession: function (sessionKey, elementValue, detaching) {
+    syncDataWithSession: function (sessionKey, elementValue, detaching, checkbox) {
         var isFound = false;
         // Get saved problems ids
         var savedValues = sessionStorage.getItem(sessionKey);
@@ -720,8 +723,21 @@ var app = {
             // Check for elementValue existance
             var idx = savedValuesArray.indexOf(elementValue);
 
-            if (savedValuesArray.indexOf(elementValue) == -1) // Add elementValue
-                savedValuesArray.push(elementValue);
+            if (savedValuesArray.indexOf(elementValue) == -1) { // Add elementValue
+                // Check if adding problems that problems count doesn't exceed limit
+                if (sessionKey == app.problemsIDsSessionKey) {
+                    if (savedValuesArray.length < app.contestProblemsMaxCount) {
+                        savedValuesArray.push(elementValue);
+                    } else {
+                        // Un-check the box
+                        $(checkbox).prop('checked', false);
+
+                        alert("Contest cannot have more than " + app.contestProblemsMaxCount + " problems!");
+                    }
+                } else { // if not problems, keep adding
+                    savedValuesArray.push(elementValue);
+                }
+            }
             else {      // Item Found
                 if (detaching)
                     savedValuesArray.splice(idx, 1);

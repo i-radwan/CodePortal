@@ -30,7 +30,7 @@ class SheetController extends Controller
 
         return view('groups.sheet_views.sheet')
             ->with('data', $data)
-            ->with('pageTitle', config('app.name') . ' | ' . $sheet[Constants::FLD_SHEETS_ID]);
+            ->with('pageTitle', config('app.name') . ' | ' . $sheet[Constants::FLD_SHEETS_NAME]);
     }
 
     /**
