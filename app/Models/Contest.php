@@ -115,6 +115,7 @@ class Contest extends Model
         $this->organizers()->detach();
         $this->participants()->detach();
         $this->participantTeams()->detach();
+        $this->questions()->delete();
         $this->notifications()->delete();
 
         return parent::delete();
