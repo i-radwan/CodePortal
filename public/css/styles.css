@@ -663,7 +663,7 @@ footer {
 /*====================================*/
 /*====== ADD/EDIT CONTEST PAGE =======*/
 /*====================================*/
-.add-edit-contest-form, .add-edit-sheet-form .control-label {
+.add-edit-contest-form .control-label, .add-edit-sheet-form .control-label {
     text-align: left;
 }
 

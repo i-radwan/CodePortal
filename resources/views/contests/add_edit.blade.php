@@ -10,9 +10,12 @@
                     </div>
 
                     <div class="panel-body">
+                        {{--Alerts Part--}}
+                        @include('components.alert')
+
                         <form class="form-horizontal add-edit-contest-form" id="add-edit-contest-form" role="form"
                               method="POST"
-                              action="{{ url('contest/add') }}">
+                              action="{{ $formURL }}">
                             {{ csrf_field() }}
                             <input type="hidden" id="problems-ids-hidden" name="problems_ids"/>
                             <input type="hidden" id="organisers-ids-hidden" name="organisers"/>
@@ -66,45 +69,49 @@
                                 </div>
                             </div>
 
-                            {{--Visibility--}}
-                            <div class="form-group{{ $errors->has('visibility') ? ' has-error' : '' }} has-feedback">
-                                <label for="duration" class="col-md-2 control-label">Visibility</label>
-                                <div class="col-md-10 visibility-div">
-                                    <ul>
-                                        <li>
-                                            <input type="radio" value="0" id="public_visibility" name="visibility"
-                                                   checked>
-                                            <label for="public_visibility">Public</label>
+                            {{--Add organizers and control visibility if not group contest--}}
+                            @if(!isset($group))
+                                {{--Visibility--}}
+                                <div class="form-group{{ $errors->has('visibility') ? ' has-error' : '' }} has-feedback">
+                                    <label for="duration" class="col-md-2 control-label">Visibility</label>
+                                    <div class="col-md-10 visibility-div">
+                                        <ul>
+                                            <li>
+                                                <input type="radio" value="0" id="public_visibility" name="visibility"
+                                                       checked>
+                                                <label for="public_visibility">Public</label>
 
-                                            <div class="check"></div>
-                                        </li>
+                                                <div class="check"></div>
+                                            </li>
 
-                                        <li>
-                                            <input type="radio" value="1" id="private_visibility" name="visibility">
-                                            <label for="private_visibility">Private</label>
+                                            <li>
+                                                <input type="radio" value="1" id="private_visibility" name="visibility">
+                                                <label for="private_visibility">Private</label>
 
-                                            <div class="check"></div>
-                                        </li>
-                                    </ul>
-                                    @if ($errors->has('visibility'))
-                                        <span class="help-block">
+                                                <div class="check"></div>
+                                            </li>
+                                        </ul>
+                                        @if ($errors->has('visibility'))
+                                            <span class="help-block">
                                             <strong>{{ $errors->first('visibility') }}</strong>
                                         </span>
-                                    @endif
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                            {{--Organisers--}}
-                            <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
-                                <label for="organizers" class="col-md-2 control-label text-left">Organizers</label>
-                                <div class="col-md-10">
-                                    @include("contests.contest_views.organisers")
-                                    @if ($errors->has('organizers'))
-                                        <span class="help-block">
+
+                                {{--Organisers--}}
+                                <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
+                                    <label for="organizers" class="col-md-2 control-label text-left">Organizers</label>
+                                    <div class="col-md-10">
+                                        @include("contests.contest_views.organisers")
+                                        @if ($errors->has('organizers'))
+                                            <span class="help-block">
                                         <strong>{{ $errors->first('organizers') }}</strong>
                                     </span>
-                                    @endif
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
 
                             {{--Invitees (to be invited to private contest)--}}
                             <div id="invitees-input-div"

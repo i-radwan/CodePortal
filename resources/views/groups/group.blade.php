@@ -102,7 +102,7 @@
 
                             <div role="tabpanel" class="tab-pane" id="contests">
                                 @if($isOwner)
-                                    <a href="{{url('group/contest/new/'.$groupID)}}"
+                                    <a href="{{url('group/'.$groupID.'/contest/new')}}"
                                        class="btn-sm btn btn-primary pull-right new-sheet-link">New
                                         Contest</a>
                                 @endif

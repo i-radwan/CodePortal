@@ -89,6 +89,7 @@ class ContestController extends Controller
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
+            ->with('formURL', url('contest/add'))
             ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
@@ -100,23 +101,38 @@ class ContestController extends Controller
      * Show add group contest page
      *
      * @param Group $group
+     * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function addGroupContestView(Group $group)
+    public function addGroupContestView(Request $request, Group $group)
     {
-        // ToDo: after samir, create private contest for the group
-        // ToDo: Set the contest owner to group admin
-        // ToDo: Send invitations to members to join
-        return view('contests.add_edit')->with('pageTitle', config('app.name') . ' | Contest');
+
+        // Check server sessions for saved filters data (i.e. tags, organisers, judges)
+        $tags = $judges = [];
+
+        $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
+
+        return view('contests.add_edit')
+            ->with('problems', $problems)
+            ->with('judges', Judge::all())
+            ->with('checkBoxes', 'true')
+            ->with('group', $group)
+            ->with('formURL', url('group/' . $group[Constants::FLD_GROUPS_ID] . '/contest/add'))
+            ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
+            ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
+            ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
+            ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
+            ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
     /**
      * Add new contest to database
      *
      * @param Request $request
+     * @param Group $group
      * @return mixed
      */
-    public function addContest(Request $request)
+    public function addContest(Request $request, Group $group = null)
     {
         // Create contest object
         $contest = new Contest($request->all());
@@ -124,18 +140,25 @@ class ContestController extends Controller
         // Assign owner
         $contest->owner()->associate(Auth::user());
 
+        // Set visibility to private (group only)
+        if ($group)
+            $contest[Constants::FLD_CONTESTS_VISIBILITY]
+                = Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PRIVATE_KEY];
+
         if ($contest->save()) {
 
             //Get Organisers and problems
-
-            //Save Organisers
-            $organisers = explode(",", $request->get('organisers'));
-            $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
-            foreach ($organisers as $organiser) {
-                $contest->organizers()->save($organiser);
+            if (!$group) {
+                //Save Organisers if not group contest // ToDo add group admins later
+                $organisers = explode(",", $request->get('organisers'));
+                $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
+                foreach ($organisers as $organiser) {
+                    if ($organiser[Constants::FLD_USERS_ID] != Auth::user()[Constants::FLD_TAGS_ID])
+                        $contest->organizers()->save($organiser);
+                }
             }
-            // Send notifications to Invitees if private contest
-            if ($request->get('visibility') == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PRIVATE_KEY]) {
+            // Send notifications to Invitees if private contest and not for specific group
+            if (!$group && $request->get('visibility') == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PRIVATE_KEY]) {
 
                 // Get invitees
                 $invitees = explode(",", $request->get('invitees'));
@@ -144,6 +167,13 @@ class ContestController extends Controller
                 foreach ($invitees as $invitee) {
                     // Send notifications
                     Notification::make([], Auth::user(), $invitee, $contest,
+                        Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST], false);
+                }
+            } else if ($group) { // Send group members invitations
+                // Get invitees
+                foreach ($group->members()->get() as $member) {
+                    // Send notifications
+                    Notification::make([], Auth::user(), $member, $contest,
                         Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST], false);
                 }
             }
@@ -161,7 +191,7 @@ class ContestController extends Controller
             // Return success message
             Session::flash("messages", ["Contest Added Successfully"]);
             return redirect()->action(
-                'ContestController@displayContest', ['id' => $contest->id]
+                'ContestController@displayContest', ['id' => $contest[Constants::FLD_CONTESTS_ID]]
             );
         } else {        // return error message
             Session::flash("messages", ["Sorry, Contest was not added. Please retry later"]);
