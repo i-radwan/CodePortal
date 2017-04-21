@@ -99,6 +99,7 @@ Route::get('problems', 'ProblemController@index');
 
 // Blogs routes...
 Route::get('blogs', 'BlogController@index');
+Route::get('blogs/{post}', 'BlogController@displayPost');
 
 // Groups routes...
 Route::get('groups', 'GroupController@index');

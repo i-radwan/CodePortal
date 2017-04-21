@@ -16,4 +16,11 @@ class BlogController extends Controller
     {
         return view('blogs.index')->with('pageTitle', config('app.name'). ' | Blogs')->with('posts', POST::all() );
     }
+
+    /**
+     * Shows a certain post page
+     */
+    public function displayPost($postName){
+        dd($postName);
+    }
 }

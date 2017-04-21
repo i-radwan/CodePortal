@@ -613,6 +613,8 @@ class Constants
     const FLD_POSTS_BODY = "body";
     const FLD_POSTS_UP_VOTES = "up_vote";
     const FLD_POSTS_DOWN_VOTES = "down_vote";
+    const FLD_POSTS_CREATED_AT = "created_at";
+    const FLD_POSTS_IMAGE = "image"; //TODO @ Samir
 
     //Comments
     const FLD_COMMENTS_COMMENT_ID = "id";
@@ -623,6 +625,7 @@ class Constants
     const FLD_COMMENTS_BODY = "body";
     const FLD_COMMENTS_UP_VOTES = "up_vote";
     const FLD_COMMENTS_DOWN_VOTES = "down_vote";
+    const FLD_COMMENTS_CREATED_AT = "created_at";
 
     //Comments Replies
 //    const FLD_COMMENTS_REPLIES_ID = "id";
