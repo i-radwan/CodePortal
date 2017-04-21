@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Group;
-use App\Models\Sheet;
-use Redirect;
-use URL;
 use Illuminate\Http\Request;
 use App\Utilities\Constants;
+use App\Models\Group;
+use App\Models\Sheet;
+use App\Models\Judge;
+use Redirect;
+use URL;
 use Auth;
 use Session;
-use App\Models\Judge;
+use Storage;
 
 class SheetController extends Controller
 {
@@ -178,10 +179,9 @@ class SheetController extends Controller
                 $problem->pivot->solution_lang = $solution_lang;
                 $problem->pivot->save();
 
-                // Write to code file of this solution
-                $codeFile = fopen("code/" . $problem->pivot->solution, "w") or die("Unable to open file!");
-                fwrite($codeFile, $solution);
-                fclose($codeFile);
+                // Write the code file of this solution to storage
+                Storage::disk('code')->put($problem->pivot->solution, $solution);
+
             }
         }
         return back();
@@ -193,10 +193,7 @@ class SheetController extends Controller
         $solutionFile = $sheet->problems()->find($problemID)->pivot->solution;
 
         // Read and return file contents
-        $codeFile = fopen("code/$solutionFile", "r");
-        $codeFileContest = fread($codeFile, filesize("code/" . $solutionFile));
-        fclose($codeFile);
-        return $codeFileContest;
+        return Storage::disk('code')->get($solutionFile);
     }
 
     /**
