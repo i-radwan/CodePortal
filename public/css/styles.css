@@ -663,13 +663,16 @@ footer {
 /*====================================*/
 /*====== ADD/EDIT CONTEST PAGE =======*/
 /*====================================*/
-.add-edit-contest-form .control-label {
+.add-edit-contest-form .control-label, .add-edit-sheet-form .control-label {
     text-align: left;
 }
 
 .add-edit-contest-problems-wrapper > .row {
-    /*width: 90%;*/
     margin: 0 auto;
+}
+
+.invitees-input-div {
+    display: none;
 }
 
 .autocomplete-input-group {
@@ -1183,6 +1186,19 @@ td.problems-reorder-view > .fa-bars {
     color: #932700;
     margin-top: 20px;
     font-size: 18px;
+}
+
+/**************************************/
+/*</editor-fold>*/
+
+/*<editor-fold desc="Profile Page">*/
+/*====================================*/
+/*========== PROFILE PAGE ===========*/
+/*====================================*/
+
+.custom-panel {
+    min-height: 450; 
+    max-height: 500;
 }
 
 /**************************************/

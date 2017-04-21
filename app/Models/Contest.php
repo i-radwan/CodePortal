@@ -47,7 +47,7 @@ class Contest extends Model
         Constants::FLD_CONTESTS_NAME => 'required|max:100',
         Constants::FLD_CONTESTS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:today',
-        Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1',
+        Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1|max:' . Constants::CONTESTS_DURATION_MAX,
         Constants::FLD_CONTESTS_VISIBILITY => 'required|Regex:/([01])/'
     ];
 
@@ -105,6 +105,23 @@ class Contest extends Model
     ];
 
     /**
+     * Delete the model from the database and its related data
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        $this->problems()->detach();
+        $this->organizers()->detach();
+        $this->participants()->detach();
+        $this->participantTeams()->detach();
+        $this->questions()->delete();
+        $this->notifications()->delete();
+
+        return parent::delete();
+    }
+
+    /**
      * Return public visible contests only
      *
      * @param Builder $query
@@ -115,7 +132,7 @@ class Contest extends Model
         return $query->where(
             Constants::FLD_CONTESTS_VISIBILITY,
             '=',
-            Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]
+            Constants::CONTEST_VISIBILITY_PUBLIC
         );
     }
 
@@ -209,7 +226,7 @@ class Contest extends Model
         return $this->questions()->where(
             Constants::FLD_QUESTIONS_STATUS,
             '=',
-            Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY]
+            Constants::QUESTION_STATUS_ANNOUNCEMENT
         );
     }
 
@@ -229,13 +246,60 @@ class Contest extends Model
     }
 
     /**
-     * Return the notifications pointing at this contest
+     * Return all notifications pointing at this contest
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function notifications()
     {
-        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
+        return
+            $this
+                ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
+                ->where(
+                    Constants::FLD_NOTIFICATIONS_TYPE,
+                    '=',
+                    Constants::NOTIFICATION_TYPE_CONTEST
+                );
+    }
+
+    /**
+     * Return all pending invitations sent from this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentPendingInvitations()
+    {
+        // TODO: add pivot table fields as needed
+        return $this->notifications()->where(
+            Constants::FLD_NOTIFICATIONS_STATUS,
+            '!=',
+            Constants::NOTIFICATION_STATUS_DELETED
+        );
+    }
+
+    /**
+     * Return all invited pending users to this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitedUsers()
+    {
+        // TODO: add pivot table fields as needed
+        return
+            $this->belongsToMany(
+                User::class,
+                Constants::TBL_NOTIFICATIONS,
+                Constants::FLD_NOTIFICATIONS_RESOURCE_ID,
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID
+            )->where(
+                Constants::FLD_NOTIFICATIONS_TYPE,
+                '=',
+                Constants::NOTIFICATION_TYPE_CONTEST
+            )->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS_DELETED
+            );
     }
 
     /**
@@ -361,13 +425,13 @@ class Contest extends Model
     private function contestJoinProblems($query)
     {
         $query
-            ->leftJoin(
+            ->join(
                 Constants::TBL_CONTEST_PROBLEMS,
                 Constants::TBL_CONTEST_PROBLEMS . '.' . Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
                 '=',
                 Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID
             )
-            ->leftJoin(
+            ->join(
                 Constants::TBL_PROBLEMS,
                 Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
                 '=',
@@ -414,8 +478,7 @@ class Contest extends Model
             $submissions = Submission::tillFirstAccepted($contestStartTime, $contestEndTime);
             $submissionsTable = DB::raw('(' . $submissions->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`');
             $query->mergeBindings($submissions);
-        }
-        else {
+        } else {
             $submissionsTable = Constants::TBL_SUBMISSIONS;
             $query->whereBetween(
                 Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,

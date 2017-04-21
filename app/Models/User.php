@@ -205,6 +205,30 @@ class User extends Authenticatable
     }
 
     /**
+     * Return all the contests that the current user has been invited to join
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitingContests()
+    {
+        return
+            $this->belongsToMany(
+                Team::class,
+                Constants::TBL_NOTIFICATIONS,
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
+                Constants::FLD_NOTIFICATIONS_RESOURCE_ID
+            )->where(
+                Constants::FLD_NOTIFICATIONS_TYPE,
+                '=',
+                Constants::NOTIFICATION_TYPE_CONTEST
+            )->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS_DELETED
+            );
+    }
+
+    /**
      * Return all questions asked by the current user
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -271,7 +295,7 @@ class User extends Authenticatable
             ->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+                Constants::NOTIFICATION_STATUS_DELETED
             )
             ->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
     }
@@ -287,8 +311,18 @@ class User extends Authenticatable
             ->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]
+                Constants::NOTIFICATION_STATUS_UNREAD
             );
+    }
+
+    /**
+     * Return the groups that the current user owns
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function owningGroups()
+    {
+        return $this->hasMany(Group::class, Constants::FLD_GROUPS_OWNER_ID);
     }
 
     /**
@@ -307,13 +341,27 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the groups that the current user owns
+     * Return all the groups that the current user has been invited to join
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function owningGroups()
+    public function invitingGroups()
     {
-        return $this->hasMany(Group::class, Constants::FLD_GROUPS_OWNER_ID);
+        return
+            $this->belongsToMany(
+                Team::class,
+                Constants::TBL_NOTIFICATIONS,
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
+                Constants::FLD_NOTIFICATIONS_RESOURCE_ID
+            )->where(
+                Constants::FLD_NOTIFICATIONS_TYPE,
+                '=',
+                Constants::NOTIFICATION_TYPE_GROUP
+            )->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS_DELETED
+            );
     }
 
     /**
@@ -344,5 +392,29 @@ class User extends Authenticatable
             Constants::FLD_TEAM_MEMBERS_USER_ID,
             Constants::FLD_TEAM_MEMBERS_TEAM_ID
         )->withTimestamps();
+    }
+
+    /**
+     * Return all the teams that the current user has been invited to join
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitingTeams()
+    {
+        return
+            $this->belongsToMany(
+                Team::class,
+                Constants::TBL_NOTIFICATIONS,
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
+                Constants::FLD_NOTIFICATIONS_RESOURCE_ID
+            )->where(
+                Constants::FLD_NOTIFICATIONS_TYPE,
+                '=',
+                Constants::NOTIFICATION_TYPE_TEAM
+            )->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS_DELETED
+            );
     }
 }

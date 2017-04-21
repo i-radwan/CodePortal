@@ -9,10 +9,13 @@ var app = {
     tagsSessionKey: 'tags_session_key',
     judgesSessionKey: 'judges_session_key',
     organizersSessionKey: 'organizers_session_key',
+    inviteesSessionKey: 'invitees_session_key',
     contestNameSessionKey: 'contest_name_session_key',
     contestTimeSessionKey: 'contest_time_session_key',
     contestDurationSessionKey: 'contest_duration_session_key',
     contestPrivateVisibilitySessionKey: 'contest_private_visibility_session_key',
+
+    contestProblemsMaxCount: 10,
 
 
     // ==================================================
@@ -38,6 +41,7 @@ var app = {
 
     tagsList: {},
     organisersList: {},
+    inviteesList: {},
 
     //endregion
 
@@ -80,6 +84,10 @@ var app = {
         $('.datetimepicker').datetimepicker({
             format: 'Y-m-d H:i:s',
             minDate: 0 // for after today limitation
+        });
+        // Enable duration pickers
+        $('.duration-picker').duration_picker({
+            lang: 'en'
         });
         //endregion
 
@@ -124,17 +132,44 @@ var app = {
         // Add/Edit contest page
         if ($("#add-edit-contest-page-hidden-element").length) {
 
+            // Sync server session filters with client session filters
+            app.getFiltersFromElementAndFormat($("#add-edit-contest-page-hidden-element"));
+
             // Fetch all tags
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureTagsOrganisersLists(true, true);
+            app.configureAutoCompleteLists(true, true, true);
 
             // Render saved data from session into form
             app.fillContestFormFromSession();
+        }
 
-            // Item delete from session
-            app.closeButtonClick();
+        // Add/Edit sheet page
+        if ($("#add-edit-sheet-page-hidden-element").length) {
+
+            // Set the session keys for sheets problems
+            app.problemsIDsSessionKey = 'sheets_problems_ids_session_key';
+            app.tagsSessionKey = 'sheets_tags_ids_session_key';
+            app.judgesSessionKey = 'sheets_judges_ids_session_key';
+
+            // Sync server session filters with client session filters
+            app.getFiltersFromElementAndFormat($("#add-edit-sheet-page-hidden-element"));
+
+            // Fetch all tags
+            app.fetchAllTagsFromDB();
+
+            // Configure lists and autocomplete typeahead
+            app.configureAutoCompleteLists(true, false, false);
+
+            // Fill judges checkboxes
+            app.fillJudgesCheckboxes();
+
+            // Fill tags
+            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
+
+            // Fill problems checkboxes
+            app.fillProblemsTableCheckboxes();
         }
 
         // Problems filters
@@ -147,13 +182,23 @@ var app = {
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureTagsOrganisersLists(true, false);
+            app.configureAutoCompleteLists(true, false, false);
 
             // Retrieve tags from session to view
             app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
 
             // Toggle filters more div if query contains tags or judges
             app.toggleFiltersPanel();
+        }
+
+        // Group page
+        if ($("#single-group-page-hidden-element").length) {
+
+            // Configure lists and autocomplete typeahead
+            app.configureAutoCompleteLists(false, false, true);
+
+            app.inviteesSessionKey = 'group_invitees_session_key';
+
         }
     },
 
@@ -419,7 +464,6 @@ var app = {
         // Send request to path in tags-path data attr
         $.get($("#tags-auto").data('tags-path'), function (data) {
             app.allTagsList = data;
-            console.log(app.allTagsList);
         });
     },
     /**
@@ -428,14 +472,14 @@ var app = {
      * @param tags: bind tags with auto complete
      * @param organisers: bind organisers with auto complete
      */
-    configureTagsOrganisersLists: function (tags, organisers) {
+    configureAutoCompleteLists: function (tags, organisers, invitees) {
 
         // Tags AutoComplete
         if (tags) {
             // Define tag lists and apply autocomplete to it
             this.tagsList = document.getElementById("tags-list");
             // Call typeahead for Tags autoCompletion
-            $('input.tags-auto').typeahead(app.autoComplete($("#tags-auto").data('tags-path'), app.tagsList, 0));
+            $('#tags-auto').typeahead(app.autoComplete($("#tags-auto").data('tags-path'), app.tagsList, 0));
         }
 
         // Organisers AutoComplete
@@ -444,10 +488,56 @@ var app = {
             this.organisersList = document.getElementById("organisers-list");
 
             //Call typeahead for Organisers autoCompletion
-            $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
+            $('#organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
+        }
+
+        // Invitees AutoComplete
+        if (invitees) {
+            //Organisers List
+            this.inviteesList = document.getElementById("invitees-list");
+
+            //Call typeahead for Organisers autoCompletion
+            $('#invitees-auto').typeahead(app.autoComplete($("#invitees-auto").data('invitees-path'), app.inviteesList, 2));
         }
     },
+    /**
+     * Fill checkboxes of problems selector from session
+     */
+    fillProblemsTableCheckboxes: function () {
 
+        // Recheck selected problems IDs checkboxes
+        var savedProblemsIDs = sessionStorage.getItem(app.problemsIDsSessionKey);
+
+        if (savedProblemsIDs) { // check if there're any stored IDs
+
+            // Convert to array
+            var savedProblemsIDsArray = JSON.parse(savedProblemsIDs);
+
+            // Loop over IDs
+            savedProblemsIDsArray.forEach(function (element) {
+                $("#problem-checkbox-" + element).prop('checked', true);
+            });
+        }
+    },
+    /**
+     * Fill checkboxes of judges selector from session
+     */
+    fillJudgesCheckboxes: function () {
+
+        // Recheck selected judges IDs checkboxes
+        var savedJudgesIDs = sessionStorage.getItem(app.judgesSessionKey);
+
+        if (savedJudgesIDs) { // check if there're any stored IDs
+
+            // Convert to array
+            var savedJudgesIDsArray = JSON.parse(savedJudgesIDs);
+
+            // Loop over IDs
+            savedJudgesIDsArray.forEach(function (element) {
+                $("#judge-checkbox-" + element).prop('checked', true);
+            });
+        }
+    },
     /**
      * Fill contest add/edit fields from the stored session
      */
@@ -455,43 +545,22 @@ var app = {
         // Render saved data from session
         if ($("#add-edit-contest-form").length) { // Check if in add/edit contest view
 
-            // Recheck selected problems IDs checkboxes
-            var savedProblemsIDs = sessionStorage.getItem(app.problemsIDsSessionKey);
+            // Fill problems checkboxes
+            app.fillProblemsTableCheckboxes();
 
-            if (savedProblemsIDs) { // check if there're any stored IDs
-
-                // Convert to array
-                var savedProblemsIDsArray = JSON.parse(savedProblemsIDs);
-
-                // Loop over IDs
-                savedProblemsIDsArray.forEach(function (element) {
-                    $("#problem-checkbox-" + element).prop('checked', true);
-                });
-            }
-
-            // Recheck selected judges IDs checkboxes
-            var savedJudgesIDs = sessionStorage.getItem(app.judgesSessionKey);
-
-            if (savedJudgesIDs) { // check if there're any stored IDs
-
-                // Convert to array
-                var savedJudgesIDsArray = JSON.parse(savedJudgesIDs);
-
-                // Loop over IDs
-                savedJudgesIDsArray.forEach(function (element) {
-                    $("#judge-checkbox-" + element).prop('checked', true);
-                });
-            }
+            // Fill judges checkboxes
+            app.fillJudgesCheckboxes();
 
             // Fill tags, organisers lists
             app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
             app.retrieveListsFromSession(app.organizersSessionKey, app.organisersList, 1);
+            app.retrieveListsFromSession(app.inviteesSessionKey, app.inviteesList, 2);
 
             // Fill form basic fields
             $("#name").val(sessionStorage.getItem(app.contestNameSessionKey));
             $("#time").val(sessionStorage.getItem(app.contestTimeSessionKey));
             $("#duration").val(sessionStorage.getItem(app.contestDurationSessionKey));
-            $("#private").val(sessionStorage.getItem(app.contestPrivateVisibilitySessionKey));
+            $("#private_visibility").val(sessionStorage.getItem(app.contestPrivateVisibilitySessionKey));
 
             // Set form fields on change listeners
             $("#name").change(function () {
@@ -508,10 +577,12 @@ var app = {
             } else {
                 $("#public").prop('checked', true);
             }
-            $("#private").change(function () {
+            $("#private_visibility").change(function () {
+                $("#invitees-input-div").show();
                 sessionStorage.setItem(app.contestPrivateVisibilitySessionKey, 1);
             });
-            $("#public").change(function () {
+            $("#public_visibility").change(function () {
+                $("#invitees-input-div").hide();
                 sessionStorage.setItem(app.contestPrivateVisibilitySessionKey, 0);
             });
         }
@@ -539,7 +610,7 @@ var app = {
                 'selected_tags': selected_tags,
                 'selected_judges': selected_judges
             };
-
+        console.log(filters, url);
         // Send request to server in order to save filters to server session
         $.ajax({
             url: url,
@@ -565,20 +636,25 @@ var app = {
      * @param redirectURL
      */
     clearProblemsFilters: function (url, token, redirectURL) {
-        // Clear session
-        app.clearSession();
 
-        // Send clear request
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: {
-                _token: token,
-            },
-            success: function () {
-                window.location.replace(redirectURL);
-            }
-        });
+        // Confirm first
+        if (confirm("Are you sure?\nThis will clear all saved data including organizers,tags, ..etc!")) {
+
+            // Clear session
+            app.clearSession();
+
+            // Send clear request
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    _token: token,
+                },
+                success: function () {
+                    window.location.replace(redirectURL);
+                }
+            });
+        }
     },
 
     /**
@@ -586,7 +662,7 @@ var app = {
      *
      * @param path the url to get the data fot autocompletion
      * @param list the list from th view
-     * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion
+     * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion, 2: Invitees list
      * @returns {{source: source, updater: updater}}
      */
     autoComplete: function (path, list, type) {
@@ -597,12 +673,11 @@ var app = {
                     return process(app.allTagsList);
                 }
                 // if organizers, request the array from server
-                else if (type == 1) {
+                else if (type == 1 || type == 2) {
                     // Use this threshold to prevent looking for username
                     // using the first letter only (a lot of possibilities exist)
                     if (query.length >= 2) {
                         return $.get(path, {query: query}, function (data) {
-                            console.log(path);
                             return process(data);
                         });
                     }
@@ -614,7 +689,11 @@ var app = {
 
                 var isFound;
                 // Sync auto-completed element with session
-                if (type == 1) { // Organizers
+                if (type == 2) { // Invitees
+                    isFound = app.syncDataWithSession(app.inviteesSessionKey, itemName, false);
+                }
+                // Sync auto-completed element with session
+                else if (type == 1) { // Organizers
                     isFound = app.syncDataWithSession(app.organizersSessionKey, itemName, false);
                 }
                 else if (type == 0) { // Tags
@@ -638,9 +717,10 @@ var app = {
      *
      * @param sessionKey
      * @param elementValue
+     * @param checkbox
      * @return boolean isFound: true if the element was fond before
      */
-    syncDataWithSession: function (sessionKey, elementValue, detaching) {
+    syncDataWithSession: function (sessionKey, elementValue, detaching, checkbox) {
         var isFound = false;
         // Get saved problems ids
         var savedValues = sessionStorage.getItem(sessionKey);
@@ -653,8 +733,21 @@ var app = {
             // Check for elementValue existance
             var idx = savedValuesArray.indexOf(elementValue);
 
-            if (savedValuesArray.indexOf(elementValue) == -1) // Add elementValue
-                savedValuesArray.push(elementValue);
+            if (savedValuesArray.indexOf(elementValue) == -1) { // Add elementValue
+                // Check if adding problems that problems count doesn't exceed limit
+                if (sessionKey == app.problemsIDsSessionKey) {
+                    if (savedValuesArray.length < app.contestProblemsMaxCount) {
+                        savedValuesArray.push(elementValue);
+                    } else {
+                        // Un-check the box
+                        $(checkbox).prop('checked', false);
+
+                        alert("Contest cannot have more than " + app.contestProblemsMaxCount + " problems!");
+                    }
+                } else { // if not problems, keep adding
+                    savedValuesArray.push(elementValue);
+                }
+            }
             else {      // Item Found
                 if (detaching)
                     savedValuesArray.splice(idx, 1);
@@ -716,8 +809,14 @@ var app = {
      */
     moveSessionDataToHiddenFields: function () {
         // Set value
-        $("#organisers-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.organizersSessionKey)).join());
-        $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.problemsIDsSessionKey)).join());
+        if (sessionStorage.getItem(app.organizersSessionKey))
+            $("#organisers-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.organizersSessionKey)).join());
+
+        if (sessionStorage.getItem(app.inviteesSessionKey))
+            $("#invitees-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.inviteesSessionKey)).join());
+
+        if (sessionStorage.getItem(app.problemsIDsSessionKey))
+            $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.problemsIDsSessionKey)).join());
 
         // Clear sessions
         app.clearSession();
@@ -734,7 +833,10 @@ var app = {
         var elementName = $(element).data('name');
 
         // Detach from session
-        if (type == 1) { // Organizers
+        if (type == 2) { // Organizers
+            app.syncDataWithSession(app.inviteesSessionKey, elementName, true);
+        }// Detach from session
+        else if (type == 1) { // Organizers
             app.syncDataWithSession(app.organizersSessionKey, elementName, true);
         }
         else if (type == 0) { // Tags
@@ -749,6 +851,7 @@ var app = {
         sessionStorage.setItem(app.tagsSessionKey, "");
         sessionStorage.setItem(app.judgesSessionKey, "");
         sessionStorage.setItem(app.organizersSessionKey, "");
+        sessionStorage.setItem(app.inviteesSessionKey, "");
         sessionStorage.setItem(app.contestNameSessionKey, "");
         sessionStorage.setItem(app.contestTimeSessionKey, "");
         sessionStorage.setItem(app.contestDurationSessionKey, "");
@@ -756,6 +859,41 @@ var app = {
     },
 
 
+    // ==================================================
+    //          GROUP PAGE FUNCTIONS
+    // ==================================================
+
+    /**
+     * Move group invitees from session to field
+     * @param fldID
+     * @param sessionKey
+     * @param clear
+     */
+    moveInviteesFromSessionToField: function (fldID, sessionKey, clear) {
+        // Set value
+        $("#" + fldID).val(JSON.parse(sessionStorage.getItem(sessionKey)).join());
+
+        // Clear sessions
+        if (clear) {
+            sessionStorage.setItem(sessionKey, '');
+        }
+    },
+    // ==================================================
+    //        SHEET PAGE FILTERS FUNCTIONS
+    // ==================================================
+
+    /**
+     * Set problems filters hidden inputs values from sessions, then clear sessions
+     */
+    moveProblemsIDsSessionDataToHiddenField: function () {
+        // Set value
+        $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.problemsIDsSessionKey)).join());
+
+        // Clear sessions
+        sessionStorage.setItem(app.problemsIDsSessionKey, '');
+        sessionStorage.setItem(app.tagsSessionKey, '');
+        sessionStorage.setItem(app.judgesSessionKey, '');
+    },
     // ==================================================
     //        PROBLEMS PAGE FILTERS FUNCTIONS
     // ==================================================
@@ -877,6 +1015,48 @@ var app = {
             queries[i[0].toString()] = i[1].toString();
         });
         return queries;
+    },
+    /**
+     * When the data provided by php contains data (e.g. filters) that should be
+     * in sync with local session, but the user removed this session, we've to
+     * make sure that the sync happens in this function
+     *
+     * @param sessionKey
+     * @param array
+     */
+    syncDataFromRequestToSession: function (sessionKey, array) {
+        if (!sessionStorage.getItem(sessionKey) && array.length > 0) {
+
+            // Set to session
+            sessionStorage.setItem(sessionKey, array);
+        }
+    },
+    /**
+     * Get the filters stored in server session (via php binding to data-X attributes)
+     * and then format these filters to match javascript session format
+     *
+     * @param element
+     */
+    getFiltersFromElementAndFormat: function (element) {
+
+        // Get php selected tags,judges from the data binding attribute
+        // and convert to javascript format
+        var tags = element.data('selected-tags');
+        var judges = element.data('selected-judges');
+        if (tags) {
+            var selected_tags = '["' + tags.replace(',', '","') + '"]';
+            // Sync with session
+            app.syncDataFromRequestToSession(app.tagsSessionKey, selected_tags);
+        }
+        if (judges) {
+            var selected_judges;
+            try {
+                selected_judges = '["' + judges.replace(',', '","') + '"]';
+            } catch (e) {
+                selected_judges = '["' + judges + '"]';
+            }
+            app.syncDataFromRequestToSession(app.judgesSessionKey, selected_judges);
+        }
     }
 };
 

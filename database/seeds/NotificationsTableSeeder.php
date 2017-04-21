@@ -39,7 +39,7 @@ class NotificationsTableSeeder extends Seeder
                 Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $receiverID,
                 Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $faker->randomElement($ContestIDs),
                 Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
-                Constants::FLD_NOTIFICATIONS_TYPE => (Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST])
+                Constants::FLD_NOTIFICATIONS_TYPE => Constants::NOTIFICATION_TYPE_CONTEST
             ]);
         }
 
@@ -58,7 +58,7 @@ class NotificationsTableSeeder extends Seeder
                     Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $receiverID,
                     Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $faker->randomElement($groupIDs),
                     Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
-                    Constants::FLD_NOTIFICATIONS_TYPE => (Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
+                    Constants::FLD_NOTIFICATIONS_TYPE => Constants::NOTIFICATION_TYPE_GROUP
                 ]);
             } catch (\Illuminate\Database\QueryException $e) {
             }

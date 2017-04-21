@@ -1,5 +1,8 @@
-@php($notifications = Auth::user()->displayableReceivedNotifications()->get())
-@php($unreadCount = Auth::user()->unreadNotifications()->count())
+@php
+    $user = Auth::user();
+    $notifications = $user->displayableReceivedNotifications()->get();
+    $unreadCount = $user->unreadNotifications()->count();
+@endphp
 
 @if(count($notifications))
     <li class="dropdown notifications-dropdown">
@@ -24,23 +27,25 @@
                     switch ($notification->type) {
                         // Get resource model from notification
                         // Generate resource link, which the user gets to when clicking the notification
-                        case Constants::NOTIFICATION_TYPE[\App\Utilities\Constants::NOTIFICATION_TYPE_CONTEST]:
+                        case \App\Utilities\Constants::NOTIFICATION_TYPE_CONTEST:
                             $resource = \App\Models\Contest::find($notification->resource_id);
                             $resourceLink = 'contest/' . $resource->id;
                             $icon = 'fa-flag-checkered';
                             break;
-                        case Constants::NOTIFICATION_TYPE[\App\Utilities\Constants::NOTIFICATION_TYPE_GROUP]:
+                        case \App\Utilities\Constants::NOTIFICATION_TYPE_GROUP:
                             $resource = \App\Models\Group::find($notification->resource_id);
                             $resourceLink = 'group/' . $resource->id;
                             $icon = 'fa-users';
                             break;
-                        case Constants::NOTIFICATION_TYPE[\App\Utilities\Constants::NOTIFICATION_TYPE_TEAM]:
-                            // Add later
+                        case \App\Utilities\Constants::NOTIFICATION_TYPE_TEAM:
+                            $resource = \App\Models\Team::find($notification->resource_id);
+                            $resourceLink = 'profile/' . $notification->sender_id . '/teams';
+                            $icon = 'fa-users'; //TODO: get icon
                             break;
                     }
 
-                    $isRead = $notification->status == \App\Utilities\Constants::NOTIFICATION_STATUS[\App\Utilities\Constants::NOTIFICATION_STATUS_READ];
-                    $message = \App\Utilities\Constants::NOTIFICATION_TEXT[$notification->type];
+                    $isRead = $notification->status == \App\Utilities\Constants::NOTIFICATION_STATUS_READ;
+                    $message = \App\Utilities\Constants::NOTIFICATION_TEXT_MESSAGE[$notification->type];
                     $date = \App\Utilities\Utilities::formatPastDateTime($notification->created_at);
                 @endphp
 
@@ -63,7 +68,7 @@
                     {{--Notification cancel icon--}}
                     <i class="fa fa-times notification-delete"
                        aria-hidden="true"
-                       onclick="app.cancelNotification(event, '{{ csrf_token() }}', '{{ url("notification/".$notification->id) }}', this);">
+                       onclick="app.cancelNotification(event, '{{ csrf_token() }}', '{{ url("notification/" . $notification->id) }}', this);">
                     </i>
                 </li>
 

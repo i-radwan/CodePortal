@@ -22,12 +22,20 @@ Route::get('edit', 'UserController@edit'); // ToDo: @Abzo auth middleware requir
 Route::post('edit', 'UserController@editProfile');  // ToDo: @Abzo auth middleware required, choose better route
 
 // Teams routes...
+// TODO: to be merged with profile routes
 Route::get('profile/{user}/teams', 'TeamController@index');
-Route::get('teams/create', 'TeamController@create');
-Route::get('teams/{team}/edit', 'TeamController@edit');
-Route::post('teams', 'TeamController@store');
-Route::post('teams/{team}', 'TeamController@update');
-Route::delete('teams/{team}', 'TeamController@destroy');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('teams/create', 'TeamController@create');
+    Route::get('teams/{team}/edit', 'TeamController@edit')->middleware(['can:member-team,team']);
+    Route::post('teams', 'TeamController@store');
+    Route::post('teams/{team}', 'TeamController@update')->middleware(['can:member-team,team']);
+    Route::post('teams/{team}/invite', 'TeamController@inviteMember')->middleware(['can:member-team,team']);
+    Route::delete('teams/{team}/remove/{user}', 'TeamController@removeMember')->middleware(['can:member-team,team']);
+    Route::delete('teams/{team}/invitations/cancel/{user}', 'TeamController@cancelInvitation')->middleware(['can:member-team,team']);
+    Route::put('teams/{team}/invitations/accept', 'TeamController@acceptInvitation')->middleware(['can:invitee-team,team']);
+    Route::put('teams/{team}/invitations/reject', 'TeamController@rejectInvitation')->middleware(['can:invitee-team,team']);
+    Route::delete('teams/{team}', 'TeamController@destroy')->middleware(['can:member-team,team']);
+});
 
 // Contest routes...
 Route::get('contests', 'ContestController@index');
@@ -38,11 +46,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
     Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete');
-    Route::get('contest/add/organisers_auto_complete', 'ContestController@organisersAutoComplete');
+    Route::get('contest/add/organisers_auto_complete', 'ContestController@usersAutoComplete');
+    Route::get('contest/add/invitees_auto_complete', 'ContestController@usersAutoComplete');
 
     Route::post('contest/add', 'ContestController@addContest');
-    Route::post('contest/add/tags_judges_filters_sync', 'ContestController@applyProblemsFilters');
-    Route::post('contest/add/tags_judges_filters_detach', 'ContestController@clearProblemsFilters');
+    Route::post('group/{group}/contest/add', 'ContestController@addContest')->middleware(['can:owner-group,group']);
+    Route::post('contest/add/contest_tags_judges_filters_sync', 'ContestController@applyProblemsFilters');
+    Route::post('contest/add/contest_tags_judges_filters_detach', 'ContestController@clearProblemsFilters');
     Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
     Route::post('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
@@ -69,10 +79,14 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('sheet/edit/{sheet}', 'SheetController@editSheetView')->middleware(['can:owner-group,sheet']);
     Route::get('sheet/{sheet}', 'SheetController@displaySheet')->middleware(['can:owner-or-member-group,sheet']);
 
-    Route::get('group/contest/new/{group}', 'ContestController@addGroupContestView');
+    Route::get('group/{group}/invitees_auto_complete', 'GroupController@usersAutoComplete')->middleware(['can:owner-group,group']);
+    Route::get('group/{group}/contest/new', 'ContestController@addGroupContestView')->middleware(['can:owner-group,group']);
     Route::get('group/new', 'GroupController@addGroupView');
     Route::get('group/edit/{group}', 'GroupController@editGroupView')->middleware(['can:owner-group,group']);
     Route::get('group/{group}', 'GroupController@displayGroup');
+
+    Route::post('sheet/add/sheet_tags_judges_filters_sync', 'SheetController@applyProblemsFilters');
+    Route::post('sheet/add/sheet_tags_judges_filters_detach', 'SheetController@clearProblemsFilters');
 
     Route::post('sheet/problem/solution', 'SheetController@saveProblemSolution');
     Route::post('sheet/edit/{sheet}', 'SheetController@editSheet')->middleware(['can:owner-group,sheet']);

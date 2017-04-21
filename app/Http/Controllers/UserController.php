@@ -132,7 +132,6 @@ class UserController extends Controller
 
     /**
      * makes formatted joined date of the user
-     *
      * @param $username
      * @return $date
      */
@@ -163,7 +162,7 @@ class UserController extends Controller
     public function userWrongSubmissions($user)
     {
       $problemsArr = User::getWrongAnswerProblems($user);
-      return Problem::whereIn('id', $problemsArr)->paginate(3);
+      return Problem::whereIn('id', $problemsArr)->paginate(5);
     }
 
     /**
