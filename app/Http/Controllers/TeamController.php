@@ -110,7 +110,7 @@ class TeamController extends Controller
 
         // Create new notification if user isn't already invited
         try {
-            Notification::make($request->all(), Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM], false);
+            Notification::make(Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM], false);
 
             return back()->with('messages', [$username . ' invited successfully!']);
         }

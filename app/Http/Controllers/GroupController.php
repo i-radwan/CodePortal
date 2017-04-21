@@ -184,7 +184,7 @@ class GroupController extends Controller
 
         // Create new notification if user isn't already invited
         try {
-            Notification::make($request->all(), Auth::user(), $user, $group,
+            Notification::make(Auth::user(), $user, $group,
                 Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP], false);
 
             // Check if user has already requested to join (if so, add him)
