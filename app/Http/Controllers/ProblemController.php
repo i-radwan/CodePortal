@@ -8,6 +8,7 @@ use App\Models\Judge;
 use App\Utilities\Utilities;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Collection;
+use Session;
 
 class ProblemController extends Controller
 {
@@ -151,4 +152,23 @@ class ProblemController extends Controller
         $problems = self::filterProblems($searchStr, $judgesIDs, $tagsIDs, $sortParams);
         return $problems;
     }
+
+
+    /**
+     * Get the problems filtered by tags and judges
+     *
+     * @param $request
+     * @param $tagNames
+     * @param $judgesIDs
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getProblemsWithFilters($request, $tagNames, $judgesIDs)
+    {
+        if (count($tagNames) > 0)
+            $tagNames = explode(",", $tagNames);
+        if (count($judgesIDs) > 0)
+            $judgesIDs = explode(",", $judgesIDs);
+        return self::getProblemsToContestController($request, $tagNames, $judgesIDs); // Returning the Problems Data
+    }
+
 }
