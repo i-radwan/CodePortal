@@ -98,7 +98,7 @@ class Team extends Model
                 ->where(
                     Constants::FLD_NOTIFICATIONS_TYPE,
                     '=',
-                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM]
+                    Constants::NOTIFICATION_TYPE_TEAM
                 );
     }
 
@@ -113,7 +113,7 @@ class Team extends Model
         return $this->notifications()->where(
             Constants::FLD_NOTIFICATIONS_STATUS,
             '!=',
-            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+            Constants::NOTIFICATION_STATUS_DELETED
         );
     }
 
@@ -134,11 +134,11 @@ class Team extends Model
             )->where(
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
-                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM]
+                Constants::NOTIFICATION_TYPE_TEAM
             )->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 }

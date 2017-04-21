@@ -192,8 +192,7 @@ class GroupController extends Controller
 
             // Create new notification if user isn't already invited
             try {
-                Notification::make(Auth::user(), $user, $group,
-                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP], false);
+                Notification::make(Auth::user(), $user, $group, Constants::NOTIFICATION_TYPE_GROUP, false);
 
                 // Check if user has already requested to join (if so, add him)
                 if ($user->seekingJoinGroups()->find($group[Constants::FLD_GROUPS_ID])) {
@@ -247,7 +246,7 @@ class GroupController extends Controller
 
         // Check if user has valid (non-deleted) invitation for joining this group
         $groupsInvitation = $user->displayableReceivedNotifications()
-            ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
+            ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE_GROUP)
             ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group[Constants::FLD_GROUPS_ID])->first();
 
         // Invitation exists
@@ -260,8 +259,7 @@ class GroupController extends Controller
             // Because if the user left the group and the then rejoined
             // (if the invitation still exists), he will join, and we
             // should prevent this
-            $groupsInvitation->update([Constants::FLD_NOTIFICATIONS_STATUS =>
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]]);
+            $groupsInvitation->update([Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]);
 
         } // Else, check if the user hasn't sent joining request (if sent stop, else send one)
         else if (!$user->seekingJoinGroups()->find($group[Constants::FLD_GROUPS_ID])) {
@@ -287,10 +285,9 @@ class GroupController extends Controller
         if ($user) {
             // Remove user invitation for the same reason in the joinGroup function
             $user->displayableReceivedNotifications()
-                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP])
+                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE_GROUP)
                 ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group[Constants::FLD_GROUPS_ID])
-                ->update([Constants::FLD_NOTIFICATIONS_STATUS =>
-                    Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]]);
+                ->update([Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]);
 
             // Remove user join request
             $group->membershipSeekers()->detach($user);

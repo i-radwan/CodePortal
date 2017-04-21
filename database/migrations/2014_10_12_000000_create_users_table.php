@@ -21,11 +21,11 @@ class CreateUsersTable extends Migration
             $table->string(Constants::FLD_USERS_PASSWORD);
             $table->string(Constants::FLD_USERS_FIRST_NAME, 20)->nullable();
             $table->string(Constants::FLD_USERS_LAST_NAME, 20)->nullable();
-            $table->enum(Constants::FLD_USERS_GENDER, Constants::USER_GENDER)->nullable();
+            $table->enum(Constants::FLD_USERS_GENDER, Constants::USER_GENDERS)->nullable();
             $table->date(Constants::FLD_USERS_BIRTHDATE)->nullable();
             $table->string(Constants::FLD_USERS_COUNTRY)->nullable();
             $table->string(Constants::FLD_USERS_PROFILE_PICTURE)->nullable();
-            $table->enum(Constants::FLD_USERS_ROLE, Constants::ACCOUNT_ROLE)->default(Constants::ACCOUNT_ROLE[Constants::ACCOUNT_ROLE_USER_KEY]);
+            $table->enum(Constants::FLD_USERS_ROLE, Constants::ACCOUNT_ROLES)->default(Constants::ACCOUNT_ROLE_USER);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -19,12 +19,9 @@ class NotificationController extends Controller
         if ($user) {
             $user->receivedNotifications()
                 // Get only unread ones
-                ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=',
-                    [Constants::FLD_NOTIFICATIONS_STATUS =>
-                        Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]])
+                ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=', Constants::NOTIFICATION_STATUS_UNREAD)
                 // Mark as read
-                ->update([Constants::FLD_NOTIFICATIONS_STATUS =>
-                    Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_READ]]);
+                ->update([Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_READ]);
         }
 
         // Return success response
@@ -38,8 +35,7 @@ class NotificationController extends Controller
         // Find the notification and update status
         if ($user) {
             if ($user->receivedNotifications()->find($notification))
-                $notification->update([Constants::FLD_NOTIFICATIONS_STATUS =>
-                    Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]]);
+                $notification->update([Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]);
         }
 
         // Return success response

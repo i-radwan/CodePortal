@@ -38,13 +38,13 @@ class AuthServiceProvider extends ServiceProvider
             if ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) return true;
 
             // Check if contest is public
-            if ($contest->visibility == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]) {
+            if ($contest->visibility == Constants::CONTEST_VISIBILITY_PUBLIC) {
                 return true;
             }
 
             // Check if user is invited to private contest
             $contestsInvitationsCount = $user->displayableReceivedNotifications()
-                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST])
+                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE_CONTEST)
                 ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $contest->id)->count();
 
             if ($contestsInvitationsCount > 0) {

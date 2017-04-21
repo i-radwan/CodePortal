@@ -119,7 +119,7 @@ class TeamController extends Controller
 
         // Create new notification if user isn't already invited
         try {
-            Notification::make(Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM], false);
+            Notification::make(Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE_TEAM, false);
             return back()->with('messages', [$username . ' invited successfully!']);
         }
         // If the user is already invited the make function throws this exception
@@ -203,8 +203,8 @@ class TeamController extends Controller
                 Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
                 '=',
                 $user->id
-            )->update([
-                Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]]
+            )->update(
+                [Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]
             );
 
         return back();
