@@ -9,7 +9,8 @@ use URL;
 use Illuminate\Http\Request;
 use App\Utilities\Constants;
 use Auth;
-use Response;
+use Session;
+use App\Models\Judge;
 
 class SheetController extends Controller
 {
@@ -35,11 +36,26 @@ class SheetController extends Controller
      * Show add sheet page
      *
      * @param Group $group
+     * @param Request $request
+     *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function addSheetView(Group $group)
+    public function addSheetView(Request $request, Group $group)
     {
+
+        // Check server sessions for saved filters data (i.e. tags, organisers, judges)
+        $tags = $judges = [];
+
+        $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
+
         return view('groups.sheet_views.add_edit')
+            ->with('problems', $problems)
+            ->with('judges', Judge::all())
+            ->with('checkBoxes', 'true')
+            ->with(Constants::SHEET_PROBLEMS_SELECTED_TAGS, $tags)
+            ->with(Constants::SHEET_PROBLEMS_SELECTED_JUDGES, $judges)
+            ->with('syncFiltersURL', url('sheet/add/sheet_tags_judges_filters_sync'))
+            ->with('detachFiltersURL', url('sheet/add/sheet_tags_judges_filters_detach'))
             ->with('action', 'Add')
             ->with('url', 'sheet/new/' . $group[Constants::FLD_GROUPS_ID])
             ->with('pageTitle', config('app.name') . ' | Sheet');
@@ -83,6 +99,9 @@ class SheetController extends Controller
         // Fetch problems and sync with sheet problems ToDo replace with Samir tbl
         $problemsIDs = explode(",", $request->get('problems'));
         $sheet->problems()->sync($problemsIDs);
+
+        // Flush sessions
+        Session::forget([Constants::SHEET_PROBLEMS_SELECTED_FILTERS]);
 
         // Return to sheets
         return redirect('group/' . $group[Constants::FLD_GROUPS_ID] . '#sheets');
@@ -220,4 +239,50 @@ class SheetController extends Controller
         // Set group members
         $data[Constants::SINGLE_SHEET_PROBLEMS_KEY] = $problems;
     }
+
+    /**
+     * Get the problems filtered by sheet tags and judges
+     *
+     * @param $request
+     * @param $tags
+     * @param $judges
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getProblemsWithSessionFilters($request, &$tags, &$judges)
+    {
+        // Check server sessions for saved filters data (i.e. tags, organisers, judges)
+        if (Session::has(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)) {
+            if (isset(Session::get(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)[Constants::SHEET_PROBLEMS_SELECTED_JUDGES])) {
+                $judges = Session::get(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)[Constants::SHEET_PROBLEMS_SELECTED_JUDGES];
+            }
+            if (isset(Session::get(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)[Constants::SHEET_PROBLEMS_SELECTED_TAGS])) {
+                $tags = Session::get(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)[Constants::SHEET_PROBLEMS_SELECTED_TAGS];
+            }
+        }
+
+        // Get problems with applied filters
+        return ProblemController::getProblemsWithFilters($request, $tags, $judges);
+    }
+
+
+    /**
+     * Save problems filters (tags, judges) into server session to later retrieval
+     *
+     * @param Request $request
+     */
+    public function applyProblemsFilters(Request $request)
+    {
+        Session::put(Constants::SHEET_PROBLEMS_SELECTED_FILTERS, $request->get('selected_filters'));
+    }
+
+
+    /**
+     * Clear problems filters (tags, judges) from server session
+     */
+    public function clearProblemsFilters()
+    {
+        Session::forget(Constants::SHEET_PROBLEMS_SELECTED_FILTERS);
+    }
+
+
 }

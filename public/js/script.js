@@ -134,9 +134,30 @@ var app = {
 
             // Render saved data from session into form
             app.fillContestFormFromSession();
+        }
 
-            // Item delete from session
-            app.closeButtonClick();
+        // Add/Edit sheet page
+        if ($("#add-edit-sheet-page-hidden-element").length) {
+
+            // Fetch all tags
+            app.fetchAllTagsFromDB();
+
+            // Configure lists and autocomplete typeahead
+            app.configureAutoCompleteLists(true, false, false);
+
+            // Set the session keys for sheets problems
+            app.problemsIDsSessionKey = 'sheets_problems_ids_session_key';
+            app.tagsSessionKey = 'sheets_tags_ids_session_key';
+            app.judgesSessionKey = 'sheets_judges_ids_session_key';
+
+            // Fill judges checkboxes
+            app.fillJudgesCheckboxes();
+
+            // Fill tags, organisers lists
+            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
+
+            // Fill problems checkboxes
+            app.fillProblemsTableCheckboxes();
         }
 
         // Problems filters
@@ -421,7 +442,6 @@ var app = {
         // Send request to path in tags-path data attr
         $.get($("#tags-auto").data('tags-path'), function (data) {
             app.allTagsList = data;
-            console.log(app.allTagsList);
         });
     },
     /**
@@ -458,7 +478,44 @@ var app = {
             $('input.invitees-auto').typeahead(app.autoComplete($("#invitees-auto").data('invitees-path'), app.inviteesList, 2));
         }
     },
+    /**
+     * Fill checkboxes of problems selector from session
+     */
+    fillProblemsTableCheckboxes: function () {
 
+        // Recheck selected problems IDs checkboxes
+        var savedProblemsIDs = sessionStorage.getItem(app.problemsIDsSessionKey);
+
+        if (savedProblemsIDs) { // check if there're any stored IDs
+
+            // Convert to array
+            var savedProblemsIDsArray = JSON.parse(savedProblemsIDs);
+
+            // Loop over IDs
+            savedProblemsIDsArray.forEach(function (element) {
+                $("#problem-checkbox-" + element).prop('checked', true);
+            });
+        }
+    },
+    /**
+     * Fill checkboxes of judges selector from session
+     */
+    fillJudgesCheckboxes: function () {
+
+        // Recheck selected judges IDs checkboxes
+        var savedJudgesIDs = sessionStorage.getItem(app.judgesSessionKey);
+
+        if (savedJudgesIDs) { // check if there're any stored IDs
+
+            // Convert to array
+            var savedJudgesIDsArray = JSON.parse(savedJudgesIDs);
+
+            // Loop over IDs
+            savedJudgesIDsArray.forEach(function (element) {
+                $("#judge-checkbox-" + element).prop('checked', true);
+            });
+        }
+    },
     /**
      * Fill contest add/edit fields from the stored session
      */
@@ -466,33 +523,11 @@ var app = {
         // Render saved data from session
         if ($("#add-edit-contest-form").length) { // Check if in add/edit contest view
 
-            // Recheck selected problems IDs checkboxes
-            var savedProblemsIDs = sessionStorage.getItem(app.problemsIDsSessionKey);
+            // Fill problems checkboxes
+            app.fillProblemsTableCheckboxes();
 
-            if (savedProblemsIDs) { // check if there're any stored IDs
-
-                // Convert to array
-                var savedProblemsIDsArray = JSON.parse(savedProblemsIDs);
-
-                // Loop over IDs
-                savedProblemsIDsArray.forEach(function (element) {
-                    $("#problem-checkbox-" + element).prop('checked', true);
-                });
-            }
-
-            // Recheck selected judges IDs checkboxes
-            var savedJudgesIDs = sessionStorage.getItem(app.judgesSessionKey);
-
-            if (savedJudgesIDs) { // check if there're any stored IDs
-
-                // Convert to array
-                var savedJudgesIDsArray = JSON.parse(savedJudgesIDs);
-
-                // Loop over IDs
-                savedJudgesIDsArray.forEach(function (element) {
-                    $("#judge-checkbox-" + element).prop('checked', true);
-                });
-            }
+            // Fill judges checkboxes
+            app.fillJudgesCheckboxes();
 
             // Fill tags, organisers lists
             app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
@@ -503,7 +538,7 @@ var app = {
             $("#name").val(sessionStorage.getItem(app.contestNameSessionKey));
             $("#time").val(sessionStorage.getItem(app.contestTimeSessionKey));
             $("#duration").val(sessionStorage.getItem(app.contestDurationSessionKey));
-            $("#private").val(sessionStorage.getItem(app.contestPrivateVisibilitySessionKey));
+            $("#private_visibility").val(sessionStorage.getItem(app.contestPrivateVisibilitySessionKey));
 
             // Set form fields on change listeners
             $("#name").change(function () {
@@ -553,7 +588,7 @@ var app = {
                 'selected_tags': selected_tags,
                 'selected_judges': selected_judges
             };
-
+        console.log(filters, url);
         // Send request to server in order to save filters to server session
         $.ajax({
             url: url,
@@ -621,7 +656,6 @@ var app = {
                     // using the first letter only (a lot of possibilities exist)
                     if (query.length >= 2) {
                         return $.get(path, {query: query}, function (data) {
-                            console.log(data);
                             return process(data);
                         });
                     }
@@ -789,6 +823,20 @@ var app = {
     },
 
 
+    // ==================================================
+    //        SHEET PAGE FILTERS FUNCTIONS
+    // ==================================================
+
+    /**
+     * Set problems filters hidden inputs values from sessions, then clear sessions
+     */
+    moveProblemsIDsSessionDataToHiddenField: function () {
+        // Set value
+        $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.problemsIDsSessionKey)).join());
+
+        // Clear sessions
+        app.clearSession();
+    },
     // ==================================================
     //        PROBLEMS PAGE FILTERS FUNCTIONS
     // ==================================================

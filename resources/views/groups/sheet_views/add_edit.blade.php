@@ -14,16 +14,17 @@
                         @include('components.alert')
 
                         {{--Name--}}
-                        <form class="form-horizontal" role="form" method="POST" action="{{ url($url) }}">
+                        <form class="form-horizontal add-edit-sheet-form" role="form" method="POST" action="{{ url($url) }}">
                             {{ csrf_field() }}
+                            <input type="hidden" id="problems-ids-hidden" name="problems"/>
 
+                            {{--Name--}}
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} has-feedback">
-                                <label for="name" class="col-md-4 control-label">Name</label>
+                                <label for="name" class="col-md-2 control-label">Name</label>
 
-                                <div class="col-md-6">
+                                <div class="col-md-10">
                                     <input id="name" type="text" class="form-control" name="name"
-                                           value="{{ (isset($sheetName))?$sheetName:old('name') }}" placeholder="Name"
-                                           required autofocus>
+                                           value="{{ old('name') }}" placeholder="Name" required autofocus>
 
                                     @if ($errors->has('name'))
                                         <span class="help-block">
@@ -34,24 +35,23 @@
                             </div>
 
                             {{--Problems--}}
-                            <div class="form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
-                                <label for="problems" class="col-md-4 control-label">Problems</label>
+                            <div class="add-edit-contest-problems-wrapper form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
+                                <div class="row col-md-12">
+                                    <label for="problems" class="control-label text-center">Problems</label>
 
-                                <div class="col-md-6">
-                                    <input id="problems" type="text" class="form-control" name="problems"
-                                           value="{{ (isset($problemsIDs))?$problemsIDs:old('problems') }}"
-                                           placeholder="IDs comma separated" required>
-
+                                    @include("contests.contest_views.add_edit_filter")
+                                    @include("problems.table")
                                     @if ($errors->has('problems'))
-                                        <span class="help-block">
+                                        <span class="help-block text-left">
                                             <strong>{{ $errors->first('problems') }}</strong>
                                         </span>
                                     @endif
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
+                                <div class="col-md-12 text-center">
+                                    <button onclick="app.moveProblemsIDsSessionDataToHiddenField()" type="submit"
+                                            class="btn btn-primary">
                                         {{$action}}
                                     </button>
                                 </div>
@@ -62,4 +62,6 @@
             </div>
         </div>
     </div>
+    <span class="page-distinguishing-element" id="add-edit-sheet-page-hidden-element"></span>
+
 @endsection

@@ -82,27 +82,17 @@ class ContestController extends Controller
     {
         // Check server sessions for saved filters data (i.e. tags, organisers, judges)
         $tags = $judges = [];
-        // Search and fill session data to send with request
-//        dd(Session::has(Constants::CONTESTS_SELECTED_JUDGES));
-        if (Session::has(Constants::CONTESTS_SELECTED_FILTERS)) {
-            if (isset(Session::get(Constants::CONTESTS_SELECTED_FILTERS)[Constants::CONTESTS_SELECTED_JUDGES])) {
-                $judges = Session::get(Constants::CONTESTS_SELECTED_FILTERS)[Constants::CONTESTS_SELECTED_JUDGES];
-            }
-            if (isset(Session::get(Constants::CONTESTS_SELECTED_FILTERS)[Constants::CONTESTS_SELECTED_TAGS])) {
-                $tags = Session::get(Constants::CONTESTS_SELECTED_FILTERS)[Constants::CONTESTS_SELECTED_TAGS];
-            }
-        }
 
-        // Get problems with applied filters
-        $problems = self::getProblemsWithFilters($request, $tags, $judges);
-
+        $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
 
         return view('contests.add_edit')
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
-            ->with(Constants::CONTESTS_SELECTED_TAGS, $tags)
-            ->with(Constants::CONTESTS_SELECTED_JUDGES, $judges)
+            ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
+            ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
+            ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
+            ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
             ->with('pageTitle', config('app.name') . ' | Contest');
     }
 
@@ -166,7 +156,7 @@ class ContestController extends Controller
             $this->updateContestProblemsOrder($contest, $problems);
 
             // Flush sessions
-            Session::forget([Constants::CONTESTS_SELECTED_FILTERS]);
+            Session::forget([Constants::CONTEST_PROBLEMS_SELECTED_FILTERS]);
 
             // Return success message
             Session::flash("messages", ["Contest Added Successfully"]);
@@ -223,7 +213,7 @@ class ContestController extends Controller
      */
     public function applyProblemsFilters(Request $request)
     {
-        Session::put(Constants::CONTESTS_SELECTED_FILTERS, $request->get(Constants::CONTESTS_SELECTED_FILTERS));
+        Session::put(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS, $request->get('selected_filters'));
     }
 
     /**
@@ -231,8 +221,7 @@ class ContestController extends Controller
      */
     public function clearProblemsFilters()
     {
-        Session::forget(Constants::CONTESTS_SELECTED_FILTERS);
-        return;
+        Session::forget(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS);
     }
 
     /**
@@ -597,24 +586,6 @@ class ContestController extends Controller
     }
 
     /**
-     * Get the problems filtered by tags and judges
-     *
-     * @param $request
-     * @param $tagNames
-     * @param $judgesIDs
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public static function getProblemsWithFilters($request, $tagNames, $judgesIDs)
-    {
-        if (count($tagNames) > 0)
-            $tagNames = explode(",", $tagNames);
-        if (count($judgesIDs) > 0)
-            $judgesIDs = explode(",", $judgesIDs);
-        return ProblemController::getProblemsToContestController($request, $tagNames, $judgesIDs); // Returning the Problems Data
-    }
-
-
-    /**
      * Update contest problems order in DB
      *
      * @param Contest $contest
@@ -629,5 +600,30 @@ class ContestController extends Controller
             $problemPivot->save();
             $i++;
         }
+    }
+
+
+    /**
+     * Get the problems filtered by contest tags and judges
+     *
+     * @param $request
+     * @param $tags
+     * @param $judges
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getProblemsWithSessionFilters($request, &$tags, &$judges)
+    {
+        // Check server sessions for saved filters data (i.e. tags, organisers, judges)
+        if (Session::has(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)) {
+            if (isset(Session::get(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)[Constants::CONTEST_PROBLEMS_SELECTED_JUDGES])) {
+                $judges = Session::get(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)[Constants::CONTEST_PROBLEMS_SELECTED_JUDGES];
+            }
+            if (isset(Session::get(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)[Constants::CONTEST_PROBLEMS_SELECTED_TAGS])) {
+                $tags = Session::get(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)[Constants::CONTEST_PROBLEMS_SELECTED_TAGS];
+            }
+        }
+
+        // Get problems with applied filters
+        return ProblemController::getProblemsWithFilters($request, $tags, $judges);
     }
 }
