@@ -41,6 +41,7 @@ class Constants
     // Contests page constants
     //
 
+    const CONTESTS_PROBLEMS_MAX_COUNT = 10; // Corresponding to javascript constant
     const CONTESTS_COUNT_PER_PAGE = 30;
     const CONTEST_STANDINGS_PER_PAGE = 30;
     const CONTEST_SUBMISSIONS_PER_PAGE = 30;
@@ -74,9 +75,9 @@ class Constants
     const SINGLE_CONTEST_DURATION_KEY = "duration";
 
     // Add/edit contest page keys
-    const CONTESTS_SELECTED_FILTERS = "selected_filters";
-    const CONTESTS_SELECTED_JUDGES = "selected_judges";
-    const CONTESTS_SELECTED_TAGS = "selected_tags";
+    const CONTEST_PROBLEMS_SELECTED_FILTERS = "contest_selected_filters";
+    const CONTEST_PROBLEMS_SELECTED_JUDGES = "selected_judges";
+    const CONTEST_PROBLEMS_SELECTED_TAGS = "selected_tags";
     const CONTESTS_SELECTED_ORGANISERS = "selected_organisers";
     const CONTEST_AUTO_COMPLETE_ORGANISERS = 1;
     const CONTEST_AUTO_COMPLETE_TAGS = 0;
@@ -178,6 +179,9 @@ class Constants
     const SINGLE_SHEET_ID_KEY = "id";
     const SINGLE_SHEET_NAME_KEY = "name";
     const SINGLE_SHEET_GROUP_ID_KEY = "group_id";
+    const SHEET_PROBLEMS_SELECTED_FILTERS = "sheet_selected_filters";
+    const SHEET_PROBLEMS_SELECTED_JUDGES = "selected_judges";
+    const SHEET_PROBLEMS_SELECTED_TAGS = "selected_tags";
 
     // Extra
 

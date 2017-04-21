@@ -1,7 +1,0 @@
-int main(){
-    
-    std::cout << "Now way :D";
-    
-    return 0;
-    
-}

@@ -34,7 +34,6 @@ class GroupController extends Controller
             ->with('pageTitle', config('app.name') . ' | Groups');
     }
 
-
     /**
      * Show single group page
      *
@@ -171,39 +170,52 @@ class GroupController extends Controller
      */
     public function inviteMember(Request $request, Group $group)
     {
-        // Get user
-        $user = User::where(Constants::FLD_USERS_USERNAME, '=', $request->get('username'))->first();
+        // Flags to tackle errors
+        $errors = '';
 
-        // If user doesn't exist
-        if (!$user)
-            return back()->withErrors([$request->get('username') . " doesn't exist!"]);
+        // Iterate over all invitees
+        $usernames = explode(",", $request->get('usernames'));
+        foreach ($usernames as $username) {
+            // Get user
+            $user = User::where(Constants::FLD_USERS_USERNAME, '=', $username)->first();
 
-        // Check if already member or owner
-        if (\Gate::allows("owner-or-member-group", [$group, $user])) {
-            return back()->withErrors([$request->get('username') . ' is already a member!']);
-        }
-
-        // Create new notification if user isn't already invited
-        try {
-            Notification::make($request->all(), Auth::user(), $user, $group,
-                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP], false);
-
-            // Check if user has already requested to join (if so, add him)
-            if ($user->seekingJoinGroups()->find($group->id)) {
-                // Remove user join request
-                $group->membershipSeekers()->detach($user);
-
-                // Save user to members
-                $group->members()->save($user);
+            // If user doesn't exist
+            if (!$user) {
+                $errors .= "$username doesn't exist!\n";
+                continue;
             }
-            return back()->with('messages', [$request->get('username') . ' invited successfully!']);
+            // Check if already member or owner
+            if (\Gate::forUser($user)->allows("owner-or-member-group", [$group])) {
+                $errors .= "$username is already member exist!\n";
+                continue;
+            }
 
-        } catch (InvitationException $e) {
-            // If the user is alreay invited the make function throws this exception
-            return back()->withErrors([$request->get('username') . ' is already invited!']);
+            // Create new notification if user isn't already invited
+            try {
+                Notification::make(Auth::user(), $user, $group,
+                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP], false);
+
+                // Check if user has already requested to join (if so, add him)
+                if ($user->seekingJoinGroups()->find($group[Constants::FLD_GROUPS_ID])) {
+                    // Remove user join request
+                    $group->membershipSeekers()->detach($user);
+
+                    // Save user to members
+                    $group->members()->save($user);
+                }
+
+            } catch (InvitationException $e) {
+                // If the user is already invited the make function throws this exception
+                $errors .= "$username is already invited\n";
+                continue;
+            }
         }
+        // Handle response errors/messages
+        if ($errors != '') {
+            return back()->withErrors($errors);
+        }
+        return back()->with('messages', 'Users are invited successfully!');
 
-        return back()->withErrors("Please try again later!");
     }
 
     /**
@@ -419,5 +431,26 @@ class GroupController extends Controller
         $data[Constants::SINGLE_GROUP_SHEETS_KEY] = $sheets;
     }
 
+    /**
+     * Retrieve usernames for auto complete
+     *
+     * @param Request $request
+     * @param Group $group
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function usersAutoComplete(Request $request, Group $group)
+    {
+        $query = $request->get('query');
+
+        // Get users who aren't members
+        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])
+            ->where(Constants::FLD_USERS_USERNAME, 'LIKE', "%$query%")
+            ->where(Constants::FLD_USERS_USERNAME, '!=', Auth::user()[Constants::FLD_USERS_USERNAME])
+            ->whereDoesntHave('joiningGroups', function ($query) use ($group) {
+                $query->whereId($group[Constants::FLD_GROUPS_ID]);
+            })
+            ->get();
+        return response()->json($data);
+    }
 
 }
