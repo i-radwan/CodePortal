@@ -1,5 +1,8 @@
-@php($notifications = Auth::user()->displayableReceivedNotifications()->get())
-@php($unreadCount = Auth::user()->unreadNotifications()->count())
+@php
+    $user = Auth::user();
+    $notifications = $user->displayableReceivedNotifications()->get();
+    $unreadCount = $user->unreadNotifications()->count();
+@endphp
 
 @if(count($notifications))
     <li class="dropdown notifications-dropdown">
@@ -36,6 +39,9 @@
                             break;
                         case Constants::NOTIFICATION_TYPE[\App\Utilities\Constants::NOTIFICATION_TYPE_TEAM]:
                             // Add later
+                            $resource = \App\Models\Team::find($notification->resource_id);
+                            $resourceLink = 'profile/' . $notification->sender_id . '/teams';
+                            $icon = 'fa-users';
                             break;
                     }
 

@@ -184,8 +184,7 @@ class Group extends Model
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
                 Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
-            )
-            ->where(
+            )->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
                 Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]

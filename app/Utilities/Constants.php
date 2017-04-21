@@ -4,6 +4,13 @@ namespace App\Utilities;
 
 class Constants
 {
+    //region Limits
+
+    const TEAM_MEMBERS_MAX_COUNT = 3;
+
+    //=============================================================
+    //endregion
+
     //region Problems page
 
     //
@@ -449,7 +456,6 @@ class Constants
     const TBL_GROUP_JOIN_REQUESTS = "group_join_requests";
     const TBL_SHEET_PROBLEMS = "sheet_problems";
     const TBL_TEAM_MEMBERS = "team_members";
-    const TBL_TEAM_INVITATIONS = "team_invitations";
 
     //
     // Fields
@@ -603,10 +609,6 @@ class Constants
     // Team members
     const FLD_TEAM_MEMBERS_TEAM_ID = "team_id";
     const FLD_TEAM_MEMBERS_USER_ID = "user_id";
-
-    // Team invitations
-    const FLD_TEAM_INVITATIONS_TEAM_ID = "team_id";
-    const FLD_TEAM_INVITATIONS_USER_ID = "user_id";
 
     // ============================================================
     //endregion
