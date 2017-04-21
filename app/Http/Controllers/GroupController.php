@@ -185,7 +185,7 @@ class GroupController extends Controller
                 continue;
             }
             // Check if already member or owner
-            if (\Gate::allows("owner-or-member-group", [$group, $user])) {
+            if (\Gate::forUser($user)->allows("owner-or-member-group", [$group])) {
                 $errors .= "$username is already member exist!\n";
                 continue;
             }

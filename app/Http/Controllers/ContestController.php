@@ -587,16 +587,26 @@ class ContestController extends Controller
      */
     private function getQuestionsInfo($user, $contest, &$data)
     {
+        $isOwnerOrOrganizer = \Gate::forUser($user)->allows('owner-organizer-contest', [$contest[Constants::FLD_CONTESTS_ID]]);
+
         // Get contest announcements
         $announcements = $contest->announcements()->get();
 
-        // If user is logged in, get his questions too
-        if ($user) {
+        // If user is logged in and not organizer, get his questions too
+        if ($user && !$isOwnerOrOrganizer) {
             // Get user specific questions
-            $questions = $user->contestQuestions($contest->id)->get();
+            $questions = $user->contestQuestions($contest[Constants::FLD_CONTESTS_ID])->get();
 
             // Merge announcements and user questions
             $announcements = $announcements->merge($questions);
+        } else if ($user && $isOwnerOrOrganizer) {
+
+            // If admin get all questions
+            $questions = $contest->questions()
+                ->where(Constants::FLD_QUESTIONS_STATUS, '!=', Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY]);
+
+            // Merge announcements and all questions
+            $announcements = $announcements->merge($questions->get());
         }
 
         // Get extra data from foreign keys
