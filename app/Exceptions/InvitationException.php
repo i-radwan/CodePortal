@@ -2,10 +2,10 @@
 
 namespace App\Exceptions;
 
-class GroupInvitationException extends \Exception
+class InvitationException extends \Exception
 {
     /**
-     * GroupInvitationException constructor.
+     * InvitationException constructor.
      *
      * @param string $message
      */

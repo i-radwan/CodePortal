@@ -4,7 +4,7 @@
     <div class="container">
         <div class="panel panel-default">
             @if(Auth::check())
-                {{--Edit button--}}
+                {{--Create new team button--}}
                 <a href="{{ url('teams/create')}}"
                    class="btn btn-link text-dark pull-right margin-5px">
                     New
@@ -13,6 +13,8 @@
 
             <div class="panel-heading">Teams of {{ $user->username }}</div>
             <div class="panel-body">
+                @include('components.alert')
+
                 @php($teams = $user->joiningTeams()->get())
 
                 @if(count($teams) > 0)

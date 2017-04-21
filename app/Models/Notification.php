@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Utilities\Constants;
-use App\Exceptions\GroupInvitationException;
+use App\Exceptions\InvitationException;
 use Illuminate\Database\Eloquent\Model;
 
 class Notification extends Model
@@ -59,7 +59,7 @@ class Notification extends Model
      * @param Team|Group|Contest $resource
      * @param int $type
      * @param bool $duplicationAllowed Whether resending the same notification to the same user twice is allowed
-     * @throws GroupInvitationException
+     * @throws InvitationException
      */
     public static function make($attributes, User $sender, User $receiver, $resource, $type, $duplicationAllowed = false)
     {
@@ -77,8 +77,8 @@ class Notification extends Model
 
             if ($prevNotificationsCount > 0) {
                 // Stop and prevent saving new one
-                throw new GroupInvitationException(
-                    Constants::GROUP_INVITATION_EXCEPTION_MSGS[Constants::GROUP_INVITATION_EXCEPTION_INVITED]
+                throw new InvitationException(
+                    Constants::INVITATION_EXCEPTION_MSGS[Constants::INVITATION_EXCEPTION_INVITED]
                 );
             }
         }
