@@ -20,7 +20,7 @@
         {{--Tags AutoComplete--}}
         <div id="custom-search-input">
             <div class="input-group autocomplete-input-group">
-                <input id="tags-auto" type="text" class="form-control tags-auto search-box"
+                <input id="tags-auto" type="text" class="form-control search-box"
                        placeholder="Tag name..."
                        onkeypress="return event.keyCode != 13;"
                        data-tags-path="{{url('tags_auto_complete')}}"

@@ -178,6 +178,16 @@ var app = {
             // Toggle filters more div if query contains tags or judges
             app.toggleFiltersPanel();
         }
+
+        // Group page
+        if ($("#single-group-page-hidden-element").length) {
+
+            // Configure lists and autocomplete typeahead
+            app.configureAutoCompleteLists(false, false, true);
+
+            app.inviteesSessionKey = 'group_invitees_session_key';
+
+        }
     },
 
     // ==================================================
@@ -457,7 +467,7 @@ var app = {
             // Define tag lists and apply autocomplete to it
             this.tagsList = document.getElementById("tags-list");
             // Call typeahead for Tags autoCompletion
-            $('input.tags-auto').typeahead(app.autoComplete($("#tags-auto").data('tags-path'), app.tagsList, 0));
+            $('#tags-auto').typeahead(app.autoComplete($("#tags-auto").data('tags-path'), app.tagsList, 0));
         }
 
         // Organisers AutoComplete
@@ -466,7 +476,7 @@ var app = {
             this.organisersList = document.getElementById("organisers-list");
 
             //Call typeahead for Organisers autoCompletion
-            $('input.organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
+            $('#organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
         }
 
         // Invitees AutoComplete
@@ -475,7 +485,7 @@ var app = {
             this.inviteesList = document.getElementById("invitees-list");
 
             //Call typeahead for Organisers autoCompletion
-            $('input.invitees-auto').typeahead(app.autoComplete($("#invitees-auto").data('invitees-path'), app.inviteesList, 2));
+            $('#invitees-auto').typeahead(app.autoComplete($("#invitees-auto").data('invitees-path'), app.inviteesList, 2));
         }
     },
     /**
@@ -824,6 +834,25 @@ var app = {
 
 
     // ==================================================
+    //          GROUP PAGE FUNCTIONS
+    // ==================================================
+
+    /**
+     * Move group invitees from session to field
+     * @param fldID
+     * @param sessionKey
+     * @param clear
+     */
+    moveInviteesFromSessionToField: function (fldID, sessionKey, clear) {
+        // Set value
+        $("#" + fldID).val(JSON.parse(sessionStorage.getItem(sessionKey)).join());
+
+        // Clear sessions
+        if (clear) {
+            sessionStorage.setItem(sessionKey, '');
+        }
+    },
+    // ==================================================
     //        SHEET PAGE FILTERS FUNCTIONS
     // ==================================================
 
@@ -835,7 +864,9 @@ var app = {
         $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.problemsIDsSessionKey)).join());
 
         // Clear sessions
-        app.clearSession();
+        sessionStorage.setItem(app.problemsIDsSessionKey, '');
+        sessionStorage.setItem(app.tagsSessionKey, '');
+        sessionStorage.setItem(app.judgesSessionKey, '');
     },
     // ==================================================
     //        PROBLEMS PAGE FILTERS FUNCTIONS
