@@ -47,7 +47,7 @@ class Contest extends Model
         Constants::FLD_CONTESTS_NAME => 'required|max:100',
         Constants::FLD_CONTESTS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:today',
-        Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1',
+        Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1|max:' . Constants::CONTESTS_DURATION_MAX,
         Constants::FLD_CONTESTS_VISIBILITY => 'required|Regex:/([01])/'
     ];
 
@@ -296,11 +296,11 @@ class Contest extends Model
                 '=',
                 Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST]
             )
-            ->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
-            );
+                ->where(
+                    Constants::FLD_NOTIFICATIONS_STATUS,
+                    '!=',
+                    Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+                );
     }
 
     /**
@@ -479,8 +479,7 @@ class Contest extends Model
             $submissions = Submission::tillFirstAccepted($contestStartTime, $contestEndTime);
             $submissionsTable = DB::raw('(' . $submissions->toSql() . ') as ' . '`' . Constants::TBL_SUBMISSIONS . '`');
             $query->mergeBindings($submissions);
-        }
-        else {
+        } else {
             $submissionsTable = Constants::TBL_SUBMISSIONS;
             $query->whereBetween(
                 Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME,

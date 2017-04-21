@@ -85,6 +85,10 @@ var app = {
             format: 'Y-m-d H:i:s',
             minDate: 0 // for after today limitation
         });
+        // Enable duration pickers
+        $('.duration-picker').duration_picker({
+            lang: 'en'
+        });
         //endregion
 
 
@@ -1023,7 +1027,6 @@ var app = {
     syncDataFromRequestToSession: function (sessionKey, array) {
         if (!sessionStorage.getItem(sessionKey) && array.length > 0) {
 
-            console.log(array);
             // Set to session
             sessionStorage.setItem(sessionKey, array);
         }
@@ -1038,17 +1041,22 @@ var app = {
 
         // Get php selected tags,judges from the data binding attribute
         // and convert to javascript format
-        var selected_tags = '["' + element.data('selected-tags').replace(',', '","') + '"]';
-        var selected_judges;
-        try {
-            selected_judges = '["' + element.data('selected-judges').replace(',', '","') + '"]';
-        } catch (e) {
-            selected_judges = '["' + element.data('selected-judges') + '"]';
+        var tags = element.data('selected-tags');
+        var judges = element.data('selected-judges');
+        if (tags) {
+            var selected_tags = '["' + tags.replace(',', '","') + '"]';
+            // Sync with session
+            app.syncDataFromRequestToSession(app.tagsSessionKey, selected_tags);
         }
-
-        // Sync with session
-        app.syncDataFromRequestToSession(app.tagsSessionKey, selected_tags);
-        app.syncDataFromRequestToSession(app.judgesSessionKey, selected_judges);
+        if (judges) {
+            var selected_judges;
+            try {
+                selected_judges = '["' + judges.replace(',', '","') + '"]';
+            } catch (e) {
+                selected_judges = '["' + judges + '"]';
+            }
+            app.syncDataFromRequestToSession(app.judgesSessionKey, selected_judges);
+        }
     }
 };
 
