@@ -13,7 +13,7 @@
             <small>{{\App\Utilities\Utilities::formatPastDateTime($comment[\App\Utilities\Constants::FLD_COMMENTS_CREATED_AT])}}</small>
         </h4>
         {{--body--}}
-        <p>{{$comment[\App\Utilities\Constants::FLD_COMMENTS_BODY]}}</p>
+        <div>{{$comment[\App\Utilities\Constants::FLD_COMMENTS_BODY]}}</div>
         {{--Vote--}}
         &nbsp; &nbsp;<span>  <i class="fa fa-thumbs-o-down" aria-hidden="true"></i></span> {{$comment[\App\Utilities\Constants::FLD_COMMENTS_DOWN_VOTES]}} &nbsp; &nbsp; <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> {{$comment[\App\Utilities\Constants::FLD_COMMENTS_UP_VOTES]}}
         {{--Replies--}}

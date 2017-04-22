@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Post;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
@@ -37,10 +38,10 @@ class BlogController extends Controller
         $Post = Post::find($post);
         $postInfo = $this->getPostInfo($Post);
         $comments = $this->getPostComments($Post);
-
         return view("blogs.post")
             ->with('post',$postInfo)
             ->with('comments', $comments)
+            ->with('comment_form_url', url('blogs/entry/'. $post))
             ->with('pageTitle', config('app.name'). ' |'.$Post[Constants::FLD_POSTS_TITLE]);
     }
 
@@ -83,6 +84,31 @@ class BlogController extends Controller
         else {    // return error message
             Session::flash("messages", ["Sorry, Post was not added. Please retry later"]);
             return redirect()->action('BlogController@index');
+        }
+    }
+
+    /**
+     * Add new comment to a post
+     * @param \Illuminate\Http\Request $request
+     * @param                          $post
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addComment(Request $request, $post){
+        $comment = new Comment($request->all());
+        $comment->owner()->associate(Auth::user());
+        if( $comment->save()){
+            // Return success message
+            Session::flash("messages", ["Comment Added Successfully"]);
+            return redirect()->action(
+                'BlogController@displayPost', ['id' => $post]
+            );
+        }
+        else {    // return error message
+            Session::flash("messages", ["Sorry, Comment was not added. Please retry later"]);
+            return redirect()->action(
+                'BlogController@displayPost', ['id' => $post]
+            );
         }
     }
 

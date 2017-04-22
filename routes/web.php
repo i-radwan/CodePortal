@@ -108,6 +108,8 @@ Route::group(['middleware' => 'auth'], function () {
     //Blogs Routes
     Route::get('blogs/add', 'BlogController@addEditPost');
     Route::post('blogs/add', 'BlogController@addPost');
+    Route::post('blogs/entry/{post}', 'BlogController@addComment');
+
 });
 
 Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['contestAccessAuth:view-join-contest,contest']);

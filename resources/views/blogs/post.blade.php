@@ -7,7 +7,7 @@
 
         {{--Alerts--}}
         @include('components.alert')
-            
+
         <!-- Blog Post Content Column -->
         <div class="col-lg-8">
 
