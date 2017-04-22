@@ -85,10 +85,14 @@ class ContestController extends Controller
 
         $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
 
+        // Are filters applied (to inform user that there're filters applied from previous visit)
+        $areFiltersApplied = count($tags) || count($judges);
+
         return view('contests.add_edit')
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
+            ->with('filtersApplied', $areFiltersApplied)
             ->with('formURL', url('contest/add'))
             ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
@@ -142,8 +146,7 @@ class ContestController extends Controller
 
         // Set visibility to private (group only)
         if ($group)
-            $contest[Constants::FLD_CONTESTS_VISIBILITY]
-                = Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PRIVATE_KEY];
+            $contest[Constants::FLD_CONTESTS_VISIBILITY] = Constants::CONTEST_VISIBILITY_PRIVATE;
 
         if ($contest->save()) {
 
@@ -158,7 +161,7 @@ class ContestController extends Controller
                 }
             }
             // Send notifications to Invitees if private contest and not for specific group
-            if (!$group && $request->get('visibility') == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PRIVATE_KEY]) {
+            if (!$group && $request->get('visibility') == Constants::CONTEST_VISIBILITY_PRIVATE) {
 
                 // Get invitees
                 $invitees = explode(",", $request->get('invitees'));
@@ -166,15 +169,13 @@ class ContestController extends Controller
 
                 foreach ($invitees as $invitee) {
                     // Send notifications
-                    Notification::make(Auth::user(), $invitee, $contest,
-                        Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST], false);
+                    Notification::make(Auth::user(), $invitee, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
                 }
             } else if ($group) { // Send group members invitations
                 // Get invitees
                 foreach ($group->members()->get() as $member) {
                     // Send notifications
-                    Notification::make(Auth::user(), $member, $contest,
-                        Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST], false);
+                    Notification::make(Auth::user(), $member, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
                 }
             }
 
@@ -301,7 +302,8 @@ class ContestController extends Controller
     public function joinContest(Contest $contest)
     {
         $user = Auth::user();
-        $user->participatingContests()->syncWithoutDetaching([$contest->id]);
+        $user->participatingContests()
+            ->syncWithoutDetaching([$contest[Constants::FLD_CONTESTS_ID]]);
         return back();
     }
 
@@ -357,7 +359,7 @@ class ContestController extends Controller
         // Check if question exists
         if ($question) {
             if (\Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
-                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY];
+                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_ANNOUNCEMENT;
                 $question->save();
             }
         }
@@ -376,7 +378,7 @@ class ContestController extends Controller
         // Check if question exists
         if ($question) {
             if (\Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
-                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY];
+                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_NORMAL;
                 $question->save();
             }
         }
@@ -608,7 +610,7 @@ class ContestController extends Controller
 
             // If admin get all questions
             $questions = $contest->questions()
-                ->where(Constants::FLD_QUESTIONS_STATUS, '!=', Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY]);
+                ->where(Constants::FLD_QUESTIONS_STATUS, '!=', Constants::QUESTION_STATUS_ANNOUNCEMENT);
 
             // Merge announcements and all questions
             $announcements = $announcements->merge($questions->get());

@@ -14,6 +14,8 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/animate.css" rel="stylesheet">
     <link href="/css/jquery.datetimepicker.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/bower_components/semantic/dist/semantic.min.css"/>
+    <link rel="stylesheet" href="/bower_components/jquery-duration-picker/dist/jquery-duration-picker.min.css"/>
 
     <!-- Fonts -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -37,7 +39,7 @@
 
 @include('layouts.footer')
 
-<!-- Scripts -->
+{{--Scripts--}}
 <script src="/js/jquery-3.1.1.min.js"></script>
 <script src="/js/jquery.waypoints.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
@@ -48,7 +50,13 @@
 {{--Include files for code editor--}}
 <script src="/modules/code-editor/ace.js" type="text/javascript" charset="utf-8"></script>
 
+{{--Files of duration picker--}}
+<script type="text/javascript" src="/bower_components/semantic/dist/semantic.min.js"></script>
+<script type="text/javascript"
+        src="/bower_components/jquery-duration-picker/dist/jquery-duration-picker.min.js"></script>
+
 <script src="/js/script.js"></script>
 
 </body>
 </html>
+

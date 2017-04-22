@@ -50,8 +50,7 @@ class Team extends Model
     {
         $this->members()->detach();
         $this->participatingContests()->detach();
-
-        // TODO: remove notifications when added
+        $this->notifications()->delete();
 
         return parent::delete();
     }
@@ -72,21 +71,6 @@ class Team extends Model
     }
 
     /**
-     * Return all the users invited to the team
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function invitedUsers()
-    {
-        return $this->belongsToMany(
-            User::class,
-            Constants::TBL_TEAM_INVITATIONS,
-            Constants::FLD_TEAM_INVITATIONS_TEAM_ID,
-            Constants::FLD_TEAM_INVITATIONS_USER_ID
-        )->withTimestamps();
-    }
-
-    /**
      * Return the contests that the current team participated in
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -99,5 +83,62 @@ class Team extends Model
             Constants::FLD_CONTEST_TEAMS_TEAM_ID,
             Constants::FLD_CONTEST_TEAMS_CONTEST_ID
         )->withTimestamps();
+    }
+
+    /**
+     * Return all notifications pointing at this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function notifications()
+    {
+        return
+            $this
+                ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
+                ->where(
+                    Constants::FLD_NOTIFICATIONS_TYPE,
+                    '=',
+                    Constants::NOTIFICATION_TYPE_TEAM
+                );
+    }
+
+    /**
+     * Return all pending invitations sent from this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentPendingInvitations()
+    {
+        // TODO: add pivot table fields as needed
+        return $this->notifications()->where(
+            Constants::FLD_NOTIFICATIONS_STATUS,
+            '!=',
+            Constants::NOTIFICATION_STATUS_DELETED
+        );
+    }
+
+    /**
+     * Return all invited pending users to this contest
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function invitedUsers()
+    {
+        // TODO: add pivot table fields as needed
+        return
+            $this->belongsToMany(
+                User::class,
+                Constants::TBL_NOTIFICATIONS,
+                Constants::FLD_NOTIFICATIONS_RESOURCE_ID,
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID
+            )->where(
+                Constants::FLD_NOTIFICATIONS_TYPE,
+                '=',
+                Constants::NOTIFICATION_TYPE_TEAM
+            )->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS_DELETED
+            );
     }
 }

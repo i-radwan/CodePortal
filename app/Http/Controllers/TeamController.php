@@ -101,22 +101,30 @@ class TeamController extends Controller
         $username = $request->get(Constants::FLD_USERS_USERNAME);
         $user = User::where(Constants::FLD_USERS_USERNAME, $username)->first();
 
-        // If user doesn't exist
+        // Check if user doesn't exist
         if (!$user) {
             return back()->withErrors([$username . " doesn't exist!"]);
         }
 
-        // TODO: validate and add limits to max number of members per team
+        // Check if user is already a member
+        if ($team->members()->find($user->id)) {
+            return back()->withErrors([$username . " is already a member in the team!"]);
+        }
+
+        $membersCount = $team->members()->count() + $team->invitedUsers()->count();
+
+        if ($membersCount >= Constants::TEAM_MEMBERS_MAX_COUNT) {
+            return back()->withErrors(["The  team is full!"]);
+        }
 
         // Create new notification if user isn't already invited
         try {
-            Notification::make(Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM], false);
-
+            Notification::make(Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE_TEAM, false);
             return back()->with('messages', [$username . ' invited successfully!']);
         }
         // If the user is already invited the make function throws this exception
         catch (InvitationException $e) {
-            return back()->with([$username . ' is already invited!']);
+            return back()->withErrors([$username . ' is already invited!']);
         }
     }
 
@@ -147,7 +155,13 @@ class TeamController extends Controller
      */
     public function cancelInvitation(Team $team, User $user)
     {
-        // TODO
+        // TODO: add gate to check that the user is indeed an invited user
+        $team->sentPendingInvitations()
+            ->where(
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
+                '=',
+                $user->id
+            )->delete();
 
         return back();
     }
@@ -156,12 +170,20 @@ class TeamController extends Controller
      * Accept the invitation to join the specified team
      *
      * @param Team $team
-     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function acceptInvitation(Team $team, User $user)
+    public function acceptInvitation(Team $team)
     {
-        // TODO
+        $user = Auth::user();
+
+        $team->sentPendingInvitations()
+            ->where(
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
+                '=',
+                $user->id
+            )->delete();
+
+        $team->members()->attach($user);
 
         return redirect('profile/' . $user->id . '/teams');
     }
@@ -170,12 +192,20 @@ class TeamController extends Controller
      * Reject the invitation to join the specified team
      *
      * @param Team $team
-     * @param User $user
      * @return \Illuminate\Http\Response
      */
-    public function rejectInvitation(Team $team, User $user)
+    public function rejectInvitation(Team $team)
     {
-        // TODO
+        $user = Auth::user();
+
+        $team->sentPendingInvitations()
+            ->where(
+                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
+                '=',
+                $user->id
+            )->update(
+                [Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]
+            );
 
         return back();
     }

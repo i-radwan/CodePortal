@@ -25,7 +25,7 @@
                             <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} has-feedback">
                                 <label for="name" class="col-md-2 control-label">Name</label>
 
-                                <div class="col-md-10">
+                                <div class="col-md-4">
                                     <input id="name" type="text" class="form-control" name="name"
                                            value="{{ old('name') }}" placeholder="Name" required autofocus>
 
@@ -41,7 +41,7 @@
                             <div class="form-group{{ $errors->has('time') ? ' has-error' : '' }} has-feedback">
                                 <label for="time" class="col-md-2 control-label">Time</label>
 
-                                <div class="col-md-10">
+                                <div class="col-md-4">
                                     <input id="time" type="datetime" class="form-control datetimepicker" name="time"
                                            value="{{ old('time') }}" placeholder="Time" required>
 
@@ -57,8 +57,9 @@
                             <div class="form-group{{ $errors->has('duration') ? ' has-error' : '' }} has-feedback">
                                 <label for="duration" class="col-md-2 control-label">Duration</label>
 
-                                <div class="col-md-10">
-                                    <input id="duration" type="number" class="form-control" name="duration"
+                                <div class="col-md-2">
+                                    <input id="duration" type="number" class="duration-picker"
+                                           name="duration"
                                            value="{{ old('duration') }}" placeholder="Duration (mins)..." required>
 
                                     @if ($errors->has('duration'))
@@ -74,7 +75,7 @@
                                 {{--Visibility--}}
                                 <div class="form-group{{ $errors->has('visibility') ? ' has-error' : '' }} has-feedback">
                                     <label for="duration" class="col-md-2 control-label">Visibility</label>
-                                    <div class="col-md-10 visibility-div">
+                                    <div class="col-md-4 visibility-div">
                                         <ul>
                                             <li>
                                                 <input type="radio" value="0" id="public_visibility" name="visibility"
@@ -102,7 +103,7 @@
                                 {{--Organisers--}}
                                 <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
                                     <label for="organizers" class="col-md-2 control-label text-left">Organizers</label>
-                                    <div class="col-md-10">
+                                    <div class="col-md-4">
                                         @include("contests.contest_views.organisers")
                                         @if ($errors->has('organizers'))
                                             <span class="help-block">
@@ -157,5 +158,7 @@
             </div>
         </div>
     </div>
-    <span class="page-distinguishing-element" id="add-edit-contest-page-hidden-element"></span>
+    <span class="page-distinguishing-element" id="add-edit-contest-page-hidden-element"
+          data-selected-tags="{{($selected_tags)?$selected_tags:''}}"
+          data-selected-judges="{{($selected_judges)?$selected_judges:''}}"></span>
 @endsection

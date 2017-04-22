@@ -1,5 +1,5 @@
 <div class="panel panel-default problems-filters-panel">
-    <div class="panel-body">
+    <div class="panel-body" onload="alert(123)">
         {{--Judges checkboxes--}}
         <div>
             Online Judges:
@@ -37,8 +37,7 @@
 
             <span onclick="app.clearProblemsFilters('{{ $detachFiltersURL }}', '{{csrf_token()}}', '{{ Request::url() }}')"
                   class="btn btn-link text-dark pull-right"
-                  id="clear-table-sorting-link"
-            >Clear</span>
+                  id="clear-table-sorting-link">Clear</span>
         </p>
     </div>
 </div>

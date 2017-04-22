@@ -17,7 +17,7 @@
             $answer = $question[Constants::FLD_QUESTIONS_ANSWER];
             $questionID = $question[Constants::FLD_QUESTIONS_ID];
         @endphp
-        <tr class="{{$question[Constants::FLD_QUESTIONS_STATUS] ==  Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY] ? 'announcement':''}}">
+        <tr class="{{$question[Constants::FLD_QUESTIONS_STATUS] ==  Constants::QUESTION_STATUS_ANNOUNCEMENT ? 'announcement':''}}">
             <td>{{$question[Constants::FLD_QUESTIONS_PROBLEM_ID]}}</td>
 
             <td class="text-left questions-table-question-cell">

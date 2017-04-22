@@ -101,6 +101,10 @@ return [
         'resource_id' => [
             'resource_exists_in_table' => 'custom-message',
         ],
+        'duration' => [
+            'max' => 'The contest duration may not be more than 30 days',
+        ],
+
     ],
 
     /*

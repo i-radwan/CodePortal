@@ -4,6 +4,13 @@ namespace App\Utilities;
 
 class Constants
 {
+    //region Limits
+
+    const TEAM_MEMBERS_MAX_COUNT = 3;
+
+    //=============================================================
+    //endregion
+
     //region Problems page
 
     //
@@ -42,6 +49,7 @@ class Constants
     //
 
     const CONTESTS_PROBLEMS_MAX_COUNT = 10; // Corresponding to javascript constant
+    const CONTESTS_DURATION_MAX = 2592000; // Contest max duration in secs == 30 days
     const CONTESTS_COUNT_PER_PAGE = 30;
     const CONTEST_STANDINGS_PER_PAGE = 30;
     const CONTEST_SUBMISSIONS_PER_PAGE = 30;
@@ -197,50 +205,50 @@ class Constants
     const JUDGE_UVA_ID = 2;
     const JUDGE_LIVE_ARCHIVE_ID = 3;
 
-    const JUDGE_NAME_KEY = "name";
-    const JUDGE_LINK_KEY = "link";
-    const JUDGE_PROBLEM_LINK_KEY = "problemLink";
-    const JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY = "problemLinkAttr";
-    const JUDGE_PROBLEM_NUMBER_FORMAT_KEY = "problemNumberFormat";
-    const JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY = "problemNumberFormatAttr";
+    const JUDGE_NAME_KEY = 0;
+    const JUDGE_LINK_KEY = 1;
+    const JUDGE_PROBLEM_LINK_KEY = 2;
+    const JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY = 3;
+    const JUDGE_PROBLEM_NUMBER_FORMAT_KEY = 4;
+    const JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY = 5;
 
     const JUDGES = [
         self::JUDGE_CODEFORCES_ID => [
             self::JUDGE_NAME_KEY => "Codeforces",
             self::JUDGE_LINK_KEY => "http://codeforces.com/",
-            self::JUDGE_PROBLEM_LINK_KEY => "http://codeforces.com/problemset/problem/{contestId}/{problemIndex}",
+            self::JUDGE_PROBLEM_LINK_KEY => "http://codeforces.com/problemset/problem/{1}/{2}",
             self::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY => [
-                "{contestId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY,
-                "{problemIndex}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+                "{1}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+                "{2}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
             ],
-            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "{contestId}{problemIndex}",
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "{1}{2}",
             self::JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY => [
-                "{contestId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY,
-                "{problemIndex}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+                "{1}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY,
+                "{2}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
             ]
         ],
         self::JUDGE_UVA_ID => [
             self::JUDGE_NAME_KEY => "UVa",
             self::JUDGE_LINK_KEY => "https://uva.onlinejudge.org/",
-            self::JUDGE_PROBLEM_LINK_KEY => "https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}",
+            self::JUDGE_PROBLEM_LINK_KEY => "https://uva.onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={1}",
             self::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY => [
-                "{problemId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
+                "{1}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
             ],
-            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "P{problemNumber}",
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "P{1}",
             self::JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY => [
-                "{problemNumber}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+                "{1}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
             ]
         ],
         self::JUDGE_LIVE_ARCHIVE_ID => [
             self::JUDGE_NAME_KEY => "Live Archive",
             self::JUDGE_LINK_KEY => "https://icpcarchive.ecs.baylor.edu/",
-            self::JUDGE_PROBLEM_LINK_KEY => "https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={problemId}",
+            self::JUDGE_PROBLEM_LINK_KEY => "https://icpcarchive.ecs.baylor.edu/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem={1}",
             self::JUDGE_PROBLEM_LINK_ATTRIBUTES_KEY => [
-                "{problemId}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
+                "{1}" => self::FLD_PROBLEMS_JUDGE_FIRST_KEY
             ],
-            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "P{problemNumber}",
+            self::JUDGE_PROBLEM_NUMBER_FORMAT_KEY => "P{1}",
             self::JUDGE_PROBLEM_NUMBER_FORMAT_ATTRIBUTES_KEY => [
-                "{problemNumber}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
+                "{1}" => self::FLD_PROBLEMS_JUDGE_SECOND_KEY
             ]
         ]
     ];
@@ -351,70 +359,67 @@ class Constants
     // Database constants
     //
 
-    //
-    // TODO: I think there is no need for the string constants below
-    //
-    const ACCOUNT_ROLE_USER_KEY = "USER";
-    const ACCOUNT_ROLE_ADMIN_KEY = "ADMIN";
-    const ACCOUNT_ROLE_SUPER_ADMIN_KEY = "SUPER_ADMIN";
-    const ACCOUNT_ROLE = [
-        self::ACCOUNT_ROLE_USER_KEY => '0',
-        self::ACCOUNT_ROLE_ADMIN_KEY => '1',
-        self::ACCOUNT_ROLE_SUPER_ADMIN_KEY => '2'
+    const ACCOUNT_ROLE_USER = '0';
+    const ACCOUNT_ROLE_ADMIN = '1';
+    const ACCOUNT_ROLE_SUPER_ADMIN = '2';
+    const ACCOUNT_ROLES = [
+        self::ACCOUNT_ROLE_USER,
+        self::ACCOUNT_ROLE_ADMIN,
+        self::ACCOUNT_ROLE_SUPER_ADMIN
     ];
 
-    const GENDER_MALE_KEY = "MALE";
-    const GENDER_FEMALE_KEY = "FEMALE";
-    const USER_GENDER = [
-        self::GENDER_MALE_KEY => '0',
-        self::GENDER_FEMALE_KEY => '1'
+    const GENDER_MALE = '0';
+    const GENDER_FEMALE = '1';
+    const USER_GENDERS = [
+        self::GENDER_MALE,
+        self::GENDER_FEMALE
     ];
 
-    const CONTEST_PARTICIPANT_ROLE_USER_KEY = "USER";
-    const CONTEST_PARTICIPANT_ROLE_OWNER_KEY = "OWNER";
-    const CONTEST_PARTICIPANT_ROLE_ADMIN_KEY = "ADMIN";
-    const CONTEST_PARTICIPANT_ROLE = [
-        self::CONTEST_PARTICIPANT_ROLE_USER_KEY => '0',
-        self::CONTEST_PARTICIPANT_ROLE_OWNER_KEY => '1',
-        self::CONTEST_PARTICIPANT_ROLE_ADMIN_KEY => '2'
+    const CONTEST_PARTICIPANT_ROLE_MEMBER = '0';
+    const CONTEST_PARTICIPANT_ROLE_OWNER = '1';
+    const CONTEST_PARTICIPANT_ROLE_ADMIN = '2';
+    const CONTEST_PARTICIPANT_ROLES = [
+        self::CONTEST_PARTICIPANT_ROLE_MEMBER,
+        self::CONTEST_PARTICIPANT_ROLE_OWNER,
+        self::CONTEST_PARTICIPANT_ROLE_ADMIN
     ];
 
-    const CONTEST_VISIBILITY_PUBLIC_KEY = "PUBLIC";
-    const CONTEST_VISIBILITY_PRIVATE_KEY = "PRIVATE";
-    const CONTEST_VISIBILITY = [
-        self::CONTEST_VISIBILITY_PUBLIC_KEY => '0',
-        self::CONTEST_VISIBILITY_PRIVATE_KEY => '1'
+    const CONTEST_VISIBILITY_PUBLIC = '0';
+    const CONTEST_VISIBILITY_PRIVATE = '1';
+    const CONTEST_VISIBILITIES = [
+        self::CONTEST_VISIBILITY_PUBLIC,
+        self::CONTEST_VISIBILITY_PRIVATE
     ];
 
-    const QUESTION_STATUS_NORMAL_KEY = "NORMAL";
-    const QUESTION_STATUS_ANNOUNCEMENT_KEY = "ANNOUNCEMENT";
+    const QUESTION_STATUS_NORMAL = '0';
+    const QUESTION_STATUS_ANNOUNCEMENT = '1';
     const QUESTION_STATUS = [
-        self::QUESTION_STATUS_NORMAL_KEY => '0',
-        self::QUESTION_STATUS_ANNOUNCEMENT_KEY => '1'
+        self::QUESTION_STATUS_NORMAL,
+        self::QUESTION_STATUS_ANNOUNCEMENT
     ];
 
-    const NOTIFICATION_STATUS_READ = "READ";
-    const NOTIFICATION_STATUS_UNREAD = "UNREAD";
-    const NOTIFICATION_STATUS_DELETED = "DELETED";
+    const NOTIFICATION_STATUS_READ = '0';
+    const NOTIFICATION_STATUS_UNREAD = '1';
+    const NOTIFICATION_STATUS_DELETED = '2';
     const NOTIFICATION_STATUS = [
-        self::NOTIFICATION_STATUS_UNREAD => '0',
-        self::NOTIFICATION_STATUS_READ => '1',
-        self::NOTIFICATION_STATUS_DELETED => '2'
+        self::NOTIFICATION_STATUS_UNREAD,
+        self::NOTIFICATION_STATUS_READ,
+        self::NOTIFICATION_STATUS_DELETED
     ];
 
-    const NOTIFICATION_TYPE_CONTEST = "CONTEST";
-    const NOTIFICATION_TYPE_GROUP = "GROUP";
-    const NOTIFICATION_TYPE_TEAM = "TEAM";
-    const NOTIFICATION_TYPE = [
-        self::NOTIFICATION_TYPE_CONTEST => '0',
-        self::NOTIFICATION_TYPE_GROUP => '1',
-        self::NOTIFICATION_TYPE_TEAM => '2'
+    const NOTIFICATION_TYPE_CONTEST = '0';
+    const NOTIFICATION_TYPE_GROUP = '1';
+    const NOTIFICATION_TYPE_TEAM = '2';
+    const NOTIFICATION_TYPES = [
+        self::NOTIFICATION_TYPE_CONTEST,
+        self::NOTIFICATION_TYPE_GROUP,
+        self::NOTIFICATION_TYPE_TEAM
     ];
 
-    const NOTIFICATION_TEXT = [
-        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_CONTEST] => "You're invited to join the private contest: ",
-        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_GROUP] => "You're invited to join the private group: ",
-        self::NOTIFICATION_TYPE[self::NOTIFICATION_TYPE_TEAM] => "You're invited to join the private team: ",
+    const NOTIFICATION_TEXT_MESSAGE = [
+        self::NOTIFICATION_TYPE_CONTEST => "You're invited to join the private contest: ",
+        self::NOTIFICATION_TYPE_GROUP => "You're invited to join the private group: ",
+        self::NOTIFICATION_TYPE_TEAM => "You're invited to join the private team: ",
     ];
 
     //
@@ -448,7 +453,6 @@ class Constants
     const TBL_GROUP_JOIN_REQUESTS = "group_join_requests";
     const TBL_SHEET_PROBLEMS = "sheet_problems";
     const TBL_TEAM_MEMBERS = "team_members";
-    const TBL_TEAM_INVITATIONS = "team_invitations";
 
     //
     // Fields
@@ -602,10 +606,6 @@ class Constants
     // Team members
     const FLD_TEAM_MEMBERS_TEAM_ID = "team_id";
     const FLD_TEAM_MEMBERS_USER_ID = "user_id";
-
-    // Team invitations
-    const FLD_TEAM_INVITATIONS_TEAM_ID = "team_id";
-    const FLD_TEAM_INVITATIONS_USER_ID = "user_id";
 
     // ============================================================
     //endregion
