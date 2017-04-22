@@ -1,5 +1,5 @@
 <h2>
-    <a href="#">{{$post[\App\Utilities\Constants::FLD_POSTS_TITLE]}}</a>
+    <a href="/blogs/entries/{{$post[\App\Utilities\Constants::FLD_POSTS_POST_ID]}}">{{$post[\App\Utilities\Constants::FLD_POSTS_TITLE]}}</a>
 </h2>
 <p class="lead">
     by <a href="/profile/{{$post[\App\Utilities\Constants::FLD_POSTS_POST_ID]}}">{{$post[\App\Utilities\Constants::FLD_POSTS_OWNER_ID]}}</a>
@@ -11,4 +11,5 @@
     <hr>
 @endif
 <p>{{$post[\App\Utilities\Constants::FLD_POSTS_BODY]}}</p>
-<a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+<a class="btn btn-primary" href="/blogs/entries/{{$post[\App\Utilities\Constants::FLD_POSTS_POST_ID]}}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+

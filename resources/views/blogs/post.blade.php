@@ -1,3 +1,5 @@
+@extends('layouts.app')
+@section('content')
 <!-- Page Content -->
 <div class="container">
 
@@ -9,49 +11,36 @@
             <!-- Blog Post -->
 
             <!-- Title -->
-            <h1>Blog Post Title</h1>
+            <h1>{{$post[\App\Utilities\Constants::FLD_POSTS_TITLE]}}</h1>
 
             <!-- Author -->
             <p class="lead">
-                by <a href="#">Start Bootstrap</a>
+                by <a href="/profile/{{$owner}}">{{$owner}}</a>
             </p>
 
+
+            <!-- Date/Time Votes Share -->
+            <p><span class="glyphicon glyphicon-time"></span> Posted {{\App\Utilities\Utilities::formatPastDateTime($post[\App\Utilities\Constants::FLD_POSTS_CREATED_AT])}}
+                &nbsp; &nbsp;<span>  <i class="fa fa-thumbs-o-down" aria-hidden="true"></i></span> {{$post[\App\Utilities\Constants::FLD_POSTS_DOWN_VOTES]}} &nbsp; &nbsp; <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> {{$post[\App\Utilities\Constants::FLD_POSTS_UP_VOTES]}}
+            </p>
             <hr>
 
-            <!-- Date/Time -->
-            <p><span class="glyphicon glyphicon-time"></span> Posted on August 24, 2013 at 9:00 PM</p>
+            {{--TODO: @Samir Support Image--}}
+            @if(isset($post[\App\Utilities\Constants::FLD_POSTS_IMAGE]))
+                <!-- Preview Image -->
+                <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+                <hr>
+            @endif
 
-            <hr>
 
-            <!-- Preview Image -->
-            <img class="img-responsive" src="http://placehold.it/900x300" alt="">
-
-            <hr>
-
+            {{--Render Post--}}
             <!-- Post Content -->
-            <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, vero, obcaecati, aut, error quam sapiente nemo saepe quibusdam sit excepturi nam quia corporis eligendi eos magni recusandae laborum minus inventore?</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, tenetur natus doloremque laborum quos iste ipsum rerum obcaecati impedit odit illo dolorum ab tempora nihil dicta earum fugiat. Temporibus, voluptatibus.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos, doloribus, dolorem iusto blanditiis unde eius illum consequuntur neque dicta incidunt ullam ea hic porro optio ratione repellat perspiciatis. Enim, iure!</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, nostrum, aliquid, animi, ut quas placeat totam sunt tempora commodi nihil ullam alias modi dicta saepe minima ab quo voluptatem obcaecati?</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum, dolor quis. Sunt, ut, explicabo, aliquam tenetur ratione tempore quidem voluptates cupiditate voluptas illo saepe quaerat numquam recusandae? Qui, necessitatibus, est!</p>
-
+            <p class="lead"> <p> {{$post[\App\Utilities\Constants::FLD_POSTS_BODY]}} </p>
             <hr>
 
             <!-- Blog Comments -->
 
-            <!-- Comments Form -->
-            <div class="well">
-                <h4>Leave a Comment:</h4>
-                <form role="form">
-                    <div class="form-group">
-                        <textarea class="form-control" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-
-            <hr>
-
+            @include("blogs.blogs_views.comment_form")
             <!-- Posted Comments -->
 
             <!-- Comment -->
@@ -157,3 +146,4 @@
 
     <hr>
 </div>
+@endsection

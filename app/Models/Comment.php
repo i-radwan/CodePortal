@@ -36,9 +36,10 @@ class Comment extends Model
      */
     protected $fillable = [
         Constants::FLD_COMMENTS_POST_ID,
-        Constants::FLD_COMMENTS_USER_ID, //ToDO @SAMIR see if that changed
+        Constants::FLD_COMMENTS_USER_ID,
         Constants::FLD_COMMENTS_TITLE,
         Constants::FLD_COMMENTS_BODY,
+        Constants::FLD_COMMENTS_PARENT_ID
     ];
 
     /**

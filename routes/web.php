@@ -113,7 +113,9 @@ Route::get('problems', 'ProblemController@index');
 
 // Blogs routes...
 Route::get('blogs', 'BlogController@index');
-Route::get('blogs/{post}', 'BlogController@displayPost');
+Route::get('blogs/{user}', 'BlogController@displayUserPosts');
+Route::get('blogs/entries/{post}', 'BlogController@displayPost');
+Route::Post('blogs/add', 'BlogController@addEdit');
 
 // Groups routes...
 Route::get('groups', 'GroupController@index');

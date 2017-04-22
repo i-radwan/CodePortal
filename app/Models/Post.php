@@ -56,5 +56,21 @@ class Post extends Model
         return  $this->hasMany(Comment::class)->where(Constants::FLD_COMMENTS_PARENT_ID, null); //ToDo: Samir Change that to  a more efficient Way
     }
 
+    /*
+     * Get Owner of the post
+     */
+    public function owner(){
+        return $this->belongsTo(User::class,Constants::FLD_POSTS_OWNER_ID);
+    }
 
+//    /**
+//     *Get UserName Accessor
+//     * @param $value
+//     *
+//     * @return string
+//     */
+//    public function getOwnerIdAttribute($value)
+//    {
+//        return ;
+//    }
 }
