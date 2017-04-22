@@ -6,7 +6,7 @@
             <div class="col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">{{ Request::is('contest/add') ? 'Add' : '' }} {{ Request::is('contest/edit') ? 'Edit' : '' }}
-                        Contest
+                        {{ isset($contest)? $contest[\App\Utilities\Constants::FLD_CONTESTS_NAME]:'Contest' }}
                     </div>
 
                     <div class="panel-body">
@@ -59,8 +59,7 @@
 
                                 <div class="col-md-2">
                                     <input id="duration" type="number" class="duration-picker"
-                                           name="duration"
-                                           value="{{ old('duration') }}" placeholder="Duration (mins)..." required>
+                                           name="duration" placeholder="Duration (mins)..." required>
 
                                     @if ($errors->has('duration'))
                                         <span class="help-block">
@@ -69,7 +68,6 @@
                                     @endif
                                 </div>
                             </div>
-
                             {{--Add organizers and control visibility if not group contest--}}
                             @if(!isset($group))
                                 {{--Visibility--}}
@@ -112,22 +110,22 @@
                                         @endif
                                     </div>
                                 </div>
-                            @endif
 
-                            {{--Invitees (to be invited to private contest)--}}
-                            <div id="invitees-input-div"
-                                 class="invitees-input-div form-group{{ $errors->has('invitees') ? ' has-error' : '' }} has-feedback">
-                                <label for="invitees" class="col-md-2 control-label text-left">Invitees</label>
-                                <div class="col-md-10">
-                                    @include("contests.contest_views.invitees")
-                                    @if ($errors->has('invitees'))
-                                        <span class="help-block">
+                                {{--Invitees (to be invited to private contest)--}}
+                                <div id="invitees-input-div"
+                                     class="invitees-input-div form-group{{ $errors->has('invitees') ? ' has-error' : '' }} has-feedback">
+                                    <label for="invitees" class="col-md-2 control-label text-left">Invitees</label>
+                                    <div class="col-md-4">
+                                        @include("contests.contest_views.invitees")
+                                        @if ($errors->has('invitees'))
+                                            <span class="help-block">
                                         <strong>{{ $errors->first('invitees') }}</strong>
                                     </span>
-                                    @endif
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
 
+                            @endif
                             {{--Problems--}}
                             <div class="add-edit-contest-problems-wrapper form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
                                 <div class="row col-md-12">
@@ -148,7 +146,10 @@
                                 <div class="col-md-12 text-center">
                                     <button onclick="app.moveSessionDataToHiddenFields()" type="submit"
                                             class="btn btn-primary">
-                                        Add
+                                        @if(!isset($contest))
+                                            Add
+                                        @else Save
+                                        @endif
                                     </button>
                                 </div>
                             </div>
@@ -160,5 +161,14 @@
     </div>
     <span class="page-distinguishing-element" id="add-edit-contest-page-hidden-element"
           data-selected-tags="{{($selected_tags)?$selected_tags:''}}"
-          data-selected-judges="{{($selected_judges)?$selected_judges:''}}"></span>
+          data-selected-judges="{{($selected_judges)?$selected_judges:''}}"
+          @if(isset($contest))
+          data-name="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_NAME]}}"
+          data-time="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_TIME]}}"
+          data-duration="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_DURATION] * 60}}"
+          data-visibility="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_VISIBILITY]}}"
+          data-organizers="{{$contest->organizers()->pluck(\App\Utilities\Constants::FLD_USERS_USERNAME)}}"
+          data-problems="{{$contest->problems()->pluck(\App\Utilities\Constants::FLD_PROBLEMS_ID)}}"
+            @endif
+    ></span>
 @endsection

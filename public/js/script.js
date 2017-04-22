@@ -79,25 +79,22 @@ var app = {
     commonPagesConfigurations: function () {
 
         //birth Date picker
-        $( "#datepicker" ).datepicker({
+        $("#datepicker").datepicker({
             format: 'Y-m-d',
             changeMonth: true,
             changeYear: true,
             yearRange: "-100:+0"
-         });
-        
+        });
+
         //region Date time pickers
 
         // Enable date time pickers
         $('.datetimepicker').datetimepicker({
             format: 'Y-m-d H:i:s',
             minDate: 0, // for after today limitation
-            maxDate:'+1970/01/30' // for max 1 month
+            maxDate: '+1970/01/30' // for max 1 month
         });
-        // Enable duration pickers
-        $('.duration-picker').duration_picker({
-            lang: 'en'
-        });
+
         //endregion
 
 
@@ -141,6 +138,11 @@ var app = {
         // Add/Edit contest page
         if ($("#add-edit-contest-page-hidden-element").length) {
 
+            // If edit page is on let's fill some sessions first
+            if ($("#add-edit-contest-page-hidden-element").data('name')) {
+                app.fillSessionWithContestData();
+            }
+
             // Sync server session filters with client session filters
             app.getFiltersFromElementAndFormat($("#add-edit-contest-page-hidden-element"));
 
@@ -152,6 +154,11 @@ var app = {
 
             // Render saved data from session into form
             app.fillContestFormFromSession();
+
+            // Enable duration picker
+            $('.duration-picker').duration_picker({
+                lang: 'en'
+            });
         }
 
         // Add/Edit sheet page
@@ -244,7 +251,6 @@ var app = {
             offset: '95%'
         });
     },
-
 
     // ==================================================
     //              CODE EDITOR FUNCTIONS
@@ -465,6 +471,42 @@ var app = {
     // ==================================================
     //            ADD/EDIT CONTEST FUNCTIONS
     // ==================================================
+
+
+    fillSessionWithContestData: function () {
+        // Set sessionKey to editMode
+        app.contestNameSessionKey = 'edit_contest_name_session_key';
+        app.contestTimeSessionKey = 'edit_contest_time_session_key';
+        app.contestDurationSessionKey = 'edit_contest_duration_session_key';
+        app.contestPrivateVisibilitySessionKey = 'edit_contest_private_visibility_session_key';
+        app.problemsIDsSessionKey = 'edit_contest_problems_ids_session_key';
+        app.organizersSessionKey = 'edit_organizers_session_key';
+
+        // Fetch contest data
+        var element = $("#add-edit-contest-page-hidden-element");
+
+        var contestName = element.data('name');
+        var contestTime = element.data('time');
+        var contestDuration = element.data('duration');
+        var contestVisibility = element.data('visibility');
+        var contestOrganizers = '';
+        var contestProblems = '';
+
+        if (element.data('organizers').length)
+            contestOrganizers = '["' + element.data('organizers').toString().replace(/,/g, '","') + '"]';
+        if (element.data('problems').length)
+            contestProblems = '["' + element.data('problems').toString().replace(/,/g, '","') + '"]';
+
+        // Fill sessions
+        sessionStorage.setItem(app.contestNameSessionKey, contestName);
+        sessionStorage.setItem(app.contestTimeSessionKey, contestTime);
+        sessionStorage.setItem(app.contestDurationSessionKey, contestDuration);
+        sessionStorage.setItem(app.contestPrivateVisibilitySessionKey, contestVisibility);
+        sessionStorage.setItem(app.organizersSessionKey, contestOrganizers);
+        sessionStorage.setItem(app.problemsIDsSessionKey, contestProblems);
+
+    },
+
     /**
      * Fetch all tags from db and save to local variable
      * to avoid database touching each time
@@ -568,8 +610,7 @@ var app = {
             // Fill form basic fields
             $("#name").val(sessionStorage.getItem(app.contestNameSessionKey));
             $("#time").val(sessionStorage.getItem(app.contestTimeSessionKey));
-            $("#duration").val(sessionStorage.getItem(app.contestDurationSessionKey));
-            $("#private_visibility").val(sessionStorage.getItem(app.contestPrivateVisibilitySessionKey));
+            $("#duration").attr("value", sessionStorage.getItem(app.contestDurationSessionKey));
 
             // Set form fields on change listeners
             $("#name").change(function () {
@@ -582,9 +623,9 @@ var app = {
                 sessionStorage.setItem(app.contestDurationSessionKey, $("#duration").val());
             });
             if (sessionStorage.getItem(app.contestPrivateVisibilitySessionKey) == 1) {
-                $("#private").prop('checked', true);
+                $("#private_visibility").prop('checked', true);
             } else {
-                $("#public").prop('checked', true);
+                $("#public_visibility").prop('checked', true);
             }
             $("#private_visibility").change(function () {
                 $("#invitees-input-div").show();
@@ -781,6 +822,7 @@ var app = {
      * @param type
      */
     retrieveListsFromSession: function (sessionKey, list, type) {
+        if (!list) return;
         var savedValues = sessionStorage.getItem(sessionKey);
 
         if (savedValues) { // check if there're any stored IDs
@@ -1034,11 +1076,8 @@ var app = {
      * @param array
      */
     syncDataFromRequestToSession: function (sessionKey, array) {
-        if (!sessionStorage.getItem(sessionKey) && array.length > 0) {
-
-            // Set to session
-            sessionStorage.setItem(sessionKey, array);
-        }
+        // Set to session
+        sessionStorage.setItem(sessionKey, array);
     },
     /**
      * Get the filters stored in server session (via php binding to data-X attributes)

@@ -35,6 +35,7 @@
                             type="submit" class="btn btn-link text-dark pull-right margin-5px">Delete
                     </button>
                 </form>
+                <a href="{{url('contest/'.$contestID.'/edit')}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
                 <span class="btn btn-link text-dark pull-right margin-5px"
                       onclick="app.toggleSortableStatus();">Reorder</span>
             @endif
