@@ -1229,6 +1229,10 @@ td.problems-reorder-view > .fa-bars {
     display: inline-block;
     text-align: justify;
 }
+.post_paragraph{
+    word-wrap: break-word;
+    font-size: medium;
+}
 
 /**************************************/
 /*</editor-fold>*/

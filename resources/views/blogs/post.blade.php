@@ -16,7 +16,7 @@
 
             {{--Render Post--}}
             <!-- Post Content -->
-            <p class="lead"> <p> {{$post[\App\Utilities\Constants::FLD_POSTS_BODY]}} </p>
+            <p class=" post_paragraph">  {{$post[\App\Utilities\Constants::FLD_POSTS_BODY]}} </p>
             <hr>
 
             <!-- Blog Add Comments Form -->
