@@ -19,8 +19,8 @@ class CreateNotificationsTable extends Migration
             $table->unsignedInteger(Constants::FLD_NOTIFICATIONS_SENDER_ID);
             $table->unsignedInteger(Constants::FLD_NOTIFICATIONS_RECEIVER_ID);
             $table->unsignedInteger(Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
-            $table->enum(Constants::FLD_NOTIFICATIONS_STATUS, Constants::NOTIFICATION_STATUS)->default(Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]);
-            $table->enum(Constants::FLD_NOTIFICATIONS_TYPE, Constants::NOTIFICATION_TYPE);
+            $table->enum(Constants::FLD_NOTIFICATIONS_STATUS, Constants::NOTIFICATION_STATUS)->default(Constants::NOTIFICATION_STATUS_UNREAD);
+            $table->enum(Constants::FLD_NOTIFICATIONS_TYPE, Constants::NOTIFICATION_TYPES);
             $table->timestamps();
         });
     }

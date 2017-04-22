@@ -25,12 +25,12 @@ class UsersTableSeeder extends Seeder
                 Constants::FLD_USERS_EMAIL => $faker->unique()->email,
                 Constants::FLD_USERS_PASSWORD => bcrypt('asdasd'),
                 Constants::FLD_USERS_COUNTRY => $faker->country,
-                Constants::FLD_USERS_GENDER => $faker->randomElement(Constants::USER_GENDER),
+                Constants::FLD_USERS_GENDER => $faker->randomElement(Constants::USER_GENDERS),
                 Constants::FLD_USERS_FIRST_NAME => $faker->firstName,
                 Constants::FLD_USERS_LAST_NAME => $faker->lastName,
                 Constants::FLD_USERS_BIRTHDATE => $faker->dateTimeBetween(),
                 Constants::FLD_USERS_PROFILE_PICTURE => $faker->imageUrl(),
-                Constants::FLD_USERS_ROLE => $faker->randomElement(Constants::ACCOUNT_ROLE),
+                Constants::FLD_USERS_ROLE => $faker->randomElement(Constants::ACCOUNT_ROLES),
             ]);
         }
     }

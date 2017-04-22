@@ -21,7 +21,7 @@ class CreateQuestionsTable extends Migration
             $table->unsignedInteger(Constants::FLD_QUESTIONS_PROBLEM_ID);
             $table->string(Constants::FLD_QUESTIONS_TITLE);
             $table->longText(Constants::FLD_QUESTIONS_CONTENT);
-            $table->enum(Constants::FLD_QUESTIONS_STATUS, Constants::QUESTION_STATUS)->default(Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_NORMAL_KEY]);
+            $table->enum(Constants::FLD_QUESTIONS_STATUS, Constants::QUESTION_STATUS)->default(Constants::QUESTION_STATUS_NORMAL);
             $table->longText(Constants::FLD_QUESTIONS_ANSWER)->nullable();
             $table->unsignedInteger(Constants::FLD_QUESTIONS_ADMIN_ID)->nullable();
             $table->timestamps();

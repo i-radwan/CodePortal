@@ -83,6 +83,7 @@ class Notification extends Model
 
         // Save the notification after checking the duplication
         $notification = new Notification();
+        $notification[Constants::FLD_NOTIFICATIONS_STATUS] = Constants::NOTIFICATION_STATUS_UNREAD;
         $notification[Constants::FLD_NOTIFICATIONS_TYPE] = $type;
         $notification->sender()->associate($sender);
         $notification->receiver()->associate($receiver);
@@ -118,13 +119,13 @@ class Notification extends Model
     public function resource()
     {
         switch ($this[Constants::FLD_NOTIFICATIONS_TYPE]) {
-            case Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST]:
+            case Constants::NOTIFICATION_TYPE_CONTEST:
                 $class = Contest::class;
                 break;
-            case Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]:
+            case Constants::NOTIFICATION_TYPE_GROUP:
                 $class = Group::class;
                 break;
-            case Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM]:
+            case Constants::NOTIFICATION_TYPE_TEAM:
                 $class = Team::class;
                 break;
             default:

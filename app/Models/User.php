@@ -63,7 +63,7 @@ class User extends Authenticatable
         Constants::FLD_USERS_FIRST_NAME => 'nullable|max:20',
         Constants::FLD_USERS_LAST_NAME => 'nullable|max:20',
         Constants::FLD_USERS_GENDER => 'nullable|Regex:/([01])/',
-        Constants::FLD_USERS_BIRTHDATE => 'nullable|date',       //TODO: add more validation on birthdate
+        Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:2005-1-1',       //TODO: add more validation on birthdate
         Constants::FLD_USERS_ROLE => 'Regex:/([012])/',
         //Constants::FLD_USERS_PROFILE_PICTURE=> 'nullable|mimes:jpg,jpeg,png', //its unseen
     ];
@@ -220,11 +220,11 @@ class User extends Authenticatable
             )->where(
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
-                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST]
+                Constants::NOTIFICATION_TYPE_CONTEST
             )->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 
@@ -295,7 +295,7 @@ class User extends Authenticatable
             ->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+                Constants::NOTIFICATION_STATUS_DELETED
             )
             ->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
     }
@@ -311,7 +311,7 @@ class User extends Authenticatable
             ->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_UNREAD]
+                Constants::NOTIFICATION_STATUS_UNREAD
             );
     }
 
@@ -356,11 +356,11 @@ class User extends Authenticatable
             )->where(
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
-                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
+                Constants::NOTIFICATION_TYPE_GROUP
             )->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 
@@ -410,11 +410,11 @@ class User extends Authenticatable
             )->where(
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
-                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_TEAM]
+                Constants::NOTIFICATION_TYPE_TEAM
             )->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 }

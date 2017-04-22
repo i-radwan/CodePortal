@@ -27,26 +27,25 @@
                     switch ($notification->type) {
                         // Get resource model from notification
                         // Generate resource link, which the user gets to when clicking the notification
-                        case Constants::NOTIFICATION_TYPE[\App\Utilities\Constants::NOTIFICATION_TYPE_CONTEST]:
+                        case \App\Utilities\Constants::NOTIFICATION_TYPE_CONTEST:
                             $resource = \App\Models\Contest::find($notification->resource_id);
                             $resourceLink = 'contest/' . $resource->id;
                             $icon = 'fa-flag-checkered';
                             break;
-                        case Constants::NOTIFICATION_TYPE[\App\Utilities\Constants::NOTIFICATION_TYPE_GROUP]:
+                        case \App\Utilities\Constants::NOTIFICATION_TYPE_GROUP:
                             $resource = \App\Models\Group::find($notification->resource_id);
                             $resourceLink = 'group/' . $resource->id;
                             $icon = 'fa-users';
                             break;
-                        case Constants::NOTIFICATION_TYPE[\App\Utilities\Constants::NOTIFICATION_TYPE_TEAM]:
-                            // Add later
+                        case \App\Utilities\Constants::NOTIFICATION_TYPE_TEAM:
                             $resource = \App\Models\Team::find($notification->resource_id);
                             $resourceLink = 'profile/' . $notification->sender_id . '/teams';
-                            $icon = 'fa-users';
+                            $icon = 'fa-users'; //TODO: get icon
                             break;
                     }
 
-                    $isRead = $notification->status == \App\Utilities\Constants::NOTIFICATION_STATUS[\App\Utilities\Constants::NOTIFICATION_STATUS_READ];
-                    $message = \App\Utilities\Constants::NOTIFICATION_TEXT[$notification->type];
+                    $isRead = $notification->status == \App\Utilities\Constants::NOTIFICATION_STATUS_READ;
+                    $message = \App\Utilities\Constants::NOTIFICATION_TEXT_MESSAGE[$notification->type];
                     $date = \App\Utilities\Utilities::formatPastDateTime($notification->created_at);
                 @endphp
 

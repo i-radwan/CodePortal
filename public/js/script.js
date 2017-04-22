@@ -78,6 +78,14 @@ var app = {
      */
     commonPagesConfigurations: function () {
 
+        //birth Date picker
+        $( "#datepicker" ).datepicker({
+            format: 'Y-m-d',
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "-100:+0"
+         });
+        
         //region Date time pickers
 
         // Enable date time pickers

@@ -12,7 +12,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Charts;
 use Image;
-
+use Symfony\Component\Intl\Intl;
 
 class UserController extends Controller
 {
@@ -70,11 +70,16 @@ class UserController extends Controller
      */
     public function edit()
     {
+     \Locale::setDefault('en');
+     $countries = Intl::getRegionBundle()->getCountryNames();
+      // dd($countries);
+     $user=\Auth::user();
+     return view('profile.edit')
+     ->with('pageTitle', config('app.name').'|'.$user->username)
+     ->with('user',$user)
+     ->with('country',$countries);
 
-      $user=\Auth::user();
-      return view('profile.edit')->with('pageTitle', config('app.name').'|'.$user->username)->with('user',$user);
-
-    }
+   }
 
     /**
      * handling data request in edit profile page
@@ -86,14 +91,13 @@ class UserController extends Controller
     {
       //TODO @Abzo image cropping
       //TODO delete old images of the same user
-      //TODO seperate edit password
-      //TODO country drop down ,birthdate
+      //TODO PASSWORD CONFIRMATION ON EDIT PASSWORD
       //TODO verficcation issue(picture and the pass)
       //TODO show edited new info in the view 
       //TODO add missing fillable att in User model
       $user= \Auth::user();
-
       //temporarly validation of picture and pass(should be in model)
+
       $this->validate($request,array(
         'profile_picture' =>'nullable|mimes:jpg,jpeg,png|max:2500',
         'password' => 'nullable|min:6',
@@ -109,20 +113,36 @@ class UserController extends Controller
         $user->profile_picture=$fileName;
       }
 
+      //changes date format to be saved in DB
+      
+      if (strpos($request->input('birthdate'), '-') !== false) 
+      {
+        
+        $user->birthdate=$request->input('birthdate');
+
+      }
+      else
+      {
+        list($month, $day, $year) = explode('/', $request->input('birthdate'));
+        $formattedBirth=$year.'-'.$month.'-'.$day;
+        $user->birthdate=$formattedBirth;
+      }
       //saving pass,email,username,first,last names and gender in database
       $user->password=Hash::make($request->input('password'));
       $user->email = $request->input('email');
       $user->username=$request->input('username');
       $user->first_name=$request->input('FirstName');
       $user->last_name =$request->input('LastName');
+      $user->country= $request->input('country');
+
       if($request->input('gender')=='Male')
-        {
+      {
         $user->gender = '0';
-        }
+      }
       else
-        {
+      {
         $user->gender ='1';
-        }
+      }
       //saving in the database
       $user->save();
       $id=$user->username;

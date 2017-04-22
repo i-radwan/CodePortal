@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
-use Illuminate\Auth\Middleware\Authorize;
-use App\Utilities\Constants;
 use Auth;
+use Closure;
+use App\Utilities\Constants;
+use Illuminate\Auth\Middleware\Authorize;
 
 class ContestAccessAuthorization extends Authorize
 {
@@ -26,7 +26,7 @@ class ContestAccessAuthorization extends Authorize
         // If guest check if public or not
         if (Auth::guest()) {
             $contest = $this->getGateArguments($request, $models)[0];
-            if ($contest->visibility == Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY])
+            if ($contest->visibility == Constants::CONTEST_VISIBILITY_PUBLIC)
                 return $next($request);
             else return redirect('errors/401');
         }

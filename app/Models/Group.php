@@ -147,7 +147,7 @@ class Group extends Model
                 ->where(
                     Constants::FLD_NOTIFICATIONS_TYPE,
                     '=',
-                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
+                    Constants::NOTIFICATION_TYPE_GROUP
                 );
     }
 
@@ -162,7 +162,7 @@ class Group extends Model
         return $this->notifications()->where(
             Constants::FLD_NOTIFICATIONS_STATUS,
             '!=',
-            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+            Constants::NOTIFICATION_STATUS_DELETED
         );
     }
 
@@ -183,11 +183,11 @@ class Group extends Model
             )->where(
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
-                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_GROUP]
+                Constants::NOTIFICATION_TYPE_GROUP
             )->where(
                 Constants::FLD_NOTIFICATIONS_STATUS,
                 '!=',
-                Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 

@@ -132,7 +132,7 @@ class Contest extends Model
         return $query->where(
             Constants::FLD_CONTESTS_VISIBILITY,
             '=',
-            Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PUBLIC_KEY]
+            Constants::CONTEST_VISIBILITY_PUBLIC
         );
     }
 
@@ -226,7 +226,7 @@ class Contest extends Model
         return $this->questions()->where(
             Constants::FLD_QUESTIONS_STATUS,
             '=',
-            Constants::QUESTION_STATUS[Constants::QUESTION_STATUS_ANNOUNCEMENT_KEY]
+            Constants::QUESTION_STATUS_ANNOUNCEMENT
         );
     }
 
@@ -258,7 +258,7 @@ class Contest extends Model
                 ->where(
                     Constants::FLD_NOTIFICATIONS_TYPE,
                     '=',
-                    Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST]
+                    Constants::NOTIFICATION_TYPE_CONTEST
                 );
     }
 
@@ -273,7 +273,7 @@ class Contest extends Model
         return $this->notifications()->where(
             Constants::FLD_NOTIFICATIONS_STATUS,
             '!=',
-            Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
+            Constants::NOTIFICATION_STATUS_DELETED
         );
     }
 
@@ -294,13 +294,12 @@ class Contest extends Model
             )->where(
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
-                Constants::NOTIFICATION_TYPE[Constants::NOTIFICATION_TYPE_CONTEST]
-            )
-                ->where(
-                    Constants::FLD_NOTIFICATIONS_STATUS,
-                    '!=',
-                    Constants::NOTIFICATION_STATUS[Constants::NOTIFICATION_STATUS_DELETED]
-                );
+                Constants::NOTIFICATION_TYPE_CONTEST
+            )->where(
+                Constants::FLD_NOTIFICATIONS_STATUS,
+                '!=',
+                Constants::NOTIFICATION_STATUS_DELETED
+            );
     }
 
     /**
