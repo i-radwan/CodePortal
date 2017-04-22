@@ -1,10 +1,11 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use App\Utilities\Constants;
-use App\Models\Contest;
 use App\Models\User;
+use App\Models\Contest;
 use App\Models\Group;
+use App\Models\Team;
+use App\Utilities\Constants;
+use Illuminate\Database\Seeder;
 
 class NotificationsTableSeeder extends Seeder
 {
@@ -20,47 +21,70 @@ class NotificationsTableSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-        $limit = 500;
+        $limit = 5;
 
-        $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
+        // Get all user IDs
+        $userIDs = User::pluck(Constants::FLD_USERS_ID)->toArray();
 
         // Seed contest notifications
-        $ContestIDs = Contest::all()->pluck(Constants::FLD_CONTESTS_ID)->toArray();
-        for ($i = 0; $i < $limit; $i++) {
+        foreach (Contest::all() as $contest) {
+            $contestOrganizersIDs = $contest->organizers()->pluck(Constants::FLD_USERS_ID)->toArray();
+            $contestOrganizersIDs[] = $contest[Constants::FLD_CONTESTS_OWNER_ID];
+            $receiverIDs = array_diff($userIDs, $contestOrganizersIDs);
 
-            // Get different sender ID and receiver ID
-            $senderID = $faker->randomElement($userIDs);
-            do {
-                $receiverID = $faker->randomElement($userIDs);
-            } while ($senderID == $receiverID);
+            $faker->unique(true);   // Reset faker unique function
 
-            DB::table(Constants::TBL_NOTIFICATIONS)->insert([
-                Constants::FLD_NOTIFICATIONS_SENDER_ID => $senderID,
-                Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $receiverID,
-                Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $faker->randomElement($ContestIDs),
-                Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
-                Constants::FLD_NOTIFICATIONS_TYPE => Constants::NOTIFICATION_TYPE_CONTEST
-            ]);
+            // Insert contest invitations
+            $n = $faker->numberBetween(0, $limit);
+            for ($i = 0; $i < $n; ++$i) {
+                DB::table(Constants::TBL_NOTIFICATIONS)->insert([
+                    Constants::FLD_NOTIFICATIONS_SENDER_ID => $faker->randomElement($contestOrganizersIDs),
+                    Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $faker->unique()->randomElement($receiverIDs),
+                    Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $contest[Constants::FLD_CONTESTS_ID],
+                    Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
+                    Constants::FLD_NOTIFICATIONS_TYPE => Constants::NOTIFICATION_TYPE_CONTEST
+                ]);
+            }
         }
 
         // Seed group notifications
-        $groupIDs = Group::all()->pluck(Constants::FLD_GROUPS_ID)->toArray();
-        for ($i = 0; $i < $limit; $i++) {
+        foreach (Group::all() as $group) {
+            // TODO: add group admins when added
+            $groupOrganizersIDs[] = $group[Constants::FLD_GROUPS_OWNER_ID];
+            $receiverIDs = array_diff($userIDs, $groupOrganizersIDs);
 
-            // Get different sender ID and receiver ID
-            $senderID = $faker->randomElement($userIDs);
-            do {
-                $receiverID = $faker->randomElement($userIDs);
-            } while ($senderID == $receiverID);
-            try {
+            $faker->unique(true);   // Reset faker unique function
+
+            // Insert group invitations
+            $n = $faker->numberBetween(0, $limit);
+            for ($i = 0; $i < $n; ++$i) {
                 DB::table(Constants::TBL_NOTIFICATIONS)->insert([
-                    Constants::FLD_NOTIFICATIONS_SENDER_ID => $senderID,
-                    Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $receiverID,
-                    Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $faker->randomElement($groupIDs),
+                    Constants::FLD_NOTIFICATIONS_SENDER_ID => $faker->randomElement($groupOrganizersIDs),
+                    Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $faker->unique()->randomElement($receiverIDs),
+                    Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $group[Constants::FLD_GROUPS_ID],
                     Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
                     Constants::FLD_NOTIFICATIONS_TYPE => Constants::NOTIFICATION_TYPE_GROUP
                 ]);
-            } catch (\Illuminate\Database\QueryException $e) {
+            }
+        }
+
+        // Seed contest notifications
+        foreach (Team::all() as $team) {
+            $teamMemberIDs = $team->members()->pluck(Constants::FLD_USERS_ID)->toArray();
+            $receiverIDs = array_diff($userIDs, $teamMemberIDs);
+
+            $faker->unique(true);   // Reset faker unique function
+
+            // Insert team invitations
+            $n = $faker->numberBetween(0, $limit);
+            for ($i = 0; $i < $n; ++$i) {
+                DB::table(Constants::TBL_NOTIFICATIONS)->insert([
+                    Constants::FLD_NOTIFICATIONS_SENDER_ID => $faker->randomElement($teamMemberIDs),
+                    Constants::FLD_NOTIFICATIONS_RECEIVER_ID => $faker->unique()->randomElement($receiverIDs),
+                    Constants::FLD_NOTIFICATIONS_RESOURCE_ID => $team[Constants::FLD_TEAMS_ID],
+                    Constants::FLD_NOTIFICATIONS_STATUS => $faker->randomElement(Constants::NOTIFICATION_STATUS),
+                    Constants::FLD_NOTIFICATIONS_TYPE => Constants::NOTIFICATION_TYPE_TEAM
+                ]);
             }
         }
     }
