@@ -63,7 +63,7 @@ class User extends Authenticatable
         Constants::FLD_USERS_FIRST_NAME => 'nullable|max:20',
         Constants::FLD_USERS_LAST_NAME => 'nullable|max:20',
         Constants::FLD_USERS_GENDER => 'nullable|Regex:/([01])/',
-        Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:2005-1-1',       //TODO: add more validation on birthdate
+        Constants::FLD_USERS_BIRTHDATE => 'nullable|before:2000-1-1',       //TODO: add more validation on birthdate
         Constants::FLD_USERS_ROLE => 'Regex:/([012])/',
         //Constants::FLD_USERS_PROFILE_PICTURE=> 'nullable|mimes:jpg,jpeg,png', //its unseen
     ];

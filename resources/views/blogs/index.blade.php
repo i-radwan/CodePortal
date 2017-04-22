@@ -11,7 +11,7 @@
                             Most Recent
                             <small>Contributions</small>
                         </h1>
-
+                         
                         {{--Render Recent Posts--}}
                         @foreach( $posts as $post)
                             @include("blogs.blogs_views.post_meta_info")

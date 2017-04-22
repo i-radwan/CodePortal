@@ -1,5 +1,4 @@
 
-
 {!! Charts::assets() !!}
 @extends('layouts.app')
 
@@ -10,12 +9,15 @@
     <div class="col-md-10 col-md-offset-1">
       <div class="panel panel-default">
         <div class="panel-heading">Profile</div>
-        @if((\Auth::user()->username)==$userName)
+
+        @if((\Auth::user())!= null)
+          @if((\Auth::user()->username)==$userName)
 
 
         <a href="{{ url('edit') }}" class="btn btn-link pull-right btn-sm RbtnMargin " role="button">edit
           <i class="fa fa-gear"></i> </a>
           @endif
+        @endif
 
           <div class="panel-body custom-panel">
 

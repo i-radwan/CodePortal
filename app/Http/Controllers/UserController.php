@@ -25,7 +25,7 @@ class UserController extends Controller
     public function index($user)
     {
       $userData = User::where('username', $user)->first();
-
+      
       return view('profile.index', ['userName' => $user])
       ->with('pageTitle', config('app.name'). ' | '. $user)
       ->withDate(UserController::userDate($user))
@@ -114,7 +114,10 @@ class UserController extends Controller
       }
 
       //changes date format to be saved in DB
-      
+
+      if(($request->input('birthdate')!=null))
+       
+    {
       if (strpos($request->input('birthdate'), '-') !== false) 
       {
         
@@ -123,10 +126,19 @@ class UserController extends Controller
       }
       else
       {
-        list($month, $day, $year) = explode('/', $request->input('birthdate'));
-        $formattedBirth=$year.'-'.$month.'-'.$day;
-        $user->birthdate=$formattedBirth;
+        
+        $dateOfBirth = explode('/', $request->input('birthdate'));
+        
+        if((array_key_exists("2",$dateOfBirth)) && (array_key_exists("1",$dateOfBirth)) && (array_key_exists("0",$dateOfBirth)) )
+
+        {
+          
+          $formattedBirth=$dateOfBirth['2'].'-'.$dateOfBirth['1'].'-'.$dateOfBirth['0'];
+          $user->birthdate=$formattedBirth;
+
+        }
       }
+    }  
       //saving pass,email,username,first,last names and gender in database
       $user->password=Hash::make($request->input('password'));
       $user->email = $request->input('email');

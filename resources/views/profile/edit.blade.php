@@ -62,7 +62,7 @@
 				<div class="form-group">
 					<label class="col-lg-3 control-label">Birth Date:</label>
 					<div class="col-lg-8">
-						<input name="birthdate" value="{{isset($user->birthdate) ? $user->birthdate: "" }}" class="form-control" type="text" id="datepicker"></div>
+						<input style="background-color:white;"class="form-control" name="birthdate" value="{{isset($user->birthdate) ? $user->birthdate: "" }}"  type="date" id="datepicker" readonly> </div>
 					</div>
 
 				<!-- EMAIL -->
