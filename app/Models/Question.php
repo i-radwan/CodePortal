@@ -67,6 +67,8 @@ class Question extends Model
      * @param User $user
      * @param Contest $contest
      * @param Problem $problem
+     *
+     * @return Question $q
      */
     public static function askQuestion(array $attributes = [], $user = null, $contest = null, $problem = null)
     {
@@ -80,6 +82,8 @@ class Question extends Model
         $q->contest()->associate($contest);
         $q->problem()->associate($problem);
         $q->save();
+
+        return $q;
     }
 
     /**
