@@ -19,6 +19,7 @@ class LanguageTableSeeder extends Seeder
 
         $limit = 25;
 
+        // Insert languages
         for ($i = 0; $i < $limit; ++$i) {
             DB::table(Constants::TBL_LANGUAGES)->insert([
                 Constants::FLD_LANGUAGES_NAME => $faker->unique()->languageCode

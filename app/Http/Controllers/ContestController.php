@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\InvitationException;
 use Auth;
+use Carbon\Carbon;
 use Session;
 use Redirect;
 use URL;
@@ -76,9 +78,11 @@ class ContestController extends Controller
      * Show add/edit contest page
      *
      * @param \Illuminate\Http\Request $request
+     * @param Contest $contest
+     *
      * @return \Illuminate\View\View
      */
-    public function addEditContestView(Request $request)
+    public function addEditContestView(Request $request, Contest $contest = null)
     {
         // Check server sessions for saved filters data (i.e. tags, organisers, judges)
         $tags = $judges = [];
@@ -87,18 +91,19 @@ class ContestController extends Controller
 
         // Are filters applied (to inform user that there're filters applied from previous visit)
         $areFiltersApplied = count($tags) || count($judges);
-
         return view('contests.add_edit')
+            ->with('contest', $contest)
+            ->with('group', $contest->groups()->first())
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
             ->with('filtersApplied', $areFiltersApplied)
-            ->with('formURL', url('contest/add'))
+            ->with('formURL', (!$contest[Constants::FLD_CONTESTS_ID]) ? url('contest/add') : url('contest/' . $contest[Constants::FLD_CONTESTS_ID] . '/edit'))
             ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('pageTitle', config('app.name') . ' | Contest');
+            ->with('pageTitle', config('app.name') . ' | ' . (isset($contest)) ? $contest[Constants::FLD_CONTESTS_NAME] : 'Contest');
     }
 
     /**
@@ -130,53 +135,85 @@ class ContestController extends Controller
     }
 
     /**
-     * Add new contest to database
+     * Save contest to database
      *
      * @param Request $request
      * @param Group $group
+     * @param Contest $contest
+     *
      * @return mixed
      */
-    public function addContest(Request $request, Group $group = null)
+    public function saveContest(Request $request, Group $group = null, Contest $contest = null)
     {
-        // Create contest object
-        $contest = new Contest($request->all());
+        $editingContest = true;
+        if (!$contest) {
+            // Create contest object
+            $contest = new Contest($request->all());
 
-        // Assign owner
-        $contest->owner()->associate(Auth::user());
+            // Assign owner
+            $contest->owner()->associate(Auth::user());
 
-        // Set visibility to private (group only)
-        if ($group)
+            $editingContest = false;
+        } else {
+            $contest[Constants::FLD_CONTESTS_NAME] = $request->get('name');
+            $contest[Constants::FLD_CONTESTS_TIME] = $request->get('time');
+            $contest[Constants::FLD_CONTESTS_DURATION] = floor($request->get('duration') / 60);
+            $contest[Constants::FLD_CONTESTS_VISIBILITY] = $request->get('visibility');
+        }
+
+        // Set visibility to private (group only) and unset these values if found
+        if ($group) {
+            unset($request['organizers']);
+            unset($request['invitees']);
             $contest[Constants::FLD_CONTESTS_VISIBILITY] = Constants::CONTEST_VISIBILITY_PRIVATE;
+        }
+
+        // Check date if in allowed period
+        if (!Carbon::now()->addDays(Constants::CONTESTS_MAX_START_DATETIME)->gte(Carbon::parse($request->get('time')))) {
+            return back()->withErrors(['The start date time must be in less than ' . Constants::CONTESTS_MAX_START_DATETIME . ' days']);
+        }
 
         if ($contest->save()) {
 
             //Get Organisers and problems
             if (!$group) {
+                if ($editingContest)
+                    $contest->organizers()->detach();
+
                 //Save Organisers if not group contest // ToDo add group admins later
                 $organisers = explode(",", $request->get('organisers'));
                 $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
                 foreach ($organisers as $organiser) {
-                    if ($organiser[Constants::FLD_USERS_ID] != Auth::user()[Constants::FLD_TAGS_ID])
+                    if ($organiser[Constants::FLD_USERS_ID] != Auth::user()[Constants::FLD_USERS_ID])
                         $contest->organizers()->save($organiser);
                 }
             }
             // Send notifications to Invitees if private contest and not for specific group
             if (!$group && $request->get('visibility') == Constants::CONTEST_VISIBILITY_PRIVATE) {
-
                 // Get invitees
                 $invitees = explode(",", $request->get('invitees'));
                 $invitees = User::whereIn('username', $invitees)->get(); //It's a Collection but a Model is needed
 
                 foreach ($invitees as $invitee) {
                     // Send notifications
-                    Notification::make(Auth::user(), $invitee, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
+                    try {
+                        Notification::make(Auth::user(), $invitee, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
+                    } catch (InvitationException $e) {
+                    }
                 }
             } else if ($group) { // Send group members invitations
                 // Get invitees
                 foreach ($group->members()->get() as $member) {
                     // Send notifications
-                    Notification::make(Auth::user(), $member, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
+                    try {
+                        Notification::make(Auth::user(), $member, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
+                    } catch (InvitationException $e) {
+                    }
                 }
+
+                // Associate contest with group
+                if (!$editingContest)
+                    $group->contests()->save($contest);
             }
 
             // Add Problems
@@ -186,7 +223,7 @@ class ContestController extends Controller
             $problems = array_slice($problems, 0, Constants::CONTESTS_PROBLEMS_MAX_COUNT);
 
             // Sync problems
-            $contest->problems()->syncWithoutDetaching($problems);
+            $contest->problems()->sync($problems);
 
             // Set initial problems order
             $this->updateContestProblemsOrder($contest, $problems);
@@ -195,24 +232,52 @@ class ContestController extends Controller
             Session::forget([Constants::CONTEST_PROBLEMS_SELECTED_FILTERS]);
 
             // Return success message
-            Session::flash("messages", ["Contest Added Successfully"]);
+            Session::flash("messages", ["Contest Saved Successfully"]);
             return redirect()->action(
                 'ContestController@displayContest', ['id' => $contest[Constants::FLD_CONTESTS_ID]]
             );
         } else {        // return error message
-            Session::flash("messages", ["Sorry, Contest was not added. Please retry later"]);
+            Session::flash("messages", ["Sorry, Contest was not saved. Please retry later"]);
             return redirect()->action('ContestController@index');
         }
     }
 
     /**
-     * Update contest in database
+     * Add contest function
      *
      * @param Request $request
+     *
+     * @return $this|\Illuminate\Http\RedirectResponse
      */
-    public function editContest(Request $request)
+    public function addContest(Request $request)
     {
+        return $this->saveContest($request, null, null);
+    }
 
+    /**
+     * Add group contest function
+     *
+     * @param Request $request
+     * @param Group $group
+     *
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function addGroupContest(Request $request, Group $group)
+    {
+        return $this->saveContest($request, $group, null);
+    }
+
+    /**
+     * Edit contest function
+     *
+     * @param Request $request
+     * @param Contest $contest
+     *
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function editContest(Request $request, Contest $contest)
+    {
+        return $this->saveContest($request, $contest->groups()->first(), $contest);
     }
 
     /**

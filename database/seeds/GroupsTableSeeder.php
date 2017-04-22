@@ -1,12 +1,10 @@
 <?php
 
-use Illuminate\Database\Seeder;
-use App\Utilities\Constants;
-use App\Models\Group;
 use App\Models\User;
-use App\Models\Problem;
 use App\Models\Contest;
-use App\Models\Sheet;
+use App\Models\Group;
+use App\Utilities\Constants;
+use Illuminate\Database\Seeder;
 
 class GroupsTableSeeder extends Seeder
 {
@@ -25,11 +23,14 @@ class GroupsTableSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-        $limit = 300;
-        // All user IDs
-        $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
+        $limit = 200;
 
-        // Seed groups
+        // Get all user IDs
+        $userIDs = User::pluck(Constants::FLD_USERS_ID)->toArray();
+        // Get all contest IDs
+        $contestIDs = Contest::pluck(Constants::FLD_CONTESTS_ID)->toArray();
+
+        // Insert groups
         for ($i = 0; $i < $limit; $i++) {
             DB::table(Constants::TBL_GROUPS)->insert([
                 Constants::FLD_GROUPS_OWNER_ID => $faker->randomElement($userIDs),
@@ -37,56 +38,42 @@ class GroupsTableSeeder extends Seeder
             ]);
         }
 
-        // Seed groups join requests and members
-        $groupIDs = Group::all()->pluck(Constants::FLD_GROUPS_ID)->toArray();
+        // Seed group data
+        foreach (Group::all() as $group) {
+            $receiverIDs = array_diff($userIDs, [$group[Constants::FLD_GROUPS_OWNER_ID]]);
 
-        for ($i = 0; $i < $limit; $i++) {
-            try {
-                DB::table(Constants::TBL_GROUP_JOIN_REQUESTS)->insert([
-                    Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID => $faker->randomElement($groupIDs),
-                    Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID => $faker->randomElement($userIDs)
-                ]);
+            $faker->unique(true);   // Reset faker unique function
+
+            // TODO: insert group admins when added
+
+            // Insert group members
+            $n = $faker->numberBetween(0, 15);
+            for ($i = 0; $i < $n; ++$i) {
                 DB::table(Constants::TBL_GROUP_MEMBERS)->insert([
-                    Constants::FLD_GROUP_MEMBERS_GROUP_ID => $faker->randomElement($groupIDs),
-                    Constants::FLD_GROUP_MEMBERS_USER_ID => $faker->randomElement($userIDs)
+                    Constants::FLD_GROUP_MEMBERS_GROUP_ID => $group[Constants::FLD_GROUPS_ID],
+                    Constants::FLD_GROUP_MEMBERS_USER_ID => $faker->unique()->randomElement($receiverIDs)
                 ]);
-            } catch (\Illuminate\Database\QueryException $e) {
-            };
-        }
+            }
 
-        // Seed group contests
-        $contestIDs = Contest::all()->pluck(Constants::FLD_CONTESTS_ID)->toArray();
+            // Insert group join requests
+            $n = $faker->numberBetween(0, 15);
+            for ($i = 0; $i < $n; ++$i) {
+                DB::table(Constants::TBL_GROUP_JOIN_REQUESTS)->insert([
+                    Constants::FLD_GROUPS_JOIN_REQUESTS_GROUP_ID => $group[Constants::FLD_GROUPS_ID],
+                    Constants::FLD_GROUPS_JOIN_REQUESTS_USER_ID => $faker->unique()->randomElement($receiverIDs)
+                ]);
+            }
 
-        for ($i = 0; $i < $limit; $i++) {
-            try {
+            $faker->unique(true);   // Reset faker unique function
 
+            // Insert group contests
+            $n = $faker->numberBetween(0, 4);
+            for ($i = 0; $i < $n; ++$i) {
                 DB::table(Constants::TBL_GROUP_CONTESTS)->insert([
-                    Constants::FLD_GROUP_CONTESTS_GROUP_ID => $faker->randomElement($groupIDs),
-                    Constants::FLD_GROUP_CONTESTS_CONTEST_ID => $faker->randomElement($contestIDs)
+                    Constants::FLD_GROUP_CONTESTS_GROUP_ID => $group[Constants::FLD_GROUPS_ID],
+                    Constants::FLD_GROUP_CONTESTS_CONTEST_ID => $faker->unique()->randomElement($contestIDs)
                 ]);
-            } catch (\Illuminate\Database\QueryException $e) {
-            };
-        }
-
-        // Seed sheets
-        for ($i = 0; $i < $limit; $i++) {
-            DB::table(Constants::TBL_SHEETS)->insert([
-                Constants::FLD_SHEETS_GROUP_ID => $faker->randomElement($groupIDs),
-                Constants::FLD_SHEETS_NAME => $faker->name
-            ]);
-        }
-
-        // Seed sheets problems
-        $sheetIDs = Sheet::all()->pluck(Constants::FLD_SHEETS_ID)->toArray();
-        $problemIDs = Problem::all()->pluck(Constants::FLD_PROBLEMS_ID)->toArray();
-        for ($i = 0; $i < $limit; $i++) {
-            try {
-                DB::table(Constants::TBL_SHEETS)->insert([
-                    Constants::FLD_SHEET_PROBLEMS_SHEET_ID => $faker->randomElement($sheetIDs),
-                    Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID => $faker->randomElement($problemIDs),
-                ]);
-            } catch (\Illuminate\Database\QueryException $e) {
-            };
+            }
         }
     }
 }

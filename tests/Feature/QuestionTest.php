@@ -15,7 +15,7 @@ class QuestionTest extends DatabaseTest
     public function testQuestion()
     {
         $judge = $this->insertJudge('1', 'Codeforces', 'http://www.judge.com');
-        $user = $this->insertUser('user1', 'a@a.a', 'aaaaaa', 'aaa', '1');
+        $user = $this->insertUser('user1', 'a@a.a', 'aaaaaa', '1');
         $contest = $this->insertContest('Contest1', '2017-12-12 12:12:12', '10', '0', $user);
         $problem = $this->insertProblem('Problem1', 20, $judge, '123', '213');
 

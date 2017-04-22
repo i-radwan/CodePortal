@@ -50,6 +50,7 @@ class Constants
 
     const CONTESTS_PROBLEMS_MAX_COUNT = 10; // Corresponding to javascript constant
     const CONTESTS_DURATION_MAX = 2592000; // Contest max duration in secs == 30 days
+    const CONTESTS_MAX_START_DATETIME = 30; // Contest max start daytime in days == 30 days
     const CONTESTS_COUNT_PER_PAGE = 30;
     const CONTEST_STANDINGS_PER_PAGE = 30;
     const CONTEST_SUBMISSIONS_PER_PAGE = 30;
@@ -398,8 +399,8 @@ class Constants
         self::QUESTION_STATUS_ANNOUNCEMENT
     ];
 
-    const NOTIFICATION_STATUS_READ = '0';
-    const NOTIFICATION_STATUS_UNREAD = '1';
+    const NOTIFICATION_STATUS_UNREAD = '0';
+    const NOTIFICATION_STATUS_READ = '1';
     const NOTIFICATION_STATUS_DELETED = '2';
     const NOTIFICATION_STATUS = [
         self::NOTIFICATION_STATUS_UNREAD,

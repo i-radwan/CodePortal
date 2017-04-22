@@ -44,16 +44,16 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Contests routes
     Route::get('contest/add', 'ContestController@addEditContestView');
-    Route::get('contest/edit', 'ContestController@addEditContestView');  // ToDo may need authorization
+    Route::get('contest/{contest}/edit', 'ContestController@addEditContestView')->middleware(['can:owner-contest,contest']);
     Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete');
     Route::get('contest/add/organisers_auto_complete', 'ContestController@usersAutoComplete');
     Route::get('contest/add/invitees_auto_complete', 'ContestController@usersAutoComplete');
 
     Route::post('contest/add', 'ContestController@addContest');
-    Route::post('group/{group}/contest/add', 'ContestController@addContest')->middleware(['can:owner-group,group']);
+    Route::post('group/{group}/contest/add', 'ContestController@addGroupContest')->middleware(['can:owner-group,group']);
     Route::post('contest/add/contest_tags_judges_filters_sync', 'ContestController@applyProblemsFilters');
     Route::post('contest/add/contest_tags_judges_filters_detach', 'ContestController@clearProblemsFilters');
-    Route::post('contest/edit', 'ContestController@editContest');  // ToDo may need authorization
+    Route::post('contest/{contest}/edit', 'ContestController@editContest')->middleware(['can:owner-contest,contest']);
     Route::post('contest/join/{contest}', 'ContestController@joinContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
 
     Route::put('contest/reorder/{contest}', 'ContestController@reorderContest')->middleware(['can:owner-contest,contest']);

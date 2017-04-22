@@ -20,7 +20,10 @@ class TeamsTableSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-        $limit = 15;
+        $limit = 80;
+
+        // Get all users IDs
+        $userIDs = User::pluck(Constants::FLD_USERS_ID)->toArray();
 
         // Insert teams
         for ($i = 0; $i < $limit; ++$i) {
@@ -29,25 +32,16 @@ class TeamsTableSeeder extends Seeder
             ]);
         }
 
-        // Get all team IDs
-        $teamIDs = Team::all()->pluck(Constants::FLD_TEAMS_ID)->toArray();
-        // Get all user IDs
-        $userIDs = User::all()->pluck(Constants::FLD_USERS_ID)->toArray();
-
         // Insert members to teams
-        for ($i = 0; $i < $limit; ++$i) {
-            $n = $faker->numberBetween(1, 3);
+        foreach (Team::all() as $team) {
+            $faker->unique(true);   // Reset faker unique function
 
-            for ($j = 0; $j < $n; ++$j) {
-                try {
-                    DB::table(Constants::TBL_TEAM_MEMBERS)->insert([
-                        Constants::FLD_TEAM_MEMBERS_TEAM_ID => $teamIDs[$i],
-                        Constants::FLD_TEAM_MEMBERS_USER_ID => $faker->randomElement($userIDs)
-                    ]);
-                }
-                catch (\Illuminate\Database\QueryException $e) {
-
-                };
+            $n = $faker->numberBetween(1, Constants::TEAM_MEMBERS_MAX_COUNT);
+            for ($i = 0; $i < $n; ++$i) {
+                DB::table(Constants::TBL_TEAM_MEMBERS)->insert([
+                    Constants::FLD_TEAM_MEMBERS_TEAM_ID => $team[Constants::FLD_TEAMS_ID],
+                    Constants::FLD_TEAM_MEMBERS_USER_ID => $faker->unique()->randomElement($userIDs)
+                ]);
             }
         }
     }

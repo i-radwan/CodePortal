@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="/bower_components/jquery-duration-picker/dist/jquery-duration-picker.min.css"/>
 
     <!-- Fonts -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,600" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 

@@ -14,7 +14,8 @@
                         @include('components.alert')
 
                         {{--Name--}}
-                        <form class="form-horizontal add-edit-sheet-form" role="form" method="POST" action="{{ url($url) }}">
+                        <form class="form-horizontal add-edit-sheet-form" role="form" method="POST"
+                              action="{{ url($url) }}">
                             {{ csrf_field() }}
                             <input type="hidden" id="problems-ids-hidden" name="problems"/>
 
@@ -24,7 +25,8 @@
 
                                 <div class="col-md-10">
                                     <input id="name" type="text" class="form-control" name="name"
-                                           value="{{ old('name') }}" placeholder="Name" required autofocus>
+                                           value="{{ ($sheetName)?$sheetName:old('name') }}" placeholder="Name" required
+                                           autofocus>
 
                                     @if ($errors->has('name'))
                                         <span class="help-block">
@@ -64,6 +66,11 @@
     </div>
     <span class="page-distinguishing-element" id="add-edit-sheet-page-hidden-element"
           data-selected-tags="{{($selected_tags)?$selected_tags:''}}"
-          data-selected-judges="{{($selected_judges)?$selected_judges:''}}"></span>
+          data-selected-judges="{{($selected_judges)?$selected_judges:''}}"
+          @if(isset($sheet))
+          data-name="{{$sheetName}}"
+          data-problems="{{$sheet->problems()->pluck(\App\Utilities\Constants::FLD_PROBLEMS_ID)}}"
+            @endif
+    ></span>
 
 @endsection

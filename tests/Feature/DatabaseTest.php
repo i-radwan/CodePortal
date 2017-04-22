@@ -82,12 +82,13 @@ abstract class DatabaseTest extends BaseTestCase
 
     public function insertQuestion($title, $content, $answer, $contest, $user, $problem, $status = '0')
     {
-        $question = new Question([
+        $question = Question::askQuestion([
             Constants::FLD_QUESTIONS_TITLE => $title,
             Constants::FLD_QUESTIONS_CONTENT => $content,
             Constants::FLD_QUESTIONS_ANSWER => $answer,
             Constants::FLD_QUESTIONS_STATUS => $status
         ], $user, $contest, $problem);
+        
         return $question;
     }
 

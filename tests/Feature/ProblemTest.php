@@ -80,26 +80,20 @@ class ProblemTest extends DatabaseTest
             }
             if ($i % 5 == 0) {
                 $tag1Count++;
-                $problem->tags()->sync([$validTag1->id], false);
-            } else {
-                $tag2Count++;
-                $problem->tags()->sync([$validTag2->id], false);
+                $problem->tags()->sync([$validTag1->id, $validTag2->id], false);
             }
         }
 
-        $problems = Problem::ofName($name)->ofJudges([$judge1->id, $judge2->id])->hasTags([$validTag1->id, $validTag2->id]);
-        $this->assertEquals($problems->count(), 100);
-        $problems = Problem::ofName($name)->ofJudges([$judge1->id, $judge2->id])->hasTags([$validTag1->id]);
+        // Tags are Anded
+        $problems = Problem::ofName($name)->ofJudges([$judge1->id, $judge2->id])->hasTags([$validTag1->id, $validTag2->id])->get();
         $this->assertEquals($problems->count(), 20);
-        $problems = Problem::ofName($name)->ofJudges([$judge1->id])->hasTags([$validTag1->id, $validTag2->id]);
-        $this->assertEquals($problems->count(), 50);
-        $problems = Problem::ofName($name)->ofJudges([$judge2->id])->hasTags([$validTag1->id, $validTag2->id]);
-        $this->assertEquals($problems->count(), 50);
-        \Log::info("Filtered Problems :: " . $problems->get()->toJson());
+        $problems = Problem::ofName($name)->ofJudges([$judge1->id, $judge2->id])->hasTags([$validTag1->id])->get();
+        $this->assertEquals($problems->count(), 20);
+        \Log::info("Filtered Problems :: " . $problems->toJson());
 
         // Sorted problems
-        $problems = Problem::ofName($name)->ofJudges([$judge2->id, $judge1->id])->hasTags( [$validTag1->id, $validTag2->id]);
-        \Log::info("Sorted Problems :: " . $problems->get()->toJson());
+        $problems = Problem::ofName($name)->ofJudges([$judge2->id, $judge1->id])->hasTags( [$validTag1->id, $validTag2->id])->get();
+        \Log::info("Sorted Problems :: " . $problems->toJson());
 
     }
 }

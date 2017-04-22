@@ -39,6 +39,9 @@ class DatabaseSeeder extends Seeder
         // Seed groups
         $this->call(GroupsTableSeeder::class);
 
+        // Seed sheets
+        $this->call(SheetsTableSeeder::class);
+
         // Seed notifications
         $this->call(NotificationsTableSeeder::class);
     }

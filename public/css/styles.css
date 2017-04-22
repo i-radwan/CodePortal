@@ -1201,6 +1201,10 @@ td.problems-reorder-view > .fa-bars {
     max-height: 500;
 }
 
+.hide-input {
+    display:none;
+}
+
 /**************************************/
 /*</editor-fold>*/
 
