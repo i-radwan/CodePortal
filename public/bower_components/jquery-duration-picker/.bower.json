@@ -1,0 +1,38 @@
+{
+  "name": "jquery-duration-picker",
+  "version": "0.0.12",
+  "homepage": "https://github.com/mjnaderi/jquery-duration-picker",
+  "authors": [
+    "Mohammad Javad Naderi <mjnaderi@gmail.com>"
+  ],
+  "description": "A simple library for picking time durations in javascript (uses jQuery and Semantic UI)",
+  "main": "src/jquery-duration-picker.js",
+  "keywords": [
+    "jQuery",
+    "input",
+    "time",
+    "duration"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "semantic": "semantic-ui#~2.1.4"
+  },
+  "_release": "0.0.12",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.12",
+    "commit": "a1b57b8d88257bdf4541490b4d4253d8e081b938"
+  },
+  "_source": "https://github.com/mjnaderi/jquery-duration-picker.git",
+  "_target": "^0.0.12",
+  "_originalSource": "jquery-duration-picker",
+  "_direct": true
+}
