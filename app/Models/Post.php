@@ -63,14 +63,5 @@ class Post extends Model
         return $this->belongsTo(User::class,Constants::FLD_POSTS_OWNER_ID);
     }
 
-//    /**
-//     *Get UserName Accessor
-//     * @param $value
-//     *
-//     * @return string
-//     */
-//    public function getOwnerIdAttribute($value)
-//    {
-//        return ;
-//    }
+
 }

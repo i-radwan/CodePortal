@@ -64,4 +64,11 @@ class Comment extends Model
         return $this->hasMany(Comment::class, Constants::FLD_COMMENTS_PARENT_ID);
     }
 
+    /**
+     * Get Comment Owner User Name
+     */
+    public function owner(){
+        return $this->belongsTo(User::class,Constants::FLD_COMMENTS_USER_ID);
+    }
+
 }

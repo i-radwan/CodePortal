@@ -104,6 +104,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group'])->middleware(['can:member-group,group,user']);
     Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
     Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-group,sheet']);
+
+    //Blogs Routes
+    Route::Post('blogs/add', 'BlogController@addEdit');
 });
 
 Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
@@ -115,7 +118,7 @@ Route::get('problems', 'ProblemController@index');
 Route::get('blogs', 'BlogController@index');
 Route::get('blogs/{user}', 'BlogController@displayUserPosts');
 Route::get('blogs/entries/{post}', 'BlogController@displayPost');
-Route::Post('blogs/add', 'BlogController@addEdit');
+
 
 // Groups routes...
 Route::get('groups', 'GroupController@index');

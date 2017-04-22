@@ -640,6 +640,7 @@ class Constants
 //    const FLD_COMMENTS_REPLIES_ID = "id";
     const FLD_COMMENTS_REPLIES_COMMENT_ID  = "comment_id";
     const FLD_COMMENTS_REPLIES_REPLY_ID = "reply_id";
+    const COMMENTS_REPLIES = "replies";
 
     // ============================================================
 
