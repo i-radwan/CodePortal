@@ -63,5 +63,4 @@
         @include('groups.sheet_views.answer_problem_modal')
     </div>
     <span class="page-distinguishing-element" id="sheet-page-hidden-element"></span>
-
 @endsection

@@ -116,6 +116,10 @@ var app = {
             location.hash = this.getAttribute("href");
         });
 
+        $(window).on("popstate", function () {
+            var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+            $("a[href='" + anchor + "']").tab("show");
+        });
         //endregion
 
     },
@@ -163,6 +167,11 @@ var app = {
 
         // Add/Edit sheet page
         if ($("#add-edit-sheet-page-hidden-element").length) {
+
+            // If edit page is on let's fill some sessions first
+            if ($("#add-edit-contest-page-hidden-element").data('name')) {
+                app.fillSessionWithContestData();
+            }
 
             // Set the session keys for sheets problems
             app.problemsIDsSessionKey = 'sheets_problems_ids_session_key';
@@ -472,7 +481,10 @@ var app = {
     //            ADD/EDIT CONTEST FUNCTIONS
     // ==================================================
 
-
+    /**
+     * Fill session with the contest data bound to element
+     * #add-edit-contest-page-hidden-element
+     */
     fillSessionWithContestData: function () {
         // Set sessionKey to editMode
         app.contestNameSessionKey = 'edit_contest_name_session_key';
@@ -504,6 +516,26 @@ var app = {
         sessionStorage.setItem(app.contestPrivateVisibilitySessionKey, contestVisibility);
         sessionStorage.setItem(app.organizersSessionKey, contestOrganizers);
         sessionStorage.setItem(app.problemsIDsSessionKey, contestProblems);
+
+    },
+    /**
+     * Fill session with the sheet data bound to element
+     * #add-edit-sheet-page-hidden-element
+     */
+    fillSessionWithSheetData: function () {
+        // Set sessionKey to editMode
+        app.problemsIDsSessionKey = 'edit_sheet_problems_ids_session_key';
+
+        // Fetch contest data
+        var element = $("#add-edit-sheet-page-hidden-element");
+
+        var sheetProblems = '';
+
+        if (element.data('problems').length)
+            sheetProblems = '["' + element.data('problems').toString().replace(/,/g, '","') + '"]';
+
+        // Fill sessions
+        sessionStorage.setItem(app.problemsIDsSessionKey, sheetProblems);
 
     },
 

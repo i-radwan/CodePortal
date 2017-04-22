@@ -65,18 +65,31 @@ class SheetController extends Controller
     /**
      * Show edit sheet page
      *
+     * @param Request $request
      * @param Sheet $sheet
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function editSheetView(Sheet $sheet)
+    public function editSheetView(Request $request, Sheet $sheet)
     {
+        // Check server sessions for saved filters data (i.e. tags, organisers, judges)
+        $tags = $judges = [];
+
+        $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
+
         // Show edit sheet view with sheet info attached
         return view('groups.sheet_views.add_edit')
-            ->with('action', 'Edit')
+            ->with('sheet', $sheet)
             ->with('sheetName', $sheet[Constants::FLD_SHEETS_NAME])
-            ->with('problemsIDs', implode(",", $sheet->problems()->pluck(Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID)->toArray()))
+            ->with('problems', $problems)
+            ->with('judges', Judge::all())
+            ->with('checkBoxes', 'true')
+            ->with(Constants::SHEET_PROBLEMS_SELECTED_TAGS, $tags)
+            ->with(Constants::SHEET_PROBLEMS_SELECTED_JUDGES, $judges)
+            ->with('syncFiltersURL', url('sheet/add/sheet_tags_judges_filters_sync'))
+            ->with('detachFiltersURL', url('sheet/add/sheet_tags_judges_filters_detach'))
+            ->with('action', 'Edit')
             ->with('url', 'sheet/edit/' . $sheet[Constants::FLD_SHEETS_ID])
-            ->with('pageTitle', config('app.name') . ' | Sheet');
+            ->with('pageTitle', config('app.name') . ' | ' . $sheet[Constants::FLD_SHEETS_NAME]);
     }
 
 
@@ -126,7 +139,7 @@ class SheetController extends Controller
         $sheet->problems()->sync($problemsIDs);
 
         // Return to sheets
-        return redirect('group/' . $sheet[Constants::FLD_SHEETS_GROUP_ID] . '#sheets');
+        return redirect('sheet/' . $sheet[Constants::FLD_SHEETS_ID]);
     }
 
 
