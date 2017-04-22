@@ -83,7 +83,8 @@ var app = {
         // Enable date time pickers
         $('.datetimepicker').datetimepicker({
             format: 'Y-m-d H:i:s',
-            minDate: 0 // for after today limitation
+            minDate: 0, // for after today limitation
+            maxDate:'+1970/01/30' // for max 1 month
         });
         // Enable duration pickers
         $('.duration-picker').duration_picker({
@@ -1055,6 +1056,7 @@ var app = {
             } catch (e) {
                 selected_judges = '["' + judges + '"]';
             }
+            // Sync with session
             app.syncDataFromRequestToSession(app.judgesSessionKey, selected_judges);
         }
     }

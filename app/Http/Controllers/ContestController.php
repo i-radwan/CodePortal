@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Auth;
+use Carbon\Carbon;
 use Session;
 use Redirect;
 use URL;
@@ -149,6 +150,10 @@ class ContestController extends Controller
             $contest[Constants::FLD_CONTESTS_VISIBILITY]
                 = Constants::CONTEST_VISIBILITY[Constants::CONTEST_VISIBILITY_PRIVATE_KEY];
 
+        // Check date if in allowed period
+        if (!Carbon::now()->addDays(Constants::CONTESTS_MAX_START_DATETIME)->gte(Carbon::parse($request->get('time')))) {
+            return back()->withErrors(['The start date time must be in less than ' . Constants::CONTESTS_MAX_START_DATETIME . ' days']);
+        }
         if ($contest->save()) {
 
             //Get Organisers and problems

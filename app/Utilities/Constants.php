@@ -50,6 +50,7 @@ class Constants
 
     const CONTESTS_PROBLEMS_MAX_COUNT = 10; // Corresponding to javascript constant
     const CONTESTS_DURATION_MAX = 2592000; // Contest max duration in secs == 30 days
+    const CONTESTS_MAX_START_DATETIME = 30; // Contest max start daytime in days == 30 days
     const CONTESTS_COUNT_PER_PAGE = 30;
     const CONTEST_STANDINGS_PER_PAGE = 30;
     const CONTEST_SUBMISSIONS_PER_PAGE = 30;
