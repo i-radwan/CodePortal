@@ -13,30 +13,22 @@
                             <h1 class="page-header">
                                 Recent Posts
                                 {{--<small>Secondary Text</small>--}}
-                                {{--TODO: @Samir--}}
                             </h1>
 
                             {{--Render Recent Posts--}}
                             @foreach( $posts as $post)
-                                @include("blogs.blogs_views.post_brief_view")
+                                @include("blogs.blogs_views.post_meta_info")
                                 <hr>
                             @endforeach
 
 
                             {{--TODO:Change Pagination style--}}
-                            <ul class="pager">
-                                <li class="previous">
-                                    <a href="#">&larr; Older</a>
-                                </li>
-                                <li class="next">
-                                    <a href="#">Newer &rarr;</a>
-                                </li>
-                            </ul>
+                            {{$posts->render()}}
 
                         </div>
 
                         {{--Side Panes--}}
-                        @include("blogs.blogs_views.filters")
+                        @include("blogs.blogs_views.side_filters")
 
                     </div>
 

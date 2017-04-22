@@ -46,7 +46,7 @@ class Post extends Model
     protected $rules = [
         Constants::FLD_POSTS_BODY => 'required|min:50',
         Constants::FLD_POSTS_TITLE => 'required|min:6',
-        Constants::FLD_POSTS_OWNER_ID => 'required|exists:'. Constants::TBL_USERS. ','. Constants::FLD_USER_HANDLES_USER_ID
+        Constants::FLD_POSTS_OWNER_ID => 'required|exists:'. Constants::TBL_USERS. ','. Constants::FLD_USERS_ID
     ];
 
     /*
@@ -60,7 +60,7 @@ class Post extends Model
      * Get Owner of the post
      */
     public function owner(){
-        return $this->belongsTo(User::class,Constants::FLD_POSTS_OWNER_ID);
+        return $this->belongsTo(User::class, Constants::FLD_POSTS_OWNER_ID);
     }
 
 

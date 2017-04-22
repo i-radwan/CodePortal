@@ -106,7 +106,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-group,sheet']);
 
     //Blogs Routes
-    Route::Post('blogs/add', 'BlogController@addEdit');
+    Route::get('blogs/add', 'BlogController@addEditPost');
+    Route::post('blogs/add', 'BlogController@addPost');
 });
 
 Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
@@ -116,8 +117,8 @@ Route::get('problems', 'ProblemController@index');
 
 // Blogs routes...
 Route::get('blogs', 'BlogController@index');
-Route::get('blogs/{user}', 'BlogController@displayUserPosts');
-Route::get('blogs/entries/{post}', 'BlogController@displayPost');
+Route::get('blogs/entries/{user}', 'BlogController@displayUserPosts');
+Route::get('blogs/entry/{post}', 'BlogController@displayPost');
 
 
 // Groups routes...

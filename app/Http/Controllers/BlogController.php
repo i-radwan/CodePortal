@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Utilities\Constants;
-//use Illuminate\Http\Request;
-//use Symfony\Component\VarDumper\Caster\ConstStub;
+use Illuminate\Http\Request;
+use Auth;
+use Session;
 
 class BlogController extends Controller
 {
@@ -16,7 +17,12 @@ class BlogController extends Controller
      */
     public function index()
     {
+        //Getting Posts
         $posts = Post::orderBy(Constants::FLD_POSTS_CREATED_AT, 'desc')->paginate(7);
+        $index = 0;
+        foreach ($posts as $post){
+            $posts[$index++] = $this->getPostInfo($post);
+        }
         return view('blogs.index')->with('pageTitle', config('app.name'). ' | Blogs')->with('posts', $posts );
     }
 
@@ -47,6 +53,40 @@ class BlogController extends Controller
     }
 
     /**
+     * Shows Add/Edit Post Page
+     * @return $this
+     */
+    public function addEditPost(){
+        return view("blogs.add_edit")
+            ->with('pageTitle', config('app.name'). ' |'. 'Add Post');
+    }
+
+    /**
+     * Add new Post
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addPost(Request $request){
+        //Create new Post
+        $post = new Post($request->all());
+        //Add the owner_id
+        $post->owner()->associate(Auth::user());
+        //Verify Saving
+        if( $post->save()){
+            // Return success message
+            Session::flash("messages", ["Post Added Successfully"]);
+            return redirect()->action(
+                'BlogController@displayPost', ['id' => $post[Constants::FLD_POSTS_POST_ID]]
+            );
+        }
+        else {    // return error message
+            Session::flash("messages", ["Sorry, Post was not added. Please retry later"]);
+            return redirect()->action('BlogController@index');
+        }
+    }
+
+    /**
      * Get the post info
      * @param Post &$Post the current Post model
      * @param bool $minimal if you want to return part of text or not
@@ -56,6 +96,7 @@ class BlogController extends Controller
         $postInfo = [];
         //Get Post title, Body, created at, up votes and down votes
         $postInfo[Constants::FLD_POSTS_TITLE] = $Post[Constants::FLD_POSTS_TITLE];
+        $postInfo[Constants::FLD_POSTS_POST_ID] = $Post[Constants::FLD_POSTS_POST_ID];
         $postInfo[Constants::FLD_POSTS_BODY] = $Post[Constants::FLD_POSTS_BODY];
         $postInfo[Constants::FLD_POSTS_UP_VOTES] = $Post[Constants::FLD_POSTS_UP_VOTES];
         $postInfo[Constants::FLD_POSTS_DOWN_VOTES] = $Post[Constants::FLD_POSTS_DOWN_VOTES];

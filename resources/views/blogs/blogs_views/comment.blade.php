@@ -8,8 +8,7 @@
         <h4 class="media-heading">
             {{--user Name--}}
             <a href='/profile/{{$comment["username"]}}' >{{$comment["username"]}}</a>
-            {{--title--}}
-            {{--{{$comment[\App\Utilities\Constants::FLD_COMMENTS_TITLE]}}--}}
+
             {{--date and time--}}
             <small>{{\App\Utilities\Utilities::formatPastDateTime($comment[\App\Utilities\Constants::FLD_COMMENTS_CREATED_AT])}}</small>
         </h4>

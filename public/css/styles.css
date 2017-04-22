@@ -1203,3 +1203,28 @@ td.problems-reorder-view > .fa-bars {
 
 /**************************************/
 /*</editor-fold>*/
+
+/*<editor-fold desc="Blogs Page">*/
+/*====================================*/
+/*========== Blogs PAGE ===========*/
+/*====================================*/
+
+.new_post_link{
+    text-decoration:none;
+    color: white;
+}
+.new_post_link:hover{
+    text-decoration:none;
+    color: white;
+}
+
+.new_post_text_area{
+    resize: none;
+}
+.new_post_label{
+    display: inline-block;
+    text-align: justify;
+}
+
+/**************************************/
+/*</editor-fold>*/

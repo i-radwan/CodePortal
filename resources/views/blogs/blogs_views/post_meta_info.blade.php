@@ -1,5 +1,5 @@
 <!-- Title -->
-<h1>{{$post[\App\Utilities\Constants::FLD_POSTS_TITLE]}}</h1>
+<h1> <a href="/blogs/entry/{{$post[\App\Utilities\Constants::FLD_POSTS_POST_ID]}}">{{$post[\App\Utilities\Constants::FLD_POSTS_TITLE]}}</a></h1>
 
 <!-- Author -->
 <p class="lead">
