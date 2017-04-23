@@ -242,10 +242,19 @@ var app = {
         }
 
         //Blogs View Single Post page
+        //Blogs add comment in a post page
         if( $("#view-post-page-hidden-element").length){
+            //Render the post body in markdown
             document.getElementById('current_post_body').innerHTML =
                 marked(document.getElementById('current_post_body').innerHTML);
+            //Add the comment markdown editor
+            var simplemde = new SimpleMDE({
+                //Get the text area element
+                element: document.getElementById("add_comment_text"),
+                spellChecker: false, //Disable Spell Checker
+            });
         }
+
 
         //Blogs Home Page
         if( $("#blogs-home-page-hidden-element").length){
