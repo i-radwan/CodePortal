@@ -458,6 +458,7 @@ class Constants
     const TBL_SHEET_PROBLEMS = "sheet_problems";
     const TBL_TEAM_MEMBERS = "team_members";
     const TBL_COMMENTS_REPLIES = "comments_replies";
+    const TBL_LIKEABLES = "posts_likeables";
 
     //
     // Fields
@@ -638,10 +639,18 @@ class Constants
     const FLD_COMMENTS_CREATED_AT = "created_at";
 
     //Comments Replies
-//    const FLD_COMMENTS_REPLIES_ID = "id";
-    const FLD_COMMENTS_REPLIES_COMMENT_ID  = "comment_id";
-    const FLD_COMMENTS_REPLIES_REPLY_ID = "reply_id";
     const COMMENTS_REPLIES = "replies";
+
+    //Posts Likeables
+    const FLD_LIKEABLES_ID = "id";
+    const FLD_LIKEABLES_USER_ID = "user_id";
+    const FLD_LIKEABLES_POST_ID = "likeable_id";
+    const FLD_LIKEABLES_LIKEABLE_TYPE = "likeable_type";
+    const FLD_LIKEABLES_DELETED_AT = "deleted_at";
+    const FLD_LIKEABLES_CREATED_AT = "created_at";
+
+
+
 
     // ============================================================
 

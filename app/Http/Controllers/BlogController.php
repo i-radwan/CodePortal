@@ -24,7 +24,11 @@ class BlogController extends Controller
         foreach ($posts as $post){
             $posts[$index++] = $this->getPostInfo($post, true);
         }
-        return view('blogs.index')->with('pageTitle', config('app.name'). ' | Blogs')->with('posts', $posts );
+        return view('blogs.index')
+            ->with('posts', $posts )
+            ->with('topContributors', [])
+            ->with('pageTitle', config('app.name'). ' | Blogs');
+
     }
 
     /**

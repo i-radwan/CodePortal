@@ -15,6 +15,9 @@ class Comment extends Model
     //Add Validation
     use ValidateModelData;
 
+    //Use Like Trait
+    use GetUserLikes;
+
     /**
      * The table associated with the model.
      *

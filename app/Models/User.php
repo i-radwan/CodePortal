@@ -417,4 +417,18 @@ class User extends Authenticatable
                 Constants::NOTIFICATION_STATUS_DELETED
             );
     }
+
+    /*
+     * Get User liked Posts
+     */
+    public function likedPosts(){
+        return $this->morphedByMany(Post::class, "likeable")->whereDeletedAt(null);
+    }
+
+    /*
+     * Get User Liked Comments
+     */
+    public function likedComments(){
+        return $this->morphedByMany(Comment::class, "likeable")->whereDeletedAt(null);
+    }
 }
