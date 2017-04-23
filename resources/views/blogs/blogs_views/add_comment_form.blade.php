@@ -4,7 +4,7 @@
     <form role="form" action="{{$comment_form_url}}" method="POST">
         {{csrf_field()}}
         <div class="form-group">
-            <textarea id="add_comment_text" name="body" class="form-control" rows="3" ></textarea>
+            <textarea id="add_comment_text" name="body" class="form-control"  ></textarea>
         </div>
         <div class="form-group">
             <input name="comment_id" value="{{isset($comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID]) ? $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] : ""}}" hidden>

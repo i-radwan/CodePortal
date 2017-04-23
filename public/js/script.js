@@ -253,6 +253,13 @@ var app = {
                 element: document.getElementById("add_comment_text"),
                 spellChecker: false, //Disable Spell Checker
             });
+            //Render the comments in markdown
+            //Get all comments in the post page
+            var comments = document.getElementsByClassName("comment_body");
+            //Loop over them and render each one in markdown
+            for(var i = 0; i < comments.length; i++){
+                comments[i].innerHTML = marked(comments[i].innerHTML);
+            }
         }
 
 

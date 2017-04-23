@@ -13,16 +13,24 @@
             <!-- Post Content -->
                 <p class="post_paragraph" id="current_post_body" >  {{$post[\App\Utilities\Constants::FLD_POSTS_BODY]}} </p>
                 <hr>
-                <!-- Blog Add Comments Form -->
-            @include("blogs.blogs_views.add_comment_form")
-            <!-- Comments -->
-                @foreach($comments as $comment)
-                    @include('blogs.blogs_views.comment')
-                @endforeach
             </div>
             <!-- Blog Sidebar Widgets Column -->
             @include('blogs.blogs_views.side_filters')
         </div>
+            <div class="row">
+                <!-- Blog Add Comments Form -->
+                <div class="container col-md-8">
+                    @include("blogs.blogs_views.add_comment_form")
+                </div>
+                <hr>
+            <!-- Comments -->
+                <div class="container col-md-8">
+                    @foreach($comments as $comment)
+                        @include('blogs.blogs_views.comment')
+                    @endforeach
+                </div>
+
+            </div>
         <!-- /.row -->
         <hr>
     </div>
