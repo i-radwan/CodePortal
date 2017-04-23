@@ -9,19 +9,25 @@ use App\Utilities\Constants;
 class ContestTest extends DatabaseTest
 {
     /**
-     * A basic test example.
+     * Test contest DB interaction
      *
      * @return void
      */
     public function testContestModel()
     {
+
         $initialCount = Contest::count();
+
         $user = $this->insertUser('user121', 'a12@a.a', 'aaaaaa');
         // insert valid contest and check for count
         $validContest = $this->insertContest('Contest1', '2017-10-10 12:12:12', 100, Constants::CONTEST_VISIBILITY_PUBLIC, $user);
+
+        // Check if contest is inserted
         $this->assertTrue(Contest::count() == $initialCount + 1);
-        $validContest->delete();
-        $this->assertTrue(Contest::count() == $initialCount); // test deleting
+
+        // Check owner
+        $this->assertTrue($validContest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]);
+
 
         // insert invalid models
         try {
@@ -59,8 +65,47 @@ class ContestTest extends DatabaseTest
             $this->fail("Shouldn't reach here w/out throwing Validation Exception - no owner");
         } catch (ValidationException $e) {
         }
-        // Recheck that nothing is inserted
-        $this->assertTrue(Contest::count() == $initialCount);
+
+
+        // Assign contest organizer
+        $organizer = $this->insertUser('user1212', '2a12@a.a', 'aaa2aaa');
+        $validContest->organizers()->save($organizer);
+        $this->assertTrue($organizer->organizingContests()->first()[Constants::FLD_CONTESTS_ID] == $validContest[Constants::FLD_CONTESTS_ID]);
+
+        // Assign participant
+
+
+        // Assign problems
+
+        // Assign teams
+
+        // Attach to group
+
+        // Update contest to violate rules (visibility)
+
+        // Attach contest notification
+
+        // Join contest
+
+        // Leave contest
+
+        // Invite users
+
+        // Check deletion
+
+
+        // Check if contest is deleted
+        $validContest->delete();
+
+        // Check if contest organizers are detached
+
+        // Check contest participants are detached
+
+        // Check contest problems are detached
+
+        // Check contest teams are detached
+
+        $this->assertTrue(Contest::count() == $initialCount); // test deleting
 
     }
 
