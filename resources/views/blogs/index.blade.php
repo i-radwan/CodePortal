@@ -15,7 +15,7 @@
                         {{--Render Recent Posts--}}
                         @foreach( $posts as $post)
                             @include("blogs.blogs_views.post_meta_info")
-                            <p class = "post_paragraph">{{$post[\App\Utilities\Constants::FLD_POSTS_BODY]}}</p>
+                            <p  class = "post_small_paragraph" >{{$post[\App\Utilities\Constants::FLD_POSTS_BODY]}}</p>
                             <hr>
                         @endforeach
 
@@ -32,4 +32,6 @@
             </div>
         </div>
     </div>
+    {{--Identifying Page --}}
+    <span class="page-distinguishing-element" id="blogs-home-page-hidden-element"></span>
 @endsection

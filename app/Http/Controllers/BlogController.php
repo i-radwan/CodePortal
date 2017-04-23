@@ -22,7 +22,7 @@ class BlogController extends Controller
         $posts = Post::orderBy(Constants::FLD_POSTS_CREATED_AT, 'desc')->paginate(7);
         $index = 0;
         foreach ($posts as $post){
-            $posts[$index++] = $this->getPostInfo($post);
+            $posts[$index++] = $this->getPostInfo($post, true);
         }
         return view('blogs.index')->with('pageTitle', config('app.name'). ' | Blogs')->with('posts', $posts );
     }
@@ -123,7 +123,12 @@ class BlogController extends Controller
         //Get Post title, Body, created at, up votes and down votes
         $postInfo[Constants::FLD_POSTS_TITLE] = $Post[Constants::FLD_POSTS_TITLE];
         $postInfo[Constants::FLD_POSTS_POST_ID] = $Post[Constants::FLD_POSTS_POST_ID];
-        $postInfo[Constants::FLD_POSTS_BODY] = $Post[Constants::FLD_POSTS_BODY];
+        //Get Post Full Body if minimal is false and part of the body string when minimal is true, the previous case is
+        //used in the index page
+        if($minimal)
+            $postInfo[Constants::FLD_POSTS_BODY] = substr($Post[Constants::FLD_POSTS_BODY],0,100);
+        else
+            $postInfo[Constants::FLD_POSTS_BODY] = $Post[Constants::FLD_POSTS_BODY];
         $postInfo[Constants::FLD_POSTS_UP_VOTES] = $Post[Constants::FLD_POSTS_UP_VOTES];
         $postInfo[Constants::FLD_POSTS_DOWN_VOTES] = $Post[Constants::FLD_POSTS_DOWN_VOTES];
         $postInfo[Constants::FLD_COMMENTS_CREATED_AT] = $Post[Constants::FLD_POSTS_CREATED_AT];

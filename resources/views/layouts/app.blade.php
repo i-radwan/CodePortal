@@ -16,6 +16,7 @@
     <link href="/css/jquery.datetimepicker.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/bower_components/semantic/dist/semantic.min.css"/>
     <link rel="stylesheet" href="/bower_components/jquery-duration-picker/dist/jquery-duration-picker.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 
     <!-- Fonts -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -50,6 +51,11 @@
 {{--Include files for code editor--}}
 <script src="/modules/code-editor/ace.js" type="text/javascript" charset="utf-8"></script>
 
+{{--Include files for Markdown Editor--}}
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+{{--Include for Markdown preview--}}
+<script src="/js/marked.min.js"></script>
+
 {{--Files of duration picker--}}
 <script type="text/javascript" src="/bower_components/semantic/dist/semantic.min.js"></script>
 <script type="text/javascript"
@@ -59,4 +65,5 @@
 
 </body>
 </html>
+
 

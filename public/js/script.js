@@ -225,6 +225,38 @@ var app = {
             app.inviteesSessionKey = 'group_invitees_session_key';
 
         }
+
+        //Blogs Add Post page
+        if( $("#add-edit-post-page-hidden-element").length){
+            var simplemde = new SimpleMDE({
+                //Get the text area element
+                element: document.getElementById("edit_post_body"),
+                //Enables Auto Save which is removed when the form is submitted
+                autosave: {
+                    enabled: true,
+                    uniqueId: "edit_post", //unique id for identifying saving purposes
+                    delay: 1000, //Time between saves milli seconds
+                },
+                spellChecker: false, //Disable Spell Checker
+            });
+        }
+
+        //Blogs View Single Post page
+        if( $("#view-post-page-hidden-element").length){
+            document.getElementById('current_post_body').innerHTML =
+                marked(document.getElementById('current_post_body').innerHTML);
+        }
+
+        //Blogs Home Page
+        if( $("#blogs-home-page-hidden-element").length){
+            //Get all the blogs paragraph in the index page
+            var posts = document.getElementsByClassName('post_small_paragraph') ;
+            //Loop over the paragraphs in the blog index page
+            //Change the text in each paragraph to a marked version
+            for(var i = 0; i < posts.length; i++){
+                posts[i].innerHTML = marked(posts[i].innerHTML);
+            }
+        }
     },
 
     // ==================================================
@@ -1083,6 +1115,11 @@ var app = {
             alert('No changes have been made!');
         }
     },
+
+    // ==================================================
+    //            BlOGS FUNCTIONS
+    // ==================================================
+
 
     // ==================================================
     //              UTILITIES FUNCTIONS

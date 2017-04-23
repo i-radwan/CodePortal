@@ -23,7 +23,7 @@
                                     <label for="title" class="col-sm-2 control-label">Body</label>
                                 </div>
                                 <div class="col-md-10">
-                                <textarea id="post_body" name="body" class="form-control new_post_text_area" rows="15" placeholder="Write your Post Here using Markdown" ></textarea>
+                                <textarea id="edit_post_body" name="body" class="form-control new_post_text_area" rows="15" placeholder="Write your Post Here using Markdown" ></textarea>
                                 </div>
                             </div>
 
@@ -39,4 +39,6 @@
                     </div>
                 </div>
             </div>
+            {{--Identifying Page --}}
+            <span class="page-distinguishing-element" id="add-edit-post-page-hidden-element"></span>
 @endsection
