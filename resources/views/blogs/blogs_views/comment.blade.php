@@ -17,7 +17,24 @@
         <p class = "comment_body">{{$comment[\App\Utilities\Constants::FLD_COMMENTS_BODY]}}</p>
         </div>
         {{--Vote--}}
-        &nbsp; &nbsp;<span>  <i class="fa fa-thumbs-o-down" aria-hidden="true"></i></span> {{$comment[\App\Utilities\Constants::FLD_COMMENTS_DOWN_VOTES]}} &nbsp; &nbsp; <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> {{$comment[\App\Utilities\Constants::FLD_COMMENTS_UP_VOTES]}}
+        <span>
+        <a href="{{$comment_unlike_url}}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID]}}">
+            @if(!isset($comment["user_vote"]) or $comment["user_vote"] != 0)
+                <i class="fa fa-thumbs-o-down" aria-hidden="true"> </i>
+            @else
+                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
+            @endif
+        </a>
+            {{$comment[\App\Utilities\Constants::FLD_COMMENTS_DOWN_VOTES]}} &nbsp;
+        <a href="{{$comment_like_url}}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID]}}">
+            @if(!isset($comment["user_vote"]) or $comment["user_vote"] != 1)
+                <i class="fa fa-thumbs-o-up" aria-hidden="true"> </i>
+            @else
+                <i class="fa fa-thumbs-up" aria-hidden="true"> </i>
+            @endif
+        </a>
+            {{$comment[\App\Utilities\Constants::FLD_COMMENTS_UP_VOTES]}}
+    </span>
         {{--Replies--}}
         @if( isset($comment[\App\Utilities\Constants::COMMENTS_REPLIES]))
             @foreach($comment[\App\Utilities\Constants::COMMENTS_REPLIES] as $comment)

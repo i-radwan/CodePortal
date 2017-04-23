@@ -27,6 +27,10 @@ class BlogController extends Controller
         return view('blogs.index')
             ->with('posts', $posts )
             ->with('topContributors', [])
+            ->with('post_like_url', url("/blogs/up_vote/entry"))
+            ->with('post_unlike_url', url("blogs/down_vote/entry"))
+            ->with('comment_like_url', url("blogs/up_vote/comment"))
+            ->with('comment_unlike_url', url("blogs/down_vote/comment"))
             ->with('pageTitle', config('app.name'). ' | Blogs');
 
     }
@@ -45,6 +49,10 @@ class BlogController extends Controller
         return view("blogs.post")
             ->with('post',$postInfo)
             ->with('comments', $comments)
+            ->with('post_like_url', url("/blogs/up_vote/entry"))
+            ->with('post_unlike_url', url("blogs/down_vote/entry"))
+            ->with('comment_like_url', url("blogs/up_vote/comment"))
+            ->with('comment_unlike_url', url("blogs/down_vote/comment"))
             ->with('comment_form_url', url('blogs/entry/'. $post))
             ->with('pageTitle', config('app.name'). ' |'.$Post[Constants::FLD_POSTS_TITLE]);
     }
@@ -94,7 +102,7 @@ class BlogController extends Controller
     /**
      * Add new comment to a post
      * @param \Illuminate\Http\Request $request
-     * @param                          $post
+     * @param  $post
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -117,15 +125,16 @@ class BlogController extends Controller
     }
 
     /**
-     * Get the post info
+     * Get Single post info
      * @param Post &$Post the current Post model
      * @param bool $minimal if you want to return part of text or not
      * @return array
      */
     public function getPostInfo(&$Post, $minimal = false){
         $postInfo = [];
-        //Get Post title, Body, created at, up votes and down votes
+        //Get Post title
         $postInfo[Constants::FLD_POSTS_TITLE] = $Post[Constants::FLD_POSTS_TITLE];
+        //Get Post id
         $postInfo[Constants::FLD_POSTS_POST_ID] = $Post[Constants::FLD_POSTS_POST_ID];
         //Get Post Full Body if minimal is false and part of the body string when minimal is true, the previous case is
         //used in the index page
@@ -133,16 +142,26 @@ class BlogController extends Controller
             $postInfo[Constants::FLD_POSTS_BODY] = substr($Post[Constants::FLD_POSTS_BODY],0,100);
         else
             $postInfo[Constants::FLD_POSTS_BODY] = $Post[Constants::FLD_POSTS_BODY];
-        $postInfo[Constants::FLD_POSTS_UP_VOTES] = $Post[Constants::FLD_POSTS_UP_VOTES];
-        $postInfo[Constants::FLD_POSTS_DOWN_VOTES] = $Post[Constants::FLD_POSTS_DOWN_VOTES];
+        //Get Post UP Votes
+        $postInfo[Constants::FLD_POSTS_UP_VOTES] = $Post['upVotes']->count();
+        //Get Post Down Votes
+        $postInfo[Constants::FLD_POSTS_DOWN_VOTES] = $Post['downVotes']->count();
+        //Get TimeStamp
         $postInfo[Constants::FLD_COMMENTS_CREATED_AT] = $Post[Constants::FLD_POSTS_CREATED_AT];
         //Get Post Owner user name
         $postInfo["username"] = $Post['owner'][Constants::FLD_USERS_USERNAME];
+        //if there is a user signed in display his votes
+        if($user = Auth::user()){
+            //1 means he voted Up 0 means Voted Down -1 means no votes
+            $postInfo["user_vote"] = ($Post->isUpVoted()) ? 1 : ($Post->isDownVoted() ? 0 : -1);
+
+        }
         return $postInfo;
     }
 
     /**
-     * * Get the Post Comments "till now the first two levels" (ToDo @ Samir Add More depth to the comments replies "recursive Query using Baum)
+     * * Get the Post Comments "till now the first two levels"
+     * (ToDo @ Samir Add More depth to the comments replies "recursive Query using Baum)
      * @param Post &$Post the current Post model
      * @return mixed
      */
@@ -156,29 +175,52 @@ class BlogController extends Controller
         foreach ($comments as $comment) {
             $postComments[$index] = $this->getCommentInfo($comment);
             //Get Comment Replies (2nd Level Only)
-            $commentReplies = []; //The result array
-            $replies = $comment->replies; //the replies to the current Comment
-            $index2 = 0; //index For 2nd Level
+            //The result array
+            $commentReplies = [];
+            //the replies to the current Comment
+            $replies = $comment->replies;
+            //index For 2nd Level
+            $index2 = 0;
             foreach ($replies as $reply){
                 $commentReplies[$index2++] = $this->getCommentInfo($reply);
             }
-            $postComments[$index]['replies'] = $commentReplies; //put the replies to the comment in the minimal form
+            //put the replies to the comment in the minimal form
+            $postComments[$index]['replies'] = $commentReplies;
             $index++;
         }
         return $postComments;
     }
 
+    /**
+     * Get Single Comment info
+     * @param $Comment
+     *
+     * @return array
+     */
     public function getCommentInfo(&$Comment)
     {
         $commentInfo = [];
-        //Get Comment Title , Comment ID, User Name, Body, Up votes, Down Votes and Created At
+
+        //Get Comment title
         $commentInfo[Constants::FLD_COMMENTS_TITLE] = $Comment[Constants::FLD_COMMENTS_TITLE];
+        //Get Comment ID
         $commentInfo[Constants::FLD_COMMENTS_COMMENT_ID] = $Comment[Constants::FLD_COMMENTS_COMMENT_ID];
+        //Get Comment Body
         $commentInfo[Constants::FLD_COMMENTS_BODY] = $Comment[Constants::FLD_COMMENTS_BODY];
+        //Get Comment Timestamp
         $commentInfo[Constants::FLD_COMMENTS_CREATED_AT] = $Comment[Constants::FLD_COMMENTS_CREATED_AT];
-        $commentInfo[Constants::FLD_COMMENTS_DOWN_VOTES] = $Comment[Constants::FLD_COMMENTS_DOWN_VOTES];
-        $commentInfo[Constants::FLD_COMMENTS_UP_VOTES] = $Comment[Constants::FLD_COMMENTS_UP_VOTES];
+        //Get Comment Down Votes
+        $commentInfo[Constants::FLD_COMMENTS_DOWN_VOTES] = $Comment['downVotes']->count();
+        //Get Comment Up Votes
+        $commentInfo[Constants::FLD_COMMENTS_UP_VOTES] = $Comment['upVotes']->count();
+        //Get Comment owner user name
         $commentInfo["username"] = $Comment['owner'][Constants::FLD_USERS_USERNAME];
+        //if there is a user signed in display hos votes
+        if($user = Auth::user()){
+            //1 means he voted Up 0 means Voted Down -1 means no votes
+            $commentInfo["user_vote"] = ($Comment->isUpVoted()) ? 1 : ($Comment->isDownVoted() ? 0 : -1);
+        }
+
         return $commentInfo;
     }
 

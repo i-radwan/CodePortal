@@ -110,6 +110,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('blogs/add', 'BlogController@addPost');
     Route::post('blogs/entry/{post}', 'BlogController@addComment');
 
+    //Likes Routes
+    Route::get('blogs/up_vote/entry/{post}', 'VoteController@upVotePost');
+    Route::get('blogs/up_vote/comment/{comment}', 'VoteController@upVoteComment');
+    Route::get('blogs/down_vote/entry/{post}', 'VoteController@downVotePost');
+    Route::get('blogs/down_vote/comment/{comment}', 'VoteController@downVoteComment');
+
 });
 
 Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['contestAccessAuth:view-join-contest,contest']);

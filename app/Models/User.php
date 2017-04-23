@@ -419,16 +419,30 @@ class User extends Authenticatable
     }
 
     /*
-     * Get User liked Posts
+     * Get User up Voted Posts
      */
-    public function likedPosts(){
-        return $this->morphedByMany(Post::class, "likeable")->whereDeletedAt(null);
+    public function upVotedPosts(){
+        return $this->morphedByMany(Post::class, Constants::TBL_UP_VOTES)->whereDeletedAt(null);
     }
 
     /*
-     * Get User Liked Comments
+     * Get User up Voted Comments
      */
-    public function likedComments(){
-        return $this->morphedByMany(Comment::class, "likeable")->whereDeletedAt(null);
+    public function upVotedComments(){
+        return $this->morphedByMany(Comment::class, Constants::TBL_UP_VOTES)->whereDeletedAt(null);
+    }
+
+    /*
+    * Get User down Voted Posts
+    */
+    public function downVotedPosts(){
+        return $this->morphedByMany(Post::class, Constants::TBL_DOWN_VOTES)->whereDeletedAt(null);
+    }
+
+    /*
+     * Get User down Voted Comments
+     */
+    public function downVotedComments(){
+        return $this->morphedByMany(Comment::class, Constants::TBL_DOWN_VOTES)->whereDeletedAt(null);
     }
 }

@@ -14,7 +14,7 @@ class Post extends Model
     use ValidateModelData;
 
     //Use Like Trait
-    use GetUserLikes;
+    use GetUserVotes;
 
     /**
      * The table associated with the model.
