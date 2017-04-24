@@ -146,7 +146,7 @@ class TeamsFlowTest extends DuskTestCase
             // ====================================================
             // • Member can remove someone from the team
             // ====================================================
-            // remove invitee2
+            // remove member(invitee2)
             $browser->click("#testing-remove-member-team-$teamID-" . $invitee2)
                 ->acceptDialog()
                 ->pause(5000)

@@ -270,11 +270,13 @@ class GroupFlowTest extends DuskTestCase
                 ->click('#testing-requests-link')
                 ->click('#testing-reject-request-45');
 
+            // Sent request again
             $browser2->refresh()
                 ->waitForText('Join')
                 ->assertSee('Join')
                 ->press('Join')->assertSee('Request Sent');
 
+            // Accept request
             $browser->refresh()->clickLink('Requests')
                 ->click('#testing-accept-request-45');
 
