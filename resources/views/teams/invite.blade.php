@@ -2,10 +2,11 @@
     {{ csrf_field() }}
 
     <div class="form-group">
-        <input type="text" name="username" class="form-control" placeholder="Username...">
+        <input id="testing-team-username-{{ $team->id }}" type="text" name="username" class="form-control"
+               placeholder="Username...">
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-primary">Send Invitation</button>
+        <button id="testing-team-send-{{ $team->id }}" type="submit" class="btn btn-primary">Send Invitation</button>
     </div>
 </form>
