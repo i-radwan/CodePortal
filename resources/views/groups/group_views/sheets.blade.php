@@ -31,7 +31,7 @@
                           method="post" class="action">
                         {{method_field('DELETE')}}
                         {{csrf_field()}}
-                        <button type="submit" class="btn btn-link text-dark"
+                        <button type="submit" class="btn btn-link text-dark testing-delete-sheet"
                                 onclick="return confirm('Are you sure want to delete the sheet?\nThis cannot be undone')">
                             Delete
                         </button>

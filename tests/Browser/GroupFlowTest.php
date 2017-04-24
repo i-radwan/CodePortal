@@ -158,6 +158,7 @@ class GroupFlowTest extends DuskTestCase
                 ->visit('http://127.0.0.1:8000/contest/' . $groupContest[Constants::FLD_CONTESTS_ID])
                 ->assertPathIs('/contest/' . $groupContest[Constants::FLD_CONTESTS_ID]);
             $browser2->assertSee('Join');
+
             //================================================
             // Add sheet
             //================================================
@@ -210,7 +211,17 @@ class GroupFlowTest extends DuskTestCase
                 ->assertSee('Solution123321');
 
             //================================================
-            // Ask to join (laney.kunde) -> send invite
+            // Delete sheet
+            //================================================
+            $browser
+                ->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+                ->click('#testing-sheets-link')
+                ->click('.testing-delete-sheet')
+                ->acceptDialog()
+                ->assertDontSee('NewGroupSheetEdited');
+
+            //================================================
+            // Ask to join -> send invite
             // send invite -> ask to join
             // Send request -> get rejected
             //================================================

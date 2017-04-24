@@ -73,6 +73,9 @@ class ContestFlowTest extends DuskTestCase
             $browser->saveContest('ADS2', '2017-04-02 12:12:12', 1000, 0);
             $browser->on(new AddContestPage);
 
+            $browser->saveContest('ADS2', '2017-04-02 12:12:12', -10, 0);
+            $browser->on(new AddContestPage);
+
             // valid data
             $browser->saveContest('ADS2', '2017-05-02 12:12:12', 1000, 0);
             $browser->on(new AddContestPage);
@@ -83,7 +86,7 @@ class ContestFlowTest extends DuskTestCase
             $browser->assertPathIs('/contest/' . $lastContest[Constants::FLD_CONTESTS_ID]);
 
             // ================================================================
-            // Insert contest with organizers and invite users and select problems after
+            // Insert contest with organizers and select problems
             // ================================================================
 
             $browser->visit(new Contests)
@@ -92,6 +95,10 @@ class ContestFlowTest extends DuskTestCase
 
             $organizers = User::find([2, 3, 4])->pluck(Constants::FLD_USERS_USERNAME);
             $browser->saveContest('ADS2', '2017-05-02 12:12:12', 1000, 0, [], $organizers, []);
+
+            // Get last id to check path
+            $lastContest = Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
+            $browser->assertPathIs('/contest/' . $lastContest[Constants::FLD_CONTESTS_ID]);
 
             // ToDo Test auto complete
 
@@ -109,7 +116,7 @@ class ContestFlowTest extends DuskTestCase
                 ->assertSeeIn(".problems-table-tag-link", "math")
                 ->assertSeeIn("#tags-list", "math");
 
-            // Select problems
+            // Select problems and save
             $contestName = $faker->sentence(2);
             $browser->saveContest($contestName, '2017-05-02 12:12:12', 1000, 0, [1, 2, 3], $organizers, []);
 
@@ -183,7 +190,6 @@ class ContestFlowTest extends DuskTestCase
             //===========================================================
             // Select more than 10 check boxes
             //===========================================================
-            // Add myself as organizer
             $contestName = $faker->sentence(2);
             $problems = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -212,6 +218,8 @@ class ContestFlowTest extends DuskTestCase
 
             // Check invitations sent (in notification panel and
             // the user in browser 2 can see the contest page)
+
+            // normal user cannot see it
             $browser2->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
             $browser2->assertPathIs('/errors/401');
 
@@ -318,6 +326,7 @@ class ContestFlowTest extends DuskTestCase
             \DB::table(Constants::TBL_CONTESTS)
                 ->where(Constants::FLD_CONTESTS_ID, $privateContest[Constants::FLD_CONTESTS_ID])
                 ->update(['time' => '2017-04-23 12:12:12']);
+
             // Ask question
             $browser->refresh()->type('#title', $title = $faker->sentence())
                 ->select('#problem_id', '2')
@@ -441,7 +450,7 @@ class ContestFlowTest extends DuskTestCase
             // Logout
             $browser2->clickLink('Logout');
 
-            // Login as mitchell.otha
+            // Login as other user
             $browser2->visit(new Login)
                 ->loginUser($username1, 'asdasd');
 
