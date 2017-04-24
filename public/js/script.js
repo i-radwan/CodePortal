@@ -107,7 +107,7 @@ var app = {
         // if the link contains has, look for the link who should open this tab
         // and show the related tab
         if (location.hash) {
-            $("a[href='" + location.hash + "']").tab("show");
+            $("a[href='" + location.hash + "']").trigger("click");
         }
 
         // When a tab link is clicked attach the hash of the tab to the url
@@ -115,11 +115,11 @@ var app = {
         $(document.body).on("click", "a[data-toggle]", function (event) {
             location.hash = this.getAttribute("href");
         });
-
-        $(window).on("popstate", function () {
-            var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
-            $("a[href='" + anchor + "']").tab("show");
-        });
+        //
+        // $(window).on("popstate", function () {
+        //     var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+        //     $("a[href='" + anchor + "']").tab("show");
+        // });
         //endregion
 
     },
@@ -167,16 +167,15 @@ var app = {
 
         // Add/Edit sheet page
         if ($("#add-edit-sheet-page-hidden-element").length) {
-
-            // If edit page is on let's fill some sessions first
-            if ($("#add-edit-contest-page-hidden-element").data('name')) {
-                app.fillSessionWithContestData();
-            }
-
             // Set the session keys for sheets problems
             app.problemsIDsSessionKey = 'sheets_problems_ids_session_key';
             app.tagsSessionKey = 'sheets_tags_ids_session_key';
             app.judgesSessionKey = 'sheets_judges_ids_session_key';
+
+            // If edit page is on let's fill some sessions first
+            if ($("#add-edit-sheet-page-hidden-element").data('name')) {
+                app.fillSessionWithSheetData();
+            }
 
             // Sync server session filters with client session filters
             app.getFiltersFromElementAndFormat($("#add-edit-sheet-page-hidden-element"));
@@ -361,7 +360,8 @@ var app = {
         // THIS happens because we cannot catch code editor value easily
 
         $("#answer-model-submit-button").click(function () {
-            $('#problem-solution').val(app.editor.getValue());
+            if (app.editor.getValue().trim() != "")
+                $('#problem-solution').val(app.editor.getValue());
             return true;
         });
         //endregion
@@ -556,7 +556,9 @@ var app = {
             contestOrganizers = '["' + element.data('organizers').toString().replace(/,/g, '","') + '"]';
         if (element.data('problems').length)
             contestProblems = '["' + element.data('problems').toString().replace(/,/g, '","') + '"]';
-
+        if (contestVisibility == '1') {
+            $("#invitees-input-div").show();
+        }
         // Fill sessions
         sessionStorage.setItem(app.contestNameSessionKey, contestName);
         sessionStorage.setItem(app.contestTimeSessionKey, contestTime);
@@ -930,7 +932,7 @@ var app = {
         entry.className += ' element label label-success';
 
         // Add element content and append to view
-        entry.innerHTML = itemName + '<span onclick="app.closeButtonClick(this)" data-role="remove" data-name="' + itemName + '" data-type="' + type + '"></span>';
+        entry.innerHTML = itemName + '<span onclick="app.closeButtonClick(this)" class="remove-btn" data-role="remove" data-name="' + itemName + '" data-type="' + type + '"></span>';
 
         list.appendChild(entry);
 

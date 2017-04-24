@@ -21,14 +21,14 @@
                       method="post" class="action">
                     {{method_field('PUT')}}
                     {{csrf_field()}}
-                    <button type="submit" class="btn btn-link text-dark">Accept
+                    <button type="submit" class="btn btn-link text-dark" id="testing-accept-request-{{ $seeker->id }}">Accept
                     </button>
                 </form>
                 <form action="{{url('group/request/reject/'.$groupID.'/'.$seeker->id)}}"
                       method="post" class="action">
                     {{method_field('PUT')}}
                     {{csrf_field()}}
-                    <button type="submit" class="btn btn-link text-dark">Reject
+                    <button type="submit" class="btn btn-link text-dark" id="testing-reject-request-{{ $seeker->id }}">Reject
                     </button>
                 </form>
             </td>

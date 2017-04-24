@@ -1197,12 +1197,12 @@ td.problems-reorder-view > .fa-bars {
 /*====================================*/
 
 .custom-panel {
-    min-height: 450; 
+    min-height: 450;
     max-height: 500;
 }
 
 .hide-input {
-    display:none;
+    display: none;
 }
 
 

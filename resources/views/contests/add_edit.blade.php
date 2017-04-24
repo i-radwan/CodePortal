@@ -90,6 +90,7 @@
                                                 <div class="check"></div>
                                             </li>
                                         </ul>
+
                                         @if ($errors->has('visibility'))
                                             <span class="help-block">
                                             <strong>{{ $errors->first('visibility') }}</strong>
@@ -145,7 +146,7 @@
                             <div class="form-group">
                                 <div class="col-md-12 text-center">
                                     <button onclick="app.moveSessionDataToHiddenFields()" type="submit"
-                                            class="btn btn-primary">
+                                            class="btn btn-primary" id="add-save-contest">
                                         @if(!isset($contest))
                                             Add
                                         @else Save

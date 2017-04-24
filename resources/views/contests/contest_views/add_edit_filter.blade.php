@@ -32,7 +32,7 @@
         </div>
         {{--Apply filters & Clear buttons--}}
         <p>
-            <input class="btn btn-default" value="Apply Filters"
+            <input class="btn btn-default" value="Apply Filters" id="apply-filters"
                    onclick="app.applyFilters('{{ $syncFiltersURL }}', '{{csrf_token()}}', '{{ Request::url() }}')"/>
 
             <span onclick="app.clearProblemsFilters('{{ $detachFiltersURL }}', '{{csrf_token()}}', '{{ Request::url() }}')"

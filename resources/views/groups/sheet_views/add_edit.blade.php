@@ -25,7 +25,8 @@
 
                                 <div class="col-md-10">
                                     <input id="name" type="text" class="form-control" name="name"
-                                           value="{{ ($sheetName)?$sheetName:old('name') }}" placeholder="Name" required
+                                           value="{{ isset($sheetName)?$sheetName:old('name') }}" placeholder="Name"
+                                           required
                                            autofocus>
 
                                     @if ($errors->has('name'))

@@ -38,11 +38,10 @@
 
             @if($isContestRunning && $isOwnerOrOrganizer)
                 <td>
-
-                    <button class="btn btn-primary"
+                    <button class="btn btn-primary testing-question-action-button answer"
                             data-toggle="modal"
                             data-target="#question-answer-model"
-                            onclick="$('#question-id').val('{{$questionID}}');$('#question-answer').val('{{($answer != "")? $answer: "Re-read the problem statement!"}}');">
+                            onclick="$('#question-id').val('{{$questionID}}');$('#question-answer').val('{{($answer != "")? addslashes($answer): "Re-read the problem statement!"}}');">
                         Answer
                     </button>
 
@@ -50,7 +49,8 @@
                         <form action="{{url('contest/question/announce/'.$questionID)}}"
                               method="post">{{method_field('PUT')}}
                             {{csrf_field()}}
-                            <button type="submit" class="btn btn-primary">Announce
+                            <button type="submit" class="btn btn-primary testing-question-action-button announce">
+                                Announce
                             </button>
                         </form>
 
@@ -58,7 +58,8 @@
                         <form action="{{url('contest/question/renounce/'.$questionID)}}"
                               method="post">{{method_field('PUT')}}
                             {{csrf_field()}}
-                            <button type="submit" class="btn btn-primary">Renounce
+                            <button type="submit" class="btn btn-primary testing-question-action-button renounce">
+                                Renounce
                             </button>
                         </form>
                     @endif

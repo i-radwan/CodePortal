@@ -707,6 +707,7 @@ class ContestController extends Controller
     {
         $i = 1;
         foreach ($problemIDs as $problemID) {
+            if (!$problemID) continue;
             $problemPivot = $contest->problems()->find($problemID)->pivot;
             $problemPivot[Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER] = $i;
             $problemPivot->save();

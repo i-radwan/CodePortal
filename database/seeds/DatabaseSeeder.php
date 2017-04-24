@@ -14,9 +14,7 @@ class DatabaseSeeder extends Seeder
         Eloquent::unguard();
 
         // Sync problems
-        Artisan::call("sync-judge:problems", ["--judge" => "codeforces"]);
-        Artisan::call("sync-judge:problems", ["--judge" => "uva"]);
-        Artisan::call("sync-judge:problems", ["--judge" => "live-archive"]);
+        $this->call(ProblemsSeeder::class);
 
         // Seed users
         $this->call(UsersTableSeeder::class);

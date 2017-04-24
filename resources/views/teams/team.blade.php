@@ -4,12 +4,12 @@
     $isInvited = Gate::allows('invitee-team', $team);
 @endphp
 
-<div class="panel panel-default">
+<div class="panel panel-default" id="testing-team-panel-{{ $team->id }}">
     {{--Check if authorized--}}
     @if($isMember)
         {{--Edit button--}}
         <a href="{{ url('teams/' . $team->id . '/edit') }}"
-           class="btn btn-link text-dark pull-right margin-5px">
+           class="btn btn-link text-dark pull-right margin-5px" id="testing-edit-team-{{ $team->id }}">
             Edit
         </a>
 
@@ -21,7 +21,7 @@
 
             <button onclick="return confirm('Are you sure want to delete the team?\nThis cannot be undone')"
                     type="submit"
-                    class="btn btn-link text-dark pull-right margin-5px">
+                    class="btn btn-link text-dark pull-right margin-5px" id="testing-delete-team-{{ $team->id }}">
                 Delete
             </button>
         </form>
@@ -32,7 +32,8 @@
             {{ method_field('PUT') }}
             {{ csrf_field() }}
 
-            <button type="submit" class="btn btn-link text-dark pull-right margin-5px">
+            <button type="submit" class="btn btn-link text-dark pull-right margin-5px"
+                    id="testing-accept-team-{{ $team->id }}">
                 Accept
             </button>
         </form>
@@ -43,7 +44,8 @@
             {{ method_field('PUT') }}
             {{ csrf_field() }}
 
-            <button type="submit" class="btn btn-link text-dark pull-right margin-5px">
+            <button type="submit" class="btn btn-link text-dark pull-right margin-5px"
+                    id="testing-reject-team-{{ $team->id }}">
                 Reject
             </button>
         </form>
@@ -86,7 +88,8 @@
 
                             <button onclick="return confirm('Are you sure want to remove {{ $member->username }} from the team?')"
                                     type="submit"
-                                    class="btn-link text-dark">
+                                    class="btn-link text-dark"
+                                    id="testing-remove-member-team-{{ $team->id }}-{{ $member->username }}">
                                 Remove
                             </button>
                         </form>
@@ -119,7 +122,8 @@
 
                             <button onclick="return confirm('Are you sure want to cancel the invitation to {{ $member->username }}?')"
                                     type="submit"
-                                    class="btn-link text-dark">
+                                    class="btn-link text-dark"
+                                    id="testing-cancel-invitation-{{ $team->id }}-{{ $user->id }}">
                                 Cancel Invitation
                             </button>
                         </form>

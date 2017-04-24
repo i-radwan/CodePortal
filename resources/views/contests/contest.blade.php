@@ -37,7 +37,7 @@
                 </form>
                 <a href="{{url('contest/'.$contestID.'/edit')}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
                 <span class="btn btn-link text-dark pull-right margin-5px"
-                      onclick="app.toggleSortableStatus();">Reorder</span>
+                      onclick="app.toggleSortableStatus();" id="testing-reorder-btn">Reorder</span>
             @endif
             @if($isParticipant)
                 <form action="{{url('contest/leave/'.$contestID)}}"
@@ -45,15 +45,15 @@
                     {{csrf_field()}}
                     <button
                             onclick="return confirm('Are you sure want to leave this contest?')"
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Leave
+                            type="submit" class="btn btn-link text-dark pull-right margin-5px" id="testing-contest-leave-btn">Leave
                     </button>
                 </form>
             @elseif(Auth::check())
-                <form action="{{url('contest/join/'.$contestID)}}"
-                      method="post">
+                <form action="{{url('contest/join/'.$contestID)}}" method="post">
                     {{csrf_field()}}
                     <button
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Join
+                            type="submit" class="btn btn-link text-dark pull-right margin-5px" id="testing-contest-join-btn">
+                        Join
                     </button>
                 </form>
 
@@ -113,7 +113,7 @@
                                 @include('contests.contest_views.questions')
                             @else
 
-                                <h3>No questions!</h3>
+                                <p>No questions!</p>
                             @endif
                         </div>
                     </div>

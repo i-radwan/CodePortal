@@ -5,12 +5,12 @@
             <p class="contest-time pull-right">{{ $contestTime }}</p>
         </div>
         <div class="col-md-5 col-sm-7 cols-xs-12 contest-details">
-            <p>
+            <p class="owner-p">
                 <strong>Owner:</strong>
                 <a href="{{ url('profile/'.$ownerUsername) }}">{{ $ownerUsername }}</a>
             </p>
             @if(count($contestOrganizers))
-                <p>
+                <p class="organizers-p">
                     <strong>Organizers:</strong>
                     @foreach($contestOrganizers as $organizer)
                         <a href="{{url('profile/'.$organizer)}}">{{$organizer}}</a>
@@ -21,7 +21,7 @@
                     @endforeach
                 </p>
             @endif
-            <p><strong>Duration: </strong>{{ $contestDuration }} hrs</p>
+            <p class="duration-p"><strong>Duration: </strong>{{ $contestDuration }} hrs</p>
         </div>
     </div>
 </div>

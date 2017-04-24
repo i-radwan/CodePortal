@@ -15,7 +15,7 @@
 
             <tr>
                 {{--Username--}}
-                <td><a href="{{ url('profile/' . $userName) }}">{{ $userName }}</a></td>
+                <td><a class="testing-participant-username" href="{{ url('profile/' . $userName) }}">{{ $userName }}</a></td>
 
                 {{--User country--}}
                 <td>{{ $country }}</td>

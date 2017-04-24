@@ -14,7 +14,7 @@
         <tbody>
         @foreach($data[Constants::CONTESTS_CONTESTS_KEY] as $contest)
             <tr>
-                <td>{{ $contest->id }}</td>
+                <td class="testing-contest-id-cell">{{ $contest->id }}</td>
                 <td>
                     <a href="{{ url('contest/' . $contest->id) }}">
                         {{ $contest->name }}

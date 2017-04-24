@@ -42,6 +42,9 @@ class AuthServiceProvider extends ServiceProvider
                 return true;
             }
 
+            // if organizer
+            if ($contest->organizers()->find($user[Constants::FLD_USERS_ID])) return true;
+
             // Check if user is invited to private contest
             $contestsInvitationsCount = $user->displayableReceivedNotifications()
                 ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE_CONTEST)
@@ -100,7 +103,6 @@ class AuthServiceProvider extends ServiceProvider
 
         // Member of group
         Gate::define("member-group", function (User $user, Group $group) {
-
             // Check if user is member and not owner
             return (
                 !$user->owningGroups()->find($group[Constants::FLD_GROUPS_ID]) &&
