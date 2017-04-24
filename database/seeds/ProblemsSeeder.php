@@ -14,6 +14,5 @@ class ProblemsSeeder extends Seeder
         Artisan::call("sync-judge:problems", ["--judge" => "codeforces"]);
         Artisan::call("sync-judge:problems", ["--judge" => "uva"]);
         Artisan::call("sync-judge:problems", ["--judge" => "live-archive"]);
-
     }
 }

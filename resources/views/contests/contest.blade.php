@@ -37,7 +37,7 @@
                 </form>
                 <a href="{{url('contest/'.$contestID.'/edit')}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
                 <span class="btn btn-link text-dark pull-right margin-5px"
-                      onclick="app.toggleSortableStatus();">Reorder</span>
+                      onclick="app.toggleSortableStatus();" id="testing-reorder-btn">Reorder</span>
             @endif
             @if($isParticipant)
                 <form action="{{url('contest/leave/'.$contestID)}}"

@@ -14,19 +14,19 @@
     @foreach($members as $member)
         <tr>
             <td>
-                <a href="{{ url('profile/' . $member[Constants::FLD_USERS_USERNAME]) }}">
-                    {{ $member[Constants::FLD_USERS_USERNAME] }}
+                <a href="{{ url('profile/' . $member[\App\Utilities\Constants::FLD_USERS_USERNAME]) }}">
+                    {{ $member[\App\Utilities\Constants::FLD_USERS_USERNAME] }}
                 </a>
             </td>
-            <td> {{ $member[Constants::FLD_USERS_EMAIL] }}</td>
-            <td> {{ $member[Constants::FLD_USERS_COUNTRY] }}</td>
+            <td> {{ $member[\App\Utilities\Constants::FLD_USERS_EMAIL] }}</td>
+            <td> {{ $member[\App\Utilities\Constants::FLD_USERS_COUNTRY] }}</td>
             @if($isOwner)
                 <td class="text-center">
-                    <form action="{{url('group/member/'.$groupID.'/'.$member[Constants::FLD_USERS_ID])}}"
+                    <form action="{{url('group/member/'.$groupID.'/'.$member[\App\Utilities\Constants::FLD_USERS_ID])}}"
                           method="post" class="action">
                         {{method_field('DELETE')}}
                         {{csrf_field()}}
-                        <button type="submit" class="btn btn-link text-dark"
+                        <button type="submit" class="btn btn-link text-dark" id="testing-remove-member-{{ $member[\App\Utilities\Constants::FLD_USERS_ID] }}"
                                 onclick="return confirm('Are you sure want to remove this member?\nThis cannot be undone')">
                             Remove
                         </button>

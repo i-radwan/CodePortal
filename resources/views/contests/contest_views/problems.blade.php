@@ -11,10 +11,12 @@
     </thead>
 
     @php($user = Auth::user())
+    @php($i=0)
 
     <tbody id="contest-problems-tbody">
     @foreach($problems as $problem)
         @php
+            $i++;
             $problem = (array)$problem;
             $trailsCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_TRAILS_COUNT];
             $problem = new \App\Models\Problem((array)$problem);
@@ -36,11 +38,11 @@
         <tr class="{{ $style }}">
             {{--Reorder view--}}
             <td class="problems-reorder-view index" data-problem-id="{{$problem->id}}">
-                <i class="fa fa-bars" aria-hidden="true"></i>
+                <i class="fa fa-bars" id="testing-drag-problem-{{$problem->id}}" aria-hidden="true"></i>
             </td>
 
             {{--ID--}}
-            <td>{{ $id }}</td>
+            <td class="testing-problem-order-{{ $i }}">{{ $id }}</td>
 
             {{--Name--}}
             <td><a href="{{ $link }}" target="_blank">{{ $problem->name }}</a></td>

@@ -46,6 +46,7 @@
                                 <td>
                                     <button class="btn btn-primary"
                                             data-toggle="modal"
+                                            id="testing-solution-btn-problem-{{ $problem->id }}"
                                             data-target="#problem-solution-model"
                                             onclick="app.fillAnswerModal('{{$problem->id}}', '{{$sheetID}}', '{{url("sheet/solution/$sheetID/".$problem->id)}}', '{{$problem->pivot->solution_lang}}');">
                                         Solution

@@ -22,7 +22,7 @@
                 <td class="text-center">
 
                     {{--Edit sheet--}}
-                    <a href="{{url('sheet/edit/'.$sheet[Constants::FLD_SHEETS_ID])}}}" class="btn btn-link text-dark">
+                    <a href="{{url('sheet/edit/'.$sheet[Constants::FLD_SHEETS_ID])}}}" class="btn btn-link text-dark testing-edit-sheet">
                         Edit
                     </a>
 

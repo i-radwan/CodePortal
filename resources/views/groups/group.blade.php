@@ -66,18 +66,18 @@
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
-                                <a href="#members" aria-controls="members" role="tab" data-toggle="tab">Members</a>
+                                <a href="#members" aria-controls="members" role="tab" data-toggle="tab" id="testing-members-link">Members</a>
                             </li>
                             <li role="presentation">
-                                <a href="#contests" aria-controls="contests" role="tab" data-toggle="tab">Contests</a>
+                                <a href="#contests" aria-controls="contests" role="tab" data-toggle="tab" id="testing-contests-link">Contests</a>
                             </li>
                             <li role="presentation">
-                                <a href="#sheets" aria-controls="sheets" role="tab" data-toggle="tab">Sheets</a>
+                                <a href="#sheets" aria-controls="sheets" role="tab" data-toggle="tab" id="testing-sheets-link">Sheets</a>
                             </li>
                             @if($isOwner)
                                 <li role="presentation">
                                     <a href="#requests" aria-controls="requests" role="tab"
-                                       data-toggle="tab">Requests
+                                       data-toggle="tab"  id="testing-requests-link">Requests
                                         @if(count($seekers))
                                             <span class="dark-red">•</span>
                                         @endif
@@ -103,8 +103,7 @@
                             <div role="tabpanel" class="tab-pane" id="contests">
                                 @if($isOwner)
                                     <a href="{{url('group/'.$groupID.'/contest/new')}}"
-                                       class="btn-sm btn btn-primary pull-right new-sheet-link">New
-                                        Contest</a>
+                                       class="btn-sm btn btn-primary pull-right new-sheet-link" id="testing-group-new-contest-link">New Contest</a>
                                 @endif
                                 <div class="text-center horizontal-scroll">
                                     @include('contests.contest_views.contests_table')
@@ -114,8 +113,7 @@
                             <div role="tabpanel" class="tab-pane" id="sheets">
                                 @if($isOwner)
                                     <a href="{{url('sheet/new/'.$groupID)}}"
-                                       class="btn-sm btn btn-primary pull-right new-sheet-link">New
-                                        Sheet</a>
+                                       class="btn-sm btn btn-primary pull-right new-sheet-link">New Sheet</a>
                                 @endif
                                 @if(count($sheets))
                                     @include('groups.group_views.sheets')

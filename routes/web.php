@@ -101,7 +101,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('group/request/reject/{group}/{user}', 'GroupController@rejectRequest')->middleware(['can:owner-group,group']);
     Route::put('group/leave/{group}', 'GroupController@leaveGroup')->middleware(['can:member-group,group']);
 
-    Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group'])->middleware(['can:member-group,group,user']);
+    Route::delete('group/member/{group}/{user}', 'GroupController@removeMember')->middleware(['can:owner-group,group', 'can:member-group,group,user']);
     Route::delete('group/{group}', 'GroupController@deleteGroup')->middleware(['can:owner-group,group']);
     Route::delete('sheet/{sheet}', 'SheetController@deleteSheet')->middleware(['can:owner-group,sheet']);
 });

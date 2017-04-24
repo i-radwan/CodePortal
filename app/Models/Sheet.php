@@ -55,7 +55,7 @@ class Sheet extends Model
             $solutionFile = $problem->pivot->solution;
 
             if ($solutionFile) {
-                unlink("code/$solutionFile");
+                \Storage::disk('code')->delete($solutionFile);
             }
         }
 
@@ -78,9 +78,9 @@ class Sheet extends Model
                 Constants::FLD_SHEET_PROBLEMS_SHEET_ID,
                 Constants::FLD_SHEET_PROBLEMS_PROBLEM_ID
             )
-            ->withPivot(Constants::FLD_SHEET_PROBLEMS_SOLUTION)
-            ->withPivot(Constants::FLD_SHEET_PROBLEMS_SOLUTION_LANG)
-            ->withTimestamps();
+                ->withPivot(Constants::FLD_SHEET_PROBLEMS_SOLUTION)
+                ->withPivot(Constants::FLD_SHEET_PROBLEMS_SOLUTION_LANG)
+                ->withTimestamps();
     }
 
     /**

@@ -2,14 +2,16 @@
 
 namespace Tests\Browser;
 
+use App\Models\Contest;
 use App\Models\Problem;
 use App\Models\User;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
+use Carbon\Carbon;
+use Facebook\WebDriver\Exception\NoAlertOpenException;
 use Facebook\WebDriver\Exception\UnexpectedAlertOpenException;
 use Tests\Browser\Pages\AddContestPage;
 use Tests\Browser\Pages\Contests;
-use Tests\Browser\Pages\HomePage;
 use Tests\Browser\Pages\Login;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
@@ -26,14 +28,20 @@ class ContestFlowTest extends DuskTestCase
     {
         sleep(1);
         $faker = \Faker\Factory::create();
-
-        $this->browse(function (Browser $browser, Browser $browser2) use ($faker) {
-
+        $now = Carbon::createFromFormat("Y-m-d H:i:s", Carbon::now()->addMinute(10))->toDateTimeString();
+        $this->browse(function (Browser $browser, Browser $browser2) use ($faker, $now) {
+            // Get some users for testing
+            $username0 = User::find(2)[Constants::FLD_USERS_USERNAME];
+            $username1 = User::find(33)[Constants::FLD_USERS_USERNAME];
+            $username2 = User::find(44)[Constants::FLD_USERS_USERNAME];
+            $username3 = User::find(23)[Constants::FLD_USERS_USERNAME];
+            $username4 = User::find(32)[Constants::FLD_USERS_USERNAME];
+            $username5 = User::find(12)[Constants::FLD_USERS_USERNAME];
+            $username6 = User::find(14)[Constants::FLD_USERS_USERNAME];
+            $asd = 'asd';
             // Visit contests page
             $browser->visit(new Contests)
-                ->assertSee('Contests')
-                ->assertVisible(".pagination");
-
+                ->assertSee('Contests');
 
             // Add new contest for non user
             // ToDo to be removed after removing new button for non-signed in
@@ -43,7 +51,7 @@ class ContestFlowTest extends DuskTestCase
 
             // Login
             $browser->visit(new Login)
-                ->loginUser('asd', 'asdasd');
+                ->loginUser($asd, 'asdasd');
 
 
             // Visit new contest page and move to add new contest page
@@ -69,7 +77,7 @@ class ContestFlowTest extends DuskTestCase
             $browser->saveContest('ADS2', '2017-05-02 12:12:12', 1000, 0);
             $browser->on(new AddContestPage);
 
-            $lastContest = \App\Models\Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
+            $lastContest = Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
 
             // Get last id to check path
             $browser->assertPathIs('/contest/' . $lastContest[Constants::FLD_CONTESTS_ID]);
@@ -106,7 +114,7 @@ class ContestFlowTest extends DuskTestCase
             $browser->saveContest($contestName, '2017-05-02 12:12:12', 1000, 0, [1, 2, 3], $organizers, []);
 
             // Get last id to check path
-            $lastContest = \App\Models\Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
+            $lastContest = Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
             $browser->assertPathIs('/contest/' . $lastContest[Constants::FLD_CONTESTS_ID]);
 
             // Check if in contests table
@@ -125,7 +133,7 @@ class ContestFlowTest extends DuskTestCase
             // Check using other browser
             // Login browser 2
             $browser2->visit(new Login)
-                ->loginUser('dsa', 'asdasd');
+                ->loginUser($username0, 'asdasd');
 
             // User 2 can see th contest cuz it's public
             $browser2->visit('http://127.0.0.1:8000/contest/' . $lastContest[Constants::FLD_CONTESTS_ID]);
@@ -136,7 +144,7 @@ class ContestFlowTest extends DuskTestCase
             $browser2->assertSeeIn('.organizers-p', User::find(2)[Constants::FLD_USERS_USERNAME])
                 ->assertSeeIn('.organizers-p', User::find(3)[Constants::FLD_USERS_USERNAME])
                 ->assertSeeIn('.organizers-p', User::find(4)[Constants::FLD_USERS_USERNAME])
-                ->assertSeeIn('.owner-p', 'asd')
+                ->assertSeeIn('.owner-p', $asd)
                 ->assertSeeIn('.duration-p', Utilities::convertMinsToHoursMins(1000));
 
             // Check contest problems
@@ -150,7 +158,6 @@ class ContestFlowTest extends DuskTestCase
 
             // ToDo team has to join and check for it
 
-
             //===========================================================
             // Try invalid combinations in adding contest
             //===========================================================
@@ -158,19 +165,20 @@ class ContestFlowTest extends DuskTestCase
             // Add myself as organizer
             $contestName = $faker->sentence(2);
 
-            // No error should happened, we just have to check that I'm not listed as organizer in browser 2
+            // No error should happen, we just have to check that I'm not listed as organizer in browser 2
             $browser->visit(new AddContestPage)
-                ->saveContest($contestName, '2017-04-23 12:33:12', 10000, 0, [1, 2, 3], ['asd', 'mitchell.otha'], []);
+                ->saveContest($contestName, $now, 10000, 0, [1, 2, 3], [$asd, $username1], []);
 
-            $publicContest = \App\Models\Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
+            $publicContest = Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
             $browser->assertPathIs('/contest/' . $publicContest[Constants::FLD_CONTESTS_ID]);
 
             // Use browser 2 to check
 
             $browser2->visit('http://127.0.0.1:8000/contest/' . $publicContest[Constants::FLD_CONTESTS_ID]);
             // Check contest name
-            $browser2->assertSee($contestName)
-                ->assertDontSeeIn('.organizers-p', 'asd');
+            $browser2->assertSee($contestName);
+            if ($browser->element('.organizers-p'))
+                $browser->assertDontSeeIn('.organizers-p', $asd);
 
             //===========================================================
             // Select more than 10 check boxes
@@ -182,23 +190,24 @@ class ContestFlowTest extends DuskTestCase
             // Alert for more than 10
             try {
                 $browser->visit(new AddContestPage)
-                    ->saveContest($contestName, '2017-05-02 12:12:12', 1000, 0, $problems, ['asd', 'mitchell.otha'], []);
+                    ->saveContest($contestName, '2017-05-02 12:12:12', 1000, 0, $problems, [$asd, $username1], []);
                 $this->fail("Shouldn't reach here without alertbox!");
             } catch (UnexpectedAlertOpenException $e) {
-                $browser->driver->switchTo()->alert()->accept();
+                $browser->acceptDialog();
             }
 
             //===========================================================
 
+            // clear all sessions (some session is left from the last attempt to save invalid contest)
+            $browser->script(['app.clearSession();']);
 
             // ==========================================================
             // Test private contests
             // ==========================================================
-
             $browser->visit(new AddContestPage)
-                ->saveContest($contestName, '2017-05-02 12:12:12', 1000, 1, [1, 2, 3, 4], ['asd', 'mitchell.otha'], ['cummings.antonetta', 'lizeth80']);
-
-            $privateContest = \App\Models\Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
+                ->saveContest($contestName, $now, 10000, 1, [1, 2, 3, 4], [$asd, $username1], [$username2, $username3]);
+            sleep(1);
+            $privateContest = Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
             $browser->assertPathIs('/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
 
             // Check invitations sent (in notification panel and
@@ -206,15 +215,13 @@ class ContestFlowTest extends DuskTestCase
             $browser2->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
             $browser2->assertPathIs('/errors/401');
 
-
             // Logout
-            $browser2->visit(new HomePage)
-                ->clickLink('Logout');
+            $browser2->clickLink('Logout');
 
 
             // Login as cummings.antonetta
             $browser2->visit(new Login)
-                ->loginUser('cummings.antonetta', 'asdasd');
+                ->loginUser($username2, 'asdasd');
 
             // Visit page again
 
@@ -227,7 +234,6 @@ class ContestFlowTest extends DuskTestCase
 
             $browser2->assertSeeIn('.notification-text', $contestName);
 
-
             // ==========================================================
             // Contest requests/notifications/participation test
             // browser1 -> asd
@@ -237,12 +243,11 @@ class ContestFlowTest extends DuskTestCase
             // Join public contest
 
             // Logout asd
-            $browser->visit(new HomePage)
-                ->clickLink('Logout');
+            $browser->clickLink('Logout');
 
             // visit login page and login this normal user with id 13
             $browser->visit(new Login)
-                ->loginUser('lizeth80', 'asdasd');
+                ->loginUser($username3, 'asdasd');
 
             // Visit contest page
             $browser->visit('http://127.0.0.1:8000/contest/' . $publicContest[Constants::FLD_CONTESTS_ID])
@@ -257,7 +262,7 @@ class ContestFlowTest extends DuskTestCase
             $browser->clickLink('Participants');
 
             // Check if is participant
-            $browser->assertSee('lizeth80');
+            $browser->assertSee($username3);
 
             // ==========================================================
 
@@ -277,7 +282,7 @@ class ContestFlowTest extends DuskTestCase
             // Check if not participant anymore
             $browser->clickLink('Participants');
             if ($browser->element('.testing-participant-username'))
-                $browser->assertDontSeeIn('.testing-participant-username', 'lizeth80');
+                $browser->assertDontSeeIn('.testing-participant-username', $username3);
             // ==========================================================
 
             // Accept invitation for private contest
@@ -304,31 +309,326 @@ class ContestFlowTest extends DuskTestCase
             $browser->clickLink('Participants');
 
             // Check if is participant
-            $browser->assertSee('lizeth80');
+            $browser->assertSee($username3);
 
             // ==========================================================
             // Contest questions test
             // ==========================================================
-
+            // move the contest back in time such that the question part is seen
+            \DB::table(Constants::TBL_CONTESTS)
+                ->where(Constants::FLD_CONTESTS_ID, $privateContest[Constants::FLD_CONTESTS_ID])
+                ->update(['time' => '2017-04-23 12:12:12']);
             // Ask question
+            $browser->refresh()->type('#title', $title = $faker->sentence())
+                ->select('#problem_id', '2')
+                ->type('#content', $content = $faker->realText())
+                ->click('#testing-ask-question-btn')
+                ->clickLink('Questions')
+                ->assertSee($title)
+                ->assertSee($content)
+                ->assertSee(Utilities::generateProblemNumber(Problem::find(2)))
+                // Not organizer, must not see the actions buttons
+                ->assertMissing('.testing-question-action-button');
 
             // Organizer answers question
+            // Logout first
+            $browser2->clickLink('Logout');
+
+            // Organizer
+            $browser2->visit(new Login)
+                ->loginUser($username1, 'asdasd')
+                ->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID])
+                ->clickLink('Questions')
+                ->assertSee($title)
+                ->assertSee($content)
+                ->assertSee(Utilities::generateProblemNumber(Problem::find(2)))
+                ->assertVisible('.testing-question-action-button.answer')
+                ->click('.testing-question-action-button.answer')
+                ->waitFor('#question-answer')
+                ->type('#question-answer', $answer = $faker->realText())
+                ->click('#answer-model-submit-button')
+                ->clickLink('Questions')
+                ->assertSee($answer);
+
+            // Check on user side
+            $browser->refresh()
+                ->pause(300)
+                ->clickLink('Questions')
+                ->assertSee($answer);
+
+            // Organizer edits question answer as announcement
+            $browser2->click('.testing-question-action-button.answer')
+                ->pause(1000)
+                ->type('#question-answer', $answer = $faker->realText())
+                ->click('#answer-model-submit-button')
+                ->clickLink('Questions')
+                ->assertSee($answer);
+
+            // Check on user side again
+            $browser->refresh()
+                ->pause(300)
+                ->clickLink('Questions')
+                ->assertSee($answer);
 
             // Organizer marks question as announcement
+            $browser2->waitFor('.testing-question-action-button.announce')
+                ->click('.testing-question-action-button.announce');
 
+            // Check on user side again
+            $browser->refresh()
+                ->pause(300)
+                ->clickLink('Questions')
+                ->assertVisible('.announcement');
+
+            // Renounce
+            $browser2->click('.testing-question-action-button.renounce');
+
+            // Check on user side again
+            $browser->refresh()
+                ->pause(300)
+                ->clickLink('Questions')
+                ->assertMissing('.announcement');
+
+            // Leave private contest
+            $browser->click('#testing-contest-leave-btn');
+            $browser->driver->switchTo()->alert()->accept();
+
+            $browser->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser->assertPathIsNot('/errors/401');
 
             // ==========================================================
             // Editing contest test OMG!
+            // I will be editing privateContest only (which covers the public
+            // part)
             // ==========================================================
+
+            // Logout
+            $browser->clickLink('Logout');
+
+            // Login as asd
+            $browser->visit(new Login)
+                ->loginUser($asd, 'asdasd');
+
+            // Visit private contest page
+            $browser->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser->assertPathIs('/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+
+            // Click edit
+            $browser->clickLink('Edit');
+
+            // Check autoFill (that contest data is available here)
+            //saveContest($contestName, $now, 10000, 1, [1, 2, 3, 4], [$asd, $username1], [$username2, $username3]);
+            $browser->assertInputValue('#name', $contestName)
+                ->assertInputValue('#time', '2017-04-23 12:12:12')
+                ->script(["$('#duration').show();"]);
+            $browser
+                ->waitFor('#duration')
+                ->pause(1000)
+                ->assertInputValue('#duration', 10000 * 60)
+                ->assertRadioSelected('visibility', 1)
+                ->assertSeeIn('#organisers-list', $username1);
+
+            // ==========================================================================
+            // Save empty data
+            // ==========================================================================
+
+            $browser->type('#name', '')
+                ->press('Save');
+
+            $browser->type('#name', 'NewContestName');
+
+            // Check not saved via other browser
+            // Logout
+            $browser2->clickLink('Logout');
+
+            // Login as mitchell.otha
+            $browser2->visit(new Login)
+                ->loginUser($username1, 'asdasd');
+
+            // Visit page again
+            $browser2->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser2->assertPathIs('/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser2->assertSee($contestName);
+
+
+            // ==========================================================================
+            // Save invalid dateTime
+            // ==========================================================================
+
+            $browser->type('#time', '2017-03-23 14:00:12')
+                ->press('Save');
+
+            $browser->type('#time', $now);
+
+            // Visit page again
+            $browser2->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser2->assertPathIs('/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser2->assertSee(date('D M d, H:i', strtotime('2017-04-23 12:12:12')));
+
+            // ==========================================================================
+            // Add($username4)/remove(mitchell.otha) organizers (check with browser 2)
+            // ==========================================================================
+            $browser->click('.remove-btn');
+
+            $browser->script(['sessionStorage.setItem(app.organizersSessionKey, \'["' . $username4 . '"]\')']);
+
+            $browser->press('Save');
+            $browser->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID] . '/edit');
+
+            // Check saved via b2
+            $browser2->refresh()
+                ->assertPathIs('/errors/401')
+                ->clickLink('Logout')
+                // Login as mitchell.otha
+                ->visit(new Login)
+                ->loginUser($username4, 'asdasd');
+
+            // Visit page again to check if user can reach
+            $browser2->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser2->assertPathIs('/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+
+            // Check organizers
+            $browser2
+                ->assertDontSeeIn('.organizers-p', $username1)
+                ->assertSeeIn('.organizers-p', $username4);
+
+
+            // ==========================================================================
+            // Apply filters -> check if maintained
+            // ==========================================================================
+
+            // Click judges
+            $browser->check('#judge-checkbox-1');
+
+            // Save to session
+            $browser->script(['sessionStorage.setItem(app.tagsSessionKey, \'["math","dp"]\')']);
+            // Apply filters
+            $browser->click('#apply-filters');
+            $browser
+                ->assertSee("math")
+                ->assertSee("dp")
+                ->assertSeeIn("#tags-list", "math")
+                ->assertSeeIn("#tags-list", "dp");
+
+            // Clear filters
+            // Clear judges
+            $browser->uncheck('#judge-checkbox-1')
+                ->uncheck('#judge-checkbox-2')
+                ->uncheck('#judge-checkbox-3');
+
+            // Clear tags session
+            $browser->script(['sessionStorage.setItem(app.tagsSessionKey, \'\')']);
+            $browser->click('#apply-filters');
+
+            // ==========================================================================
+            // change problems
+            // ==========================================================================
+
+            $browser->waitFor('#problem-checkbox-1')
+                ->uncheck('#problem-checkbox-1')
+                ->check('#problem-checkbox-6');
+
+            $browser->press('Save');
+
+            $browser->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID] . '/edit');
+
+            // check using b 2 to see if problems have changed
+            $problem1Number = Utilities::generateProblemNumber(Problem::find(1));
+            $problem6Number = Utilities::generateProblemNumber(Problem::find(6));
+
+            $browser2->refresh()
+                ->assertDontSee($problem1Number)
+                ->assertSee($problem6Number);
+
+            // ==========================================================================
+            // Select more than 10 problems
+            // ==========================================================================
+            $problems = [17, 16, 15, 14, 13, 7, 8, 9, 10, 11, 12];
+
+            // Check problems boxes
+            foreach ($problems as $problemsID) {
+                $browser->check('#problem-checkbox-' . $problemsID);
+                try {
+                    $browser->acceptDialog();
+                } catch (NoAlertOpenException $e) {
+
+                }
+            }
+            foreach ($problems as $problemsID) {
+                $browser->uncheck('#problem-checkbox-' . $problemsID);
+            }
+            // ==========================================================================
+            // invite others (maximus.okon) and change name check with browser 2
+            // ==========================================================================
+            $browser->script(['sessionStorage.setItem(app.inviteesSessionKey, \'["' . $username5 . '"]\')']);
+            $browser->type('#name', 'NewContestName');
+            $browser->press('Save');
+
+            $browser->assertSee('NewContestName');
+
+            $browser->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID] . '/edit');
+
+            // Check not saved via other browser
+            // Logout
+            $browser2->clickLink('Logout');
+
+            $browser2->visit(new Login)
+                ->loginUser($username5, 'asdasd');
+
+            // Visit page again
+            $browser2->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser2->assertPathIs('/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+
+
+            // Check notification panel
+            $browser2->click('#testing-notification-link');
+
+            $browser2->assertSeeIn('.notification-text', 'NewContestName');
+
+            // ==========================================================================
+            // change visibility
+            // ==========================================================================
+            $browser->script(['$("#private_visibility").prop(\'checked\', false);$("#public_visibility").prop(\'checked\', true);']);
+            $browser->pause(300)->press('Save');
+            $browser->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID] . '/edit');
+
+            // ==========================================================================
+            // try to join by (georgette.daniel)
+            // ==========================================================================
+            // Logout
+            $browser2->clickLink('Logout');
+
+            $browser2->visit(new Login)
+                ->loginUser($username6, 'asdasd');
+
+            // Visit page again
+            $browser2->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser2->assertPathIs('/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
 
             // ==========================================================
             // Reorder contest test
             // ==========================================================
+            $browser->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser->assertPathIs('/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser->click('#testing-reorder-btn');
+
+            $browser->dragDown('#testing-drag-problem-2', 40);
+
+            $browser->press('Save');
+
+            $browser->waitFor('.testing-problem-order-2');
+
+            // Check problem order as third
+            $this->assertTrue($browser->text('.testing-problem-order-2') ==
+                Utilities::generateProblemNumber(Problem::find(2)));
 
             // ==========================================================
             // Delete contest test
             // ==========================================================
-            $browser->pause(100000);
+            $browser->press('Delete');
+            $browser->acceptDialog();
+            $browser->visit('http://127.0.0.1:8000/contest/' . $privateContest[Constants::FLD_CONTESTS_ID]);
+            $browser->assertPathIs('/errors/404');
 
         });
     }

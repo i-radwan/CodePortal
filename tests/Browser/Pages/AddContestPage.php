@@ -64,7 +64,7 @@ class AddContestPage extends BasePage
         // Save organizers and invitees to session (cannot do better no support for auto complete)
         $browser->script(['sessionStorage.setItem(app.organizersSessionKey, \'' . $organizers . '\')']);
         $browser->script(['sessionStorage.setItem(app.inviteesSessionKey, \'' . $invitees . '\')']);
-        if ($visibility) {
+        if ($visibility) { // private
             $browser->script(['$("#private_visibility").prop(\'checked\', true);$("#public_visibility").prop(\'checked\', false);']);
         } else
             $browser->script(['$("#public_visibility").prop(\'checked\', true);$("#private_visibility").prop(\'checked\', false);']);
