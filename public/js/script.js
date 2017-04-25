@@ -17,7 +17,6 @@ var app = {
 
     contestProblemsMaxCount: 10,
 
-
     // ==================================================
     //                    Variables
     // ==================================================
@@ -226,49 +225,53 @@ var app = {
         }
 
         //Blogs Add Post page
-        if( $("#add-edit-post-page-hidden-element").length){
-            var simplemde = new SimpleMDE({
-                //Get the text area element
-                element: document.getElementById("edit_post_body"),
-                //Enables Auto Save which is removed when the form is submitted
-                autosave: {
-                    enabled: true,
-                    uniqueId: "edit_post", //unique id for identifying saving purposes
-                    delay: 1000, //Time between saves milli seconds
-                },
-                spellChecker: false, //Disable Spell Checker
-            });
+        if ($("#add-edit-post-page-hidden-element").length) {
+            if (!sessionStorage.getItem('disableMDE')) {
+                var simplemde = new SimpleMDE({
+                    //Get the text area element
+                    element: document.getElementById("edit-post-body"),
+                    //Enables Auto Save which is removed when the form is submitted
+                    autosave: {
+                        enabled: true,
+                        uniqueId: "edit_post", //unique id for identifying saving purposes
+                        delay: 1000, //Time between saves milli seconds
+                    },
+                    spellChecker: false, //Disable Spell Checker
+                });
+            }
         }
 
         //Blogs View Single Post page
         //Blogs add comment in a post page
-        if( $("#view-post-page-hidden-element").length){
+        if ($("#view-post-page-hidden-element").length) {
             //Render the post body in markdown
             document.getElementById('current_post_body').innerHTML =
                 marked(document.getElementById('current_post_body').innerHTML);
             //Add the comment markdown editor
-            var simplemde = new SimpleMDE({
-                //Get the text area element
-                element: document.getElementById("add_comment_text"),
-                spellChecker: false, //Disable Spell Checker
-            });
+            if (!sessionStorage.getItem('disableMDE')) {
+                var simplemde = new SimpleMDE({
+                    //Get the text area element
+                    element: document.getElementById("add-comment-text"),
+                    spellChecker: false, //Disable Spell Checker
+                });
+            }
             //Render the comments in markdown
             //Get all comments in the post page
             var comments = document.getElementsByClassName("comment_body");
             //Loop over them and render each one in markdown
-            for(var i = 0; i < comments.length; i++){
+            for (var i = 0; i < comments.length; i++) {
                 comments[i].innerHTML = marked(comments[i].innerHTML);
             }
         }
 
 
         //Blogs Home Page
-        if( $("#blogs-home-page-hidden-element").length){
+        if ($("#blogs-home-page-hidden-element").length) {
             //Get all the blogs paragraph in the index page
-            var posts = document.getElementsByClassName('post_small_paragraph') ;
+            var posts = document.getElementsByClassName('post_small_paragraph');
             //Loop over the paragraphs in the blog index page
             //Change the text in each paragraph to a marked version
-            for(var i = 0; i < posts.length; i++){
+            for (var i = 0; i < posts.length; i++) {
                 posts[i].innerHTML = marked(posts[i].innerHTML);
             }
         }

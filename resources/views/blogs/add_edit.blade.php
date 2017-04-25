@@ -13,17 +13,17 @@
                             <div class="form-group">
                                 <label for="title" class="col-sm-2 control-label new_post_label">Title</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="post_title" name="title" placeholder="Title" value="">
+                                    <input type="text" class="form-control" id="post-title" name="title" placeholder="Title" value="">
                                 </div>
                             </div>
 
                             {{--Body--}}
                             <div class="form-group">
                                 <div>
-                                    <label for="title" class="col-sm-2 control-label">Body</label>
+                                    <label for="body" class="col-sm-2 control-label">Body</label>
                                 </div>
                                 <div class="col-md-10">
-                                <textarea id="edit_post_body" name="body" class="form-control new_post_text_area" rows="15" placeholder="Write your Post Here using Markdown" ></textarea>
+                                <textarea id="edit-post-body" name="body" class="form-control new-post-text-area" rows="15" placeholder="Write your Post Here using Markdown" contenteditable="true"></textarea>
                                 </div>
                             </div>
 

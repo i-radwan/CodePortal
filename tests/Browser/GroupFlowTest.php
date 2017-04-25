@@ -8,6 +8,7 @@ use App\Models\Problem;
 use App\Models\User;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
+use Faker\Factory;
 use Tests\Browser\Pages\Groups;
 use Tests\Browser\Pages\Login;
 use Tests\DuskTestCase;
@@ -24,7 +25,7 @@ class GroupFlowTest extends DuskTestCase
     public function testGroupFlow()
     {
         sleep(1);
-        $faker = \Faker\Factory::create();
+        $faker = Factory::create();
 
         $this->browse(function (Browser $browser, Browser $browser2) use ($faker) {
             // login
