@@ -21,27 +21,21 @@
 
         {{--Vote--}}
         <span>
-        <a href="{{ $comment_unlike_url }}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID]}}">
+        <a href="{{ $comment_unlike_url }}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID]}}"
+           id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] }}-down-vote-icon">
             @if(!isset($comment["user_vote"]) or $comment["user_vote"] != 0)
-                <i class="fa fa-thumbs-o-down"
-                   id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] }}-down-vote-icon"
-                   aria-hidden="true"> </i>
+                <i class="fa fa-thumbs-o-down" aria-hidden="true"> </i>
             @else
-                <i class="fa fa-thumbs-down"
-                   id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] }}-down-vote-icon"
-                   aria-hidden="true"></i>
+                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
             @endif
         </a>
             <span id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] }}-down-votes-count">{{$comment[\App\Utilities\Constants::FLD_COMMENTS_DOWN_VOTES]}}</span> &nbsp;
-        <a href="{{$comment_like_url}}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID]}}">
+        <a href="{{$comment_like_url}}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID]}}"
+           id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] }}-up-vote-icon">
             @if(!isset($comment["user_vote"]) or $comment["user_vote"] != 1)
-                <i class="fa fa-thumbs-o-up"
-                   id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] }}-up-vote-icon"
-                   aria-hidden="true"> </i>
+                <i class="fa fa-thumbs-o-up"aria-hidden="true"> </i>
             @else
-                <i class="fa fa-thumbs-up"
-                   id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] }}-up-vote-icon"
-                   aria-hidden="true"> </i>
+                <i class="fa fa-thumbs-up"aria-hidden="true"> </i>
             @endif
         </a>
             <span id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] }}-up-votes-count">{{$comment[\App\Utilities\Constants::FLD_COMMENTS_UP_VOTES]}}</span>

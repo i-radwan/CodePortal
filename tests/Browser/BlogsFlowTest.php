@@ -4,6 +4,7 @@ namespace Tests\Browser;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\User;
 use App\Utilities\Constants;
 use Faker\Factory;
 use Tests\Browser\Pages\AddBlogPage;
@@ -24,11 +25,12 @@ class BlogsFlowTest extends DuskTestCase
     {
         sleep(1);
         $faker = Factory::create();
-        $this->browse(function (Browser $browser) use ($faker) {
-
+        $this->browse(function (Browser $browser, Browser $browser2) use ($faker) {
+            $user2 = User::find(12)[Constants::FLD_USERS_USERNAME];
             // Login
             $browser->visit(new Login)
                 ->loginUser('asd', 'asdasd');
+
             $browser->script(['sessionStorage.setItem(\'disableMDE\', \'true\')']);
             //============================================================
             // • User can add new blog
@@ -47,6 +49,7 @@ class BlogsFlowTest extends DuskTestCase
                 ->assertSee('Post Added Successfully')
                 ->assertSee($latestEntryTitle)
                 ->assertSee($latestEntryBody);
+
             //============================================================
             // • User can comment
             //============================================================
@@ -101,6 +104,23 @@ class BlogsFlowTest extends DuskTestCase
                 ->click("#comment-$latestCommentID-down-vote-icon")// down vote
                 ->assertSeeIn("#comment-$latestCommentID-up-votes-count", "0")
                 ->assertSeeIn("#comment-$latestCommentID-down-votes-count", "1");
+
+
+            //============================================================
+            // • Non-user cannot vote blogs/comments
+            //============================================================
+            $browser2->visit('http://127.0.0.1:8000/blogs/entry/' . $latestEntryID)
+                ->click('#blog-up-vote-icon')
+                ->assertPathIs('/errors/401')
+                ->visit('http://127.0.0.1:8000/blogs/entry/' . $latestEntryID)
+                ->click('#blog-down-vote-icon')
+                ->assertPathIs('/errors/401')
+                ->visit('http://127.0.0.1:8000/blogs/entry/' . $latestEntryID)
+                ->click("#comment-$latestCommentID-up-vote-icon")// up vote
+                ->assertPathIs('/errors/401')
+                ->visit('http://127.0.0.1:8000/blogs/entry/' . $latestEntryID)
+                ->click("#comment-$latestCommentID-down-vote-icon")//  down vote
+                ->assertPathIs('/errors/401');
 
             //============================================================
             // • User can view blogs
