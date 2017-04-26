@@ -67,7 +67,6 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define("owner-organizer-contest", function ($user, $contestID) {
             // Check if user is organizer or owner
             // TODO: what about sending the Contest Model to check its owner?
-            // TODO: What about your first gate xD
             return (
                 $user->organizingContests()->find($contestID) ||
                 $user->owningContests()->find($contestID)

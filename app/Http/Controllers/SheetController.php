@@ -110,7 +110,7 @@ class SheetController extends Controller
         // Save sheet
         $sheet->save();
 
-        // Fetch problems and sync with sheet problems ToDo replace with Samir tbl
+        // Fetch problems and sync with sheet problems
         $problemsIDs = explode(",", $request->get('problems'));
         $sheet->problems()->sync($problemsIDs);
 
@@ -134,7 +134,7 @@ class SheetController extends Controller
         // Save sheet
         $sheet->save();
 
-        // Fetch problems and sync problems ToDo replace with samir tbl
+        // Fetch problems and sync problems
         $problemsIDs = explode(",", $request->get('problems'));
         $sheet->problems()->sync($problemsIDs);
 

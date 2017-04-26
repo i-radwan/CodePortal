@@ -8,6 +8,7 @@ use App\Models\Problem;
 use App\Models\User;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
+use Carbon\Carbon;
 use Faker\Factory;
 use Tests\Browser\Pages\Groups;
 use Tests\Browser\Pages\Login;
@@ -26,8 +27,9 @@ class GroupFlowTest extends DuskTestCase
     {
         sleep(1);
         $faker = Factory::create();
+        $now = Carbon::createFromFormat("Y-m-d H:i:s", Carbon::now()->addMinute(10))->toDateTimeString();
 
-        $this->browse(function (Browser $browser, Browser $browser2) use ($faker) {
+        $this->browse(function (Browser $browser, Browser $browser2) use ($faker, $now) {
             // login
             $browser->visit(new Login)
                 ->loginUser('asd', 'asdasd');
@@ -137,7 +139,7 @@ class GroupFlowTest extends DuskTestCase
             $browser->click('#testing-contests-link')
                 ->click('#testing-group-new-contest-link')
                 ->type('name', 'NewGroupContest')
-                ->type('time', '2017-04-24 08:24:00')
+                ->type('time', $now)
                 ->script([
                     "$('#duration').show()",
                     "$('#duration').val(10000)"
