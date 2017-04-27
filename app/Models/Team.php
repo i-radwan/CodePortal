@@ -86,35 +86,15 @@ class Team extends Model
     }
 
     /**
-     * Return all notifications pointing at this contest
+     * Return all notifications pointing at this team
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function notifications()
     {
-        return
-            $this
-                ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
-                ->where(
-                    Constants::FLD_NOTIFICATIONS_TYPE,
-                    '=',
-                    Constants::NOTIFICATION_TYPE_TEAM
-                );
-    }
-
-    /**
-     * Return all pending invitations sent from this contest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function sentPendingInvitations()
-    {
-        // TODO: add pivot table fields as needed
-        return $this->notifications()->where(
-            Constants::FLD_NOTIFICATIONS_STATUS,
-            '!=',
-            Constants::NOTIFICATION_STATUS_DELETED
-        );
+        return $this
+            ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
+            ->ofType(Constants::NOTIFICATION_TYPE_TEAM);
     }
 
     /**
@@ -124,7 +104,6 @@ class Team extends Model
      */
     public function invitedUsers()
     {
-        // TODO: add pivot table fields as needed
         return
             $this->belongsToMany(
                 User::class,
@@ -135,10 +114,6 @@ class Team extends Model
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
                 Constants::NOTIFICATION_TYPE_TEAM
-            )->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '!=',
-                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 }

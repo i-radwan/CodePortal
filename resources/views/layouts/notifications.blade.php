@@ -1,6 +1,6 @@
 @php
     $user = Auth::user();
-    $notifications = $user->displayableReceivedNotifications()->get();
+    $notifications = $user->displayableNotifications()->get();
     $unreadCount = $user->unreadNotifications()->count();
 @endphp
 
@@ -45,12 +45,12 @@
                             break;
                     }
 
-                    $isRead = $notification->status == \App\Utilities\Constants::NOTIFICATION_STATUS_READ;
+                    $isRead = ($notification->status == \App\Utilities\Constants::NOTIFICATION_STATUS_READ);
                     $message = \App\Utilities\Constants::NOTIFICATION_TEXT_MESSAGE[$notification->type];
                     $date = \App\Utilities\Utilities::formatPastDateTime($notification->created_at);
                 @endphp
 
-                <li class="notification-container {{ $isRead ? 'read' : 'unread'}}">
+                <li class="notification-container {{ $isRead ? 'read' : 'unread' }}">
                     <a href="{{ url($resourceLink) }}">
                         {{--Notification icon--}}
                         <div class="notification-icon">
@@ -60,7 +60,7 @@
                         {{--Notification text and time--}}
                         <div class="notification-text">
                             <span>{{ $message }}
-                                <em class="notification-resource-name">{{$resource->name}}</em>
+                                <em class="notification-resource-name">{{ $resource->name }}</em>
                             </span>
                             <p class="text-right small notification-time">{{ $date }}</p>
                         </div>

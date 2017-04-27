@@ -59,17 +59,19 @@ class TeamController extends Controller
     /**
      * Store a newly created team in database
      *
-     * TODO: auth and validate
-     *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
+        // Create new team
         $team = new Team($request->all());
+
+        // Attach team creator as a team member
+        $user = Auth::user();
         $team->save();
         $team->members()->attach($user->id);
+
         return redirect('profile/' . $user->id . '/teams')->with('messages', [$team->name . ' created successfully!']);
     }
 
@@ -154,6 +156,7 @@ class TeamController extends Controller
     {
         $team->members()->detach($user);
 
+        // If no members exist then delete the entire team
         if ($team->members()->count() == 0) {
             $team->delete();
         }
@@ -170,13 +173,8 @@ class TeamController extends Controller
      */
     public function cancelInvitation(Team $team, User $user)
     {
-        // TODO: add gate to check that the user is indeed an invited user
-        $team->sentPendingInvitations()
-            ->where(
-                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
-                '=',
-                $user->id
-            )->delete();
+        // Delete the invitation from the database
+        $team->notifications()->ofReceiver($user->id)->delete();
 
         return back();
     }
@@ -191,13 +189,10 @@ class TeamController extends Controller
     {
         $user = Auth::user();
 
-        $team->sentPendingInvitations()
-            ->where(
-                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
-                '=',
-                $user->id
-            )->delete();
+        // Delete the invitation from the database
+        $team->notifications()->ofReceiver($user->id)->delete();
 
+        // Add the user as a team member
         $team->members()->attach($user);
 
         return redirect('profile/' . $user->id . '/teams');
@@ -213,14 +208,8 @@ class TeamController extends Controller
     {
         $user = Auth::user();
 
-        $team->sentPendingInvitations()
-            ->where(
-                Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
-                '=',
-                $user->id
-            )->update(
-                [Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]
-            );
+        // Delete the invitation from the database
+        $team->notifications()->ofReceiver($user->id)->delete();
 
         return back();
     }

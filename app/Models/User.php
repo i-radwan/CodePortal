@@ -146,6 +146,7 @@ class User extends Authenticatable
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_USER_ID);
     }
 
+    // TODO: to be enhnaced
     /**
      * Return all the wrong submission of the current user
      *
@@ -221,10 +222,6 @@ class User extends Authenticatable
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
                 Constants::NOTIFICATION_TYPE_CONTEST
-            )->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '!=',
-                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 
@@ -261,58 +258,6 @@ class User extends Authenticatable
     {
         return $this->questions()
             ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
-    }
-
-    /**
-     * Return the notifications sent by this user
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function sentNotifications()
-    {
-        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_SENDER_ID);
-    }
-
-    /**
-     * Return the notifications sent to this user
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function receivedNotifications()
-    {
-        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RECEIVER_ID);
-    }
-
-    /**
-     * Return user non-deleted notifications sorted by id in descending order
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function displayableReceivedNotifications()
-    {
-        // TODO: what about using Laravel's soft delete methods?
-        return $this->receivedNotifications()
-            ->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '!=',
-                Constants::NOTIFICATION_STATUS_DELETED
-            )
-            ->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
-    }
-
-    /**
-     * Return user unread notifications
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function unreadNotifications()
-    {
-        return $this->receivedNotifications()
-            ->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '=',
-                Constants::NOTIFICATION_STATUS_UNREAD
-            );
     }
 
     /**
@@ -357,10 +302,6 @@ class User extends Authenticatable
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
                 Constants::NOTIFICATION_TYPE_GROUP
-            )->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '!=',
-                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 
@@ -411,38 +352,74 @@ class User extends Authenticatable
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
                 Constants::NOTIFICATION_TYPE_TEAM
-            )->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '!=',
-                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 
-    /*
+    /**
+     * Return the notifications sent by this user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentNotifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_SENDER_ID);
+    }
+
+    /**
+     * Return the notifications sent to this user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function receivedNotifications()
+    {
+        return $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RECEIVER_ID);
+    }
+
+    /**
+     * Return user received notifications sorted by id in descending order
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function displayableNotifications()
+    {
+        return $this->receivedNotifications()->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
+    }
+
+    /**
+     * Return user unread notifications
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function unreadNotifications()
+    {
+        return $this->receivedNotifications()->ofStatus(Constants::NOTIFICATION_STATUS_UNREAD);
+    }
+
+    /**
      * Get User up Voted Posts
      */
-    public function upVotedPosts(){
+    public function upVotedPosts() {
         return $this->morphedByMany(Post::class, Constants::TBL_UP_VOTES)->whereDeletedAt(null);
     }
 
-    /*
+    /**
      * Get User up Voted Comments
      */
-    public function upVotedComments(){
+    public function upVotedComments() {
         return $this->morphedByMany(Comment::class, Constants::TBL_UP_VOTES)->whereDeletedAt(null);
     }
 
-    /*
-    * Get User down Voted Posts
-    */
-    public function downVotedPosts(){
+    /**
+     * Get User down Voted Posts
+     */
+    public function downVotedPosts() {
         return $this->morphedByMany(Post::class, Constants::TBL_DOWN_VOTES)->whereDeletedAt(null);
     }
 
-    /*
+    /**
      * Get User down Voted Comments
      */
-    public function downVotedComments(){
+    public function downVotedComments() {
         return $this->morphedByMany(Comment::class, Constants::TBL_DOWN_VOTES)->whereDeletedAt(null);
     }
 }
