@@ -117,9 +117,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('blogs/down_vote/comment/{comment}', 'VoteController@downVoteComment');
 
 });
+Route::group(['middleware' => 'contestAccessAuth:view-join-contest,contest'], function () {
 
-Route::get('contest/{contest}', 'ContestController@displayContest')->middleware(['contestAccessAuth:view-join-contest,contest']);
+    Route::get('contest/{contest}', 'ContestController@displayContestProblems');
+    Route::get('contest/{contest}/problems', 'ContestController@displayContestProblems');
+    Route::get('contest/{contest}/standings', 'ContestController@displayContestStandings');
+    Route::get('contest/{contest}/status', 'ContestController@displayContestStatus');
+    Route::get('contest/{contest}/participants', 'ContestController@displayContestParticipants');
+    Route::get('contest/{contest}/questions', 'ContestController@displayContestQuestions');
 
+});
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
 

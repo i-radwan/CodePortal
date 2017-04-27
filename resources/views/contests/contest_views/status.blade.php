@@ -14,7 +14,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach($status as $submission)
+        @foreach($submissions as $submission)
             @php
                 $submission = (array)$submission;
                 $submissionID = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID];
@@ -68,4 +68,4 @@
 </table>
 
 {{--Pagination--}}
-{{ $status->appends(Request::all())->fragment('status')->render() }}
+{{ $submissions->appends(Request::all())->render() }}
