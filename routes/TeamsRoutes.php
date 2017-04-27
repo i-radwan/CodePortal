@@ -3,6 +3,7 @@
 Route::group(['middleware' => 'auth'], function () {
     Route::get('teams/create', 'TeamController@create');
     Route::get('teams/{team}/edit', 'TeamController@edit')->middleware(['can:member-team,team']);
+    Route::get('teams/{team}/invitees_auto_complete', 'TeamController@usersAutoComplete')->middleware(['can:member-team,team']);
     Route::post('teams', 'TeamController@store');
     Route::post('teams/{team}', 'TeamController@update')->middleware(['can:member-team,team']);
     Route::post('teams/{team}/invite', 'TeamController@inviteMember')->middleware(['can:member-team,team']);
