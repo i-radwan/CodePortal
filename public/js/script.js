@@ -599,6 +599,7 @@ var app = {
     fetchAllTagsFromDB: function () {
         // Send request to path in tags-path data attr
         $.get($("#tags-auto").data('tags-path'), function (data) {
+            console.log(data);
             app.allTagsList = data;
         });
     },

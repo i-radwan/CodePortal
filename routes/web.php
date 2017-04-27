@@ -39,13 +39,13 @@ Route::group(['middleware' => 'auth'], function () {
 
 // Contest routes...
 Route::get('contests', 'ContestController@index');
+Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete');
 
 Route::group(['middleware' => 'auth'], function () {
 
     // Contests routes
     Route::get('contest/add', 'ContestController@addEditContestView');
     Route::get('contest/{contest}/edit', 'ContestController@addEditContestView')->middleware(['can:owner-contest,contest']);
-    Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete');
     Route::get('contest/add/organisers_auto_complete', 'ContestController@usersAutoComplete');
     Route::get('contest/add/invitees_auto_complete', 'ContestController@usersAutoComplete');
 

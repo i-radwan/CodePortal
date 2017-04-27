@@ -28,7 +28,7 @@ class ContestAccessAuthorization extends Authorize
             $contest = $this->getGateArguments($request, $models)[0];
             if ($contest->visibility == Constants::CONTEST_VISIBILITY_PUBLIC)
                 return $next($request);
-            else return redirect('errors/401');
+            else return redirect('login');
         }
 
         // Else if member check view-join-contest gate
