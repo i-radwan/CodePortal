@@ -102,6 +102,7 @@ class Constants
     const SINGLE_CONTEST_IS_USER_OWNER = "user_is_owner";
     const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
     const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
+    const SINGLE_CONTEST_ENDED_STATUS = "contest_ended_status";
     // ============================================================
     //endregion
 

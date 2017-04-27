@@ -369,6 +369,23 @@ class Contest extends Model
     }
 
     /**
+     * Check if contest has already ended
+     *
+     * @return bool
+     */
+    public function isEnded()
+    {
+        // Get contest end time by adding its duration to its start time
+        $contestEndTime = strtotime($this[Constants::FLD_CONTESTS_TIME]
+            . ' + ' . $this[Constants::FLD_CONTESTS_DURATION] . ' minute');
+
+        // Check if contest is running
+        return (
+            date("Y-m-d H:i:s") > $this[Constants::FLD_CONTESTS_TIME]
+            && date("Y-m-d H:i:s") > date("Y-m-d H:i:s", $contestEndTime));
+    }
+
+    /**
      * Return the problems of the current contest along with
      * the total number of submissions and the number of accepted submissions per problem
      *

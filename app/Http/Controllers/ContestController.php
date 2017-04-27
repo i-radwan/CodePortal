@@ -71,27 +71,40 @@ class ContestController extends Controller
             return redirect('contests/'); // contest doesn't exist
         }
 
+        $isContestRunning = $contestInfo[Constants::SINGLE_CONTEST_RUNNING_STATUS];
+        $isContestEnded = $contestInfo[Constants::SINGLE_CONTEST_ENDED_STATUS];
+
         // Get common view
         $view = view('contests.contest')
             ->with('isOwner', $isOwner)
             ->with('isUserOrganizer', $isUserOrganizer)
             ->with('isParticipant', $isParticipant)
             ->with('contestInfo', $contestInfo)
+            ->with('isContestRunning', $isContestRunning)
+            ->with('isContestEnded', $isContestEnded)
             ->with('view', 'problems')
             ->with('pageTitle', config('app.name') . ' | ' . $contest[Constants::FLD_CONTESTS_NAME]);
 
         // Get specific contest view data and attach to the view
         if ($displayProblems) {
 
-            $this->getProblemsInfo($contest, $problems);
+            $problems = [];
+
+            if ($isContestRunning || $isContestEnded) {
+                $this->getProblemsInfo($contest, $problems);
+            }
 
             $view->with('problems', $problems)
                 ->with('view', 'problems');
 
         } else if ($displayStandings) {
 
-            $this->getStandingsInfo($contest, $standings);
-            $this->getProblemsInfo($contest, $problems);
+            $standings = $problems = [];
+
+            if ($isContestRunning || $isContestEnded) {
+                $this->getStandingsInfo($contest, $standings);
+                $this->getProblemsInfo($contest, $problems);
+            }
 
             $view->with('standings', $standings)
                 ->with('problems', $problems)
@@ -669,6 +682,10 @@ class ContestController extends Controller
         // Get time and convert to familiar format
         $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY] =
             date('D M d, H:i', strtotime($contest[Constants::FLD_CONTESTS_TIME]));
+
+        // Check if contest has ended
+        $contestInfo[Constants::SINGLE_CONTEST_ENDED_STATUS]
+            = $contest->isEnded();
 
         // Get contest running status
         $contestInfo[Constants::SINGLE_CONTEST_RUNNING_STATUS]

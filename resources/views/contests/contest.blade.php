@@ -98,12 +98,20 @@
                                     </button>
                                     @include('contests.contest_views.problems')
                                 @else
-                                    <p>No problems!</p>
+                                    @if(!$isContestRunning && !$isContestEnded)
+                                        <p>Problems will be visible when the contest begins!</p>
+                                    @else
+                                        <p>No problems!</p>
+                                    @endif
                                 @endif
 
                                 {{--Standings--}}
                             @elseif($view == "standings")
-                                @include('contests.contest_views.standings')
+                                @if(!$isContestRunning && !$isContestEnded)
+                                    <p>Standings will be visible when the contest begins!</p>
+                                @else
+                                    @include('contests.contest_views.standings')
+                                @endif
 
                                 {{--Status--}}
                             @elseif($view == "submissions")
