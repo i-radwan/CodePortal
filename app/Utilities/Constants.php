@@ -619,7 +619,7 @@ class Constants
     const FLD_BLOGS_OWNER_ID = "owner_id";
 
     //POSTS
-    const FLD_POSTS_POST_ID = "id";
+    const FLD_POSTS_ID = "id";
     const FLD_POSTS_OWNER_ID = "owner_id";
     const FLD_POSTS_TITLE = "title";
     const FLD_POSTS_BODY = "body";

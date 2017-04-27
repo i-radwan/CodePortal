@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Auth;
@@ -206,7 +205,7 @@ class GroupController extends Controller
                     $group->members()->save($user);
                 }
             }
-            // If the user is already invited the make function throws this exception
+                // If the user is already invited the make function throws this exception
             catch (InvitationException $e) {
                 $errors .= "$username is already invited\n";
                 continue;
@@ -217,9 +216,7 @@ class GroupController extends Controller
         if ($errors != '') {
             return back()->withErrors($errors);
         }
-
-        return back()->with('messages', 'Users are invited successfully!');
-
+        return back()->with('messages', ['Users are invited successfully!']);
     }
 
     /**

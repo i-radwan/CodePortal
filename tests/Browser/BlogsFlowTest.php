@@ -40,8 +40,8 @@ class BlogsFlowTest extends DuskTestCase
                 ->on(new AddBlogPage)
                 ->addBlog($faker->sentence(5), $faker->sentence(100));
 
-            $latestEntry = Post::query()->orderByDesc(Constants::FLD_POSTS_POST_ID)->first();
-            $latestEntryID = $latestEntry[Constants::FLD_POSTS_POST_ID];
+            $latestEntry = Post::query()->orderByDesc(Constants::FLD_POSTS_ID)->first();
+            $latestEntryID = $latestEntry[Constants::FLD_POSTS_ID];
             $latestEntryTitle = $latestEntry[Constants::FLD_POSTS_TITLE];
             $latestEntryBody = $latestEntry[Constants::FLD_POSTS_BODY];
 

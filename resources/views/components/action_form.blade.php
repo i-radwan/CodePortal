@@ -1,4 +1,4 @@
-<form action="{{ $url }}" method="POST">
+<form action="{{ $url }}" method="POST" {{ (isset($halfWidth) && $halfWidth) ? 'class=action':'' }}>
 
     {{--Hidden Fields--}}
     {{ csrf_field() }}

@@ -24,10 +24,10 @@
             {{--Action : Accept/Reject--}}
             <td>
                 {{--Accept Form--}}
-                @include('components.action_form', ['url' => url('group/request/accept/'.$groupID.'/'.$seeker->id), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-accept-request-$seeker->id", 'btnTxt' => 'Accept'])
+                @include('components.action_form', ['halfWidth' => true, 'url' => url('group/request/accept/'.$groupID.'/'.$seeker->id), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-accept-request-$seeker->id", 'btnTxt' => 'Accept'])
 
                 {{--Reject Form--}}
-                @include('components.action_form', ['url' => url('group/request/reject/'.$groupID.'/'.$seeker->id), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-reject-request-$seeker->id", 'btnTxt' => 'Reject'])
+                @include('components.action_form', ['halfWidth' => true, 'url' => url('group/request/reject/'.$groupID.'/'.$seeker->id), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-reject-request-$seeker->id", 'btnTxt' => 'Reject'])
 
             </td>
         </tr>
