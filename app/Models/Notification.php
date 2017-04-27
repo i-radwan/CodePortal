@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Utilities\Constants;
 use App\Exceptions\InvitationException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Notification extends Model
 {
@@ -54,12 +55,12 @@ class Notification extends Model
      *
      * @param User $sender
      * @param User $receiver
-     * @param Team|Group|Contest $resource
+     * @param Model|Team|Group|Contest $resource
      * @param int $type
      * @param bool $duplicationAllowed Whether resending the same notification to the same user twice is allowed
      * @throws InvitationException
      */
-    public static function make(User $sender, User $receiver, $resource, $type, $duplicationAllowed = false)
+    public static function make(User $sender, User $receiver, Model $resource, $type, $duplicationAllowed = false)
     {
         if ($sender == null || $receiver == null || $resource == null || $type == null) {
             return;
@@ -114,7 +115,7 @@ class Notification extends Model
     /**
      * Returns the resource that this notification points to it (group, team, ...etc)
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
      */
     public function resource()
     {
@@ -129,9 +130,119 @@ class Notification extends Model
                 $class = Team::class;
                 break;
             default:
-                return;
+                return null;
         }
 
         return $this->belongsTo($class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID);
+    }
+
+    /**
+     * Scope a query to only include notifications of certain type
+     *
+     * @param Builder $query
+     * @param string|null $type
+     * @return Builder
+     */
+    public function scopeOfType(Builder $query, $type = null)
+    {
+        if ($type == null ) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_NOTIFICATIONS . '.' . Constants::FLD_NOTIFICATIONS_TYPE,
+            '=',
+            $type
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include notifications of certain status
+     *
+     * @param Builder $query
+     * @param string|null $status
+     * @return Builder
+     */
+    public function scopeOfStatus(Builder $query, $status = null)
+    {
+        if ($status == null ) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_NOTIFICATIONS . '.' . Constants::FLD_NOTIFICATIONS_STATUS,
+            '=',
+            $status
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include notifications of certain sender
+     *
+     * @param Builder $query
+     * @param string|null $senderID
+     * @return Builder
+     */
+    public function scopeOfSender(Builder $query, $senderID = null)
+    {
+        if ($senderID == null ) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_NOTIFICATIONS . '.' . Constants::FLD_NOTIFICATIONS_SENDER_ID,
+            '=',
+            $senderID
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include notifications of certain receiver
+     *
+     * @param Builder $query
+     * @param string|null $receiverID
+     * @return Builder
+     */
+    public function scopeOfReceiver(Builder $query, $receiverID = null)
+    {
+        if ($receiverID == null ) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_NOTIFICATIONS . '.' . Constants::FLD_NOTIFICATIONS_RECEIVER_ID,
+            '=',
+            $receiverID
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include notifications of certain resource
+     *
+     * @param Builder $query
+     * @param string|null $resourceID
+     * @return Builder
+     */
+    public function scopeOfResource(Builder $query, $resourceID = null)
+    {
+        if ($resourceID == null ) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_NOTIFICATIONS . '.' . Constants::FLD_NOTIFICATIONS_RESOURCE_ID,
+            '=',
+            $resourceID
+        );
+
+        return $query;
     }
 }

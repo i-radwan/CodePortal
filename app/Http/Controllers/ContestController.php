@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InvitationException;
 use Auth;
-use Carbon\Carbon;
 use Session;
 use Redirect;
 use URL;
@@ -18,6 +16,8 @@ use App\Models\Group;
 use App\Models\Notification;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
+use App\Exceptions\InvitationException;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ContestController extends Controller
@@ -50,7 +50,6 @@ class ContestController extends Controller
             ->with('runningContests', $runningContests)
             ->with('pageTitle', config('app.name') . ' | Contests');
     }
-
 
     /**
      * Display specific contest view

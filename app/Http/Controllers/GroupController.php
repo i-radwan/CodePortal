@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InvitationException;
-use App\Models\Group;
-use App\Models\Notification;
-use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Auth;
-use App\Utilities\Constants;
 use Redirect;
 use URL;
+use App\Models\User;
+use App\Models\Group;
+use App\Models\Notification;
+use App\Utilities\Constants;
 use App\Utilities\Utilities;
+use App\Exceptions\InvitationException;
+use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
@@ -28,10 +27,12 @@ class GroupController extends Controller
         // Get search filter
         $searchStr = Utilities::makeInputSafe(request()->get('name'));
 
-        $data[Constants::GROUPS_GROUPS_KEY] =
-            Group::ofName($searchStr)->paginate(Constants::GROUPS_COUNT_PER_PAGE);
+        //\DB::enableQueryLog();
+        $data[Constants::GROUPS_GROUPS_KEY] = Group::ofName($searchStr)->paginate(Constants::GROUPS_COUNT_PER_PAGE);
+        //dd(\DB::getQueryLog());
 
-        return view('groups.index')->with('data', $data)
+        return view('groups.index')
+            ->with('data', $data)
             ->with('pageTitle', config('app.name') . ' | Groups');
     }
 
@@ -156,6 +157,7 @@ class GroupController extends Controller
     public function removeMember(Group $group, User $user)
     {
         $user->joiningGroups()->detach($group);
+
         return back();
     }
 
@@ -203,17 +205,19 @@ class GroupController extends Controller
                     // Save user to members
                     $group->members()->save($user);
                 }
-
-            } catch (InvitationException $e) {
-                // If the user is already invited the make function throws this exception
+            }
+            // If the user is already invited the make function throws this exception
+            catch (InvitationException $e) {
                 $errors .= "$username is already invited\n";
                 continue;
             }
         }
+
         // Handle response errors/messages
         if ($errors != '') {
             return back()->withErrors($errors);
         }
+
         return back()->with('messages', 'Users are invited successfully!');
 
     }
@@ -246,12 +250,10 @@ class GroupController extends Controller
         $user = Auth::user();
 
         // Check if user has valid (non-deleted) invitation for joining this group
-        $groupsInvitation = $user->displayableReceivedNotifications()
-            ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE_GROUP)
-            ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group[Constants::FLD_GROUPS_ID])->first();
+        $groupInvitations = $group->notifications()->ofReceiver($user[Constants::FLD_USERS_ID]);
 
         // Invitation exists
-        if ($groupsInvitation) {
+        if ($groupInvitations->count() > 0) {
 
             // Join the group
             $user->joiningGroups()->syncWithoutDetaching([$group[Constants::FLD_GROUPS_ID]]);
@@ -260,11 +262,11 @@ class GroupController extends Controller
             // Because if the user left the group and the then rejoined
             // (if the invitation still exists), he will join, and we
             // should prevent this
-            $groupsInvitation->update([Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]);
+            $groupInvitations->delete();
 
-        } // Else, check if the user hasn't sent joining request (if sent stop, else send one)
+        }
+        // Else, check if the user hasn't sent joining request (if sent stop, else send one)
         else if (!$user->seekingJoinGroups()->find($group[Constants::FLD_GROUPS_ID])) {
-
             // Send joining request
             $user->seekingJoinGroups()->syncWithoutDetaching([$group[Constants::FLD_GROUPS_ID]]);
         }
@@ -285,10 +287,7 @@ class GroupController extends Controller
     {
         if ($user) {
             // Remove user invitation for the same reason in the joinGroup function
-            $user->displayableReceivedNotifications()
-                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', Constants::NOTIFICATION_TYPE_GROUP)
-                ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $group[Constants::FLD_GROUPS_ID])
-                ->update([Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]);
+            $group->notifications()->ofReceiver($user[Constants::FLD_USERS_ID])->delete();
 
             // Remove user join request
             $group->membershipSeekers()->detach($user);

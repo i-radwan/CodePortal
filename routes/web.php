@@ -24,7 +24,9 @@ Route::post('edit', 'UserController@editProfile');  // ToDo: @Abzo auth middlewa
 // Teams routes...
 // TODO: to be merged with profile routes
 Route::get('profile/{user}/teams', 'TeamController@index');
+
 Route::group(['middleware' => 'auth'], function () {
+
     Route::get('teams/create', 'TeamController@create');
     Route::get('teams/{team}/edit', 'TeamController@edit')->middleware(['can:member-team,team']);
     Route::post('teams', 'TeamController@store');
@@ -115,8 +117,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('blogs/up_vote/comment/{comment}', 'VoteController@upVoteComment');
     Route::get('blogs/down_vote/entry/{post}', 'VoteController@downVotePost');
     Route::get('blogs/down_vote/comment/{comment}', 'VoteController@downVoteComment');
-
 });
+
 Route::group(['middleware' => 'contestAccessAuth:view-join-contest,contest'], function () {
 
     Route::get('contest/{contest}', 'ContestController@displayContestProblems');
@@ -127,6 +129,7 @@ Route::group(['middleware' => 'contestAccessAuth:view-join-contest,contest'], fu
     Route::get('contest/{contest}/questions', 'ContestController@displayContestQuestions');
 
 });
+
 // Problems routes...
 Route::get('problems', 'ProblemController@index');
 

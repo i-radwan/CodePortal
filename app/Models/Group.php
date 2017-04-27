@@ -141,29 +141,9 @@ class Group extends Model
      */
     public function notifications()
     {
-        // TODO: add pivot table fields as needed
-        return
-            $this->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
-                ->where(
-                    Constants::FLD_NOTIFICATIONS_TYPE,
-                    '=',
-                    Constants::NOTIFICATION_TYPE_GROUP
-                );
-    }
-
-    /**
-     * Return all pending invitations sent from this group
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function sentPendingInvitations()
-    {
-        // TODO: add pivot table fields as needed
-        return $this->notifications()->where(
-            Constants::FLD_NOTIFICATIONS_STATUS,
-            '!=',
-            Constants::NOTIFICATION_STATUS_DELETED
-        );
+        return $this
+            ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
+            ->ofType(Constants::NOTIFICATION_TYPE_GROUP);
     }
 
     /**
@@ -173,7 +153,6 @@ class Group extends Model
      */
     public function invitedUsers()
     {
-        // TODO: add pivot table fields as needed
         return
             $this->belongsToMany(
                 User::class,
@@ -184,10 +163,6 @@ class Group extends Model
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
                 Constants::NOTIFICATION_TYPE_GROUP
-            )->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '!=',
-                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 
