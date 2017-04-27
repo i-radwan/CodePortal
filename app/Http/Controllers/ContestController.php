@@ -386,7 +386,7 @@ class ContestController extends Controller
             // Return success message
             Session::flash("messages", ["Contest Saved Successfully"]);
             return redirect()->action(
-                'ContestController@displayContest', ['id' => $contest[Constants::FLD_CONTESTS_ID]]
+                'ContestController@displayContestProblems', ['id' => $contest[Constants::FLD_CONTESTS_ID]]
             );
         } else {        // return error message
             Session::flash("messages", ["Sorry, Contest was not saved. Please retry later"]);

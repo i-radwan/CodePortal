@@ -18,18 +18,8 @@
         </div>
         <hr>
         {{--Tags AutoComplete--}}
-        <div id="custom-search-input">
-            <div class="input-group autocomplete-input-group">
-                <input id="tags-auto" type="text" class="form-control search-box"
-                       placeholder="Tag name..."
-                       onkeypress="return event.keyCode != 13;"
-                       data-tags-path="{{url('tags_auto_complete')}}"
-                       autocomplete="off">
-            </div>
-        </div>
-        <div id="tags-list" class="autocomplete-list">
+        @include('components.auto_complete', ['itemsType' => 'tags', 'itemName' => 'Tag', 'itemsLink' => url('tags_auto_complete'), 'hiddenID' => '', 'hiddenName' => ''])
 
-        </div>
         {{--Apply filters & Clear buttons--}}
         <p>
             <input class="btn btn-default" value="Apply Filters" id="apply-filters"

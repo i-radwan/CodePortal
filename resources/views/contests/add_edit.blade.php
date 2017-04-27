@@ -103,11 +103,15 @@
                                 <div class="form-group{{ $errors->has('organizers') ? ' has-error' : '' }} has-feedback">
                                     <label for="organizers" class="col-md-2 control-label text-left">Organizers</label>
                                     <div class="col-md-4">
-                                        @include("contests.contest_views.organisers")
-                                        @if ($errors->has('organizers'))
+
+                                        {{--Organinsers Auto Complete--}}
+                                        @include('components.auto_complete', ['itemsType' => 'organisers', 'itemName' => 'Organiser', 'itemsLink' => url('contest/add/organisers_auto_complete'), 'hiddenID' => '', 'hiddenName' => ''])
+
+
+                                    @if ($errors->has('organizers'))
                                             <span class="help-block">
-                                        <strong>{{ $errors->first('organizers') }}</strong>
-                                    </span>
+                                                <strong>{{ $errors->first('organizers') }}</strong>
+                                            </span>
                                         @endif
                                     </div>
                                 </div>
@@ -117,7 +121,10 @@
                                      class="invitees-input-div form-group{{ $errors->has('invitees') ? ' has-error' : '' }} has-feedback">
                                     <label for="invitees" class="col-md-2 control-label text-left">Invitees</label>
                                     <div class="col-md-4">
-                                        @include("contests.contest_views.invitees")
+
+                                        {{--Organinsers Auto Complete--}}
+                                        @include('components.auto_complete', ['itemsType' => 'invitees', 'itemName' => 'Invitee', 'itemsLink' => url('contest/add/invitees_auto_complete'), 'hiddenID' => '', 'hiddenName' => ''])
+
                                         @if ($errors->has('invitees'))
                                             <span class="help-block">
                                         <strong>{{ $errors->first('invitees') }}</strong>
