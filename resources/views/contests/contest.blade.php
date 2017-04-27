@@ -73,7 +73,7 @@
                         <li {{($view == "standings")?'class=active':''}}>
                             <a href="{{ url("/contest/$contestID/standings") }}">Standings</a>
                         </li>
-                        <li {{($view == "status")?'class=active':''}}>
+                        <li {{($view == "submissions")?'class=active':''}}>
                             <a href="{{ url("/contest/$contestID/status") }}">Status</a>
                         </li>
                         <li {{($view == "participants")?'class=active':''}}>
@@ -90,25 +90,36 @@
 
                             {{--Problems--}}
                             @if($view == "problems")
-                                <button
-                                        type="submit" class="btn btn-primary pull-right problems-reorder-view save"
-                                        onclick="app.saveProblemsOrderToDB('{{url('contest/reorder/'.$contestID)}}', '{{csrf_token()}}')">
-                                    Save
-                                </button>
-                                @include('contests.contest_views.problems')
+                                @if($problems && count($problems))
+                                    <button
+                                            type="submit" class="btn btn-primary pull-right problems-reorder-view save"
+                                            onclick="app.saveProblemsOrderToDB('{{url('contest/reorder/'.$contestID)}}', '{{csrf_token()}}')">
+                                        Save
+                                    </button>
+                                    @include('contests.contest_views.problems')
+                                @else
+                                    <p>No problems!</p>
+                                @endif
 
                                 {{--Standings--}}
                             @elseif($view == "standings")
-
                                 @include('contests.contest_views.standings')
 
                                 {{--Status--}}
-                            @elseif($view == "status")
-                                @include('contests.contest_views.status')
+                            @elseif($view == "submissions")
+                                @if($submissions && count($submissions))
+                                    @include('contests.contest_views.status')
+                                @else
+                                    <p>No submissions!</p>
+                                @endif
 
                                 {{--Participants--}}
                             @elseif($view == "participants")
-                                @include('contests.contest_views.participants')
+                                @if($participants && count($participants))
+                                    @include('contests.contest_views.participants')
+                                @else
+                                    <p>No participants!</p>
+                                @endif
 
                                 {{--Questions--}}
                             @elseif($view == "questions")
