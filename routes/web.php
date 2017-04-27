@@ -16,12 +16,12 @@
 // Homepage routes...
 Route::get('/', 'HomeController@index');
 
-include 'ProblemsRoutes.php';
-include 'ContestsRoutes.php';
-include 'GroupsRoutes.php';
-include 'TeamsRoutes.php';
-include 'BlogsRoutes.php';
-include 'ProfileRoutes.php';
-include 'NotificationsRoutes.php';
-include 'AuthRoutes.php';
-include 'ErrorsRoutes.php';
+include 'web/problems.php';
+include 'web/contests.php';
+include 'web/groups.php';
+include 'web/teams.php';
+include 'web/blogs.php';
+include 'web/profile.php';
+include 'web/notifications.php';
+include 'web/auth.php';
+include 'web/errors.php';
