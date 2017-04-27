@@ -20,37 +20,27 @@
 
             {{--Contest leave/delete/reorder/join links--}}
             @if($isOwner)
-                <form action="{{url('contest/delete/'.$contestID)}}"
-                      method="post">{{method_field('DELETE')}}
-                    {{csrf_field()}}
-                    <button
-                            onclick="return confirm('Are you sure want to delete the contest?\nThis cannot be undone')"
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Delete
-                    </button>
-                </form>
+
+                {{-- Delete Form --}}
+                @include('components.action_form', ['url' => url('contest/delete/'.$contestID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this contest? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
+
+                {{-- Edit Form --}}
                 <a href="{{url('contest/'.$contestID.'/edit')}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
+
+                {{-- Reorder Contest Problems --}}
                 <span class="btn btn-link text-dark pull-right margin-5px"
                       onclick="app.toggleSortableStatus();" id="testing-reorder-btn">Reorder</span>
+
             @endif
             @if($isParticipant)
-                <form action="{{url('contest/leave/'.$contestID)}}"
-                      method="post">{{method_field('PUT')}}
-                    {{csrf_field()}}
-                    <button
-                            onclick="return confirm('Are you sure want to leave this contest?')"
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px"
-                            id="testing-contest-leave-btn">Leave
-                    </button>
-                </form>
+
+                {{--Leave Form--}}
+                @include('components.action_form', ['url' => url('contest/leave/'.$contestID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave this contest?'", 'btnIDs' => 'testing-contest-leave-btn', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
+
             @elseif(Auth::check())
-                <form action="{{url('contest/join/'.$contestID)}}" method="post">
-                    {{csrf_field()}}
-                    <button
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px"
-                            id="testing-contest-join-btn">
-                        Join
-                    </button>
-                </form>
+
+                {{--Join Form--}}
+                @include('components.action_form', ['url' => url('contest/join/'.$contestID), 'method' => 'POST', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnIDs' => 'testing-contest-join-btn', 'btnTxt' => 'Join'])
 
             @endif
 

@@ -13,7 +13,7 @@
     <tbody>
     @foreach($questions as $question)
 
-        {{--define some vars--}}
+        {{--Define some vars--}}
         @php
             $answer = $question[Constants::FLD_QUESTIONS_ANSWER];
             $questionID = $question[Constants::FLD_QUESTIONS_ID];
@@ -58,23 +58,14 @@
                         Answer
                     </button>
 
+                    {{--Announce Form--}}
                     @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && strlen($answer)>0)
-                        <form action="{{url('contest/question/announce/'.$questionID)}}"
-                              method="post">{{method_field('PUT')}}
-                            {{csrf_field()}}
-                            <button type="submit" class="btn btn-primary testing-question-action-button announce">
-                                Announce
-                            </button>
-                        </form>
+                        @include('components.action_form', ['url' => url('contest/question/announce/' . $questionID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-primary testing-question-action-button announce', 'btnIDs' => '', 'btnTxt' => 'Announce'])
 
+                        {{--Renounce Form--}}
                     @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1)
-                        <form action="{{url('contest/question/renounce/'.$questionID)}}"
-                              method="post">{{method_field('PUT')}}
-                            {{csrf_field()}}
-                            <button type="submit" class="btn btn-primary testing-question-action-button renounce">
-                                Renounce
-                            </button>
-                        </form>
+                        @include('components.action_form', ['url' => url('contest/question/renounce/' . $questionID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-primary testing-question-action-button renounce', 'btnIDs' => '', 'btnTxt' => 'Renounce'])
+
                     @endif
                 </td>
             @endif

@@ -7,48 +7,24 @@
 <div class="panel panel-default" id="testing-team-panel-{{ $team->id }}">
     {{--Check if authorized--}}
     @if($isMember)
+
         {{--Edit button--}}
         <a href="{{ url('teams/' . $team->id . '/edit') }}"
            class="btn btn-link text-dark pull-right margin-5px" id="testing-edit-team-{{ $team->id }}">
             Edit
         </a>
 
-        {{--Delete button--}}
-        <form action="{{ url('teams/' . $team->id) }}"
-              method="POST">
-            {{ method_field('DELETE') }}
-            {{ csrf_field() }}
+        {{-- Delete Form --}}
+        @include('components.action_form', ['url' => url('teams/' . $team->id), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this team? This action cannot be undone!'", 'btnIDs' => "testing-delete-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
 
-            <button onclick="return confirm('Are you sure want to delete the team?\nThis cannot be undone')"
-                    type="submit"
-                    class="btn btn-link text-dark pull-right margin-5px" id="testing-delete-team-{{ $team->id }}">
-                Delete
-            </button>
-        </form>
     @elseif($isInvited)
-        {{--Accept invitation button--}}
-        <form action="{{ url('teams/' . $team->id . '/invitations/accept') }}"
-              method="POST">
-            {{ method_field('PUT') }}
-            {{ csrf_field() }}
 
-            <button type="submit" class="btn btn-link text-dark pull-right margin-5px"
-                    id="testing-accept-team-{{ $team->id }}">
-                Accept
-            </button>
-        </form>
+        {{--Accept invitation Form--}}
+        @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/accept'), 'method' => 'PUT', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "testing-accept-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Accept'])
 
-        {{--Reject invitation button--}}
-        <form action="{{ url('teams/' . $team->id . '/invitations/reject') }}"
-              method="POST">
-            {{ method_field('PUT') }}
-            {{ csrf_field() }}
+        {{--Reject invitation Form--}}
+        @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/reject'), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure?'", 'btnIDs' => "testing-accept-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Accept'])
 
-            <button type="submit" class="btn btn-link text-dark pull-right margin-5px"
-                    id="testing-reject-team-{{ $team->id }}">
-                Reject
-            </button>
-        </form>
     @endif
 
     <div class="panel-heading">{{ $team->name }}</div>
@@ -80,20 +56,9 @@
 
                 @if($isMember)
                     <td>
-                        {{--Remove member button--}}
-                        <form action="{{ url('teams/' . $team->id . '/remove/' . $member->id) }}"
-                              method="POST">
-                            {{ method_field('DELETE') }}
-                            {{ csrf_field() }}
-
-                            <button onclick="return confirm('Are you sure want to remove {{ $member->username }} from the team?')"
-                                    type="submit"
-                                    class="btn-link text-dark"
-                                    id="testing-remove-member-team-{{ $team->id }}-{{ $member->username }}">
-                                Remove
-                            </button>
-                        </form>
-                    </th>
+                        {{--Remove member Form--}}
+                        @include('components.action_form', ['url' => url('teams/' . $team->id . '/remove/' . $member->id), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove $member->username from the team?'", 'btnIDs' => "testing-remove-member-team-$team->id-$member->username", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Remove'])
+                    </td>
                 @endif
             </tr>
         @endforeach
@@ -114,20 +79,9 @@
 
                 @if($isMember)
                     <td>
-                        {{--Cancel invitation button--}}
-                        <form action="{{ url('teams/' . $team->id . '/invitations/cancel/' . $user->id)}}"
-                              method="POST">
-                            {{ method_field('DELETE') }}
-                            {{ csrf_field() }}
-
-                            <button onclick="return confirm('Are you sure want to cancel the invitation to {{ $member->username }}?')"
-                                    type="submit"
-                                    class="btn-link text-dark"
-                                    id="testing-cancel-invitation-{{ $team->id }}-{{ $user->id }}">
-                                Cancel Invitation
-                            </button>
-                        </form>
-                    </th>
+                        {{--Cancel invitation form--}}
+                        @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/cancel/' . $user->id), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to cancel the invitation to $member->username ?'", 'btnIDs' => "testing-cancel-invitation-$team->id-$user->id", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Cancel Invitation'])
+                    </td>
                 @endif
             </tr>
         @endforeach

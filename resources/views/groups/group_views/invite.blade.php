@@ -4,7 +4,7 @@
         <input type="hidden" id="usernames" name="usernames" required>
         <input id="invitees-auto" type="text" class="form-control" onkeypress="return event.keyCode != 13;"
                data-invitees-path="{{url('group/'.$groupID.'/invitees_auto_complete')}}"
-               autocomplete="off" id="username" placeholder="Username...">
+               autocomplete="off" placeholder="Username...">
 
         <span class="input-group-btn">
         <button type="submit" class="btn btn-primary"
