@@ -23,7 +23,7 @@
         @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/accept'), 'method' => 'PUT', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "testing-accept-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Accept'])
 
         {{--Reject invitation Form--}}
-        @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/reject'), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure?'", 'btnIDs' => "testing-accept-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Accept'])
+        @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/reject'), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure?'", 'btnIDs' => "testing-accept-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Reject'])
 
     @endif
 
