@@ -29,16 +29,25 @@ class ContestController extends Controller
      */
     public function index()
     {
-        $data = [];
+        $endedContests = Contest::ofPublic()
+            ->ofEnded()
+            ->orderByDesc(Constants::FLD_CONTESTS_TIME)
+            ->paginate(Constants::CONTESTS_COUNT_PER_PAGE, ['*'], 'past');
 
-        $data[Constants::CONTESTS_CONTESTS_KEY] =
-            Contest::ofPublic()
-                ->orderByDesc(Constants::FLD_CONTESTS_TIME)
-                ->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
+        $upcomingContests = Contest::ofPublic()
+            ->ofUpcoming()
+            ->orderByDesc(Constants::FLD_CONTESTS_TIME)
+            ->paginate(Constants::CONTESTS_COUNT_PER_PAGE, ['*'], 'upcoming');
 
-        // Get all public contests from database
+        $runningContests = Contest::ofPublic()
+            ->ofRunning()
+            ->orderByDesc(Constants::FLD_CONTESTS_TIME)
+            ->paginate(Constants::CONTESTS_COUNT_PER_PAGE, ['*'], 'running');
+
         return view('contests.index')
-            ->with('data', $data)
+            ->with('endedContests', $endedContests)
+            ->with('upcomingContests', $upcomingContests)
+            ->with('runningContests', $runningContests)
             ->with('pageTitle', config('app.name') . ' | Contests');
     }
 

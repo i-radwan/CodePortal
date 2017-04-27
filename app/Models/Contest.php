@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use DB;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
@@ -119,6 +120,57 @@ class Contest extends Model
         $this->notifications()->delete();
 
         return parent::delete();
+    }
+
+    /**
+     * Return upcoming contests only
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOfUpcoming(Builder $query)
+    {
+        return $query->where(
+            Constants::FLD_CONTESTS_TIME,
+            '>',
+            DB::raw('NOW()')
+        );
+    }
+
+    /**
+     * Return running contests only
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOfRunning(Builder $query)
+    {
+        return $query
+            ->where(
+                Constants::FLD_CONTESTS_TIME,
+                '<',
+                DB::raw('NOW()'))
+            ->whereRaw(  // DATE_ADD(time, INTERVAL duration MINUTE) > NOW()
+                "DATE_ADD(" . Constants::FLD_CONTESTS_TIME
+                . ", INTERVAL " .
+                Constants::FLD_CONTESTS_DURATION
+                . " MINUTE) > NOW()");
+    }
+
+    /**
+     * Return ended contests only
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOfEnded(Builder $query)
+    {
+        return $query
+            ->whereRaw(  // DATE_ADD(time, INTERVAL duration MINUTE) < NOW()
+                "DATE_ADD(" . Constants::FLD_CONTESTS_TIME
+                . ", INTERVAL " .
+                Constants::FLD_CONTESTS_DURATION
+                . " MINUTE) < NOW()");
     }
 
     /**

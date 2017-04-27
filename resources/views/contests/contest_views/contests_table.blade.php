@@ -1,4 +1,4 @@
-@if(count($data[Constants::CONTESTS_CONTESTS_KEY]))
+@if(count($contests))
     <table class="table table-bordered table-hover" id="contests_table">
         <thead>
         <tr>
@@ -12,7 +12,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($data[Constants::CONTESTS_CONTESTS_KEY] as $contest)
+        @foreach($contests as $contest)
             <tr>
                 <td class="testing-contest-id-cell">{{ $contest->id }}</td>
                 <td>
@@ -35,9 +35,9 @@
     </table>
     {{--Pagination--}}
     @if(!isset($isGroup))
-        {{ $data[Constants::CONTESTS_CONTESTS_KEY]->render() }}
+        {{ $contests->appends(Request::all())->fragment($fragment)->render() }}
     @else
-        {{ $data[Constants::CONTESTS_CONTESTS_KEY]->fragment('contests')->links() }}
+        {{ $contests->fragment('contests')->links() }}
     @endif
 @else
     <p class="margin-30px">No contests!</p>

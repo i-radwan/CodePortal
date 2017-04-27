@@ -106,7 +106,7 @@
                                        class="btn-sm btn btn-primary pull-right new-sheet-link" id="testing-group-new-contest-link">New Contest</a>
                                 @endif
                                 <div class="text-center horizontal-scroll">
-                                    @include('contests.contest_views.contests_table')
+                                    @include('contests.contest_views.contests_table', ['contests' => $data[Constants::CONTESTS_CONTESTS_KEY]])
                                 </div>
                             </div>
 
