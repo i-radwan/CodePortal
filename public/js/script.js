@@ -222,6 +222,18 @@ var app = {
 
             app.inviteesSessionKey = 'group_invitees_session_key';
 
+            sessionStorage.setItem(app.inviteesSessionKey, '');
+        }
+
+        // Teams page
+        if ($("#teams-page-hidden-element").length) {
+
+            // Configure lists and autocomplete typeahead
+            app.configureAutoCompleteLists(false, false, true);
+
+            app.inviteesSessionKey = 'team_invitees_session_key';
+
+            sessionStorage.setItem(app.inviteesSessionKey, '');
         }
 
         //Blogs Add Post page

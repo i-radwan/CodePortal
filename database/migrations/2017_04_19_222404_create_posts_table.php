@@ -15,7 +15,7 @@ class CreatePostsTable extends Migration
     {
         //Add POSTS table
         Schema::create(\App\Utilities\Constants::TBL_POSTS, function (Blueprint $table) {
-            $table->increments(\App\Utilities\Constants::FLD_POSTS_POST_ID);
+            $table->increments(\App\Utilities\Constants::FLD_POSTS_ID);
             $table->unsignedInteger(\App\Utilities\Constants::FLD_POSTS_OWNER_ID);
             $table->char(\App\Utilities\Constants::FLD_POSTS_TITLE, 50);
             $table->text(\App\Utilities\Constants::FLD_POSTS_BODY);

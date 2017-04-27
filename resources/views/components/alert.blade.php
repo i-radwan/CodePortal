@@ -10,7 +10,8 @@
 @endif
 
 {{--Normal Messages--}}
-@if(Session::has('messages') && Session::get('messages') > 0)
+@if(Session::has('messages') && count(Session::get('messages')))
+
     <div class="alert alert-success">
         <ul>
             @foreach (Session::get('messages') as $message)

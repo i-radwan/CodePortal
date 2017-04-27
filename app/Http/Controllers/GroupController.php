@@ -214,7 +214,7 @@ class GroupController extends Controller
         if ($errors != '') {
             return back()->withErrors($errors);
         }
-        return back()->with('messages', 'Users are invited successfully!');
+        return back()->with('messages', ['Users are invited successfully!']);
 
     }
 

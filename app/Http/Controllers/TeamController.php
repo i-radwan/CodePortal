@@ -97,34 +97,49 @@ class TeamController extends Controller
      */
     public function inviteMember(Request $request, Team $team)
     {
-        // Get user
-        $username = $request->get(Constants::FLD_USERS_USERNAME);
-        $user = User::where(Constants::FLD_USERS_USERNAME, $username)->first();
+        $errors = '';
 
-        // Check if user doesn't exist
-        if (!$user) {
-            return back()->withErrors([$username . " doesn't exist!"]);
+        // Get users
+        $usernames = explode(",", $request->get(Constants::FLD_USERS_USERNAME));
+
+        foreach ($usernames as $username) {
+            $user = User::where(Constants::FLD_USERS_USERNAME, $username)->first();
+
+            // Check if user doesn't exist
+            if (!$user) {
+                $errors .= $username . " doesn't exist!\n";
+                continue;
+            }
+
+            // Check if user is already a member
+            if ($team->members()->find($user->id)) {
+                $errors .= $username . " is already a member in the team!\n";
+                continue;
+            }
+
+            $membersCount = $team->members()->count() + $team->invitedUsers()->count();
+
+            if ($membersCount >= Constants::TEAM_MEMBERS_MAX_COUNT) {
+                $errors .= "The  team is full!";
+                continue;
+            }
+
+            // Create new notification if user isn't already invited
+            try {
+
+                Notification::make(Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE_TEAM, false);
+
+            } // If the user is already invited the make function throws this exception
+            catch (InvitationException $e) {
+
+                $errors .= "$username is already invited\n";
+                continue;
+            }
         }
-
-        // Check if user is already a member
-        if ($team->members()->find($user->id)) {
-            return back()->withErrors([$username . " is already a member in the team!"]);
-        }
-
-        $membersCount = $team->members()->count() + $team->invitedUsers()->count();
-
-        if ($membersCount >= Constants::TEAM_MEMBERS_MAX_COUNT) {
-            return back()->withErrors(["The  team is full!"]);
-        }
-
-        // Create new notification if user isn't already invited
-        try {
-            Notification::make(Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE_TEAM, false);
-            return back()->with('messages', [$username . ' invited successfully!']);
-        }
-        // If the user is already invited the make function throws this exception
-        catch (InvitationException $e) {
-            return back()->withErrors([$username . ' is already invited!']);
+        if ($errors == '') {
+            return back()->with('messages', ['Users are invited successfully!']);
+        } else {
+            return back()->withErrors($errors);
         }
     }
 
@@ -211,6 +226,29 @@ class TeamController extends Controller
     }
 
     /**
+     * Retrieve usernames for auto complete (invitees)
+     *
+     * @param Request $request
+     * @param Team $team
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function usersAutoComplete(Request $request, Team $team)
+    {
+        $query = $request->get('query');
+
+        // Get users who aren't members
+        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])
+            ->where(Constants::FLD_USERS_USERNAME, 'LIKE', "%$query%")
+            ->where(Constants::FLD_USERS_USERNAME, '!=', Auth::user()[Constants::FLD_USERS_USERNAME])
+            ->whereDoesntHave('joiningTeams', function ($query) use ($team) {
+                $query->whereId($team[Constants::FLD_TEAMS_ID]);
+            })
+            ->get();
+        return response()->json($data);
+    }
+
+
+    /**
      * Remove the specified team from storage
      *
      * @param Team $team
@@ -221,4 +259,6 @@ class TeamController extends Controller
         $team->delete();
         return back()->with('messages', [$team->name . ' deleted successfully!']);
     }
+
+
 }

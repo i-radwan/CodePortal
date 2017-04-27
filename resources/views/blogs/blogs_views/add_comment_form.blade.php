@@ -10,7 +10,7 @@
             <input name="comment_id" value="{{isset($comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID]) ? $comment[\App\Utilities\Constants::FLD_COMMENTS_COMMENT_ID] : ""}}" hidden>
         </div>
         <div class="form-group">
-            <input name="post_id" value="{{$post[\App\Utilities\Constants::FLD_POSTS_POST_ID]}}" hidden>
+            <input name="post_id" value="{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}" hidden>
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
