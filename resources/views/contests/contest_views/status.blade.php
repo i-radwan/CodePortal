@@ -40,7 +40,7 @@
                 <td>{{ $submissionID }}</td>
 
                 {{--Username--}}
-                <td><a href="{{ url('profile/' . $submissionUsername) }}">{{ $submissionUsername }}</a></td>
+                <td><a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $submissionUsername) }}">{{ $submissionUsername }}</a></td>
 
                 {{--Problem name--}}
                 <td><a href="{{ $submissionProblemLink }}" target="_blank">{{ $submissionProblemName }}</a></td>

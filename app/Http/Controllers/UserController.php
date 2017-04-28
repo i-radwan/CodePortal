@@ -146,9 +146,8 @@ class UserController extends Controller
         }
         //saving in the database
         $user->save();
-        $id = $user->username;
         //redirecting with the id of the current/modified username
-        return redirect('profile/' . $id);
+        return redirect(route(Constants::ROUTES_PROFILE, $user->username));
     }
 
     /**

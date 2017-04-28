@@ -18,7 +18,7 @@
 
             {{--Username--}}
             <td>
-                <a href="{{ url('profile/' . $seekerUsername) }}">
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $seekerUsername) }}">
                     {{ $seekerUsername }}
                 </a>
             </td>

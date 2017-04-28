@@ -13,7 +13,7 @@ class NotificationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function markAllUserNotificationsRead()
+    public function markAllRead()
     {
         $user = Auth::user();
 
@@ -29,7 +29,13 @@ class NotificationController extends Controller
         return response()->make();
     }
 
-    public function deleteNotification(Notification $notification)
+    /**
+     * Remove the specified notification from storage
+     *
+     * @param Notification $notification
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Notification $notification)
     {
         $user = Auth::user();
 

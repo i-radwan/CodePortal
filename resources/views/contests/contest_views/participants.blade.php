@@ -15,7 +15,7 @@
 
             <tr>
                 {{--Username--}}
-                <td><a class="testing-participant-username" href="{{ url('profile/' . $userName) }}">{{ $userName }}</a></td>
+                <td><a class="testing-participant-username" href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $userName) }}">{{ $userName }}</a></td>
 
                 {{--User country--}}
                 <td>{{ $country }}</td>

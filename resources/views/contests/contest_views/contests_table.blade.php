@@ -41,7 +41,7 @@
                 {{--Owner--}}
                 @if(!isset($isGroup))
                     <td>
-                        <a href="{{ url('profile/' . $contestOwnerUsername)}}">
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $contestOwnerUsername) }}">
                             {{ $contestOwnerUsername }}
                         </a>
                     </td>
