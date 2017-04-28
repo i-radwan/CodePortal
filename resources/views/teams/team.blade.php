@@ -11,21 +11,21 @@
     @if($isMember)
 
         {{--Edit button--}}
-        <a href="{{ url('teams/' . $teamID . '/edit') }}"
+        <a href="{{ route(\App\Utilities\Constants::ROUTES_TEAMS_EDIT, $teamID) }}"
            class="btn btn-link text-dark pull-right margin-5px" id="testing-edit-team-{{ $teamID }}">
             Edit
         </a>
 
         {{-- Delete Form --}}
-        @include('components.action_form', ['url' => url('teams/' . $teamID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this team? This action cannot be undone!'", 'btnIDs' => "testing-delete-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
+        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_DELETE, $teamID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this team? This action cannot be undone!'", 'btnIDs' => "testing-delete-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
 
     @elseif($isInvited)
 
         {{--Accept invitation Form--}}
-        @include('components.action_form', ['url' => url('teams/' . $teamID . '/invitations/accept'), 'method' => 'PUT', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "testing-accept-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Accept'])
+        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_INVITATIONS_ACCEPT, $teamID), 'method' => 'PUT', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "testing-accept-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Accept'])
 
         {{--Reject invitation Form--}}
-        @include('components.action_form', ['url' => url('teams/' . $teamID . '/invitations/reject'), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure?'", 'btnIDs' => "testing-accept-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Reject'])
+        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_INVITATIONS_REJECT, $teamID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure?'", 'btnIDs' => "testing-accept-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Reject'])
 
     @endif
 
@@ -54,7 +54,7 @@
             @endphp
             <tr>
                 {{--Username--}}
-                <td><a href="{{ url('profile/' . $memberUsername) }}">{{ $memberUsername }}</a></td>
+                <td><a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $memberUsername) }}">{{ $memberUsername }}</a></td>
 
                 {{--E-Mail--}}
                 <td>{{ $memberEmail }}</td>
@@ -65,7 +65,7 @@
                 @if($isMember)
                     <td>
                         {{--Remove member Form--}}
-                        @include('components.action_form', ['url' => url('teams/' . $teamID . '/remove/' . $memberID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove $memberUsername from the team?'", 'btnIDs' => "testing-remove-member-team-$teamID-$memberUsername", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Remove'])
+                        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_MEMBERS_REMOVE, [$teamID, $memberID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove $memberUsername from the team?'", 'btnIDs' => "testing-remove-member-team-$teamID-$memberUsername", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Remove'])
                     </td>
                 @endif
             </tr>
@@ -81,7 +81,7 @@
             <tr>
                 {{--Username--}}
                 <td>
-                    <a href="{{ url('profile/' . $inviteeUsername) }}">{{ $inviteeUsername }}</a>
+                    <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $inviteeUsername) }}">{{ $inviteeUsername }}</a>
                     <div class="small">* Pending user response</div>
                 </td>
 
@@ -94,7 +94,7 @@
                 @if($isMember)
                     <td>
                         {{--Cancel invitation form--}}
-                        @include('components.action_form', ['url' => url('teams/' . $teamID . '/invitations/cancel/' . $inviteeID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to cancel the invitation to $memberUsername ?'", 'btnIDs' => "testing-cancel-invitation-$teamID-$inviteeID", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Cancel Invitation'])
+                        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_INVITATIONS_CANCEL, [$teamID, $inviteeID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to cancel the invitation to $memberUsername ?'", 'btnIDs' => "testing-cancel-invitation-$teamID-$inviteeID", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Cancel Invitation'])
                     </td>
                 @endif
             </tr>

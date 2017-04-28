@@ -1,4 +1,4 @@
-<form class="form-group has-feedback" role="form" method="POST" action="{{ url('teams/' . $teamID . '/invite/') }}">
+<form class="form-group has-feedback" role="form" method="POST" action="{{ route(\App\Utilities\Constants::ROUTES_TEAMS_INVITE, $teamID) }}">
     {{ csrf_field() }}
     <div class="input-group input-group-lg">
 
@@ -7,7 +7,7 @@
 
         {{--Auto complete usernames field--}}
         <input id="invitees-auto" type="text" class="form-control" onkeypress="return event.keyCode != 13;"
-               data-invitees-path="{{url('teams/' . $teamID . '/invitees_auto_complete')}}"
+               data-invitees-path="{{ route(\App\Utilities\Constants::ROUTES_TEAMS_INVITEES_AUTO_COMPLETE, $teamID) }}"
                autocomplete="off" placeholder="Username...">
 
         {{--Invite Button--}}

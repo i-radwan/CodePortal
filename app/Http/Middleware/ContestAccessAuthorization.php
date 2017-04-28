@@ -26,9 +26,12 @@ class ContestAccessAuthorization extends Authorize
         // If guest check if public or not
         if (Auth::guest()) {
             $contest = $this->getGateArguments($request, $models)[0];
-            if ($contest->visibility == Constants::CONTEST_VISIBILITY_PUBLIC)
+
+            if ($contest->visibility == Constants::CONTEST_VISIBILITY_PUBLIC) {
                 return $next($request);
-            else return redirect('login');
+            }
+
+            return redirect(route(Constants::ROUTES_AUTH_LOGIN));
         }
 
         // Else if member check view-join-contest gate

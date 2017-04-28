@@ -25,8 +25,8 @@
                         <a href="{{ url('contests') }}">Contests</a>
                     </li>
 
-                    <li class="{{ Request::is('problems') ? 'active' : '' }}">
-                        <a href="{{ url('problems') }}">Problems</a>
+                    <li class="{{ Request::is(route(\App\Utilities\Constants::ROUTES_PROBLEMS_INDEX)) ? 'active' : '' }}">
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROBLEMS_INDEX) }}">Problems</a>
                     </li>
 
                     <li class="{{ Request::is('blogs') ? 'active' : '' }}">
@@ -42,11 +42,11 @@
                 <ul class="nav navbar-nav navbar-right">
                     <!-- Authentication Links -->
                     @if (Auth::guest())
-                        <li class="{{ Request::is('login') ? 'active' : '' }}">
-                            <a href="{{ route('login') }}">Log In</a>
+                        <li class="{{ Request::is(route(\App\Utilities\Constants::ROUTES_AUTH_LOGIN)) ? 'active' : '' }}">
+                            <a href="{{ route(\App\Utilities\Constants::ROUTES_AUTH_LOGIN) }}">Log In</a>
                         </li>
-                        <li class="{{ Request::is('register') ? 'active' : '' }}">
-                            <a href="{{ route('register') }}">Sign Up</a>
+                        <li class="{{ Request::is(route(\App\Utilities\Constants::ROUTES_AUTH_REGISTER)) ? 'active' : '' }}">
+                            <a href="{{ route(\App\Utilities\Constants::ROUTES_AUTH_REGISTER) }}">Sign Up</a>
                         </li>
                     @else
                         {{--Notifications panel--}}
@@ -55,22 +55,22 @@
                         {{--Profile panel--}}
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ Auth::user()->username }} <span class="caret"></span>
+                                {{ Auth::user()[\App\Utilities\Constants::FLD_USERS_USERNAME] }} <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="{{ url('profile/' . Auth::user()->username) }}">Profile</a>
+                                    <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, Auth::user()[\App\Utilities\Constants::FLD_USERS_USERNAME]) }}">Profile</a>
                                 </li>
                                 <li role="separator" class="divider">
                                 <li>
-                                    <a href="{{ route('logout') }}"
+                                    <a href="{{ route(\App\Utilities\Constants::ROUTES_AUTH_LOGOUT) }}"
                                        onclick="event.preventDefault();
                                        document.getElementById('logout-form').submit();">
                                         Logout
                                     </a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                    <form id="logout-form" action="{{ route(\App\Utilities\Constants::ROUTES_AUTH_LOGOUT) }}" method="POST" style="display: none;">
                                         {{ csrf_field() }}
                                     </form>
                                 </li>

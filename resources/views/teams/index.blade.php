@@ -5,7 +5,7 @@
         <div class="panel panel-default">
             @if(Auth::check())
                 {{--Create new team button--}}
-                <a href="{{ url('teams/create')}}"
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_TEAMS_CREATE) }}"
                    class="btn btn-link text-dark pull-right margin-5px">
                     New
                 </a>

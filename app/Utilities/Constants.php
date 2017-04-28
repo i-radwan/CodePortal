@@ -4,6 +4,63 @@ namespace App\Utilities;
 
 class Constants
 {
+    //region Routes
+
+    // Problems routes
+    const ROUTES_PROBLEMS_INDEX = 'problems';
+
+    // Contests routes
+
+    // Groups routes
+
+    // Teams routes
+    const ROUTES_TEAMS_CREATE = 'teams.create';
+    const ROUTES_TEAMS_STORE = 'teams.store';
+    const ROUTES_TEAMS_EDIT = 'teams.edit';
+    const ROUTES_TEAMS_UPDATE = 'teams.update';
+    const ROUTES_TEAMS_DELETE = 'teams.delete';
+    const ROUTES_TEAMS_INVITE = 'teams.invite';
+    const ROUTES_TEAMS_INVITEES_AUTO_COMPLETE = 'teams.invitees.auto_complete';
+    const ROUTES_TEAMS_MEMBERS_REMOVE = 'teams.members.remove';
+    const ROUTES_TEAMS_INVITATIONS_CANCEL = 'teams.invitations.cancel';
+    const ROUTES_TEAMS_INVITATIONS_ACCEPT = 'teams.invitations.accept';
+    const ROUTES_TEAMS_INVITATIONS_REJECT = 'teams.invitations.reject';
+
+    // Blogs routes
+
+
+    // Profile routes
+    const ROUTES_PROFILE = 'profile';
+    const ROUTES_PROFILE_INFO = 'profile.info';
+    const ROUTES_PROFILE_PROBLEMS = 'profile.problems';
+    const ROUTES_PROFILE_CONTESTS = 'profile.contests';
+    const ROUTES_PROFILE_GROUPS = 'profile.groups';
+    const ROUTES_PROFILE_TEAMS = 'profile.teams';
+    const ROUTES_PROFILE_BLOGS = 'profile.blogs';
+    const ROUTES_PROFILE_EDIT = 'profile.edit';
+    const ROUTES_PROFILE_UPDATE = 'profile.update';
+
+    // Notifications Routes
+    const ROUTES_NOTIFICATIONS_MARK_ALL_READ = 'notifications.mark_all_read';
+    const ROUTES_NOTIFICATIONS_DELETE = 'notifications.delete';
+
+    // Auth routes
+    // Note that Laravel calls these routes with these names from their internal code
+    // So do not change these names
+    const ROUTES_AUTH_LOGIN = 'login';
+    const ROUTES_AUTH_LOGOUT = 'logout';
+    const ROUTES_AUTH_REGISTER = 'register';
+    const ROUTES_AUTH_PASSWORD_REQUEST = 'password.request';
+    const ROUTES_AUTH_PASSWORD_EMAIL = 'password.email';
+    const ROUTES_AUTH_PASSWORD_RESET = 'password.reset';
+
+    // Errors routes
+    const ROUTES_ERRORS_404 = 'errors/404';
+    const ROUTES_ERRORS_401 = 'errors/401';
+
+    //=============================================================
+    //endregion
+
     //region Limits
 
     const TEAM_MEMBERS_MAX_COUNT = 3;

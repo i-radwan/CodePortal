@@ -11,7 +11,7 @@
         <a class="dropdown-toggle" id="testing-notification-link" data-toggle="dropdown" role="button"
            aria-expanded="false"
            {{--If there's unread notifications, mark them read once clicked--}}
-           @if($unreadCount) onclick="app.markAllNotificationsRead('{{ csrf_token() }}', '{{ url('notifications/mark_all_read') }}');" @endif >
+           @if($unreadCount) onclick="app.markAllNotificationsRead('{{ csrf_token() }}', '{{ route(\App\Utilities\Constants::ROUTES_NOTIFICATIONS_MARK_ALL_READ) }}');" @endif >
             <i id="notifications-icon"
                class="notifications-icon fa fa-bell{{($unreadCount)?' dark-red':'-o'}}"
                aria-hidden="true">
@@ -40,7 +40,7 @@
                             break;
                         case \App\Utilities\Constants::NOTIFICATION_TYPE_TEAM:
                             $resource = \App\Models\Team::find($notification->resource_id);
-                            $resourceLink = 'profile/' . $notification->sender_id . '/teams';
+                            $resourceLink = route(\App\Utilities\Constants::ROUTES_PROFILE_TEAMS, $notification->sender_id);
                             $icon = 'fa-users'; //TODO: get icon
                             break;
                     }
@@ -69,7 +69,7 @@
                     {{--Notification cancel icon--}}
                     <i class="fa fa-times notification-delete"
                        aria-hidden="true"
-                       onclick="app.cancelNotification(event, '{{ csrf_token() }}', '{{ url("notification/" . $notification->id) }}', this);">
+                       onclick="app.cancelNotification(event, '{{ csrf_token() }}', '{{ route(\App\Utilities\Constants::ROUTES_NOTIFICATIONS_DELETE, $notification[\App\Utilities\Constants::FLD_NOTIFICATIONS_ID]) }}', this);">
                     </i>
                 </li>
 

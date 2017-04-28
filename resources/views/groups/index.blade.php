@@ -64,7 +64,7 @@
 
                                 {{--Owner Username--}}
                                 <td>
-                                    <a href="{{ url('profile/' . $groupOwnerUsername)}}">
+                                    <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $groupOwnerUsername) }}">
                                         {{ $groupOwnerUsername }}
                                     </a>
                                 </td>

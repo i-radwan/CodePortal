@@ -21,7 +21,7 @@
         <tr>
             {{--Username--}}
             <td>
-                <a href="{{ url('profile/' . $memberUsername) }}">
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $memberUsername) }}">
                     {{ $memberUsername }}
                 </a>
             </td>

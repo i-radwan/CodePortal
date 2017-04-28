@@ -34,7 +34,7 @@ class TeamController extends Controller
     {
         return view('teams.add_edit')
             ->with('actionTitle', 'New Team')
-            ->with('actionUrl', url('teams'))
+            ->with('actionUrl', route(Constants::ROUTES_TEAMS_STORE))
             ->with('actionBtnTitle', 'Create')
             ->with('teamName', '')
             ->with('pageTitle', config('app.name') . ' | Teams');
@@ -50,7 +50,7 @@ class TeamController extends Controller
     {
         return view('teams.add_edit')
             ->with('actionTitle', 'Edit Team')
-            ->with('actionUrl', url('teams/' . $team[Constants::FLD_TEAMS_ID]))
+            ->with('actionUrl', route(Constants::ROUTES_TEAMS_UPDATE, $team[Constants::FLD_TEAMS_ID]))
             ->with('actionBtnTitle', 'Save')
             ->with('teamName', $team[Constants::FLD_TEAMS_NAME])
             ->with('pageTitle', config('app.name') . ' | ' . $team[Constants::FLD_TEAMS_NAME]);
@@ -72,7 +72,7 @@ class TeamController extends Controller
         $team->save();
         $team->members()->attach($user[Constants::FLD_USERS_ID]);
 
-        return redirect('profile/' . $user[Constants::FLD_USERS_ID] . '/teams')->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' created successfully!']);
+        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_ID]))->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' created successfully!']);
     }
 
     /**
@@ -87,7 +87,7 @@ class TeamController extends Controller
         $user = Auth::user();
         $team[Constants::FLD_TEAMS_NAME] = $request->get(Constants::FLD_TEAMS_NAME);
         $team->save();
-        return redirect('profile/' . $user[Constants::FLD_USERS_ID] . '/teams')->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' updated successfully!']);
+        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_ID]))->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' updated successfully!']);
     }
 
     /**
@@ -195,7 +195,7 @@ class TeamController extends Controller
         // Add the user as a team member
         $team->members()->attach($user);
 
-        return redirect('profile/' . $user[Constants::FLD_USERS_ID] . '/teams');
+        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_ID]));
     }
 
     /**
@@ -233,9 +233,9 @@ class TeamController extends Controller
                 $query->whereId($team[Constants::FLD_TEAMS_ID]);
             })
             ->get();
+
         return response()->json($data);
     }
-
 
     /**
      * Remove the specified team from storage
