@@ -19,6 +19,7 @@
                                 {{ csrf_field() }}
 
                                 {{-- Username --}}
+
                                 <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
                                     <input id="username" type="text" class="form-control"
                                            name="{{ \App\Utilities\Constants::FLD_USERS_USERNAME }}"
@@ -35,6 +36,7 @@
                                 </div>
 
                                 {{-- Password --}}
+
                                 <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_PASSWORD) ? ' has-error' : '' }} has-feedback">
                                     <input id="password" type="password" class="form-control"
                                            name="{{ \App\Utilities\Constants::FLD_USERS_PASSWORD }}" placeholder="Password" required>
