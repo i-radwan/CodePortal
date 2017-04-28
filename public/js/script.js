@@ -216,11 +216,20 @@ var app = {
             // to maintain the tags stored for add/edit contest
             app.tagsSessionKey = 'problems_filters_tags_session_key';
 
+            // Fill url filters into session
+            var urlTags = app.getUrlVars()['tag'];
+            if (urlTags.trim().length)
+                sessionStorage.setItem(app.tagsSessionKey, '["' + app.getUrlVars()['tag'].replace(/%2C/g, '","') + '"]');
+            else
+                sessionStorage.setItem(app.tagsSessionKey, '');
+
+
             // Fetch all tags
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureAutoCompleteLists(true, false, false);
+            app.tagsList = document.getElementById("tags-list");
+            $('#tags-auto').typeahead(app.autoCompleteList($("#tags-auto").data('tags-path'), app.tagsList, app.tagsSessionKey, app.allTagsList));
 
             // Retrieve tags from session to view
             app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
@@ -715,6 +724,7 @@ var app = {
             });
             if (sessionStorage.getItem(app.contestPrivateVisibilitySessionKey) == 1) {
                 $("#private_visibility").prop('checked', true);
+                $("#invitees-input-div").show();
             } else {
                 $("#public_visibility").prop('checked', true);
             }
