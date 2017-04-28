@@ -2,19 +2,15 @@
 @php
     use App\Utilities\Constants;
 
-    $groupID = $data[Constants::SINGLE_GROUP_GROUP_KEY][Constants::SINGLE_GROUP_ID_KEY];
-    $groupName = $data[Constants::SINGLE_GROUP_GROUP_KEY][Constants::SINGLE_GROUP_NAME_KEY];
-    $ownerUsername = $data[Constants::SINGLE_GROUP_GROUP_KEY][Constants::SINGLE_GROUP_OWNER_KEY];
+    $groupID = $group[Constants::FLD_GROUPS_ID];
+    $groupName = $group[Constants::FLD_GROUPS_NAME];
+    $ownerUsername = $group->owner[Constants::FLD_USERS_USERNAME];
 
-    $isOwner = $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_OWNER];
-    $userSentRequest = $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_USER_SENT_REQUEST];
-    $isMember = $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_MEMBER];
+    $isOwner = ((Auth::check()) ? (Auth::user()->owningGroups()->find($group[Constants::FLD_GROUPS_ID]) != null) : false);
+    $isMember = ((Auth::check()) ? (Auth::user()->joiningGroups()->find($group[Constants::FLD_GROUPS_ID]) != null) : false);
+    $userSentRequest = (Auth::check() && !$isMember && Auth::user()->seekingJoinGroups()->find($group[Constants::FLD_GROUPS_ID]));
     $isGroup = true;
 
-    $members = $data[Constants::SINGLE_GROUP_MEMBERS_KEY];
-    $seekers = $data[Constants::SINGLE_GROUP_REQUESTS_KEY];
-    $sheets = $data[Constants::SINGLE_GROUP_SHEETS_KEY];
-    $contests = $data[Constants::SINGLE_GROUP_CONTESTS_KEY];
 @endphp
 
 @extends('layouts.app')
@@ -26,17 +22,17 @@
             {{--Group leave/delete/join links--}}
             @if($isOwner)
                 {{--Delete Form--}}
-                @include('components.action_form', ['url' => url('group/' . $groupID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this group? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
+                @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_GROUPS_DELETE, $groupID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this group? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
 
                 {{--Edit Link--}}
-                <a href="{{url('group/edit/'.$groupID)}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_EDIT, $groupID) }}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
             @endif
 
 
             @if($isMember)
 
                 {{--Leave Form--}}
-                @include('components.action_form', ['url' => url('group/leave/' . $groupID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave the group?'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
+                @include('components.action_form', ['url' => rotue(\App\Utilities\Constants::ROUTES_GROUPS_LEAVE, $groupID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave the group?'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
 
             @elseif(!$isOwner && !$isMember)
 
@@ -45,12 +41,14 @@
                     {{--Request already sent--}}
                     <span class="btn btn-link text-dark pull-right margin-5px" disabled>Request Sent</span>
                 @else
-                    @include('components.action_form', ['url' => url('group/join/' . $groupID), 'method' => 'POST', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Join'])
+                    @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_GROUPS_REQUEST_STORE, $groupID), 'method' => 'POST', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Join'])
                 @endif
             @endif
 
             <div class="panel-heading">{{ $groupName }} ::
-                <small><a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $ownerUsername) }}">{{ $ownerUsername }}</a></small>
+                <small>
+                    <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $ownerUsername) }}">{{ $ownerUsername }}</a>
+                </small>
             </div>
 
             <div class="panel-body">
@@ -102,18 +100,18 @@
 
                             <div role="tabpanel" class="tab-pane" id="contests">
                                 @if($isOwner)
-                                    <a href="{{url('group/'.$groupID.'/contest/new')}}"
+                                    <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_CONTEST_CREATE, $groupID) }}"
                                        class="btn-sm btn btn-primary pull-right new-sheet-link"
                                        id="testing-group-new-contest-link">New Contest</a>
                                 @endif
                                 <div class="text-center horizontal-scroll">
-                                    @include('contests.contest_views.contests_table', ['contests' => $data[Constants::CONTESTS_CONTESTS_KEY]])
+                                    @include('contests.contest_views.contests_table', ['contests' => $contests])
                                 </div>
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="sheets">
                                 @if($isOwner)
-                                    <a href="{{url('sheet/new/'.$groupID)}}"
+                                    <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_CREATE, $groupID) }}"
                                        class="btn-sm btn btn-primary pull-right new-sheet-link">New Sheet</a>
                                 @endif
                                 @if(count($sheets))

@@ -124,6 +124,7 @@ var app = {
             // Get single field info
             var field = $(autoCompleteFields[i]);
 
+            // Get data bounded to the field
             var fieldID = field.attr('id');
             var autoCompletePath = field.data('path');
             var sessionKey = field.data('session-key');
@@ -738,7 +739,7 @@ var app = {
                 'selected_tags': selected_tags,
                 'selected_judges': selected_judges
             };
-        console.log(filters, url);
+
         // Send request to server in order to save filters to server session
         $.ajax({
             url: url,

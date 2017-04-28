@@ -5,7 +5,7 @@
         <div class="panel panel-default groups-panel">
 
             {{--New--}}
-            <a href="{{ url('/group/new') }}">
+            <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_CREATE) }}">
                 <span class="btn btn-link text-dark pull-right margin-5px">New</span>
             </a>
 
@@ -16,7 +16,7 @@
 
             {{--Clear button to clear search filters--}}
             @if(Request::has('name'))
-                <a href="{{ url('groups') }}"
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_INDEX) }}"
                    class="btn btn-link text-dark pull-right margin-5px">Clear</a>
             @endif
 
@@ -53,7 +53,7 @@
 
                                     {{-- Only singed in users can see group details --}}
                                     @if(Auth::check())
-                                        <a href="{{ url('group/' . $groupID) }}">
+                                        <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_DISPLAY, $groupID) }}">
                                             {{ $groupName }}
                                         </a>
                                     @else

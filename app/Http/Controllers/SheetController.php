@@ -53,10 +53,10 @@ class SheetController extends Controller
             ->with('checkBoxes', 'true')
             ->with(Constants::SHEET_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::SHEET_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('syncFiltersURL', url('sheet/add/sheet_tags_judges_filters_sync'))
-            ->with('detachFiltersURL', url('sheet/add/sheet_tags_judges_filters_detach'))
+            ->with('syncFiltersURL', url('sheets/create/sheet_tags_judges_filters_sync'))
+            ->with('detachFiltersURL', url('sheets/create/sheet_tags_judges_filters_detach'))
             ->with('action', 'Add')
-            ->with('url', 'sheet/new/' . $group[Constants::FLD_GROUPS_ID])
+            ->with('url', 'groups/' . $group[Constants::FLD_GROUPS_ID] . '/sheets/store')
             ->with('pageTitle', config('app.name') . ' | Sheet');
     }
 
@@ -83,10 +83,10 @@ class SheetController extends Controller
             ->with('checkBoxes', 'true')
             ->with(Constants::SHEET_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::SHEET_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('syncFiltersURL', url('sheet/add/sheet_tags_judges_filters_sync'))
-            ->with('detachFiltersURL', url('sheet/add/sheet_tags_judges_filters_detach'))
+            ->with('syncFiltersURL', url('sheets/create/sheet_tags_judges_filters_sync'))
+            ->with('detachFiltersURL', url('sheets/create/sheet_tags_judges_filters_detach'))
             ->with('action', 'Edit')
-            ->with('url', 'sheet/edit/' . $sheet[Constants::FLD_SHEETS_ID])
+            ->with('url', 'sheets/' . $sheet[Constants::FLD_SHEETS_ID] . '/edit')
             ->with('pageTitle', config('app.name') . ' | ' . $sheet[Constants::FLD_SHEETS_NAME]);
     }
 
@@ -116,7 +116,7 @@ class SheetController extends Controller
         Session::forget([Constants::SHEET_PROBLEMS_SELECTED_FILTERS]);
 
         // Return to sheets
-        return redirect('group/' . $group[Constants::FLD_GROUPS_ID] . '#sheets');
+        return redirect('groups/' . $group[Constants::FLD_GROUPS_ID] . '#sheets');
     }
 
     /**
@@ -137,7 +137,7 @@ class SheetController extends Controller
         $sheet->problems()->sync($problemsIDs);
 
         // Return to sheets
-        return redirect('sheet/' . $sheet[Constants::FLD_SHEETS_ID]);
+        return redirect('sheets/' . $sheet[Constants::FLD_SHEETS_ID]);
     }
 
 
