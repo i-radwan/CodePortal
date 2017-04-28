@@ -13,19 +13,36 @@
         </thead>
         <tbody>
         @foreach($contests as $contest)
+            @php
+                $contestID = $contest[\App\Utilities\Constants::FLD_CONTESTS_ID];
+                $contestName = $contest[\App\Utilities\Constants::FLD_CONTESTS_NAME];
+                $contestTime  =  date('D M d, H:i', strtotime($contest[\App\Utilities\Constants::FLD_CONTESTS_TIME]));
+                $contestDuration = \App\Utilities\Utilities::convertMinsToHoursMins($contest[\App\Utilities\Constants::FLD_CONTESTS_DURATION]);
+                $contestOwnerUsername = $contest->owner[\App\Utilities\Constants::FLD_USERS_USERNAME];
+            @endphp
             <tr>
-                <td class="testing-contest-id-cell">{{ $contest->id }}</td>
+
+                {{--ID--}}
+                <td class="testing-contest-id-cell">{{ $contestID }}</td>
+
+                {{--Name--}}
                 <td>
-                    <a href="{{ url('contest/' . $contest->id) }}">
-                        {{ $contest->name }}
+                    <a href="{{ url('contest/' . $contestID) }}">
+                        {{ $contestName }}
                     </a>
                 </td>
-                <td>{{ date('D M d, H:i', strtotime($contest->time))}}</td>
-                <td>{{ \App\Utilities\Utilities::convertMinsToHoursMins($contest->duration) }} hrs</td>
+
+                {{--Time--}}
+                <td>{{ $contestTime }}</td>
+
+                {{--Duration--}}
+                <td>{{ $contestDuration }} hrs</td>
+
+                {{--Owner--}}
                 @if(!isset($isGroup))
                     <td>
-                        <a href="{{ url('profile/' . $contest->owner->username)}}">
-                            {{ $contest->owner->username }}
+                        <a href="{{ url('profile/' . $contestOwnerUsername)}}">
+                            {{ $contestOwnerUsername }}
                         </a>
                     </td>
                 @endif
@@ -33,6 +50,7 @@
         @endforeach
         </tbody>
     </table>
+
     {{--Pagination--}}
     @if(!isset($isGroup))
         {{ $contests->appends(Request::all())->fragment($fragment)->render() }}

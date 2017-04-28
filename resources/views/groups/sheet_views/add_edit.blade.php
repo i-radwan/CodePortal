@@ -24,9 +24,7 @@
                         <div class="col-md-10">
                             <input id="name" type="text" class="form-control" name="name"
                                    value="{{ isset($sheetName)?$sheetName:old('name') }}" placeholder="Name"
-                                   required
-                                   autofocus>
-
+                                   required autofocus>
                         </div>
                     </div>
 

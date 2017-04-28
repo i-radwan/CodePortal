@@ -50,10 +50,10 @@ class TeamController extends Controller
     {
         return view('teams.add_edit')
             ->with('actionTitle', 'Edit Team')
-            ->with('actionUrl', url('teams/' . $team->id))
+            ->with('actionUrl', url('teams/' . $team[Constants::FLD_TEAMS_ID]))
             ->with('actionBtnTitle', 'Save')
-            ->with('teamName', $team->name)
-            ->with('pageTitle', config('app.name') . ' | Teams');
+            ->with('teamName', $team[Constants::FLD_TEAMS_NAME])
+            ->with('pageTitle', config('app.name') . ' | ' . $team[Constants::FLD_TEAMS_NAME]);
     }
 
     /**
@@ -70,9 +70,9 @@ class TeamController extends Controller
         // Attach team creator as a team member
         $user = Auth::user();
         $team->save();
-        $team->members()->attach($user->id);
+        $team->members()->attach($user[Constants::FLD_USERS_ID]);
 
-        return redirect('profile/' . $user->id . '/teams')->with('messages', [$team->name . ' created successfully!']);
+        return redirect('profile/' . $user[Constants::FLD_USERS_ID] . '/teams')->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' created successfully!']);
     }
 
     /**
@@ -85,9 +85,9 @@ class TeamController extends Controller
     public function update(Request $request, Team $team)
     {
         $user = Auth::user();
-        $team->name = $request->get(Constants::FLD_TEAMS_NAME);
+        $team[Constants::FLD_TEAMS_NAME] = $request->get(Constants::FLD_TEAMS_NAME);
         $team->save();
-        return redirect('profile/' . $user->id . '/teams')->with('messages', [$team->name . ' updated successfully!']);
+        return redirect('profile/' . $user[Constants::FLD_USERS_ID] . '/teams')->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' updated successfully!']);
     }
 
     /**
@@ -114,7 +114,7 @@ class TeamController extends Controller
             }
 
             // Check if user is already a member
-            if ($team->members()->find($user->id)) {
+            if ($team->members()->find($user[Constants::FLD_USERS_ID])) {
                 $errors .= $username . " is already a member in the team!\n";
                 continue;
             }
@@ -161,7 +161,7 @@ class TeamController extends Controller
             $team->delete();
         }
 
-        return back()->with('messages', [$user->username . ' was removed successfully from ' . $team->name . '!']);
+        return back()->with('messages', [$user[Constants::FLD_USERS_USERNAME] . ' was removed successfully from ' . $team[Constants::FLD_TEAMS_NAME] . '!']);
     }
 
     /**
@@ -174,7 +174,7 @@ class TeamController extends Controller
     public function cancelInvitation(Team $team, User $user)
     {
         // Delete the invitation from the database
-        $team->notifications()->ofReceiver($user->id)->delete();
+        $team->notifications()->ofReceiver($user[Constants::FLD_USERS_ID])->delete();
 
         return back();
     }
@@ -190,12 +190,12 @@ class TeamController extends Controller
         $user = Auth::user();
 
         // Delete the invitation from the database
-        $team->notifications()->ofReceiver($user->id)->delete();
+        $team->notifications()->ofReceiver($user[Constants::FLD_USERS_ID])->delete();
 
         // Add the user as a team member
         $team->members()->attach($user);
 
-        return redirect('profile/' . $user->id . '/teams');
+        return redirect('profile/' . $user[Constants::FLD_USERS_ID] . '/teams');
     }
 
     /**
@@ -209,7 +209,7 @@ class TeamController extends Controller
         $user = Auth::user();
 
         // Delete the invitation from the database
-        $team->notifications()->ofReceiver($user->id)->delete();
+        $team->notifications()->ofReceiver($user[Constants::FLD_USERS_ID])->delete();
 
         return back();
     }
@@ -246,8 +246,6 @@ class TeamController extends Controller
     public function destroy(Team $team)
     {
         $team->delete();
-        return back()->with('messages', [$team->name . ' deleted successfully!']);
+        return back()->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' deleted successfully!']);
     }
-
-
 }

@@ -2,32 +2,34 @@
     $authUser = Auth::user();
     $isMember = Gate::allows('member-team', $team);
     $isInvited = Gate::allows('invitee-team', $team);
+    $teamID = $team[\App\Utilities\Constants::FLD_TEAMS_ID];
+    $teamName = $team[\App\Utilities\Constants::FLD_TEAMS_NAME];
 @endphp
 
-<div class="panel panel-default" id="testing-team-panel-{{ $team->id }}">
+<div class="panel panel-default" id="testing-team-panel-{{ $teamID }}">
     {{--Check if authorized--}}
     @if($isMember)
 
         {{--Edit button--}}
-        <a href="{{ url('teams/' . $team->id . '/edit') }}"
-           class="btn btn-link text-dark pull-right margin-5px" id="testing-edit-team-{{ $team->id }}">
+        <a href="{{ url('teams/' . $teamID . '/edit') }}"
+           class="btn btn-link text-dark pull-right margin-5px" id="testing-edit-team-{{ $teamID }}">
             Edit
         </a>
 
         {{-- Delete Form --}}
-        @include('components.action_form', ['url' => url('teams/' . $team->id), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this team? This action cannot be undone!'", 'btnIDs' => "testing-delete-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
+        @include('components.action_form', ['url' => url('teams/' . $teamID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this team? This action cannot be undone!'", 'btnIDs' => "testing-delete-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
 
     @elseif($isInvited)
 
         {{--Accept invitation Form--}}
-        @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/accept'), 'method' => 'PUT', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "testing-accept-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Accept'])
+        @include('components.action_form', ['url' => url('teams/' . $teamID . '/invitations/accept'), 'method' => 'PUT', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "testing-accept-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Accept'])
 
         {{--Reject invitation Form--}}
-        @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/reject'), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure?'", 'btnIDs' => "testing-accept-team-$team->id", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Reject'])
+        @include('components.action_form', ['url' => url('teams/' . $teamID . '/invitations/reject'), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure?'", 'btnIDs' => "testing-accept-team-$teamID", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Reject'])
 
     @endif
 
-    <div class="panel-heading">{{ $team->name }}</div>
+    <div class="panel-heading">{{ $teamName }}</div>
 
     <table class="table table-bordered table-hover text-center">
         <thead>
@@ -44,43 +46,55 @@
 
         <tbody>
         @foreach($team->members()->get() as $member)
+            @php
+                $memberUsername = $member[\App\Utilities\Constants::FLD_USERS_USERNAME];
+                $memberEmail = $member[\App\Utilities\Constants::FLD_USERS_EMAIL];
+                $memberID = $member[\App\Utilities\Constants::FLD_USERS_ID];
+                $memberCountry = $member[\App\Utilities\Constants::FLD_USERS_COUNTRY];
+            @endphp
             <tr>
                 {{--Username--}}
-                <td><a href="{{ url('profile/' . $member->username) }}">{{ $member->username }}</a></td>
+                <td><a href="{{ url('profile/' . $memberUsername) }}">{{ $memberUsername }}</a></td>
 
                 {{--E-Mail--}}
-                <td>{{ $member->email }}</td>
+                <td>{{ $memberEmail }}</td>
 
                 {{--User country--}}
-                <td>{{ $member->country }}</td>
+                <td>{{ $memberCountry }}</td>
 
                 @if($isMember)
                     <td>
                         {{--Remove member Form--}}
-                        @include('components.action_form', ['url' => url('teams/' . $team->id . '/remove/' . $member->id), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove $member->username from the team?'", 'btnIDs' => "testing-remove-member-team-$team->id-$member->username", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Remove'])
+                        @include('components.action_form', ['url' => url('teams/' . $teamID . '/remove/' . $memberID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove $memberUsername from the team?'", 'btnIDs' => "testing-remove-member-team-$teamID-$memberUsername", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Remove'])
                     </td>
                 @endif
             </tr>
         @endforeach
 
         @foreach($team->invitedUsers()->get() as $user)
+            @php
+                 $inviteeUsername = $user[\App\Utilities\Constants::FLD_USERS_USERNAME];
+                 $inviteeEmail = $user[\App\Utilities\Constants::FLD_USERS_EMAIL];
+                 $inviteeID = $user[\App\Utilities\Constants::FLD_USERS_ID];
+                 $inviteeCountry = $user[\App\Utilities\Constants::FLD_USERS_COUNTRY];
+            @endphp
             <tr>
                 {{--Username--}}
                 <td>
-                    <a href="{{ url('profile/' . $user->username) }}">{{ $user->username }}</a>
+                    <a href="{{ url('profile/' . $inviteeUsername) }}">{{ $inviteeUsername }}</a>
                     <div class="small">* Pending user response</div>
                 </td>
 
                 {{--E-Mail--}}
-                <td>{{ $user->email }}</td>
+                <td>{{ $inviteeEmail }}</td>
 
                 {{--User country--}}
-                <td>{{ $user->country }}</td>
+                <td>{{ $inviteeCountry }}</td>
 
                 @if($isMember)
                     <td>
                         {{--Cancel invitation form--}}
-                        @include('components.action_form', ['url' => url('teams/' . $team->id . '/invitations/cancel/' . $user->id), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to cancel the invitation to $member->username ?'", 'btnIDs' => "testing-cancel-invitation-$team->id-$user->id", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Cancel Invitation'])
+                        @include('components.action_form', ['url' => url('teams/' . $teamID . '/invitations/cancel/' . $inviteeID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to cancel the invitation to $memberUsername ?'", 'btnIDs' => "testing-cancel-invitation-$teamID-$inviteeID", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Cancel Invitation'])
                     </td>
                 @endif
             </tr>

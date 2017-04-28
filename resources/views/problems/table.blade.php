@@ -24,6 +24,8 @@
             $verdict = $problem->simpleVerdict($user);
             $rawID = $problem[\App\Utilities\Constants::FLD_PROBLEMS_ID];
             $id = \App\Utilities\Utilities::generateProblemNumber($problem);
+            $name = $problem[\App\Utilities\Constants::FLD_PROBLEMS_NAME];
+            $solvedCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_SOLVED_COUNT];
             $link = \App\Utilities\Utilities::generateProblemLink($problem);
             $judgeData = \App\Utilities\Constants::JUDGES[$problem->judge_id];
             $judgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
@@ -52,10 +54,10 @@
             <td>{{ $id }}</td>
 
             {{--Name--}}
-            <td><a href="{{ $link }}" target="_blank">{{ $problem->name }}</a></td>
+            <td><a href="{{ $link }}" target="_blank">{{ $name }}</a></td>
 
             {{--Solved Count--}}
-            <td>{{ $problem->solved_count }}</td>
+            <td>{{ $solvedCount }}</td>
 
             {{--Judge--}}
             <td><a href="{{ $judgeLink }}" target="_blank">{{ $judgeName }}</a></td>
@@ -64,8 +66,8 @@
             <td>
                 @foreach($problem->tags()->get() as $tag)
                     <a class="problems-table-tag-link"
-                       href="{{ Request::url() . '?' . http_build_query([Constants::URL_QUERY_TAG_KEY => $tag->id]) }}">
-                        {{ $tag->name }}
+                       href="{{ Request::url() . '?' . http_build_query([Constants::URL_QUERY_TAG_KEY => $tag[\App\Utilities\Constants::FLD_TAGS_ID]]) }}">
+                        {{ $tag[\App\Utilities\Constants::FLD_TAG] }}
                     </a>
                 @endforeach
             </td>

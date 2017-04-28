@@ -28,12 +28,18 @@
 
                     <!-- Contests Tab panes -->
                     <div class="tab-content text-center">
+
+                        {{--Running Contests--}}
                         <div role="tabpanel" class="tab-pane active" id="running">
                             @include('contests.contest_views.contests_table', ['contests' => $runningContests, 'fragment' => 'running'])
                         </div>
+
+                        {{--Upcoming Contests--}}
                         <div role="tabpanel" class="tab-pane" id="upcoming">
                             @include('contests.contest_views.contests_table', ['contests' => $upcomingContests, 'fragment' => 'upcoming'])
                         </div>
+
+                        {{--Past Contests--}}
                         <div role="tabpanel" class="tab-pane" id="past">
                             @include('contests.contest_views.contests_table', ['contests' => $endedContests, 'fragment' => 'past'])
                         </div>

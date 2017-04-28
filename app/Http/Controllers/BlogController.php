@@ -67,7 +67,8 @@ class BlogController extends Controller
 
     /**
      * Shows Add/Edit Post Page
-     * @return $this
+     *
+     * @return \Illuminate\View\View
      */
     public function addEditPost(){
         return view("blogs.add_edit")
