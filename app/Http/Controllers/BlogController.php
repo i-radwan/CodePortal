@@ -42,10 +42,16 @@ class BlogController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function displayPost($post){
-        //Get Post Info
+
+        //Get Current Signed In User
+        $user = Auth::user();
+        //Get Post
         $Post = Post::find($post);
+        //Get Post Info
         $postInfo = $this->getPostInfo($Post);
+        //Get Comments Of This Post
         $comments = $this->getPostComments($Post);
+        //Return View
         return view("blogs.post")
             ->with('post',$postInfo)
             ->with('comments', $comments)
@@ -67,12 +73,22 @@ class BlogController extends Controller
 
     /**
      * Shows Add/Edit Post Page
-     *
+     * @param $post the post id used in editing a saved post
+
      * @return \Illuminate\View\View
      */
-    public function addEditPost(){
-        return view("blogs.add_edit")
-            ->with('pageTitle', config('app.name'). ' |'. 'Add Post');
+    public function addEditPost($post = null){
+        if($post){
+            $Post = Post::find($post);
+            return view("blogs.add_edit")
+                ->with('postID', $post)
+                ->with('postTitle', $Post[Constants::FLD_POSTS_TITLE])
+                ->with('postBody', $Post[Constants::FLD_POSTS_BODY])
+                ->with('pageTitle', config('app.name') . ' |' . 'Edit Post');
+        }else {
+            return view("blogs.add_edit")
+                ->with('pageTitle', config('app.name') . ' |' . 'Add Post');
+        }
     }
 
     /**
@@ -98,6 +114,40 @@ class BlogController extends Controller
             Session::flash("messages", ["Sorry, Post was not added. Please retry later"]);
             return redirect()->action('BlogController@index');
         }
+    }
+
+    /**
+     * Edit a Post
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Post         $post
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function editPost(Request $request,Post $post){
+        //Get The Current User
+        $user = Auth::user();
+        //Check Validation
+        if( $user == $post['owner']) {
+            //Update Post
+            $post->update($request->all());
+            //Flash Success Message
+            Session::flash('messages', ['Your post was edited successfully']);
+            return redirect()->action('BlogController@displayPost', ['id' => $post[Constants::FLD_POSTS_ID]]);
+        }
+    }
+
+    public function deletePost(Request $request, Post $post){
+        //Check For Validation
+        if( Auth::user() == $post['owner']) {
+            $post->delete();
+            //Flash Success Message
+            Session::flash('messages', ['Your post was deleted successfully']);
+            return redirect()->action('BlogController@index');
+        }
+    }
+
+    public function editComment(Request $request){
+        dd("edit comment", $request);
     }
 
     /**
@@ -152,11 +202,16 @@ class BlogController extends Controller
         //Get Post Owner user name
         $postInfo["username"] = $Post['owner'][Constants::FLD_USERS_USERNAME];
         //if there is a user signed in display his votes
-        if($user = Auth::user()){
+        //Get Current User
+        $user = Auth::user();
+        if($user){
             //1 means he voted Up 0 means Voted Down -1 means no votes
             $postInfo["user_vote"] = ($Post->isUpVoted()) ? 1 : ($Post->isDownVoted() ? 0 : -1);
 
         }
+        //Add If the current user is the Owner or not
+        $postInfo["isOwner"] = ($user[Constants::FLD_USERS_ID] == $Post[Constants::FLD_POSTS_OWNER_ID]);
+        //Return Post Info
         return $postInfo;
     }
 

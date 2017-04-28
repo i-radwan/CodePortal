@@ -3,11 +3,26 @@
     <a href="/blogs/entry/{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}">{{$post[\App\Utilities\Constants::FLD_POSTS_TITLE]}}</a>
 </h1>
 
-<!-- Author -->
-<p class="lead">
-    by <a href="/profile/{{$post["username"]}}">{{$post["username"]}}</a>
-</p>
 
+<div class="row">
+
+    <!-- Author -->
+    <p class=" lead col-md-4">
+        by <a href="/profile/{{$post["username"]}}">{{$post["username"]}}</a>
+
+    </p>
+
+    <p class="col-md-4">
+        <!-- Edit and Delete Buttons if available -->
+    @if( $post['isOwner'])
+        <!-- Delete Button -->
+            <a class="new_post_link" href="/blogs/edit/entry/{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}"> <button class="btn btn-primary right">  Edit </button></a>
+        <!-- Delete Button -->
+            @include('components.action_form', ['url' => url('blogs/delete/entry/'.$post[\App\Utilities\Constants::FLD_POSTS_ID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this post? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-primary ', 'btnTxt' => 'Delete'])
+    @endif
+    </p>
+
+</div>
 
 <!-- Date/Time // Votes // Share Button(ToDO @ Samir) -->
 <p><span class="glyphicon glyphicon-time"></span>
