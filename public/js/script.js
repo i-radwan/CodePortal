@@ -238,12 +238,13 @@ var app = {
         //Blogs Add Post page
         if ($("#add-edit-post-page-hidden-element").length) {
             if (!sessionStorage.getItem('disableMDE')) {
+                //Get the text area element
+                var element = document.getElementById("edit-post-body");
                 var simplemde = new SimpleMDE({
-                    //Get the text area element
-                    element: document.getElementById("edit-post-body"),
+                    element: element ,
                     //Enables Auto Save which is removed when the form is submitted
                     autosave: {
-                        enabled: true,
+                        enabled: $(element).data('autosave-enable'),
                         uniqueId: "edit_post", //unique id for identifying saving purposes
                         delay: 1000, //Time between saves milli seconds
                     },

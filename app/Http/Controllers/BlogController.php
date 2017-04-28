@@ -42,10 +42,16 @@ class BlogController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function displayPost($post){
-        //Get Post Info
+
+        //Get Current Signed In User
+        $user = Auth::user();
+        //Get Post
         $Post = Post::find($post);
+        //Get Post Info
         $postInfo = $this->getPostInfo($Post);
+        //Get Comments Of This Post
         $comments = $this->getPostComments($Post);
+        //Return View
         return view("blogs.post")
             ->with('post',$postInfo)
             ->with('comments', $comments)
@@ -113,6 +119,10 @@ class BlogController extends Controller
     public function editPost(Request $request){
         dd("Garrab teshoof el request ya abo samra", $request);
     }
+
+    public function editComment(Request $request){
+        dd("edit comment", $request);
+    }
     /**
      * Add new comment to a post
      * @param \Illuminate\Http\Request $request
@@ -165,11 +175,16 @@ class BlogController extends Controller
         //Get Post Owner user name
         $postInfo["username"] = $Post['owner'][Constants::FLD_USERS_USERNAME];
         //if there is a user signed in display his votes
-        if($user = Auth::user()){
+        //Get Current User
+        $user = Auth::user();
+        if($user){
             //1 means he voted Up 0 means Voted Down -1 means no votes
             $postInfo["user_vote"] = ($Post->isUpVoted()) ? 1 : ($Post->isDownVoted() ? 0 : -1);
 
         }
+        //Add If the current user is the Owner or not
+        $postInfo["isOwner"] = ($user[Constants::FLD_USERS_ID] == $Post[Constants::FLD_POSTS_OWNER_ID]);
+        //Return Post Info
         return $postInfo;
     }
 

@@ -4,10 +4,18 @@
 </h1>
 
 <!-- Author -->
-<p class="lead">
+<div class="row">
+<p class="lead col-md-10" >
     by <a href="/profile/{{$post["username"]}}">{{$post["username"]}}</a>
 </p>
 
+<!-- Edit Button if available -->
+<p class="lead col-md-2" >
+    @if( $post['isOwner'])
+    <a class="new_post_link" href="/blogs/edit/entry/{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}"> <button class="btn btn-primary  center-block ">  Edit </button></a>
+    @endif
+</p>
+</div>
 
 <!-- Date/Time // Votes // Share Button(ToDO @ Samir) -->
 <p><span class="glyphicon glyphicon-time"></span>

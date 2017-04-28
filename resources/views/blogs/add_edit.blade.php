@@ -23,7 +23,7 @@
                                     <label for="body" class="col-sm-2 control-label">Body</label>
                                 </div>
                                 <div class="col-md-10">
-                                <textarea id="edit-post-body" name="body" class="form-control new-post-text-area" rows="15" placeholder="Write your Post Here using Markdown" contenteditable="true">
+                                <textarea id="edit-post-body" name="body" class="form-control new-post-text-area" rows="15" placeholder="Write your Post Here using Markdown" contenteditable="true" data-autosave-enable = "{{ isset($postBody) ? "false":"true" }}">
                                     {{isset($postBody) ? $postBody: ""}}
                                 </textarea>
                                 </div>

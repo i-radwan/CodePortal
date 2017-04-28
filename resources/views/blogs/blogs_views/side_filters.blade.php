@@ -2,7 +2,7 @@
 <div class="col-md-4">
     <!-- New Post Button -->
     <div class="well-lg">
-        <button class="btn btn-primary  center-block "> <a class="new_post_link" href="/blogs/add"> New Post </a> </button>
+        <a class="new_post_link" href="/blogs/add"> <button class="btn btn-primary  center-block ">  New Post  </button></a>
     </div>
     <!-- Blog Search Well -->
     <div class="well">
