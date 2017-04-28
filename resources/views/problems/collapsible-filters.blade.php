@@ -12,8 +12,8 @@
                 <div id="custom-search-input">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Problem Name"
-                               name="{{ Constants::URL_QUERY_SEARCH_KEY }}"
-                               value="{{ Request::get(Constants::URL_QUERY_SEARCH_KEY) }}">
+                               name="{{ \App\Utilities\Constants::URL_QUERY_SEARCH_KEY }}"
+                               value="{{ Request::get(\App\Utilities\Constants::URL_QUERY_SEARCH_KEY) }}">
 
                         <span class="input-group-btn">
                         <button class="btn btn-default btn-lg" type="submit">
