@@ -68,7 +68,8 @@ class BlogController extends Controller
     /**
      * Shows Add/Edit Post Page
      * @param $post the post id used in editing a saved post
-     * @return $this
+
+     * @return \Illuminate\View\View
      */
     public function addEditPost($post = null){
         if($post){

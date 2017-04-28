@@ -1,14 +1,16 @@
 {{--define some variables--}}
 @php
-    $contestID = $contestInfo[Constants::SINGLE_CONTEST_ID_KEY];
-    $contestName = $contestInfo[Constants::SINGLE_CONTEST_NAME_KEY];
-    $contestTime = $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY];
-    $contestDuration = $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY];
-    $contestOrganizers = $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY];
-    $isContestRunning = $contestInfo[Constants::SINGLE_CONTEST_RUNNING_STATUS];
+    use \App\Utilities\Constants;
+    use \App\Utilities\Utilities;
 
-    $ownerUsername = $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY];
-    $isOwnerOrOrganizer = Gate::allows('owner-organizer-contest', $contestID);
+    $contestID = $contest[Constants::SINGLE_CONTEST_ID_KEY];
+    $contestName = $contest[Constants::SINGLE_CONTEST_NAME_KEY];
+    $contestTime = date('D M d, H:i', strtotime($contest[Constants::FLD_CONTESTS_TIME]));
+    $contestDuration = Utilities::convertSecondsToDaysHoursMins($contest[Constants::FLD_CONTESTS_DURATION]);
+    $contestOrganizers = $contest->organizers()->pluck(Constants::FLD_USERS_USERNAME);
+
+    $ownerUsername = $contest->owner[Constants::FLD_USERS_USERNAME];
+    $isOwnerOrOrganizer = $isOwner || $isUserOrganizer;
 
 @endphp
 
@@ -126,20 +128,21 @@
                                 @else
                                     <p>No questions!</p>
                                 @endif
+
+                                {{--Show questions section when contest is running only and when user is participant--}}
+                                @if($isContestRunning && $isParticipant)
+                                    @include('contests.contest_views.ask_question')
+                                @endif
                             @endif
 
                         </div>
                     </div>
                 </div>
 
-                {{--Show questions section when contest is running only and when user is participant--}}
-                @if($isContestRunning && $isParticipant)
-                    @include('contests.contest_views.ask_question')
-                @endif
             </div>
         </div>
 
-        @if (Gate::allows('owner-organizer-contest', $contestID))
+        @if ($isOwnerOrOrganizer)
             @include('contests.contest_views.answer_question_modal')
         @endif
 

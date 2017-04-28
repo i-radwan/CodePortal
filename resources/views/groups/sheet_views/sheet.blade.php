@@ -1,9 +1,11 @@
 @php
-    $sheetID = $data[\App\Utilities\Constants::SINGLE_SHEET_SHEET_KEY][\App\Utilities\Constants::SINGLE_SHEET_ID_KEY];
-    $sheetName = $data[\App\Utilities\Constants::SINGLE_SHEET_SHEET_KEY][\App\Utilities\Constants::SINGLE_SHEET_NAME_KEY];
-    $problems = $data[\App\Utilities\Constants::SINGLE_SHEET_PROBLEMS_KEY];
-    $isOwner = $data[\App\Utilities\Constants::SINGLE_SHEET_EXTRA_KEY][\App\Utilities\Constants::SINGLE_GROUP_IS_USER_OWNER];
+    use \App\Utilities\Constants;
+
+    $sheetID = $sheet[Constants::SINGLE_SHEET_ID_KEY];
+    $sheetName = $sheet[Constants::SINGLE_SHEET_NAME_KEY];
     $user = Auth::user();
+    $isOwner = ($user) ? ($user->owningGroups()->find($sheet[Constants::FLD_SHEETS_GROUP_ID]) != null) : false;
+
 @endphp
 @extends('layouts.app')
 
@@ -26,29 +28,39 @@
                         </thead>
                         <tbody>
                         @foreach($problems as $problem)
-                            @php($verdict = $problem->simpleVerdict($user))
-                            @php($solution = $problem->pivot->solution)
-                            <tr class="{{ $verdict == Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
+                            @php
+                                $verdict = $problem->simpleVerdict($user);
+                                $solution = $problem->pivot[\App\Utilities\Constants::FLD_SHEET_PROBLEMS_SOLUTION];
+                                $solutionLang = $problem->pivot[\App\Utilities\Constants::FLD_SHEET_PROBLEMS_SOLUTION_LANG];
+                                $problemID = $problem[\App\Utilities\Constants::FLD_PROBLEMS_ID];
+                                $problemName = $problem[\App\Utilities\Constants::FLD_PROBLEMS_NAME];
+                                $problemNumber = \App\Utilities\Utilities::generateProblemNumber($problem);
+                                $problemLink =\App\Utilities\Utilities::generateProblemLink($problem);
+                                $problemSolvedCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_SOLVED_COUNT];
+                            @endphp
+                            <tr class="{{ $verdict == \App\Utilities\Constants::SIMPLE_VERDICT_ACCEPTED ? 'success' : ($verdict == \App\Utilities\Constants::SIMPLE_VERDICT_WRONG_SUBMISSION ? 'danger' : '') }}">
+
                                 {{--ID--}}
-                                <td>{{ Utilities::generateProblemNumber($problem) }}</td>
+                                <td>{{ $problemNumber }}</td>
 
                                 {{--Name--}}
                                 <td>
-                                    <a href="{{ Utilities::generateProblemLink($problem) }}" target="_blank">
-                                        {{ $problem->name }}
+                                    <a href="{{ $problemLink }}"
+                                       target="_blank">
+                                        {{ $problemName }}
                                     </a>
                                 </td>
 
                                 {{--Solved count--}}
-                                <td>{{ $problem->solved_count }}</td>
+                                <td>{{ $problemSolvedCount }}</td>
 
                                 {{--Actions--}}
                                 <td>
                                     <button class="btn btn-primary"
                                             data-toggle="modal"
-                                            id="testing-solution-btn-problem-{{ $problem->id }}"
+                                            id="testing-solution-btn-problem-{{ $problemID }}"
                                             data-target="#problem-solution-model"
-                                            onclick="app.fillAnswerModal('{{$problem->id}}', '{{$sheetID}}', '{{url("sheet/solution/$sheetID/".$problem->id)}}', '{{$problem->pivot->solution_lang}}');">
+                                            onclick="app.fillAnswerModal('{{ $problemID }}', '{{ $sheetID }}', '{{url("sheet/solution/$sheetID/" . $problemID)}}', '{{ $solutionLang }}');">
                                         Solution
                                     </button>
                                 </td>

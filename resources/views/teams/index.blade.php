@@ -11,7 +11,7 @@
                 </a>
             @endif
 
-            <div class="panel-heading">Teams of {{ $user->username }}</div>
+            <div class="panel-heading">Teams of {{ $user[\App\Utilities\Constants::FLD_USERS_USERNAME] }}</div>
             <div class="panel-body">
                 @include('components.alert')
 
@@ -23,7 +23,7 @@
                     @endforeach
                 @else
                     <h4 class="text-center margin-30px">
-                        {{ $user->username }} is not a member in any teams yet!
+                        {{ $user[\App\Utilities\Constants::FLD_USERS_USERNAME] }} is not a member in any teams yet!
                     </h4>
                 @endif
             </div>

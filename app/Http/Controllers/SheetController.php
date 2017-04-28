@@ -23,13 +23,11 @@ class SheetController extends Controller
      */
     public function displaySheet(Sheet $sheet)
     {
-        $data = [];
-
-        $this->getProblemsInfo($sheet, $data);
-        $this->getBasicContestInfo($sheet, $data);
+        $this->getProblemsInfo($sheet, $problems);
 
         return view('groups.sheet_views.sheet')
-            ->with('data', $data)
+            ->with('problems', $problems)
+            ->with('sheet', $sheet)
             ->with('pageTitle', config('app.name') . ' | ' . $sheet[Constants::FLD_SHEETS_NAME]);
     }
 
@@ -210,44 +208,14 @@ class SheetController extends Controller
     }
 
     /**
-     * Get sheet basic info
-     *
-     * @param Sheet $sheet
-     * @param array $data
-     */
-    private function getBasicContestInfo(Sheet $sheet, &$data)
-    {
-        $sheetInfo = [];
-
-        // Get sheet id
-        $sheetInfo[Constants::SINGLE_SHEET_ID_KEY] = $sheet[Constants::FLD_SHEETS_ID];
-
-        // Get sheet name
-        $sheetInfo[Constants::SINGLE_SHEET_NAME_KEY] = $sheet[Constants::FLD_SHEETS_NAME];
-
-        // Get sheet group id
-        $sheetInfo[Constants::SINGLE_SHEET_GROUP_ID_KEY] = $sheet[Constants::FLD_SHEETS_GROUP_ID];
-
-
-        // Is user an organizer?
-        $data[Constants::SINGLE_SHEET_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_OWNER]
-            = Auth::check() ? (Auth::user()->owningGroups()->find($sheet[Constants::FLD_SHEETS_GROUP_ID]) != null) : false;
-
-        // Set contest info
-        $data[Constants::SINGLE_SHEET_SHEET_KEY] = $sheetInfo;
-    }
-
-    /**
      * Get sheets problems
      *
      * @param Sheet $sheet
-     * @param array $data
+     * @param $problems
      */
-    private function getProblemsInfo(Sheet $sheet, &$data)
+    private function getProblemsInfo(Sheet $sheet, &$problems)
     {
         $problems = $sheet->problems()->get();
-        // Set group members
-        $data[Constants::SINGLE_SHEET_PROBLEMS_KEY] = $problems;
     }
 
     /**

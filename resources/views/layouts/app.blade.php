@@ -11,6 +11,8 @@
     <title>{{ $pageTitle }}</title>
 
     <!-- Styles -->
+    <link href="/css/jquerysctipttop.css" rel="stylesheet">
+    <link href="/css/timingfield.css" rel="stylesheet">
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/animate.css" rel="stylesheet">
     <link href="/css/jquery.datetimepicker.min.css" rel="stylesheet">
@@ -57,9 +59,7 @@
 <script src="/js/marked.min.js"></script>
 
 {{--Files of duration picker--}}
-<script type="text/javascript" src="/bower_components/semantic/dist/semantic.min.js"></script>
-<script type="text/javascript"
-        src="/bower_components/jquery-duration-picker/dist/jquery-duration-picker.min.js"></script>
+<script src="/js/timingfield.js"></script>
 
 <script src="/js/script.js"></script>
 

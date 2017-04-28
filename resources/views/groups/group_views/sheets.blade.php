@@ -12,23 +12,28 @@
     </thead>
     <tbody>
     @foreach($sheets as $sheet)
+        @php
+            $sheetID = $sheet[\App\Utilities\Constants::FLD_SHEETS_ID];
+            $sheetProblemsCount = $sheet->problems()->count();
+            $sheetName = $sheet[\App\Utilities\Constants::FLD_SHEETS_NAME];
+        @endphp
         <tr>
-            <td> {{ $sheet[Constants::FLD_SHEETS_ID] }} </td>
+            <td> {{ $sheetID }} </td>
             <td>
-                <a href="{{url('sheet/'.$sheet[Constants::FLD_SHEETS_ID])}}">{{ $sheet[Constants::FLD_SHEETS_NAME] }}</a>
+                <a href="{{url('sheet/' . $sheetID)}}">{{ $sheetName }}</a>
             </td>
-            <td> {{ $sheet->problems()->count() }}</td>
+            <td> {{ $sheetProblemsCount }}</td>
             @if($isOwner)
                 <td class="text-center">
 
                     {{--Edit sheet--}}
-                    <a href="{{url('sheet/edit/'.$sheet[Constants::FLD_SHEETS_ID])}}}"
+                    <a href="{{url('sheet/edit/' . $sheetID)}}}"
                        class="btn btn-link text-dark testing-edit-sheet">
                         Edit
                     </a>
 
                     {{--Delete sheet--}}
-                    @include('components.action_form', ['url' => url('sheet/' . $sheet[Constants::FLD_SHEETS_ID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this sheet? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark testing-delete-sheet', 'btnTxt' => 'Delete'])
+                    @include('components.action_form', ['halfWidth' => true, 'url' => url('sheet/' . $sheetID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this sheet? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark testing-delete-sheet', 'btnTxt' => 'Delete'])
 
                 </td>
             @endif

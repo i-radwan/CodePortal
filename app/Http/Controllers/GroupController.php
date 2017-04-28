@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Auth;
@@ -21,17 +22,14 @@ class GroupController extends Controller
      */
     public function index()
     {
-        $data = [];
-
         // Get search filter
         $searchStr = Utilities::makeInputSafe(request()->get('name'));
 
-        //\DB::enableQueryLog();
-        $data[Constants::GROUPS_GROUPS_KEY] = Group::ofName($searchStr)->paginate(Constants::GROUPS_COUNT_PER_PAGE);
-        //dd(\DB::getQueryLog());
+        // Get public groups and paginate (apply filters too)
+        $groups = Group::ofName($searchStr)->paginate(Constants::GROUPS_COUNT_PER_PAGE);
 
         return view('groups.index')
-            ->with('data', $data)
+            ->with('groups', $groups)
             ->with('pageTitle', config('app.name') . ' | Groups');
     }
 
@@ -204,8 +202,7 @@ class GroupController extends Controller
                     // Save user to members
                     $group->members()->save($user);
                 }
-            }
-                // If the user is already invited the make function throws this exception
+            } // If the user is already invited the make function throws this exception
             catch (InvitationException $e) {
                 $errors .= "$username is already invited\n";
                 continue;
@@ -261,8 +258,7 @@ class GroupController extends Controller
             // should prevent this
             $groupInvitations->delete();
 
-        }
-        // Else, check if the user hasn't sent joining request (if sent stop, else send one)
+        } // Else, check if the user hasn't sent joining request (if sent stop, else send one)
         else if (!$user->seekingJoinGroups()->find($group[Constants::FLD_GROUPS_ID])) {
             // Send joining request
             $user->seekingJoinGroups()->syncWithoutDetaching([$group[Constants::FLD_GROUPS_ID]]);

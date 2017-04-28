@@ -152,7 +152,7 @@ class ContestFlowTest extends DuskTestCase
                 ->assertSeeIn('.organizers-p', User::find(3)[Constants::FLD_USERS_USERNAME])
                 ->assertSeeIn('.organizers-p', User::find(4)[Constants::FLD_USERS_USERNAME])
                 ->assertSeeIn('.owner-p', $asd)
-                ->assertSeeIn('.duration-p', Utilities::convertMinsToHoursMins(1000));
+                ->assertSeeIn('.duration-p', Utilities::convertSecondsToDaysHoursMins(1000));
 
             // Check contest problems
             $problem1Number = Utilities::generateProblemNumber(Problem::find(1));

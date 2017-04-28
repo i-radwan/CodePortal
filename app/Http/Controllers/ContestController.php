@@ -66,19 +66,20 @@ class ContestController extends Controller
     {
 
         // Get contest common info (shared by all contest views [problems, participants, ...etc])
-        if (!$this->getContestCommonInfo($contest, $isOwner, $isParticipant, $isUserOrganizer, $contestInfo)) {
+        if (!$this->getContestCommonInfo($contest, $isOwner, $isParticipant, $isUserOrganizer)) {
             return redirect('contests/'); // contest doesn't exist
         }
 
-        $isContestRunning = $contestInfo[Constants::SINGLE_CONTEST_RUNNING_STATUS];
-        $isContestEnded = $contestInfo[Constants::SINGLE_CONTEST_ENDED_STATUS];
+        // Get contest status
+        $isContestRunning = $contest->isRunning();
+        $isContestEnded = $contest->isEnded();
 
         // Get common view
         $view = view('contests.contest')
+            ->with('contest', $contest)
             ->with('isOwner', $isOwner)
             ->with('isUserOrganizer', $isUserOrganizer)
             ->with('isParticipant', $isParticipant)
-            ->with('contestInfo', $contestInfo)
             ->with('isContestRunning', $isContestRunning)
             ->with('isContestEnded', $isContestEnded)
             ->with('view', 'problems')
@@ -125,9 +126,11 @@ class ContestController extends Controller
 
         } else if ($displayQuestions) {
 
+            $this->getProblemsInfo($contest, $problems);
             $this->getQuestionsInfo(Auth::user(), $contest, $questions);
 
             $view->with('questions', $questions)
+                ->with('problems', $problems)
                 ->with('view', 'questions');
 
         }
@@ -207,10 +210,9 @@ class ContestController extends Controller
      * @param $isOwner
      * @param $isParticipant
      * @param $isUserOrganizer
-     * @param $contestInfo
      * @return bool
      */
-    private function getContestCommonInfo(Contest $contest, &$isOwner, &$isParticipant, &$isUserOrganizer, &$contestInfo)
+    private function getContestCommonInfo(Contest $contest, &$isOwner, &$isParticipant, &$isUserOrganizer)
     {
         $currentUser = Auth::user();
 
@@ -220,7 +222,6 @@ class ContestController extends Controller
 
         // Check if user is participating or owning the contest to show buttons
         $this->getUserOwnerOrParticipant($currentUser, $contest, $isOwner, $isParticipant, $isUserOrganizer);
-        $this->getBasicContestInfo($contest, $contestInfo);
 
         return true;
     }
@@ -254,7 +255,7 @@ class ContestController extends Controller
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('pageTitle', config('app.name') . ' | ' . (isset($contest)) ? $contest[Constants::FLD_CONTESTS_NAME] : 'Contest');
+            ->with('pageTitle', config('app.name') . ' | ' . ((isset($contest)) ? $contest[Constants::FLD_CONTESTS_NAME] : 'Contest'));
     }
 
     /**
@@ -282,7 +283,7 @@ class ContestController extends Controller
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('pageTitle', config('app.name') . ' | Contest');
+            ->with('pageTitle', config('app.name') . ' | Add Contest');
     }
 
     /**
@@ -308,7 +309,7 @@ class ContestController extends Controller
         } else {
             $contest[Constants::FLD_CONTESTS_NAME] = $request->get('name');
             $contest[Constants::FLD_CONTESTS_TIME] = $request->get('time');
-            $contest[Constants::FLD_CONTESTS_DURATION] = floor($request->get('duration') / 60);
+            $contest[Constants::FLD_CONTESTS_DURATION] = floor($request->get('duration'));
             $contest[Constants::FLD_CONTESTS_VISIBILITY] = $request->get('visibility');
         }
 
@@ -438,8 +439,8 @@ class ContestController extends Controller
      */
     public function tagsAutoComplete()
     {
-        $data = Tag::select('name')->get();
-        return response()->json($data);
+        $tags = Tag::select('name')->get();
+        return response()->json($tags);
     }
 
     /**
@@ -451,11 +452,11 @@ class ContestController extends Controller
     public function usersAutoComplete(Request $request)
     {
         $query = $request->get('query');
-        $data = User::select([Constants::FLD_USERS_USERNAME . ' as name'])
+        $users = User::select([Constants::FLD_USERS_USERNAME . ' as name'])
             ->where(Constants::FLD_USERS_USERNAME, 'LIKE', "%$query%")
             ->where(Constants::FLD_USERS_USERNAME, '!=', Auth::user()[Constants::FLD_USERS_USERNAME])
             ->get();
-        return response()->json($data);
+        return response()->json($users);
     }
 
     /**
@@ -652,51 +653,10 @@ class ContestController extends Controller
     }
 
     /**
-     * Get contest basic info (owner, organizers, time, duration)
-     *
-     * @param Contest $contest
-     * @param $contestInfo
-     */
-    private function getBasicContestInfo($contest, &$contestInfo)
-    {
-        $contestInfo = [];
-
-        // Get contest id
-        $contestInfo[Constants::SINGLE_CONTEST_ID_KEY] = $contest[Constants::FLD_CONTESTS_ID];
-
-        // Get contest name
-        $contestInfo[Constants::SINGLE_CONTEST_NAME_KEY] = $contest[Constants::FLD_CONTESTS_NAME];
-
-        // Get owner name
-        $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY] = $contest->owner[Constants::FLD_USERS_USERNAME];
-
-        // Get organizers array
-        $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY] =
-            $contest->organizers()->pluck(Constants::FLD_USERS_USERNAME);
-
-        // Get duration in hrs:mins format
-        $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY] =
-            Utilities::convertMinsToHoursMins($contest[Constants::FLD_CONTESTS_DURATION]);
-
-        // Get time and convert to familiar format
-        $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY] =
-            date('D M d, H:i', strtotime($contest[Constants::FLD_CONTESTS_TIME]));
-
-        // Check if contest has ended
-        $contestInfo[Constants::SINGLE_CONTEST_ENDED_STATUS]
-            = $contest->isEnded();
-
-        // Get contest running status
-        $contestInfo[Constants::SINGLE_CONTEST_RUNNING_STATUS]
-            = $contest->isRunning();
-    }
-
-    /**
      * Get contest problems data
      *
      * @param Contest $contest
      * @param $problems
-     * @param array $data
      */
     private function getProblemsInfo($contest, &$problems)
     {

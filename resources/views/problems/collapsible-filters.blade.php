@@ -5,6 +5,7 @@
 
     <div id="filters" class="panel-collapse">
         <div class="panel-body">
+
             <form action="{{ Request::url() }}" method="get" role="form">
 
                 {{--Search Bar--}}
@@ -21,6 +22,7 @@
                     </span>
                     </div>
                 </div>
+
                 <div class="hidden-filters" id="hidden-filters">
                     {{--Judges checkboxes--}}
                     <div>
@@ -29,10 +31,10 @@
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox"
-                                           {{ in_array($judge->id, Request::get(Constants::URL_QUERY_JUDGES_KEY, [])) ? 'checked' : '' }}
-                                           name="{{ Constants::URL_QUERY_JUDGES_KEY }}[]"
-                                           value="{{ $judge->id }}">
-                                    {{ $judge->name }}
+                                           {{ in_array($judge[\App\Utilities\Constants::FLD_JUDGES_ID], Request::get(\App\Utilities\Constants::URL_QUERY_JUDGES_KEY, [])) ? 'checked' : '' }}
+                                           name="{{ \App\Utilities\Constants::URL_QUERY_JUDGES_KEY }}[]"
+                                           value="{{ $judge[\App\Utilities\Constants::FLD_JUDGES_ID] }}">
+                                    {{ $judge[\App\Utilities\Constants::FLD_JUDGES_NAME] }}
                                 </label>
                             </div>
                         @endforeach

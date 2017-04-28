@@ -2,66 +2,44 @@
 
 @section('content')
     <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">{{$action}}
-                        Sheet
+        <div class="panel panel-default">
+            <div class="panel-heading">{{$action}}
+                Sheet
+            </div>
+
+            <div class="panel-body">
+                {{--Alerts Part--}}
+                @include('components.alert')
+
+                {{--Name--}}
+                <form class="form-horizontal add-edit-sheet-form" role="form" method="POST"
+                      action="{{ url($url) }}">
+                    {{ csrf_field() }}
+                    <input type="hidden" id="problems-ids-hidden" name="problems"/>
+
+                    {{--Name--}}
+                    <div class="form-group">
+                        <label for="name" class="col-md-2 control-label">Name</label>
+
+                        <div class="col-md-10">
+                            <input id="name" type="text" class="form-control" name="name"
+                                   value="{{ isset($sheetName)?$sheetName:old('name') }}" placeholder="Name"
+                                   required autofocus>
+                        </div>
                     </div>
 
-                    <div class="panel-body">
-                        {{--Alerts Part--}}
-                        @include('components.alert')
+                    {{--Problems--}}
+                    @include('components.problems_selector')
 
-                        {{--Name--}}
-                        <form class="form-horizontal add-edit-sheet-form" role="form" method="POST"
-                              action="{{ url($url) }}">
-                            {{ csrf_field() }}
-                            <input type="hidden" id="problems-ids-hidden" name="problems"/>
-
-                            {{--Name--}}
-                            <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} has-feedback">
-                                <label for="name" class="col-md-2 control-label">Name</label>
-
-                                <div class="col-md-10">
-                                    <input id="name" type="text" class="form-control" name="name"
-                                           value="{{ isset($sheetName)?$sheetName:old('name') }}" placeholder="Name"
-                                           required
-                                           autofocus>
-
-                                    @if ($errors->has('name'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('name') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            {{--Problems--}}
-                            <div class="add-edit-contest-problems-wrapper form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
-                                <div class="row col-md-12">
-                                    <label for="problems" class="control-label text-center">Problems</label>
-
-                                    @include("contests.contest_views.add_edit_filter")
-                                    @include("problems.table")
-                                    @if ($errors->has('problems'))
-                                        <span class="help-block text-left">
-                                            <strong>{{ $errors->first('problems') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-12 text-center">
-                                    <button onclick="app.moveProblemsIDsSessionDataToHiddenField()" type="submit"
-                                            class="btn btn-primary">
-                                        {{$action}}
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                    <div class="form-group">
+                        <div class="col-md-12 text-center">
+                            <button onclick="app.moveProblemsIDsSessionDataToHiddenField()" type="submit"
+                                    class="btn btn-primary">
+                                {{$action}}
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

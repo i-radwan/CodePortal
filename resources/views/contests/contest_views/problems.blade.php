@@ -21,9 +21,12 @@
             $trailsCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_TRAILS_COUNT];
             $problem = new \App\Models\Problem((array)$problem);
             $verdict = $problem->simpleVerdict($user);
+            $problemRawID = $problem[\App\Utilities\Constants::FLD_PROBLEMS_ID];
+            $problemName = $problem[\App\Utilities\Constants::FLD_PROBLEMS_NAME];
+            $problemSolvedCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_SOLVED_COUNT];
             $id = \App\Utilities\Utilities::generateProblemNumber($problem);
             $link = \App\Utilities\Utilities::generateProblemLink($problem);
-            $judgeData = \App\Utilities\Constants::JUDGES[$problem->judge_id];
+            $judgeData = \App\Utilities\Constants::JUDGES[$problem[\App\Utilities\Constants::FLD_PROBLEMS_JUDGE_ID]];
             $judgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
             $judgeName = $judgeData[\App\Utilities\Constants::JUDGE_NAME_KEY];
 
@@ -33,22 +36,23 @@
                 $style = 'danger';
             else
                 $style = '';
+
         @endphp
 
         <tr class="{{ $style }}">
             {{--Reorder view--}}
-            <td class="problems-reorder-view index" data-problem-id="{{$problem->id}}">
-                <i class="fa fa-bars" id="testing-drag-problem-{{$problem->id}}" aria-hidden="true"></i>
+            <td class="problems-reorder-view index" data-problem-id="{{ $problemRawID }}">
+                <i class="fa fa-bars" id="testing-drag-problem-{{ $problemRawID }}" aria-hidden="true"></i>
             </td>
 
             {{--ID--}}
             <td class="testing-problem-order-{{ $i }}">{{ $id }}</td>
 
             {{--Name--}}
-            <td><a href="{{ $link }}" target="_blank">{{ $problem->name }}</a></td>
+            <td><a href="{{ $link }}" target="_blank">{{ $problemName }}</a></td>
 
             {{--Solved Count--}}
-            <td>{{ $problem->solved_count }} / {{ $trailsCount }}</td>
+            <td>{{ $problemSolvedCount }} / {{ $trailsCount }}</td>
 
             {{--Judge--}}
             <td><a href="{{ $judgeLink }}" target="_blank">{{ $judgeName }}</a></td>

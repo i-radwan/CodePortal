@@ -3,21 +3,31 @@
 @section('content')
     <div class="container">
         <div class="panel panel-default groups-panel">
+
+            {{--New--}}
             <a href="{{ url('/group/new') }}">
                 <span class="btn btn-link text-dark pull-right margin-5px">New</span>
             </a>
+
+            {{--Search Groups Link--}}
             <span onclick="$('.group-search-box').slideToggle();"
                   class="btn btn-link text-dark pull-right margin-5px group-search-icon"><i
                         class="fa fa-search"></i></span>
+
+            {{--Clear button to clear search filters--}}
             @if(Request::has('name'))
                 <a href="{{ url('groups') }}"
                    class="btn btn-link text-dark pull-right margin-5px">Clear</a>
             @endif
+
+
             <div class="panel-heading groups-panel-heading">Groups</div>
             <div class="panel-body groups-panel-body horizontal-scroll">
+
+                {{--Search Section--}}
                 @include('groups.group_views.search')
 
-                @if(count($data[Constants::GROUPS_GROUPS_KEY]))
+                @if($groups->count())
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -27,38 +37,52 @@
                         </tr>
                         </thead>
                         <tbody>
-                        @foreach($data[Constants::GROUPS_GROUPS_KEY] as $group)
+                        @foreach($groups as $group)
+                            @php
+                                $groupID = $group[\App\Utilities\Constants::FLD_GROUPS_ID];
+                                $groupName = $group[\App\Utilities\Constants::FLD_GROUPS_NAME];
+                                $groupOwnerUsername = $group->owner[\App\Utilities\Constants::FLD_USERS_USERNAME];
+                            @endphp
                             <tr>
-                                <td>{{ $group->id }}</td>
+
+                                {{--Group ID--}}
+                                <td>{{ $groupID }}</td>
+
+                                {{--Group name and link (for users only)--}}
                                 <td>
 
                                     {{-- Only singed in users can see group details --}}
                                     @if(Auth::check())
-                                        <a href="{{ url('group/' . $group->id) }}">
-                                            {{ $group->name }}
+                                        <a href="{{ url('group/' . $groupID) }}">
+                                            {{ $groupName }}
                                         </a>
                                     @else
-                                        {{ $group->name }}
+                                        {{ $groupName }}
                                     @endif
 
                                 </td>
+
+                                {{--Owner Username--}}
                                 <td>
-                                    <a href="{{ url('profile/' . $group->owner->username)}}">
-                                        {{ $group->owner->username }}
+                                    <a href="{{ url('profile/' . $groupOwnerUsername)}}">
+                                        {{ $groupOwnerUsername }}
                                     </a>
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
+
+
                     {{--Pagination--}}
-                    {{ $data[Constants::GROUPS_GROUPS_KEY]->appends(Request::all())->render() }}
+                    {{ $groups->appends(Request::all())->render() }}
+
                 @else
                     <p class="margin-30px">No groups!</p>
                 @endif
             </div>
         </div>
     </div>
-    <span class="page-distinguishing-element" id="groups-page-hidden-element"></span>
 
+    <span class="page-distinguishing-element" id="groups-page-hidden-element"></span>
 @endsection
