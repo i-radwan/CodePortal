@@ -46,10 +46,10 @@
                         <label for="duration" class="col-md-2 control-label">Duration</label>
 
                         <div class="col-md-2">
-                            <input id="duration" type="number" class="duration-picker"
-                                   name="duration" placeholder="Duration (mins)..." required>
+                            <input type="text" name="duration" id="duration" class="timing"/>
                         </div>
                     </div>
+
                     {{--Add organizers and control visibility if not group contest--}}
                     @if(!isset($group))
                         {{--Visibility--}}
@@ -125,7 +125,7 @@
           @if(isset($contest))
           data-name="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_NAME]}}"
           data-time="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_TIME]}}"
-          data-duration="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_DURATION] * 60}}"
+          data-duration="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_DURATION]}}"
           data-visibility="{{$contest[\App\Utilities\Constants::FLD_CONTESTS_VISIBILITY]}}"
           data-organizers="{{$contest->organizers()->pluck(\App\Utilities\Constants::FLD_USERS_USERNAME)}}"
           data-problems="{{$contest->problems()->pluck(\App\Utilities\Constants::FLD_PROBLEMS_ID)}}"

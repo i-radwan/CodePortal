@@ -159,9 +159,8 @@ var app = {
             app.fillContestFormFromSession();
 
             // Enable duration picker
-            $('.duration-picker').duration_picker({
-                lang: 'en'
-            });
+            $(".timing").timingfield();
+
         }
 
         // Add/Edit sheet page
