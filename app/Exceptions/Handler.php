@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Auth;
 use Exception;
+use App\Utilities\Constants;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -45,13 +47,18 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Exception $exception
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|mixed
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof MethodNotAllowedHttpException || $exception instanceof ModelNotFoundException || $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            return redirect('errors/404');
-        } else if ($exception instanceof AuthorizationException || $exception instanceof TokenMismatchException) {
+        if ($exception instanceof MethodNotAllowedHttpException ||
+            $exception instanceof ModelNotFoundException ||
+            $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return redirect(route(Constants::ROUTES_ERRORS_404));
+        }
+
+        if ($exception instanceof AuthorizationException ||
+            $exception instanceof TokenMismatchException) {
 
             // return json response
             if ($request->expectsJson()) {
@@ -61,11 +68,11 @@ class Handler extends ExceptionHandler
             // If user is not logged in (move to login page)
             // else move to 401 page (means he is logged in but trying to make
             // unauthorized action)
-            if (\Auth::check()) {
-                return redirect('errors/401');
-            } else {
-                return Redirect::guest('login');
+            if (Auth::check()) {
+                return redirect(route(Constants::ROUTES_ERRORS_401));
             }
+
+            return Redirect::guest(route(Constants::ROUTES_AUTH_LOGIN));
         }
 
         return parent::render($request, $exception);
@@ -76,20 +83,21 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request $request
      * @param  \Illuminate\Auth\AuthenticationException $exception
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|mixed
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
+
         // If user is not logged in (move to login page)
         // else move to 401 page (means he is logged in but trying to make
         // unauthorized action)
-        if (\Auth::check()) {
-            return redirect('errors/401');
-        } else {
-            return Redirect::guest('login');
+        if (Auth::check()) {
+            return redirect(route(Constants::ROUTES_ERRORS_401));
         }
+
+        return Redirect::guest(route(Constants::ROUTES_AUTH_LOGIN));
     }
 }

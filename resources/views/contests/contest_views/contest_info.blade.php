@@ -7,13 +7,13 @@
         <div class="col-md-5 col-sm-7 cols-xs-12 contest-details">
             <p class="owner-p">
                 <strong>Owner:</strong>
-                <a href="{{ url('profile/'.$ownerUsername) }}">{{ $ownerUsername }}</a>
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $ownerUsername) }}">{{ $ownerUsername }}</a>
             </p>
             @if(count($contestOrganizers))
                 <p class="organizers-p">
                     <strong>Organizers:</strong>
                     @foreach($contestOrganizers as $organizer)
-                        <a href="{{url('profile/'.$organizer)}}">{{$organizer}}</a>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $organizer) }}">{{ $organizer }}</a>
 
                         @if(!$loop->last)
                             ,

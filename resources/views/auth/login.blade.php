@@ -15,13 +15,18 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Login</div>
                         <div class="panel-body">
-                            <form role="form" method="POST" action="{{ route('login') }}">
+                            <form role="form" method="POST" action="{{ route(\App\Utilities\Constants::ROUTES_AUTH_LOGIN) }}">
                                 {{ csrf_field() }}
 
                                 {{-- Username --}}
+
                                 <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
-                                    <input id="username" type="text" class="form-control" name="{{ \App\Utilities\Constants::FLD_USERS_USERNAME }}" value="{{ old(\App\Utilities\Constants::FLD_USERS_USERNAME) }}" placeholder="Username" required autofocus>
-                                    <span class="glyphicon glyphicon-user form-control-feedback" aria-hidden="true"></span>
+                                    <input id="username" type="text" class="form-control"
+                                           name="{{ \App\Utilities\Constants::FLD_USERS_USERNAME }}"
+                                           value="{{ old(\App\Utilities\Constants::FLD_USERS_USERNAME) }}" placeholder="Username"
+                                           required autofocus>
+                                    <span class="glyphicon glyphicon-user form-control-feedback"
+                                          aria-hidden="true"></span>
 
                                     @if ($errors->has(\App\Utilities\Constants::FLD_USERS_USERNAME))
                                         <span class="help-block">
@@ -31,9 +36,12 @@
                                 </div>
 
                                 {{-- Password --}}
+
                                 <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_PASSWORD) ? ' has-error' : '' }} has-feedback">
-                                    <input id="password" type="password" class="form-control" name="{{ \App\Utilities\Constants::FLD_USERS_PASSWORD }}" placeholder="Password" required>
-                                    <span class="glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></span>
+                                    <input id="password" type="password" class="form-control"
+                                           name="{{ \App\Utilities\Constants::FLD_USERS_PASSWORD }}" placeholder="Password" required>
+                                    <span class="glyphicon glyphicon-lock form-control-feedback"
+                                          aria-hidden="true"></span>
 
                                     @if ($errors->has(\App\Utilities\Constants::FLD_USERS_PASSWORD))
                                         <span class="help-block">
@@ -45,7 +53,8 @@
                                 <div class="form-group">
                                     <div class="checkbox">
                                         <label>
-                                            <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
+                                            <input type="checkbox"
+                                                   name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
                                         </label>
                                     </div>
                                 </div>

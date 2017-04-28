@@ -14,6 +14,10 @@
 */
 
 // Homepage routes...
+//Route::get('/', function() {
+//    dump(route(\App\Utilities\Constants::ROUTES_NOTIFICATIONS_DELETE, 1));
+//});
+
 Route::get('/', 'HomeController@index');
 
 include 'web/problems.php';

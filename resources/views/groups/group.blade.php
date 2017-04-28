@@ -50,7 +50,7 @@
             @endif
 
             <div class="panel-heading">{{ $groupName }} ::
-                <small><a href="{{url('profile/'.$ownerUsername)}}">{{$ownerUsername}}</a></small>
+                <small><a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $ownerUsername) }}">{{ $ownerUsername }}</a></small>
             </div>
 
             <div class="panel-body">

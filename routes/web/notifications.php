@@ -1,8 +1,14 @@
 <?php
 
-Route::group(['middleware' => 'auth'], function () {
-    // Notifications routes...
-    Route::put('notifications/mark_all_read', 'NotificationController@markAllUserNotificationsRead');
+use App\Utilities\Constants;
 
-    Route::delete('notification/{notification}', 'NotificationController@deleteNotification');
+// Notifications routes...
+Route::group(['middleware' => 'auth'], function () {
+    // Mark all notifications of the current user as read
+    Route::put('notifications/mark_all_read', 'NotificationController@markAllRead')
+        ->name(Constants::ROUTES_NOTIFICATIONS_MARK_ALL_READ);
+
+    // Delete the passed notification
+    Route::delete('notifications/{notification}', 'NotificationController@destroy')
+        ->name(Constants::ROUTES_NOTIFICATIONS_DELETE);
 });

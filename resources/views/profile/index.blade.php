@@ -13,7 +13,7 @@
                         @if((\Auth::user()->username)==$userName)
 
 
-                            <a href="{{ url('edit') }}" class="btn btn-link pull-right btn-sm RbtnMargin "
+                            <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_EDIT) }}" class="btn btn-link pull-right btn-sm RbtnMargin "
                                role="button">edit
                                 <i class="fa fa-gear"></i> </a>
                         @endif

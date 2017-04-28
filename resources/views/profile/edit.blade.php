@@ -11,13 +11,13 @@
 		@endforeach
 	</ul>
 	@endif
-	<form method="post"  class="form-horizontal" role="form" action="{{ url('edit') }}" enctype="multipart/form-data">
+	<form method="post"  class="form-horizontal" role="form" action="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_UPDATE) }}" enctype="multipart/form-data">
 		<div class="row">
 			<!-- left column -->
 			<div class="col-md-3">
 				<div class="text-center">
 
-					<img <img src="{{ asset('images/' . $user->profile_picture)}}" class="avatar img-circle" onerror=this.src="/images/profile/UserDefault.png" width="200" height="200" alt="avatar">
+					<img src="{{ asset('images/' . $user->profile_picture)}}" class="avatar img-circle" onerror=this.src="/images/profile/UserDefault.png" width="200" height="200" alt="avatar">
 
 					<label class="control-label"></label>
 					<input type="file" class="file" name="profile_picture">
@@ -74,7 +74,7 @@
 					</div>
 
 				<!-- USERNAME -->
-					<div class="form-group{{ $errors->has(Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
+					<div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
 						<label class="col-md-3 control-label">Username:</label>
 						<div class="col-md-8">
 							<input name="username" class="form-control" value="{{$user->username}}" type="text">
