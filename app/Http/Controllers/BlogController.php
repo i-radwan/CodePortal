@@ -8,6 +8,8 @@ use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Auth;
 use Session;
+use DB;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class BlogController extends Controller
 {
@@ -27,7 +29,7 @@ class BlogController extends Controller
         return view('blogs.index')
             ->with('posts', $posts )
             ->with('q',request('q'))
-            ->with('topContributors', [])
+            ->with('topContributors', $this->getTopContributors())
             ->with('post_like_url', url("/blogs/up_vote/entry"))
             ->with('post_unlike_url', url("blogs/down_vote/entry"))
             ->with('comment_like_url', url("blogs/up_vote/comment"))
@@ -236,7 +238,6 @@ class BlogController extends Controller
 
     /**
      * * Get the Post Comments "till now the first two levels"
-     * (ToDo @ Samir Add More depth to the comments replies "recursive Query using Baum)
      * @param Post &$Post the current Post model
      * @return mixed
      */
@@ -301,6 +302,17 @@ class BlogController extends Controller
         $commentInfo["isOwner"] = ($Comment[Constants::FLD_COMMENTS_USER_ID] == $user[Constants::FLD_USERS_ID] );
         //Return Comment Info
         return $commentInfo;
+    }
+
+    /*
+     * Get Top Contributors
+     * @return mixed
+     */
+    public function getTopContributors(){
+        return $users =  Post::select(DB::raw('count(*) as contributions ,'. Constants::TBL_USERS. '.'. Constants::FLD_USERS_USERNAME))
+            ->join(Constants::TBL_USERS, Constants::TBL_USERS. '.' .Constants::FLD_USERS_ID, '=', Constants::TBL_POSTS. '.'. Constants::FLD_POSTS_OWNER_ID)
+            ->groupby( Constants::FLD_POSTS_OWNER_ID )
+            ->orderby('contributions', 'desc')->pluck("contributions", Constants::FLD_USERS_USERNAME);
     }
 
 }

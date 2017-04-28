@@ -60,7 +60,11 @@
     @if(isset($topContributors))
     <div class="well">
         <h4>Top Contributors</h4>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+        <ol class="lead">
+        @foreach( $topContributors as $userName => $contributions)
+            <li> {{$userName}} {{$contributions}}</li>
+        @endforeach
+        </ol>
     </div>
     @endif
 
