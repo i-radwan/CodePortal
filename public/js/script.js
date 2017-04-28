@@ -114,11 +114,27 @@ var app = {
         $(document.body).on("click", "a[data-toggle]", function (event) {
             location.hash = this.getAttribute("href");
         });
-        //
-        // $(window).on("popstate", function () {
-        //     var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
-        //     $("a[href='" + anchor + "']").tab("show");
-        // });
+
+        //endregion
+
+        //region Auto complete fields configurations
+        var autoCompleteFields = $('.autocomplete-input');
+
+        for (var i = 0; i < autoCompleteFields.length; i++) {
+            // Get single field info
+            var field = $(autoCompleteFields[i]);
+
+            var fieldID = field.attr('id');
+            var autoCompletePath = field.data('path');
+            var sessionKey = field.data('session-key');
+            var listID = field.data('list-id');
+
+            // Configure lists and autocomplete typeahead
+            $("#" + fieldID).typeahead(app.autoCompleteList(autoCompletePath, document.getElementById(listID), sessionKey));
+
+            // Flush previous session values
+            sessionStorage.setItem(sessionKey, '');
+        }
         //endregion
 
     },
@@ -211,28 +227,6 @@ var app = {
 
             // Toggle filters more div if query contains tags or judges
             app.toggleFiltersPanel();
-        }
-
-        // Group page
-        if ($("#single-group-page-hidden-element").length) {
-
-            // Configure lists and autocomplete typeahead
-            app.configureAutoCompleteLists(false, false, true);
-
-            app.inviteesSessionKey = 'group_invitees_session_key';
-
-            sessionStorage.setItem(app.inviteesSessionKey, '');
-        }
-
-        // Teams page
-        if ($("#teams-page-hidden-element").length) {
-
-            // Configure lists and autocomplete typeahead
-            app.configureAutoCompleteLists(false, false, true);
-
-            app.inviteesSessionKey = 'team_invitees_session_key';
-
-            sessionStorage.setItem(app.inviteesSessionKey, '');
         }
 
         //Blogs Add Post page
@@ -860,6 +854,49 @@ var app = {
     },
 
     /**
+     * the typeahead autoComplete Function
+     *
+     * @param path the url to get the data fot autocompletion
+     * @param list the list from the view
+     * @param sessionKey to store selected items
+     * @param localDataList to search locally instead of touching the server
+     * @returns {{source: source, updater: updater}}
+     */
+    autoCompleteList: function (path, list, sessionKey, localDataList) {
+        return ({
+            source: function (query, process) {
+                // if localData available, just process the saved array
+                if (localDataList && localDataList.length) {
+                    return process(localDataList);
+                }
+                // if not, request the array from server
+                else {
+                    // Use this threshold to prevent looking for username
+                    // using the first letter only (a lot of possibilities exist)
+                    if (query.length >= 2) {
+                        return $.get(path, {query: query}, function (data) {
+                            return process(data);
+                        });
+                    }
+                }
+            },
+            updater: function (item) {
+                // Get selected item name
+                var itemName = item.name;
+
+                // Sync auto-completed element with session
+                var isFound = app.syncDataWithSession(sessionKey, itemName, false);
+
+                // Add the element to view
+                if (!isFound) {
+                    app.renderListElements(itemName, list, sessionKey);
+                }
+                //Don't return the item name back in order not to keep it in the text box field
+                return;
+            }
+        });
+    },
+    /**
      * Sync given data with the session stored by the given key (if not exists, else if exists,
      * remove the element from session)
      *
@@ -954,6 +991,26 @@ var app = {
 
     },
     /**
+     * Append new element to the DOM tree
+     *
+     * @param itemName
+     * @param list
+     * @param sessionKey
+     */
+    renderListElements: function (itemName, list, sessionKey) {
+
+        // Create new DOM element and assign basic attributes
+        var entry = document.createElement('span');
+
+        entry.className += ' element label label-success';
+
+        // Add element content and append to view
+        entry.innerHTML = itemName + '<span onclick="app.removeListItemButtonClick(this, ' + sessionKey + ')" class="remove-btn" data-role="remove" data-name="' + itemName + '"></span>';
+
+        list.appendChild(entry);
+
+    },
+    /**
      * Set hidden inputs values from sessions, then clear sessions
      */
     moveSessionDataToHiddenFields: function () {
@@ -991,6 +1048,21 @@ var app = {
         else if (type == 0) { // Tags
             app.syncDataWithSession(app.tagsSessionKey, elementName, true);
         }
+    },
+    /**
+     * Bind close button to clear item from given list in sessionStorage
+     *
+     * @param element
+     * @param sessionKey
+     */
+    removeListItemButtonClick: function (element, sessionKey) {
+        // Remove view
+        $(element).parent().remove();
+
+        // Get element type
+        var elementName = $(element).data('name');
+        app.syncDataWithSession(sessionKey, elementName, true);
+
     },
     /**
      * Clear client side sessions
@@ -1159,6 +1231,21 @@ var app = {
     //              UTILITIES FUNCTIONS
     // ==================================================
 
+    /**
+     * Move data from session to hidden field
+     * @param fldID
+     * @param sessionKey
+     * @param clear
+     */
+    moveDataFromSessionToField: function (fldID, sessionKey, clear) {
+        // Set value
+        $("#" + fldID).val(JSON.parse(sessionStorage.getItem(sessionKey)).join());
+
+        // Clear sessions
+        if (clear) {
+            sessionStorage.setItem(sessionKey, '');
+        }
+    },
     /**
      * Read a page's GET URL variables and return them as an associative array.
      */
