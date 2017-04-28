@@ -186,6 +186,8 @@ var app = {
             app.tagsSessionKey = 'sheets_tags_ids_session_key';
             app.judgesSessionKey = 'sheets_judges_ids_session_key';
 
+            app.tagsList = document.getElementById("tags-list");
+
             // If edit page is on let's fill some sessions first
             if ($("#add-edit-sheet-page-hidden-element").data('name')) {
                 app.fillSessionWithSheetData();
@@ -198,7 +200,7 @@ var app = {
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureAutoCompleteLists(true, false, false);
+            $('#tags-auto').typeahead(app.autoCompleteList($("#tags-auto").data('tags-path'), app.tagsList, app.tagsSessionKey, app.allTagsList));
 
             // Fill judges checkboxes
             app.fillJudgesCheckboxes();
@@ -216,6 +218,8 @@ var app = {
             // to maintain the tags stored for add/edit contest
             app.tagsSessionKey = 'problems_filters_tags_session_key';
 
+            app.tagsList = document.getElementById("tags-list");
+
             // Fill url filters into session
             var urlTags = app.getUrlVars()['tag'];
             if (urlTags.trim().length)
@@ -228,7 +232,6 @@ var app = {
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.tagsList = document.getElementById("tags-list");
             $('#tags-auto').typeahead(app.autoCompleteList($("#tags-auto").data('tags-path'), app.tagsList, app.tagsSessionKey, app.allTagsList));
 
             // Retrieve tags from session to view
