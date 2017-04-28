@@ -59,8 +59,8 @@ class BlogsFlowTest extends DuskTestCase
                 ->assertSee('Comment Added Successfully')
                 ->assertSee($comment);
 
-            $latestComment = Comment::query()->orderByDesc(Constants::FLD_COMMENTS_COMMENT_ID)->first();
-            $latestCommentID = $latestComment[Constants::FLD_COMMENTS_COMMENT_ID];
+            $latestComment = Comment::query()->orderByDesc(Constants::FLD_COMMENTS_ID)->first();
+            $latestCommentID = $latestComment[Constants::FLD_COMMENTS_ID];
             $latestCommentBody = $latestComment[Constants::FLD_COMMENTS_BODY];
 
             //============================================================

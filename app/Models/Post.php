@@ -66,5 +66,18 @@ class Post extends Model
         return $this->belongsTo(User::class, Constants::FLD_POSTS_OWNER_ID);
     }
 
+    public function scopeOfBody(Builder $query, $word = null){
+        $query =  $this->select();
+        //Check if name is empty or null
+        if( $word == null || $word == ""){
+            return $query;
+        }
+
+        return $query->where(Constants::TBL_POSTS . '.' . Constants::FLD_POSTS_BODY,
+            'LIKE',
+            "*$word*"
+        );
+    }
+
 
 }

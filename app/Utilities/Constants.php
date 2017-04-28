@@ -686,7 +686,7 @@ class Constants
     const FLD_POSTS_IMAGE = "image"; //TODO @ Samir
 
     //Comments
-    const FLD_COMMENTS_COMMENT_ID = "id";
+    const FLD_COMMENTS_ID = "id";
     const FLD_COMMENTS_USER_ID = "user_id";
     const FLD_COMMENTS_POST_ID = "post_id";
     const FLD_COMMENTS_PARENT_ID = "parent_id";

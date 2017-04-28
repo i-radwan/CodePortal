@@ -5,7 +5,7 @@
                     <div class="panel-body">
                         {{--Alerts--}}
                         @include('components.alert')
-                        <form class="form-horizontal" role="form" method="post" action= {{isset($postID) ? "/blogs/edit/entry/".($postID) : "/blogs/add" }}>
+                        <form class="form-horizontal" role="form" method="post" action= {{isset($postID) ? "/blogs/edit/post/".($postID) : "/blogs/add" }}>
                             {{csrf_field()}}
 
                             {{--Title--}}

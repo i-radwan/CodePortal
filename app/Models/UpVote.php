@@ -42,7 +42,7 @@ class UpVote extends Model
 //    protected $rules = [
 //        Constants::FLD_UP_VOTES_USER_ID => 'required|exists:'. Constants::TBL_USERS. ','. Constants::FLD_USERS_ID,
 //        Constants::FLD_UP_VOTES_VOTED_TYPE => "required|in: " . "[Post::class, Comment::class])"  ,
-//        Constants::FLD_UP_VOTES_VOTED_ID => 'nullable|exists' . Constants::TBL_COMMENTS . ','. Constants::FLD_COMMENTS_COMMENT_ID,
+//        Constants::FLD_UP_VOTES_VOTED_ID => 'nullable|exists' . Constants::TBL_COMMENTS . ','. Constants::FLD_COMMENTS_ID,
 //    ];
 
     /*
