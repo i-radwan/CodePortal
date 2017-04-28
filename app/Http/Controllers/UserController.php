@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Charts;
 use Image;
 use Symfony\Component\Intl\Intl;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -91,7 +92,6 @@ class UserController extends Controller
     {
         //TODO @Abzo image cropping
         //TODO delete old images of the same user
-        //TODO PASSWORD CONFIRMATION ON EDIT PASSWORD
         //TODO verficcation issue(picture and the pass)
         //TODO show edited new info in the view
         //TODO add missing fillable att in User model
@@ -101,7 +101,7 @@ class UserController extends Controller
         $this->validate($request, array(
             'profile_picture' => 'nullable|mimes:jpg,jpeg,png|max:2500',
             'password' => 'nullable|min:6',
-            'ConfirmPassword' => 'nullable|min:6|same:password',));
+            'oldPassword' => 'min:6|old',));
 
         //saving picture in database
         if ($request->hasFile('profile_picture')) {
@@ -131,10 +131,14 @@ class UserController extends Controller
                 }
             }
         }
+
         //saving pass,email,username,first,last names and gender in database
-        $user->password = Hash::make($request->input('password'));
+        //dd($request->input('password'));
+        if(strlen($request->input('password'))>= 6)
+        { 
+          $user->password = Hash::make($request->input('password'));
+        }
         $user->email = $request->input('email');
-        $user->username = $request->input('username');
         $user->first_name = $request->input('FirstName');
         $user->last_name = $request->input('LastName');
         $user->country = $request->input('country');
@@ -144,8 +148,11 @@ class UserController extends Controller
         } else {
             $user->gender = '1';
         }
+
         //saving in the database
         $user->save();
+
+
         //redirecting with the id of the current/modified username
         return redirect(route(Constants::ROUTES_PROFILE, $user->username));
     }

@@ -73,13 +73,6 @@
 						</div>
 					</div>
 
-				<!-- USERNAME -->
-					<div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
-						<label class="col-md-3 control-label">Username:</label>
-						<div class="col-md-8">
-							<input name="username" class="form-control" value="{{$user->username}}" type="text">
-						</div>
-					</div>
 				<!-- GENDER -->
 					<label class="col-lg-3 control-label" for="gender">Gender:   &#160;</label>
 					<div class="controls col-lg-8 ">
@@ -91,6 +84,15 @@
 						</label>
 						<br>
 					</div>
+
+					<!-- USERNAME -->
+					<div class="form-group">
+						<label class="col-md-3 control-label">Username:</label>
+						<div class="col-md-8">
+						 <h5> <kbd> <strong> {{$user->username}} </strong> </kbd></h5>
+						</div>
+					</div>
+
 				<!-- NEW PASSWORD -->
 					<div class="form-group">
 						<label class="col-md-3 control-label">New Password:</label>
@@ -99,11 +101,11 @@
 							<input  name="password"  class="form-control" value="" type="password">
 						</div>
 					</div>
-				<!-- CONFIRM PASSWORD -->
-					<div class="form-group">
-						<label class="col-md-3 control-label">Confirm New password:</label>
+				<!-- OLD PASSWORD -->
+					<div class="form-group required">
+						<label class="col-md-3 control-label">Old Password:</label>
 						<div class="col-md-8">
-							<input name="ConfirmPassword"  class="form-control" value="" type="password">
+							<input  name="oldPassword"  class="form-control" value="" type="password">
 						</div>
 					</div>
 					<div class="form-group">
@@ -111,7 +113,9 @@
 						<div class="col-md-8">
 							<input class="btn btn-primary" value="Save Changes" type="submit">
 							<span></span>
-							<input class="btn btn-default" value="Cancel" type="reset">
+							<a href="/profile/{{ $user->username }}">
+							<input class="btn btn-default" value="Cancel" type="button">
+							</a>
 						</div>
 					</div>
 				</form>
