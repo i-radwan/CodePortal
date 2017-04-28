@@ -6,15 +6,17 @@
     </div>
     <!-- Blog Search Well -->
     <div class="well">
+        <form action="/blogs" method="get" role="form">
         <h4>Blog Search</h4>
         <div class="input-group">
-            <input type="text" class="form-control">
+            <input name="q" type="text" class="form-control" value="{{isset($q) ? $q: ""}}">
             <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">
-                                <span class="glyphicon glyphicon-search"></span>
-                        </button>
-                        </span>
+                <button class="btn btn-default" type="submit">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
         </div>
+        </form>
         <!-- /.input-group -->
     </div>
 

@@ -66,7 +66,7 @@ class Post extends Model
         return $this->belongsTo(User::class, Constants::FLD_POSTS_OWNER_ID);
     }
 
-    public function scopeOfBody(Builder $query, $word = null){
+    public function scopeOfContent(Builder $query, $word = null){
         $query =  $this->select();
         //Check if name is empty or null
         if( $word == null || $word == ""){
@@ -75,7 +75,11 @@ class Post extends Model
 
         return $query->where(Constants::TBL_POSTS . '.' . Constants::FLD_POSTS_BODY,
             'LIKE',
-            "*$word*"
+            "%$word%"
+        )->orwhere(
+            Constants::TBL_POSTS . '.' . Constants::FLD_POSTS_TITLE,
+            'LIKE',
+            "%$word%"
         );
     }
 

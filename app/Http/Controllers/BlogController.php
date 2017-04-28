@@ -19,13 +19,14 @@ class BlogController extends Controller
     public function index()
     {
         //Getting Posts
-        $posts = Post::orderBy(Constants::FLD_POSTS_CREATED_AT, 'desc')->paginate(7);
+        $posts = Post::ofContent(request('q'))->orderBy(Constants::FLD_POSTS_CREATED_AT, 'desc')->paginate(7);
         $index = 0;
         foreach ($posts as $post){
             $posts[$index++] = $this->getPostInfo($post, true);
         }
         return view('blogs.index')
             ->with('posts', $posts )
+            ->with('q',request('q'))
             ->with('topContributors', [])
             ->with('post_like_url', url("/blogs/up_vote/entry"))
             ->with('post_unlike_url', url("blogs/down_vote/entry"))

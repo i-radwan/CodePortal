@@ -14,7 +14,8 @@
                             Most Recent
                             <small>Contributions</small>
                         </h1>
-                         
+
+                        @if(count($posts) > 0)
                         {{--Render Recent Posts--}}
                         @foreach( $posts as $post)
                             @include("blogs.blogs_views.post_meta_info")
@@ -24,6 +25,9 @@
 
                         {{--TODO:Change Pagination style--}}
                         {{$posts->render()}}
+                        @else
+                            <p class="lead">Sorry, No Blogs meeting your search word. </p>
+                        @endif
 
                     </div>
 
