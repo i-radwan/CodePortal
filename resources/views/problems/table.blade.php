@@ -1,4 +1,4 @@
-<table class="table table-bordered table-hover">
+<table class="table table-bordered table-hover text-center">
     {{--Headings--}}
     <thead>
     <tr>
