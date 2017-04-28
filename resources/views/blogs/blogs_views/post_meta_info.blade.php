@@ -3,18 +3,21 @@
     <a href="/blogs/entry/{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}">{{$post[\App\Utilities\Constants::FLD_POSTS_TITLE]}}</a>
 </h1>
 
-<!-- Author -->
-<div class="row">
-<p class="lead col-md-10" >
-    by <a href="/profile/{{$post["username"]}}">{{$post["username"]}}</a>
-</p>
 
-<!-- Edit Button if available -->
-<p class="lead col-md-2" >
+<div class="row">
+
+    <!-- Author -->
+    <p>
+        by <a href="/profile/{{$post["username"]}}">{{$post["username"]}}</a>
+
+    <!-- Edit and Delete Buttons if available -->
     @if( $post['isOwner'])
-    <a class="new_post_link" href="/blogs/edit/entry/{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}"> <button class="btn btn-primary  center-block ">  Edit </button></a>
+        <!-- Delete Button -->
+       <a class="new_post_link" href="/blogs/edit/entry/{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}"> <button class="btn btn-primary  center-block ">  Edit </button></a>
+        <!-- Delete Button -->
+        @include('components.action_form', ['url' => url('blogs/delete/entry/'.$post[\App\Utilities\Constants::FLD_POSTS_ID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this post? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-primary  new_post_link', 'btnTxt' => 'Delete'])
     @endif
-</p>
+    </p>
 </div>
 
 <!-- Date/Time // Votes // Share Button(ToDO @ Samir) -->

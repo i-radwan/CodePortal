@@ -4,6 +4,9 @@
         <div class="row">
             <!-- Page Content -->
             <div class="container">
+                {{--Alerts Area--}}
+                @include('components.alert')
+
                 <div class="row">
                     <!-- Blog Entries Column -->
                     <div class="col-md-8">

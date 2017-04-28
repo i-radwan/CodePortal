@@ -116,13 +116,40 @@ class BlogController extends Controller
         }
     }
 
-    public function editPost(Request $request){
-        dd("Garrab teshoof el request ya abo samra", $request);
+    /**
+     * Edit a Post
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Post         $post
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function editPost(Request $request,Post $post){
+        //Get The Current User
+        $user = Auth::user();
+        //Check Validation
+        if( $user == $post['owner']) {
+            //Update Post
+            $post->update($request->all());
+            //Flash Success Message
+            Session::flash('messages', ['Your post was edited successfully']);
+            return redirect()->action('BlogController@displayPost', ['id' => $post[Constants::FLD_POSTS_ID]]);
+        }
+    }
+
+    public function deletePost(Request $request, Post $post){
+        //Check For Validation
+        if( Auth::user() == $post['owner']) {
+            $post->delete();
+            //Flash Success Message
+            Session::flash('messages', ['Your post was deleted successfully']);
+            return redirect()->action('BlogController@index');
+        }
     }
 
     public function editComment(Request $request){
         dd("edit comment", $request);
     }
+
     /**
      * Add new comment to a post
      * @param \Illuminate\Http\Request $request
