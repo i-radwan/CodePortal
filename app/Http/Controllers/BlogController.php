@@ -67,11 +67,21 @@ class BlogController extends Controller
 
     /**
      * Shows Add/Edit Post Page
+     * @param $post the post id used in editing a saved post
      * @return $this
      */
-    public function addEditPost(){
-        return view("blogs.add_edit")
-            ->with('pageTitle', config('app.name'). ' |'. 'Add Post');
+    public function addEditPost($post = null){
+        if($post){
+            $Post = Post::find($post);
+            return view("blogs.add_edit")
+                ->with('postID', $post)
+                ->with('postTitle', $Post[Constants::FLD_POSTS_TITLE])
+                ->with('postBody', $Post[Constants::FLD_POSTS_BODY])
+                ->with('pageTitle', config('app.name') . ' |' . 'Edit Post');
+        }else {
+            return view("blogs.add_edit")
+                ->with('pageTitle', config('app.name') . ' |' . 'Add Post');
+        }
     }
 
     /**
@@ -99,6 +109,9 @@ class BlogController extends Controller
         }
     }
 
+    public function editPost(Request $request){
+        dd("Garrab teshoof el request ya abo samra", $request);
+    }
     /**
      * Add new comment to a post
      * @param \Illuminate\Http\Request $request
