@@ -6,8 +6,8 @@ var app = {
     // Add Contest Session Constants
 
     problemsIDsSessionKey: 'problems_ids_session_key',
-    tagsSessionKey: 'tags_session_key',
     judgesSessionKey: 'judges_session_key',
+    tagsSessionKey: 'tags_session_key',
     organizersSessionKey: 'organizers_session_key',
     inviteesSessionKey: 'invitees_session_key',
     contestNameSessionKey: 'contest_name_session_key',
