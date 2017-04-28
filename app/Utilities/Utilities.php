@@ -101,14 +101,16 @@ class Utilities
      * @param string $format
      * @return string|void
      */
-    public static function convertMinsToHoursMins($time, $format = '%02d:%02d')
+    public static function convertSecondsToDaysHoursMins($time, $format = '%02d:%02d:%02d')
     {
         if ($time < 1) {
             return;
         }
-        $hours = floor($time / 60);
-        $minutes = ($time % 60);
-        return sprintf($format, $hours, $minutes);
+        $days = floor($time / 86400);
+        $hours = floor(($time % 86400) / 3600);
+        $minutes = floor(($time % 86400) % 3600 / 60);
+
+        return sprintf($format, $days, $hours, $minutes);
     }
 
     /**

@@ -17,7 +17,7 @@
                 $contestID = $contest[\App\Utilities\Constants::FLD_CONTESTS_ID];
                 $contestName = $contest[\App\Utilities\Constants::FLD_CONTESTS_NAME];
                 $contestTime  =  date('D M d, H:i', strtotime($contest[\App\Utilities\Constants::FLD_CONTESTS_TIME]));
-                $contestDuration = \App\Utilities\Utilities::convertMinsToHoursMins($contest[\App\Utilities\Constants::FLD_CONTESTS_DURATION]);
+                $contestDuration = \App\Utilities\Utilities::convertSecondsToDaysHoursMins($contest[\App\Utilities\Constants::FLD_CONTESTS_DURATION]);
                 $contestOwnerUsername = $contest->owner[\App\Utilities\Constants::FLD_USERS_USERNAME];
             @endphp
             <tr>
@@ -36,7 +36,7 @@
                 <td>{{ $contestTime }}</td>
 
                 {{--Duration--}}
-                <td>{{ $contestDuration }} hrs</td>
+                <td>{{ $contestDuration }} days</td>
 
                 {{--Owner--}}
                 @if(!isset($isGroup))

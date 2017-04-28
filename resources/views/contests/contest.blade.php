@@ -6,7 +6,7 @@
     $contestID = $contest[Constants::SINGLE_CONTEST_ID_KEY];
     $contestName = $contest[Constants::SINGLE_CONTEST_NAME_KEY];
     $contestTime = date('D M d, H:i', strtotime($contest[Constants::FLD_CONTESTS_TIME]));
-    $contestDuration = Utilities::convertMinsToHoursMins($contest[Constants::FLD_CONTESTS_DURATION]);
+    $contestDuration = Utilities::convertSecondsToDaysHoursMins($contest[Constants::FLD_CONTESTS_DURATION]);
     $contestOrganizers = $contest->organizers()->pluck(Constants::FLD_USERS_USERNAME);
 
     $ownerUsername = $contest->owner[Constants::FLD_USERS_USERNAME];

@@ -1205,7 +1205,6 @@ td.problems-reorder-view > .fa-bars {
     display: none;
 }
 
-
 /**************************************/
 /*</editor-fold>*/
 
@@ -1214,27 +1213,31 @@ td.problems-reorder-view > .fa-bars {
 /*========== Blogs PAGE ===========*/
 /*====================================*/
 
-.new_post_link{
-    text-decoration:none;
-    color: white;
-}
-.new_post_link:hover{
-    text-decoration:none;
+.new_post_link {
+    text-decoration: none;
     color: white;
 }
 
-.new-post-text-area{
+.new_post_link:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.new-post-text-area {
     resize: none;
 }
-.new_post_label{
+
+.new_post_label {
     display: inline-block;
     text-align: justify;
 }
-.post_small_paragraph{
+
+.post_small_paragraph {
     word-wrap: break-word;
     font-size: medium;
 }
-.post_paragraph{
+
+.post_paragraph {
     word-wrap: break-word;
     font-size: medium;
 }

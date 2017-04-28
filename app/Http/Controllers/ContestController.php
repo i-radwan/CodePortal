@@ -255,7 +255,7 @@ class ContestController extends Controller
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('pageTitle', config('app.name') . ' | ' . (isset($contest)) ? $contest[Constants::FLD_CONTESTS_NAME] : 'Contest');
+            ->with('pageTitle', config('app.name') . ' | ' . ((isset($contest)) ? $contest[Constants::FLD_CONTESTS_NAME] : 'Contest'));
     }
 
     /**
@@ -283,7 +283,7 @@ class ContestController extends Controller
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('pageTitle', config('app.name') . ' | Contest');
+            ->with('pageTitle', config('app.name') . ' | Add Contest');
     }
 
     /**
@@ -309,7 +309,7 @@ class ContestController extends Controller
         } else {
             $contest[Constants::FLD_CONTESTS_NAME] = $request->get('name');
             $contest[Constants::FLD_CONTESTS_TIME] = $request->get('time');
-            $contest[Constants::FLD_CONTESTS_DURATION] = floor($request->get('duration') / 60);
+            $contest[Constants::FLD_CONTESTS_DURATION] = floor($request->get('duration'));
             $contest[Constants::FLD_CONTESTS_VISIBILITY] = $request->get('visibility');
         }
 
@@ -650,46 +650,6 @@ class ContestController extends Controller
             // Check if user is organizer
             $isUserOrganizer = ($user->organizingContests()->find($contest[Constants::FLD_CONTESTS_ID]) != null);
         }
-    }
-
-    /**
-     * Get contest basic info (owner, organizers, time, duration)
-     *
-     * @param Contest $contest
-     * @param $contestInfo
-     */
-    private function getBasicContestInfo($contest, &$contestInfo)
-    {
-        $contestInfo = [];
-
-        // Get contest id
-        $contestInfo[Constants::SINGLE_CONTEST_ID_KEY] = $contest[Constants::FLD_CONTESTS_ID];
-
-        // Get contest name
-        $contestInfo[Constants::SINGLE_CONTEST_NAME_KEY] = $contest[Constants::FLD_CONTESTS_NAME];
-
-        // Get owner name
-        $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY] = $contest->owner[Constants::FLD_USERS_USERNAME];
-
-        // Get organizers array
-        $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY] =
-            $contest->organizers()->pluck(Constants::FLD_USERS_USERNAME);
-
-        // Get duration in hrs:mins format
-        $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY] =
-            Utilities::convertMinsToHoursMins($contest[Constants::FLD_CONTESTS_DURATION]);
-
-        // Get time and convert to familiar format
-        $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY] =
-            date('D M d, H:i', strtotime($contest[Constants::FLD_CONTESTS_TIME]));
-
-        // Check if contest has ended
-        $contestInfo[Constants::SINGLE_CONTEST_ENDED_STATUS]
-            = $contest->isEnded();
-
-        // Get contest running status
-        $contestInfo[Constants::SINGLE_CONTEST_RUNNING_STATUS]
-            = $contest->isRunning();
     }
 
     /**
