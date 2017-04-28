@@ -28,7 +28,7 @@
                     </a>
 
                     {{--Delete sheet--}}
-                    @include('components.action_form', ['url' => url('sheet/' . $sheet[Constants::FLD_SHEETS_ID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this sheet? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark testing-delete-sheet', 'btnTxt' => 'Delete'])
+                    @include('components.action_form', ['halfWidth' => true, 'url' => url('sheet/' . $sheet[Constants::FLD_SHEETS_ID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this sheet? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark testing-delete-sheet', 'btnTxt' => 'Delete'])
 
                 </td>
             @endif

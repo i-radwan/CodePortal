@@ -38,19 +38,8 @@
                             </div>
 
                             {{--Problems--}}
-                            <div class="add-edit-contest-problems-wrapper form-group{{ $errors->has('problems') ? ' has-error' : '' }} has-feedback">
-                                <div class="row col-md-12">
-                                    <label for="problems" class="control-label text-center">Problems</label>
+                            @include('components.problems_selector')
 
-                                    @include("contests.contest_views.add_edit_filter")
-                                    @include("problems.table")
-                                    @if ($errors->has('problems'))
-                                        <span class="help-block text-left">
-                                            <strong>{{ $errors->first('problems') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
                             <div class="form-group">
                                 <div class="col-md-12 text-center">
                                     <button onclick="app.moveProblemsIDsSessionDataToHiddenField()" type="submit"
