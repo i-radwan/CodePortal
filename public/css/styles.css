@@ -1204,6 +1204,10 @@ td.problems-reorder-view > .fa-bars {
 .hide-input {
     display: none;
 }
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}
 
 /**************************************/
 /*</editor-fold>*/

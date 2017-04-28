@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Laravel\Dusk\DuskServiceProvider;
+use Illuminate\Support\Facades\Hash;
+
+use Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,6 +17,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Validator::extend('old', function($attribute, $value, $parameters) {
+            //dd(\Auth::user()->password);
+         return Hash::check($value, \Auth::user()->password);
+        }); 
+        
 
     }
 

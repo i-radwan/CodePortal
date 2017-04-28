@@ -19,19 +19,31 @@
                         @endif
                     @endif
 
-                    <div class="panel-body custom-panel">
-
+                    <div class="content-tabs card margin-5px">
 
                         <!-- Nav tabs -->
+
                         <ul class="nav nav-tabs" role="tablist">
                             <li class=" nav-item active" role="presentation">
                                 <a href="#UserInfo" role="tab" data-toggle="tab">User Info</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#UserActivity" role="tab" data-toggle="tab">User Activity</a>
                             </li>
                             <li class="nav-item " role="presentation">
                                 <a href="#problems" role="tab" data-toggle="tab">Problems</a>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <a href="#UserActivity" role="tab" data-toggle="tab">User Activity</a>
+                                <a href="#contests" role="tab" data-toggle="tab">Contests</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#groups" role="tab" data-toggle="tab">Groups</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#teams" role="tab" data-toggle="tab">Teams</a>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <a href="#blogs" role="tab" data-toggle="tab">Blogs</a>
                             </li>
                         </ul>
 
@@ -39,7 +51,7 @@
                             <!-- User info tab -->
                             <div role="tabpanel" class="fade in tab-pane active " id="UserInfo">
 
-                                <br> <img class="thumbnail img-responsive"
+                                <img class="thumbnail img-responsive"
                                           src="{{ asset('images/'.$userData->profile_picture)}}" alt="profile pic"
                                           onerror=this.src="/images/profile/UserDefault.png" width="200" height="300">
 
