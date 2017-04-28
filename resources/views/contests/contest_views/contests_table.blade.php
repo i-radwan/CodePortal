@@ -36,7 +36,7 @@
                 <td>{{ $contestTime }}</td>
 
                 {{--Duration--}}
-                <td>{{ $contestDuration }} days</td>
+                <td>{{ $contestDuration }}</td>
 
                 {{--Owner--}}
                 @if(!isset($isGroup))

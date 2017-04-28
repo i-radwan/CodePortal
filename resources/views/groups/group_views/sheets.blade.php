@@ -18,11 +18,19 @@
             $sheetName = $sheet[\App\Utilities\Constants::FLD_SHEETS_NAME];
         @endphp
         <tr>
+
+            {{--ID--}}
             <td> {{ $sheetID }} </td>
+
+            {{--Name--}}
             <td>
                 <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_DISPLAY, $sheetID) }}">{{ $sheetName }}</a>
             </td>
+
+            {{--Problems Count--}}
             <td> {{ $sheetProblemsCount }}</td>
+
+            {{--Actions--}}
             @if($isOwner)
                 <td class="text-center">
 

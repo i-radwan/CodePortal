@@ -4,6 +4,7 @@ namespace App\Utilities;
 
 use App\Models\Problem;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 
 class Utilities
 {
@@ -110,7 +111,7 @@ class Utilities
         $hours = floor(($time % 86400) / 3600);
         $minutes = floor(($time % 86400) % 3600 / 60);
 
-        return sprintf($format, $days, $hours, $minutes);
+        return CarbonInterval::create(0, 0, 0, $days, $hours, $minutes, 0);
     }
 
     /**
