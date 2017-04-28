@@ -114,11 +114,7 @@ var app = {
         $(document.body).on("click", "a[data-toggle]", function (event) {
             location.hash = this.getAttribute("href");
         });
-        //
-        // $(window).on("popstate", function () {
-        //     var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
-        //     $("a[href='" + anchor + "']").tab("show");
-        // });
+
         //endregion
 
         //region Auto complete fields configurations
@@ -231,17 +227,6 @@ var app = {
 
             // Toggle filters more div if query contains tags or judges
             app.toggleFiltersPanel();
-        }
-
-        // Group page
-        if ($("#single-group-page-hidden-element").length) {
-
-            // Configure lists and autocomplete typeahead
-            app.configureAutoCompleteLists(false, false, true);
-
-            app.inviteesSessionKey = 'group_invitees_session_key';
-
-            sessionStorage.setItem(app.inviteesSessionKey, '');
         }
 
         //Blogs Add Post page

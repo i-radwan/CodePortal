@@ -1,4 +1,4 @@
-<form class="form-group has-feedback" role="form" method="POST" action="{{ route(\App\Utilities\Constants::ROUTES_TEAMS_INVITE, $teamID) }}">
+<form class="form-group" role="form" method="POST" action="{{ route(\App\Utilities\Constants::ROUTES_TEAMS_INVITE, $teamID) }}">
     {{ csrf_field() }}
     <div class="input-group input-group-lg">
 
