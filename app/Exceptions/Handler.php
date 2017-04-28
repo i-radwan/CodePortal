@@ -7,6 +7,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Redirect;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
@@ -50,7 +51,7 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof MethodNotAllowedHttpException || $exception instanceof ModelNotFoundException || $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             return redirect('errors/404');
-        } else if ($exception instanceof AuthorizationException) {
+        } else if ($exception instanceof AuthorizationException || $exception instanceof TokenMismatchException) {
 
             // return json response
             if ($request->expectsJson()) {
