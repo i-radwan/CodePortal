@@ -157,6 +157,11 @@ var app = {
         // Add/Edit contest page
         if ($("#add-edit-contest-page-hidden-element").length) {
 
+            // Define lists
+            this.tagsList = document.getElementById("tags-list");
+            this.organisersList = document.getElementById("organisers-list");
+            this.inviteesList = document.getElementById("invitees-list");
+
             // If edit page is on let's fill some sessions first
             if ($("#add-edit-contest-page-hidden-element").data('name')) {
                 app.fillSessionWithContestData();
@@ -169,7 +174,9 @@ var app = {
             app.fetchAllTagsFromDB();
 
             // Configure lists and autocomplete typeahead
-            app.configureAutoCompleteLists(true, true, true);
+            $('#tags-auto').typeahead(app.autoCompleteList($("#tags-auto").data('tags-path'), app.tagsList, app.tagsSessionKey, app.allTagsList));
+            $('#organisers-auto').typeahead(app.autoCompleteList($("#organisers-auto").data('organisers-path'), app.organisersList, app.organizersSessionKey));
+            $('#invitees-auto').typeahead(app.autoCompleteList($("#invitees-auto").data('invitees-path'), app.inviteesList, app.inviteesSessionKey));
 
             // Render saved data from session into form
             app.fillContestFormFromSession();
@@ -206,7 +213,7 @@ var app = {
             app.fillJudgesCheckboxes();
 
             // Fill tags
-            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
+            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList);
 
             // Fill problems checkboxes
             app.fillProblemsTableCheckboxes();
@@ -235,7 +242,7 @@ var app = {
             $('#tags-auto').typeahead(app.autoCompleteList($("#tags-auto").data('tags-path'), app.tagsList, app.tagsSessionKey, app.allTagsList));
 
             // Retrieve tags from session to view
-            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
+            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList);
 
             // Toggle filters more div if query contains tags or judges
             app.toggleFiltersPanel();
@@ -621,40 +628,6 @@ var app = {
         });
     },
     /**
-     * Configure lists and allow auto complete
-     *
-     * @param tags: bind tags with auto complete
-     * @param organisers: bind organisers with auto complete
-     */
-    configureAutoCompleteLists: function (tags, organisers, invitees) {
-
-        // Tags AutoComplete
-        if (tags) {
-            // Define tag lists and apply autocomplete to it
-            this.tagsList = document.getElementById("tags-list");
-            // Call typeahead for Tags autoCompletion
-            $('#tags-auto').typeahead(app.autoComplete($("#tags-auto").data('tags-path'), app.tagsList, 0));
-        }
-
-        // Organisers AutoComplete
-        if (organisers) {
-            //Organisers List
-            this.organisersList = document.getElementById("organisers-list");
-
-            //Call typeahead for Organisers autoCompletion
-            $('#organisers-auto').typeahead(app.autoComplete($("#organisers-auto").data('organisers-path'), app.organisersList, 1));
-        }
-
-        // Invitees AutoComplete
-        if (invitees) {
-            //Organisers List
-            this.inviteesList = document.getElementById("invitees-list");
-
-            //Call typeahead for Organisers autoCompletion
-            $('#invitees-auto').typeahead(app.autoComplete($("#invitees-auto").data('invitees-path'), app.inviteesList, 2));
-        }
-    },
-    /**
      * Fill checkboxes of problems selector from session
      */
     fillProblemsTableCheckboxes: function () {
@@ -706,9 +679,9 @@ var app = {
             app.fillJudgesCheckboxes();
 
             // Fill tags, organisers lists
-            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList, 0);
-            app.retrieveListsFromSession(app.organizersSessionKey, app.organisersList, 1);
-            app.retrieveListsFromSession(app.inviteesSessionKey, app.inviteesList, 2);
+            app.retrieveListsFromSession(app.tagsSessionKey, app.tagsList);
+            app.retrieveListsFromSession(app.organizersSessionKey, app.organisersList);
+            app.retrieveListsFromSession(app.inviteesSessionKey, app.inviteesList);
 
             // Fill form basic fields
             $("#name").val(sessionStorage.getItem(app.contestNameSessionKey));
@@ -810,61 +783,6 @@ var app = {
             });
         }
     },
-
-    /**
-     * the typeahead autoComplete Function
-     *
-     * @param path the url to get the data fot autocompletion
-     * @param list the list from th view
-     * @param type 0:Means Tags autoCompletion, 1: Means  Organisers autoCompletion, 2: Invitees list
-     * @returns {{source: source, updater: updater}}
-     */
-    autoComplete: function (path, list, type) {
-        return ({
-            source: function (query, process) {
-                // if tags auto complete, just process the saved array
-                if (type == 0) {
-                    return process(app.allTagsList);
-                }
-                // if organizers, request the array from server
-                else if (type == 1 || type == 2) {
-                    // Use this threshold to prevent looking for username
-                    // using the first letter only (a lot of possibilities exist)
-                    if (query.length >= 2) {
-                        return $.get(path, {query: query}, function (data) {
-                            return process(data);
-                        });
-                    }
-                }
-            },
-            updater: function (item) {
-                // Get selected item name
-                var itemName = item.name;
-
-                var isFound;
-                // Sync auto-completed element with session
-                if (type == 2) { // Invitees
-                    isFound = app.syncDataWithSession(app.inviteesSessionKey, itemName, false);
-                }
-                // Sync auto-completed element with session
-                else if (type == 1) { // Organizers
-                    isFound = app.syncDataWithSession(app.organizersSessionKey, itemName, false);
-                }
-                else if (type == 0) { // Tags
-                    isFound = app.syncDataWithSession(app.tagsSessionKey, itemName, false);
-                }
-
-                // Add the element to view
-                if (!isFound) {
-                    app.renderElementsFromSession(itemName, list, type);
-                }
-
-                //Don't return the item name back in order not to keep it in the text box field
-                return;
-            }
-        });
-    },
-
     /**
      * the typeahead autoComplete Function
      *
@@ -966,9 +884,8 @@ var app = {
      *
      * @param sessionKey
      * @param list
-     * @param type
      */
-    retrieveListsFromSession: function (sessionKey, list, type) {
+    retrieveListsFromSession: function (sessionKey, list) {
         if (!list) return;
         var savedValues = sessionStorage.getItem(sessionKey);
 
@@ -979,28 +896,9 @@ var app = {
 
             // Loop and render
             savedValuesArray.forEach(function (itemName) {
-                app.renderElementsFromSession(itemName, list, type);
+                app.renderListElements(itemName, list, sessionKey);
             });
         }
-    },
-    /**
-     * Append new element to the DOM tree
-     *
-     * @param itemName
-     * @param list
-     * @param type
-     */
-    renderElementsFromSession: function (itemName, list, type) {
-
-        // Create new DOM element and assign basic attributes
-        var entry = document.createElement('span');
-        entry.className += ' element label label-success';
-
-        // Add element content and append to view
-        entry.innerHTML = itemName + '<span onclick="app.closeButtonClick(this)" class="remove-btn" data-role="remove" data-name="' + itemName + '" data-type="' + type + '"></span>';
-
-        list.appendChild(entry);
-
     },
     /**
      * Append new element to the DOM tree
@@ -1017,7 +915,7 @@ var app = {
         entry.className += ' element label label-success';
 
         // Add element content and append to view
-        entry.innerHTML = itemName + '<span onclick="app.removeListItemButtonClick(this, ' + sessionKey + ')" class="remove-btn" data-role="remove" data-name="' + itemName + '"></span>';
+        entry.innerHTML = itemName + '<span onclick="app.removeListItemButtonClick(this, \'' + sessionKey + '\')" class="remove-btn" data-role="remove" data-name="' + itemName + '"></span>';
 
         list.appendChild(entry);
 
@@ -1038,28 +936,6 @@ var app = {
 
         // Clear sessions
         app.clearSession();
-    },
-    /**
-     * Bind close button to clear item from given list in sessionStorage
-     */
-    closeButtonClick: function (element) {
-        // Remove view
-        $(element).parent().remove();
-
-        // Get element type
-        var type = $(element).data('type');
-        var elementName = $(element).data('name');
-
-        // Detach from session
-        if (type == 2) { // Organizers
-            app.syncDataWithSession(app.inviteesSessionKey, elementName, true);
-        }// Detach from session
-        else if (type == 1) { // Organizers
-            app.syncDataWithSession(app.organizersSessionKey, elementName, true);
-        }
-        else if (type == 0) { // Tags
-            app.syncDataWithSession(app.tagsSessionKey, elementName, true);
-        }
     },
     /**
      * Bind close button to clear item from given list in sessionStorage
