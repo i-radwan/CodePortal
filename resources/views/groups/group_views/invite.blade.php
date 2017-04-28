@@ -1,4 +1,4 @@
-<form class="form-group has-feedback" role="form" method="POST" action="{{url('group/member/invite/'.$groupID)}}">
+<form class="form-group" role="form" method="POST" action="{{url('group/member/invite/'.$groupID)}}">
     {{ csrf_field() }}
     <div class="input-group input-group-lg">
 
