@@ -19,25 +19,25 @@
                                 {{ csrf_field() }}
 
                                 {{-- Username --}}
-                                <div class="form-group{{ $errors->has(Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
-                                    <input id="username" type="text" class="form-control" name="{{ Constants::FLD_USERS_USERNAME }}" value="{{ old(Constants::FLD_USERS_USERNAME) }}" placeholder="Username" required autofocus>
+                                <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_USERNAME) ? ' has-error' : '' }} has-feedback">
+                                    <input id="username" type="text" class="form-control" name="{{ \App\Utilities\Constants::FLD_USERS_USERNAME }}" value="{{ old(\App\Utilities\Constants::FLD_USERS_USERNAME) }}" placeholder="Username" required autofocus>
                                     <span class="glyphicon glyphicon-user form-control-feedback" aria-hidden="true"></span>
 
-                                    @if ($errors->has(Constants::FLD_USERS_USERNAME))
+                                    @if ($errors->has(\App\Utilities\Constants::FLD_USERS_USERNAME))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first(Constants::FLD_USERS_USERNAME) }}</strong>
+                                            <strong>{{ $errors->first(\App\Utilities\Constants::FLD_USERS_USERNAME) }}</strong>
                                         </span>
                                     @endif
                                 </div>
 
                                 {{-- Password --}}
-                                <div class="form-group{{ $errors->has(Constants::FLD_USERS_PASSWORD) ? ' has-error' : '' }} has-feedback">
-                                    <input id="password" type="password" class="form-control" name="{{ Constants::FLD_USERS_PASSWORD }}" placeholder="Password" required>
+                                <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_PASSWORD) ? ' has-error' : '' }} has-feedback">
+                                    <input id="password" type="password" class="form-control" name="{{ \App\Utilities\Constants::FLD_USERS_PASSWORD }}" placeholder="Password" required>
                                     <span class="glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></span>
 
-                                    @if ($errors->has(Constants::FLD_USERS_PASSWORD))
+                                    @if ($errors->has(\App\Utilities\Constants::FLD_USERS_PASSWORD))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first(Constants::FLD_USERS_PASSWORD) }}</strong>
+                                            <strong>{{ $errors->first(\App\Utilities\Constants::FLD_USERS_PASSWORD) }}</strong>
                                         </span>
                                     @endif
                                 </div>
