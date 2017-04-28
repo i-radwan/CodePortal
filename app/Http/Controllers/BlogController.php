@@ -90,7 +90,7 @@ class BlogController extends Controller
             // Return success message
             Session::flash("messages", ["Post Added Successfully"]);
             return redirect()->action(
-                'BlogController@displayPost', ['id' => $post[Constants::FLD_POSTS_POST_ID]]
+                'BlogController@displayPost', ['id' => $post[Constants::FLD_POSTS_ID]]
             );
         }
         else {    // return error message
@@ -135,7 +135,7 @@ class BlogController extends Controller
         //Get Post title
         $postInfo[Constants::FLD_POSTS_TITLE] = $Post[Constants::FLD_POSTS_TITLE];
         //Get Post id
-        $postInfo[Constants::FLD_POSTS_POST_ID] = $Post[Constants::FLD_POSTS_POST_ID];
+        $postInfo[Constants::FLD_POSTS_ID] = $Post[Constants::FLD_POSTS_ID];
         //Get Post Full Body if minimal is false and part of the body string when minimal is true, the previous case is
         //used in the index page
         if($minimal)

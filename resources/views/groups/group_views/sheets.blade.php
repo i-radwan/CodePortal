@@ -17,25 +17,19 @@
             <td>
                 <a href="{{url('sheet/'.$sheet[Constants::FLD_SHEETS_ID])}}">{{ $sheet[Constants::FLD_SHEETS_NAME] }}</a>
             </td>
-            <td> {{ count($sheet->problems()->get())}}</td>
+            <td> {{ $sheet->problems()->count() }}</td>
             @if($isOwner)
                 <td class="text-center">
 
                     {{--Edit sheet--}}
-                    <a href="{{url('sheet/edit/'.$sheet[Constants::FLD_SHEETS_ID])}}}" class="btn btn-link text-dark testing-edit-sheet">
+                    <a href="{{url('sheet/edit/'.$sheet[Constants::FLD_SHEETS_ID])}}}"
+                       class="btn btn-link text-dark testing-edit-sheet">
                         Edit
                     </a>
 
                     {{--Delete sheet--}}
-                    <form action="{{url('sheet/'.$sheet[Constants::FLD_SHEETS_ID])}}"
-                          method="post" class="action">
-                        {{method_field('DELETE')}}
-                        {{csrf_field()}}
-                        <button type="submit" class="btn btn-link text-dark testing-delete-sheet"
-                                onclick="return confirm('Are you sure want to delete the sheet?\nThis cannot be undone')">
-                            Delete
-                        </button>
-                    </form>
+                    @include('components.action_form', ['url' => url('sheet/' . $sheet[Constants::FLD_SHEETS_ID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this sheet? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark testing-delete-sheet', 'btnTxt' => 'Delete'])
+
                 </td>
             @endif
         </tr>

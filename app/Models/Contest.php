@@ -122,6 +122,60 @@ class Contest extends Model
     }
 
     /**
+     * Return upcoming contests only
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOfUpcoming(Builder $query)
+    {
+        return $query->where(
+            Constants::FLD_CONTESTS_TIME,
+            '>',
+            DB::raw('NOW()')
+        );
+    }
+
+    /**
+     * Return running contests only
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOfRunning(Builder $query)
+    {
+        return $query
+            ->where(
+                Constants::FLD_CONTESTS_TIME,
+                '<',
+                DB::raw('NOW()')
+            )
+            ->whereRaw(  // DATE_ADD(time, INTERVAL duration MINUTE) > NOW()
+                "DATE_ADD(" . Constants::FLD_CONTESTS_TIME
+                . ", INTERVAL " .
+                Constants::FLD_CONTESTS_DURATION
+                . " MINUTE) > NOW()"
+            );
+    }
+
+    /**
+     * Return ended contests only
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOfEnded(Builder $query)
+    {
+        return $query
+            ->whereRaw(  // DATE_ADD(time, INTERVAL duration MINUTE) < NOW()
+                "DATE_ADD(" . Constants::FLD_CONTESTS_TIME
+                . ", INTERVAL " .
+                Constants::FLD_CONTESTS_DURATION
+                . " MINUTE) < NOW()"
+            );
+    }
+
+    /**
      * Return public visible contests only
      *
      * @param Builder $query
@@ -203,7 +257,7 @@ class Contest extends Model
             Constants::TBL_CONTEST_ADMINS,
             Constants::FLD_CONTEST_ADMINS_CONTEST_ID,
             Constants::FLD_CONTEST_ADMINS_ADMIN_ID
-        );
+        )->withTimestamps();
     }
 
     /**
@@ -252,29 +306,9 @@ class Contest extends Model
      */
     public function notifications()
     {
-        return
-            $this
-                ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
-                ->where(
-                    Constants::FLD_NOTIFICATIONS_TYPE,
-                    '=',
-                    Constants::NOTIFICATION_TYPE_CONTEST
-                );
-    }
-
-    /**
-     * Return all pending invitations sent from this contest
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function sentPendingInvitations()
-    {
-        // TODO: add pivot table fields as needed
-        return $this->notifications()->where(
-            Constants::FLD_NOTIFICATIONS_STATUS,
-            '!=',
-            Constants::NOTIFICATION_STATUS_DELETED
-        );
+        return $this
+            ->hasMany(Notification::class, Constants::FLD_NOTIFICATIONS_RESOURCE_ID)
+            ->ofType(Constants::NOTIFICATION_TYPE_CONTEST);
     }
 
     /**
@@ -284,7 +318,6 @@ class Contest extends Model
      */
     public function invitedUsers()
     {
-        // TODO: add pivot table fields as needed
         return
             $this->belongsToMany(
                 User::class,
@@ -295,10 +328,6 @@ class Contest extends Model
                 Constants::FLD_NOTIFICATIONS_TYPE,
                 '=',
                 Constants::NOTIFICATION_TYPE_CONTEST
-            )->where(
-                Constants::FLD_NOTIFICATIONS_STATUS,
-                '!=',
-                Constants::NOTIFICATION_STATUS_DELETED
             );
     }
 
@@ -310,10 +339,33 @@ class Contest extends Model
     public function isRunning()
     {
         // Get contest end time by adding its duration to its start time
-        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
+        $contestEndTime = strtotime(
+            $this[Constants::FLD_CONTESTS_TIME] . ' + ' .
+            $this[Constants::FLD_CONTESTS_DURATION] . ' minute'
+        );
 
         // Check if contest is running
         return (date("Y-m-d H:i:s") > $this->time && date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime));
+    }
+
+    /**
+     * Check if contest has already ended
+     *
+     * @return bool
+     */
+    public function isEnded()
+    {
+        // Get contest end time by adding its duration to its start time
+        $contestEndTime = strtotime(
+            $this[Constants::FLD_CONTESTS_TIME] . ' + ' .
+            $this[Constants::FLD_CONTESTS_DURATION] . ' minute'
+        );
+
+        // Check if contest is running
+        return (
+            date("Y-m-d H:i:s") > $this[Constants::FLD_CONTESTS_TIME] &&
+            date("Y-m-d H:i:s") > date("Y-m-d H:i:s", $contestEndTime)
+        );
     }
 
     /**

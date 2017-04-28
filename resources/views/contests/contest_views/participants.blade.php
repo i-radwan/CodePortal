@@ -25,4 +25,4 @@
 </table>
 
 {{--Pagination--}}
-{{ $participants->appends(Request::all())->fragment('participants')->render() }}
+{{ $participants->appends(Request::all())->render() }}

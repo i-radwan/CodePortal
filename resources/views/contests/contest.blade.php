@@ -1,22 +1,15 @@
 {{--define some variables--}}
 @php
-    $contestID = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ID_KEY];
-    $contestName = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_NAME_KEY];
-    $contestTime = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_TIME_KEY];
-    $contestDuration = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_DURATION_KEY];
-    $contestOrganizers = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_ORGANIZERS_KEY];
-    $isContestRunning = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_RUNNING_STATUS];
+    $contestID = $contestInfo[Constants::SINGLE_CONTEST_ID_KEY];
+    $contestName = $contestInfo[Constants::SINGLE_CONTEST_NAME_KEY];
+    $contestTime = $contestInfo[Constants::SINGLE_CONTEST_TIME_KEY];
+    $contestDuration = $contestInfo[Constants::SINGLE_CONTEST_DURATION_KEY];
+    $contestOrganizers = $contestInfo[Constants::SINGLE_CONTEST_ORGANIZERS_KEY];
+    $isContestRunning = $contestInfo[Constants::SINGLE_CONTEST_RUNNING_STATUS];
 
-    $ownerUsername = $data[Constants::SINGLE_CONTEST_CONTEST_KEY][Constants::SINGLE_CONTEST_OWNER_KEY];
-    $isOwner = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_OWNER];
+    $ownerUsername = $contestInfo[Constants::SINGLE_CONTEST_OWNER_KEY];
     $isOwnerOrOrganizer = Gate::allows('owner-organizer-contest', $contestID);
-    $isParticipant = $data[Constants::SINGLE_CONTEST_EXTRA_KEY][Constants::SINGLE_CONTEST_IS_USER_PARTICIPATING];
 
-    $problems = $data[Constants::SINGLE_CONTEST_PROBLEMS_KEY];
-    $standings = $data[Constants::SINGLE_CONTEST_STANDINGS_KEY];
-    $status = $data[Constants::SINGLE_CONTEST_STATUS_KEY];
-    $participants = $data[Constants::SINGLE_CONTEST_PARTICIPANTS_KEY];
-    $questions = $data[Constants::SINGLE_CONTEST_QUESTIONS_KEY];
 @endphp
 
 @extends('layouts.app')
@@ -27,35 +20,27 @@
 
             {{--Contest leave/delete/reorder/join links--}}
             @if($isOwner)
-                <form action="{{url('contest/delete/'.$contestID)}}"
-                      method="post">{{method_field('DELETE')}}
-                    {{csrf_field()}}
-                    <button
-                            onclick="return confirm('Are you sure want to delete the contest?\nThis cannot be undone')"
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Delete
-                    </button>
-                </form>
+
+                {{-- Delete Form --}}
+                @include('components.action_form', ['url' => url('contest/delete/'.$contestID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this contest? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
+
+                {{-- Edit Form --}}
                 <a href="{{url('contest/'.$contestID.'/edit')}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
+
+                {{-- Reorder Contest Problems --}}
                 <span class="btn btn-link text-dark pull-right margin-5px"
                       onclick="app.toggleSortableStatus();" id="testing-reorder-btn">Reorder</span>
+
             @endif
             @if($isParticipant)
-                <form action="{{url('contest/leave/'.$contestID)}}"
-                      method="post">{{method_field('PUT')}}
-                    {{csrf_field()}}
-                    <button
-                            onclick="return confirm('Are you sure want to leave this contest?')"
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px" id="testing-contest-leave-btn">Leave
-                    </button>
-                </form>
+
+                {{--Leave Form--}}
+                @include('components.action_form', ['url' => url('contest/leave/'.$contestID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave this contest?'", 'btnIDs' => 'testing-contest-leave-btn', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
+
             @elseif(Auth::check())
-                <form action="{{url('contest/join/'.$contestID)}}" method="post">
-                    {{csrf_field()}}
-                    <button
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px" id="testing-contest-join-btn">
-                        Join
-                    </button>
-                </form>
+
+                {{--Join Form--}}
+                @include('components.action_form', ['url' => url('contest/join/'.$contestID), 'method' => 'POST', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnIDs' => 'testing-contest-join-btn', 'btnTxt' => 'Join'])
 
             @endif
 
@@ -72,49 +57,77 @@
                 <div class="content-tabs card">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active">
-                            <a href="#problems" aria-controls="problems" role="tab" data-toggle="tab">Problems</a>
+                        <li {{($view == "problems")?'class=active':''}}>
+                            <a href="{{ url("/contest/$contestID/problems") }}">Problems</a>
                         </li>
-                        <li role="presentation">
-                            <a href="#standings" aria-controls="standings" role="tab" data-toggle="tab">Standings</a>
+                        <li {{($view == "standings")?'class=active':''}}>
+                            <a href="{{ url("/contest/$contestID/standings") }}">Standings</a>
                         </li>
-                        <li role="presentation">
-                            <a href="#status" aria-controls="status" role="tab" data-toggle="tab">Status</a>
+                        <li {{($view == "submissions")?'class=active':''}}>
+                            <a href="{{ url("/contest/$contestID/status") }}">Status</a>
                         </li>
-                        <li role="presentation">
-                            <a href="#participants" aria-controls="participants" role="tab" data-toggle="tab">Participants</a>
+                        <li {{($view == "participants")?'class=active':''}}>
+                            <a href="{{ url("/contest/$contestID/participants") }}">Participants</a>
                         </li>
-                        <li role="presentation">
-                            <a href="#questions" aria-controls="questions" role="tab" data-toggle="tab">Questions</a>
+                        <li {{($view == "questions")?'class=active':''}}>
+                            <a href="{{ url("/contest/$contestID/questions") }}">Questions</a>
                         </li>
                     </ul>
 
-                    <!-- Tab panes -->
+                    {{--Contest specific view--}}
                     <div class="tab-content text-center">
-                        <div role="tabpanel" class="tab-pane active" id="problems">
-                            <button
-                                    type="submit" class="btn btn-primary pull-right problems-reorder-view save"
-                                    onclick="app.saveProblemsOrderToDB('{{url('contest/reorder/'.$contestID)}}', '{{csrf_token()}}')">
-                                Save
-                            </button>
-                            @include('contests.contest_views.problems')
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="standings">
-                            @include('contests.contest_views.standings')
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="status">
-                            @include('contests.contest_views.status')
-                        </div>
-                        <div role="tabpanel" class="tab-pane" id="participants">
-                            @include('contests.contest_views.participants')
-                        </div>
-                        <div role="tabpanel" class="tab-pane horizontal-scroll" id="questions">
-                            @if($questions && count($questions))
-                                @include('contests.contest_views.questions')
-                            @else
+                        <div role="tabpanel" class="tab-pane active horizontal-scroll">
 
-                                <p>No questions!</p>
+                            {{--Problems--}}
+                            @if($view == "problems")
+                                @if($problems && count($problems))
+                                    <button
+                                            type="submit" class="btn btn-primary pull-right problems-reorder-view save"
+                                            onclick="app.saveProblemsOrderToDB('{{url('contest/reorder/'.$contestID)}}', '{{csrf_token()}}')">
+                                        Save
+                                    </button>
+                                    @include('contests.contest_views.problems')
+                                @else
+                                    @if(!$isContestRunning && !$isContestEnded)
+                                        <p>Problems will be visible when the contest begins!</p>
+                                    @else
+                                        <p>No problems!</p>
+                                    @endif
+                                @endif
+
+                                {{--Standings--}}
+                            @elseif($view == "standings")
+                                @if(!$isContestRunning && !$isContestEnded)
+                                    <p>Standings will be visible when the contest begins!</p>
+                                @else
+                                    @include('contests.contest_views.standings')
+                                @endif
+
+                                {{--Status--}}
+                            @elseif($view == "submissions")
+                                @if($submissions && count($submissions))
+                                    @include('contests.contest_views.status')
+                                @else
+                                    <p>No submissions!</p>
+                                @endif
+
+                                {{--Participants--}}
+                            @elseif($view == "participants")
+                                @if($participants && count($participants))
+                                    @include('contests.contest_views.participants')
+                                @else
+                                    <p>No participants!</p>
+                                @endif
+
+                                {{--Questions--}}
+                            @elseif($view == "questions")
+                                @if($questions && count($questions))
+                                    @include('contests.contest_views.questions')
+                                @else
+                                    <p>No questions!</p>
+                                @endif
                             @endif
+
                         </div>
                     </div>
                 </div>

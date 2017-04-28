@@ -102,6 +102,7 @@ class Constants
     const SINGLE_CONTEST_IS_USER_OWNER = "user_is_owner";
     const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
     const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
+    const SINGLE_CONTEST_ENDED_STATUS = "contest_ended_status";
     // ============================================================
     //endregion
 
@@ -401,11 +402,9 @@ class Constants
 
     const NOTIFICATION_STATUS_UNREAD = '0';
     const NOTIFICATION_STATUS_READ = '1';
-    const NOTIFICATION_STATUS_DELETED = '2';
     const NOTIFICATION_STATUS = [
         self::NOTIFICATION_STATUS_UNREAD,
-        self::NOTIFICATION_STATUS_READ,
-        self::NOTIFICATION_STATUS_DELETED
+        self::NOTIFICATION_STATUS_READ
     ];
 
     const NOTIFICATION_TYPE_CONTEST = '0';
@@ -620,7 +619,7 @@ class Constants
     const FLD_BLOGS_OWNER_ID = "owner_id";
 
     //POSTS
-    const FLD_POSTS_POST_ID = "id";
+    const FLD_POSTS_ID = "id";
     const FLD_POSTS_OWNER_ID = "owner_id";
     const FLD_POSTS_TITLE = "title";
     const FLD_POSTS_BODY = "body";

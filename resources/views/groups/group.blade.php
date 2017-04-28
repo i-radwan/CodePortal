@@ -23,33 +23,28 @@
 
             {{--Group leave/delete/join links--}}
             @if($isOwner)
-                <form action="{{url('group/'.$groupID)}}"
-                      method="post">{{method_field('DELETE')}}
-                    {{csrf_field()}}
-                    <button
-                            onclick="return confirm('Are you sure want to delete the group?\nThis cannot be undone!')"
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Delete
-                    </button>
-                </form>
+                {{--Delete Form--}}
+                @include('components.action_form', ['url' => url('group/' . $groupID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this group? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
+
+                {{--Edit Link--}}
                 <a href="{{url('group/edit/'.$groupID)}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
             @endif
+
+
             @if($isMember)
-                <form action="{{url('group/leave/'.$groupID)}}"
-                      method="post">{{method_field('PUT')}}
-                    {{csrf_field()}}
-                    <button
-                            onclick="return confirm('Are you sure want to leave the group?')"
-                            type="submit" class="btn btn-link text-dark pull-right margin-5px">Leave
-                    </button>
-                </form>
+
+                {{--Leave Form--}}
+                @include('components.action_form', ['url' => url('group/leave/' . $groupID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave the group?'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
+
             @elseif(!$isOwner && !$isMember)
-                <form action="{{url('group/join/'.$groupID)}}"
-                      method="post">{{method_field('POST')}}
-                    {{csrf_field()}}
-                    <button type="submit" class="btn btn-link text-dark pull-right margin-5px"
-                            {{($userSentRequest)?'disabled':''}}>{{($userSentRequest)?'Request Sent':'Join'}}
-                    </button>
-                </form>
+
+                {{--Join From--}}
+                @if($userSentRequest)
+                    {{--Request already sent--}}
+                    <span class="btn btn-link text-dark pull-right margin-5px" disabled>Request Sent</span>
+                @else
+                    @include('components.action_form', ['url' => url('group/join/' . $groupID), 'method' => 'POST', 'confirm' => false, 'confirmMsg' => "", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Join'])
+                @endif
             @endif
 
             <div class="panel-heading">{{ $groupName }} ::
@@ -66,18 +61,21 @@
                         <!-- Nav tabs -->
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
-                                <a href="#members" aria-controls="members" role="tab" data-toggle="tab" id="testing-members-link">Members</a>
+                                <a href="#members" aria-controls="members" role="tab" data-toggle="tab"
+                                   id="testing-members-link">Members</a>
                             </li>
                             <li role="presentation">
-                                <a href="#contests" aria-controls="contests" role="tab" data-toggle="tab" id="testing-contests-link">Contests</a>
+                                <a href="#contests" aria-controls="contests" role="tab" data-toggle="tab"
+                                   id="testing-contests-link">Contests</a>
                             </li>
                             <li role="presentation">
-                                <a href="#sheets" aria-controls="sheets" role="tab" data-toggle="tab" id="testing-sheets-link">Sheets</a>
+                                <a href="#sheets" aria-controls="sheets" role="tab" data-toggle="tab"
+                                   id="testing-sheets-link">Sheets</a>
                             </li>
                             @if($isOwner)
                                 <li role="presentation">
                                     <a href="#requests" aria-controls="requests" role="tab"
-                                       data-toggle="tab"  id="testing-requests-link">Requests
+                                       data-toggle="tab" id="testing-requests-link">Requests
                                         @if(count($seekers))
                                             <span class="dark-red">•</span>
                                         @endif
@@ -103,10 +101,11 @@
                             <div role="tabpanel" class="tab-pane" id="contests">
                                 @if($isOwner)
                                     <a href="{{url('group/'.$groupID.'/contest/new')}}"
-                                       class="btn-sm btn btn-primary pull-right new-sheet-link" id="testing-group-new-contest-link">New Contest</a>
+                                       class="btn-sm btn btn-primary pull-right new-sheet-link"
+                                       id="testing-group-new-contest-link">New Contest</a>
                                 @endif
                                 <div class="text-center horizontal-scroll">
-                                    @include('contests.contest_views.contests_table')
+                                    @include('contests.contest_views.contests_table', ['contests' => $data[Constants::CONTESTS_CONTESTS_KEY]])
                                 </div>
                             </div>
 

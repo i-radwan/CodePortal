@@ -10,27 +10,25 @@
     <tbody>
     @foreach($seekers as $seeker)
         <tr>
+
+            {{--Username--}}
             <td>
                 <a href="{{ url('profile/' . $seeker->username) }}">
                     {{ $seeker->username }}
                 </a>
             </td>
+
+            {{--Email--}}
             <td> {{ $seeker->email }}</td>
+
+            {{--Action : Accept/Reject--}}
             <td>
-                <form action="{{url('group/request/accept/'.$groupID.'/'.$seeker->id)}}"
-                      method="post" class="action">
-                    {{method_field('PUT')}}
-                    {{csrf_field()}}
-                    <button type="submit" class="btn btn-link text-dark" id="testing-accept-request-{{ $seeker->id }}">Accept
-                    </button>
-                </form>
-                <form action="{{url('group/request/reject/'.$groupID.'/'.$seeker->id)}}"
-                      method="post" class="action">
-                    {{method_field('PUT')}}
-                    {{csrf_field()}}
-                    <button type="submit" class="btn btn-link text-dark" id="testing-reject-request-{{ $seeker->id }}">Reject
-                    </button>
-                </form>
+                {{--Accept Form--}}
+                @include('components.action_form', ['halfWidth' => true, 'url' => url('group/request/accept/'.$groupID.'/'.$seeker->id), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-accept-request-$seeker->id", 'btnTxt' => 'Accept'])
+
+                {{--Reject Form--}}
+                @include('components.action_form', ['halfWidth' => true, 'url' => url('group/request/reject/'.$groupID.'/'.$seeker->id), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-reject-request-$seeker->id", 'btnTxt' => 'Reject'])
+
             </td>
         </tr>
     @endforeach

@@ -28,7 +28,7 @@ class Post extends Model
      *
      * @var string
      */
-    protected $primaryKey = Constants::FLD_POSTS_POST_ID;
+    protected $primaryKey = Constants::FLD_POSTS_ID;
 
     /**
      * The attributes that are mass assignable.

@@ -181,7 +181,6 @@ return [
         Felixkiss\UniqueWithValidator\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
 
-
     ],
 
     /*

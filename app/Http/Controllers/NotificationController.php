@@ -16,10 +16,11 @@ class NotificationController extends Controller
     public function markAllUserNotificationsRead()
     {
         $user = Auth::user();
+
         if ($user) {
             $user->receivedNotifications()
                 // Get only unread ones
-                ->where(Constants::FLD_NOTIFICATIONS_STATUS, '=', Constants::NOTIFICATION_STATUS_UNREAD)
+                ->ofStatus(Constants::NOTIFICATION_STATUS_UNREAD)
                 // Mark as read
                 ->update([Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_READ]);
         }
@@ -33,9 +34,8 @@ class NotificationController extends Controller
         $user = Auth::user();
 
         // Find the notification and update status
-        if ($user) {
-            if ($user->receivedNotifications()->find($notification))
-                $notification->update([Constants::FLD_NOTIFICATIONS_STATUS => Constants::NOTIFICATION_STATUS_DELETED]);
+        if ($user && $user->receivedNotifications()->find($notification)) {
+            $notification->delete();
         }
 
         // Return success response

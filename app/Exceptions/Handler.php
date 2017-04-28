@@ -7,6 +7,8 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Redirect;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,10 +48,23 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof ModelNotFoundException || $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+        if ($exception instanceof MethodNotAllowedHttpException || $exception instanceof ModelNotFoundException || $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             return redirect('errors/404');
         } else if ($exception instanceof AuthorizationException) {
-            return redirect('errors/401');
+
+            // return json response
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthorized.'], 401);
+            }
+
+            // If user is not logged in (move to login page)
+            // else move to 401 page (means he is logged in but trying to make
+            // unauthorized action)
+            if (\Auth::check()) {
+                return redirect('errors/401');
+            } else {
+                return Redirect::guest('login');
+            }
         }
 
         return parent::render($request, $exception);
@@ -67,6 +82,13 @@ class Handler extends ExceptionHandler
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
-        return redirect('errors/401');
+        // If user is not logged in (move to login page)
+        // else move to 401 page (means he is logged in but trying to make
+        // unauthorized action)
+        if (\Auth::check()) {
+            return redirect('errors/401');
+        } else {
+            return Redirect::guest('login');
+        }
     }
 }

@@ -29,4 +29,6 @@
             </div>
         </div>
     </div>
+    <span class="page-distinguishing-element" id="teams-page-hidden-element"></span>
+
 @endsection
