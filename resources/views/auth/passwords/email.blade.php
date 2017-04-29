@@ -1,3 +1,5 @@
+@php($pageTitle = 'Code Portal | Forget Password')
+
 @extends('layouts.app_container')
 
 @section('content')

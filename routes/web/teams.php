@@ -9,8 +9,9 @@ Route::group(['middleware' => 'auth'], function () {
         ->name(Constants::ROUTES_TEAMS_CREATE);
 
     // Edit exist team route
-    Route::get('teams/{team}/edit', 'TeamController@edit')->middleware(['can:member-team,team'])
-        ->name(Constants::ROUTES_TEAMS_EDIT);
+    Route::get('teams/{team}/edit', 'TeamController@edit')
+        ->name(Constants::ROUTES_TEAMS_EDIT)
+        ->middleware(['can:member-team,team']);
 
     // Teams invitees auto complete route
     Route::get('teams/{team}/invitees_auto_complete', 'TeamController@usersAutoComplete')

@@ -65,7 +65,7 @@
                 @if($isMember)
                     <td>
                         {{--Remove member Form--}}
-                        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_MEMBERS_REMOVE, [$teamID, $memberID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove $memberUsername from the team?'", 'btnIDs' => "testing-remove-member-team-$teamID-$memberUsername", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Remove'])
+                        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_MEMBERS_REMOVE, [$teamID, $memberUsername]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove $memberUsername from the team?'", 'btnIDs' => "testing-remove-member-team-$teamID-$memberUsername", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Remove'])
                     </td>
                 @endif
             </tr>
@@ -94,7 +94,7 @@
                 @if($isMember)
                     <td>
                         {{--Cancel invitation form--}}
-                        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_INVITATIONS_CANCEL, [$teamID, $inviteeID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to cancel the invitation to $memberUsername ?'", 'btnIDs' => "testing-cancel-invitation-$teamID-$inviteeID", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Cancel Invitation'])
+                        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_TEAMS_INVITATIONS_CANCEL, [$teamID, $inviteeUsername]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to cancel the invitation to $memberUsername ?'", 'btnIDs' => "testing-cancel-invitation-$teamID-$inviteeID", 'btnClasses' => 'btn-link text-dark', 'btnTxt' => 'Cancel Invitation'])
                     </td>
                 @endif
             </tr>

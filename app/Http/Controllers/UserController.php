@@ -23,24 +23,24 @@ class UserController extends Controller
      * @param $user
      * @return \Illuminate\View\View
      */
-    public function index($user)
+    public function index(User $user)
     {
-        $userData = User::where('username', $user)->first();
         // dd($userData->handles()->get()['2']['original']['name'],$userData->handles()->get()['0']['original']['pivot_handle'],$userData->handles()->
         //   get()['0']['original']['link']
         
-        return view('profile.index', ['userName' => $user])
-            ->with('pageTitle', config('app.name') . ' | ' . $user)
+        return view('profile.index')
+            ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
+            ->with('userName', $user[Constants::FLD_USERS_USERNAME])
             ->withDate(UserController::userDate($user))
-            ->with('problems', UserController::userWrongSubmissions($user))
-            ->with('counter', UserController::userNumberOfSolvedProblems($user))
+            ->with('problems', UserController::userWrongSubmissions($user[Constants::FLD_USERS_USERNAME]))
+            ->with('counter', UserController::userNumberOfSolvedProblems($user[Constants::FLD_USERS_USERNAME]))
             ->with('chart', UserController::statistics())
-            ->with('userData', $userData)
-            ->with('admin',$userData->organizingContests()->paginate(5))
-            ->with('owned',$userData->owningContests()->paginate(5))
-            ->with('participatedContests',$userData->participatingContests()->paginate(5))
-            ->with('groups',$userData->joiningGroups()->paginate(5))
-            ->with('handle',$userData->handles()->get());
+            ->with('userData', $user)
+            ->with('admin',$user->organizingContests()->paginate(5))
+            ->with('owned',$user->owningContests()->paginate(5))
+            ->with('participatedContests',$user->participatingContests()->paginate(5))
+            ->with('groups',$user->joiningGroups()->paginate(5))
+            ->with('handle',$user->handles()->get());
     }
 
     /**
@@ -174,11 +174,9 @@ class UserController extends Controller
      * @param $username
      * @return $date
      */
-    public function userDate($user)
+    public function userDate(User $user)
     {
-        $userData = User::where('username', $user)->first();
-        $userInfo = $userData->toArray();
-        $dateCreated = $userInfo['created_at'];
+        $dateCreated = $user['created_at'];
         if ($dateCreated != Null) {
             $dateCreatedArr = preg_split("/[\s-]+/", $dateCreated);
             $dt = Carbon::create($dateCreatedArr['0'], $dateCreatedArr['1'], $dateCreatedArr['2']);

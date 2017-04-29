@@ -39,8 +39,9 @@
                             $icon = 'fa-users';
                             break;
                         case \App\Utilities\Constants::NOTIFICATION_TYPE_TEAM:
-                            $resource = \App\Models\Team::find($notification->resource_id);
-                            $resourceLink = route(\App\Utilities\Constants::ROUTES_PROFILE_TEAMS, $notification->sender_id);
+                            $resource = \App\Models\Team::find($notification[\App\Utilities\Constants::FLD_NOTIFICATIONS_RESOURCE_ID]);
+                            $sender = \App\Models\User::find($notification[\App\Utilities\Constants::FLD_NOTIFICATIONS_SENDER_ID]);
+                            $resourceLink = route(\App\Utilities\Constants::ROUTES_PROFILE_TEAMS, $sender[\App\Utilities\Constants::FLD_USERS_USERNAME]);
                             $icon = 'fa-users'; //TODO: get icon
                             break;
                     }

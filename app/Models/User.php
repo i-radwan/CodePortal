@@ -90,6 +90,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the route key for the model
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return Constants::FLD_USERS_USERNAME;
+    }
+
+    /**
      * Return the handles on different online judges of the current user
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
