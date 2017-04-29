@@ -26,7 +26,9 @@ class UserController extends Controller
     public function index($user)
     {
         $userData = User::where('username', $user)->first();
-        // dd($userData->organizingContests()->get());
+        // dd($userData->handles()->get()['2']['original']['name'],$userData->handles()->get()['0']['original']['pivot_handle'],$userData->handles()->
+        //   get()['0']['original']['link']
+        
         return view('profile.index', ['userName' => $user])
             ->with('pageTitle', config('app.name') . ' | ' . $user)
             ->withDate(UserController::userDate($user))
@@ -37,7 +39,8 @@ class UserController extends Controller
             ->with('admin',$userData->organizingContests()->paginate(5))
             ->with('owned',$userData->owningContests()->paginate(5))
             ->with('participatedContests',$userData->participatingContests()->paginate(5))
-            ->with('groups',$userData->joiningGroups()->paginate(5));
+            ->with('groups',$userData->joiningGroups()->paginate(5))
+            ->with('handle',$userData->handles()->get());
     }
 
     /**
@@ -82,7 +85,8 @@ class UserController extends Controller
         return view('profile.edit')
             ->with('pageTitle', config('app.name') . '|' . $user->username)
             ->with('user', $user)
-            ->with('country', $countries);
+            ->with('country', $countries)
+            ->with('handle',$user->handles()->get());
 
     }
 
@@ -135,7 +139,11 @@ class UserController extends Controller
                 }
             }
         }
+        // null!==($request->input('codeForces')) ? $user->updateHandle($user->id,0, $request->input('codeForces')): "" ;
+        // null!==($request->input('uva')) ? $user->updateHandle($user->id,1, $request->input('uva')): "" ;
+        // null!==($request->input('liveArchive')) ? $user->updateHandle($user->id,2, $request->input('liveArchive')): "" ;
 
+        
         //saving pass,email,username,first,last names and gender in database
         //dd($request->input('password'));
         if(strlen($request->input('password'))>= 6)

@@ -136,6 +136,28 @@ class User extends Authenticatable
         $this->handles()->attach($judgeId, [Constants::FLD_USER_HANDLES_HANDLE => $handle]);
     }
 
+    // /**
+    //  * Attach the given online judge handle to the current user
+    //  *
+    //  * @param int $judgeId
+    //  * @param string $handle
+    //  */
+    // public function updateHandle($userId,$judgeId, $handle)
+
+    // {
+    //     // dd($userId,$judgeId,$handle,$this->handles()->where(Constants::FLD_USER_HANDLES_USER_ID,$userId)->first());
+    //     $check=$this->handles()->where(Constants::FLD_USER_HANDLES_USER_ID,$userId)->find(1);
+    //     if($check)
+    //     {
+    //          $check->update([Constants::FLD_USER_HANDLES_HANDLE => $handle],[Constants::FLD_USER_HANDLES_JUDGE_ID => $judgeId]);
+    //     }
+    //     else 
+    //      {$this->handles()->attach($judgeId, [Constants::FLD_USER_HANDLES_HANDLE => $handle]);
+
+    //      }
+
+    // }
+
     /**
      * Return all the submission of the current user
      *

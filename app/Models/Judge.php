@@ -54,9 +54,9 @@ class Judge extends Model
      * @var array
      */
     protected $rules = [
-        Constants::FLD_JUDGES_ID => 'required|unique:' . Constants::TBL_JUDGES . '|integer|min:0',
-        Constants::FLD_JUDGES_NAME => 'required|unique:' . Constants::TBL_JUDGES . '|max:100',
-        Constants::FLD_JUDGES_LINK => 'required|unique:' . Constants::TBL_JUDGES . '|max:100|url'
+        // Constants::FLD_JUDGES_ID => 'required|unique:' . Constants::TBL_JUDGES . '|integer|min:0',
+        // Constants::FLD_JUDGES_NAME => 'required|unique:' . Constants::TBL_JUDGES . '|max:100',
+        // Constants::FLD_JUDGES_LINK => 'required|unique:' . Constants::TBL_JUDGES . '|max:100|url'
     ];
 
     /**
