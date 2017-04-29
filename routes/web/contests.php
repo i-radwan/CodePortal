@@ -13,7 +13,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('contest/add/invitees_auto_complete', 'ContestController@usersAutoComplete');
 
     Route::post('contest/add', 'ContestController@addContest');
-    Route::post('group/{group}/contest/add', 'ContestController@addGroupContest')->middleware(['can:owner-group,group']);
+    Route::post('groups/{group}/contest/add', 'ContestController@addGroupContest')->middleware(['can:owner-group,group']);
     Route::post('contest/add/contest_tags_judges_filters_sync', 'ContestController@applyProblemsFilters');
     Route::post('contest/add/contest_tags_judges_filters_detach', 'ContestController@clearProblemsFilters');
     Route::post('contest/{contest}/edit', 'ContestController@editContest')->middleware(['can:owner-contest,contest']);

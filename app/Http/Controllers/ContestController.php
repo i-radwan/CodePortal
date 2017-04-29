@@ -278,7 +278,7 @@ class ContestController extends Controller
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
             ->with('group', $group)
-            ->with('formURL', url('group/' . $group[Constants::FLD_GROUPS_ID] . '/contest/add'))
+            ->with('formURL', url('groups/' . $group[Constants::FLD_GROUPS_ID] . '/contest/add'))
             ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
             ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)

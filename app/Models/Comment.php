@@ -30,7 +30,7 @@ class Comment extends Model
      *
      * @var string
      */
-    protected $primaryKey = Constants::FLD_COMMENTS_COMMENT_ID;
+    protected $primaryKey = Constants::FLD_COMMENTS_ID;
 
     /**
      * The attributes that are mass assignable.
@@ -40,7 +40,6 @@ class Comment extends Model
     protected $fillable = [
         Constants::FLD_COMMENTS_POST_ID,
         Constants::FLD_COMMENTS_USER_ID,
-//        Constants::FLD_COMMENTS_TITLE,
         Constants::FLD_COMMENTS_BODY,
         Constants::FLD_COMMENTS_PARENT_ID
     ];
@@ -53,10 +52,9 @@ class Comment extends Model
     protected $rules = [
 
         Constants::FLD_COMMENTS_BODY => 'required|min:3',
-//        Constants::FLD_POSTS_TITLE => 'required|min:0',
         Constants::FLD_COMMENTS_USER_ID => 'required|exists:'. Constants::TBL_USERS. ','. Constants::FLD_USERS_ID,
         Constants::FLD_COMMENTS_POST_ID => 'required|exists:'. Constants::TBL_POSTS . ','. Constants::FLD_POSTS_ID,
-        Constants::FLD_COMMENTS_PARENT_ID => 'nullable|exists' . Constants::TBL_COMMENTS . ','. Constants::FLD_COMMENTS_COMMENT_ID,
+        Constants::FLD_COMMENTS_PARENT_ID => 'nullable|exists:' . Constants::TBL_COMMENTS . ','. Constants::FLD_COMMENTS_ID,
     ];
 
     /*
@@ -72,6 +70,16 @@ class Comment extends Model
      */
     public function owner(){
         return $this->belongsTo(User::class,Constants::FLD_COMMENTS_USER_ID);
+    }
+
+    /**
+     * @param array $options
+     * Get Comment Parent (null if not applicable)
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function parent(array $options = [])
+    {
+        return $this->belongsTo(Comment::class, Constants::FLD_COMMENTS_PARENT_ID);
     }
 
 }

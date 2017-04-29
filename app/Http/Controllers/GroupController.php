@@ -44,18 +44,17 @@ class GroupController extends Controller
      */
     public function displayGroup(Group $group)
     {
-        $currentUser = Auth::user();
-
-        $data = [];
-
-        $this->getBasicGroupInfo($currentUser, $group, $data);
-        $this->getMembersInfo($group, $data);
-        $this->getRequestsInfo($group, $data);
-        $this->getSheetsInfo($group, $data);
-        $this->getContestsInfo($group, $data);
+        $this->getMembersInfo($group, $members);
+        $this->getRequestsInfo($group, $seekers);
+        $this->getSheetsInfo($group, $sheets);
+        $this->getContestsInfo($group, $contests);
 
         return view('groups.group')
-            ->with('data', $data)
+            ->with('group', $group)
+            ->with('members', $members)
+            ->with('seekers', $seekers)
+            ->with('sheets', $sheets)
+            ->with('contests', $contests)
             ->with('pageTitle', config('app.name') . ' | ' . $group[Constants::FLD_GROUPS_NAME]);
     }
 
@@ -67,7 +66,7 @@ class GroupController extends Controller
     public function addGroupView()
     {
         return view('groups.add_edit')
-            ->with('formAction', 'group/new')
+            ->with('formAction', route(Constants::ROUTES_GROUPS_STORE))
             ->with('btnText', 'Add')
             ->with('pageTitle', config('app.name') . ' | Group');
     }
@@ -83,7 +82,7 @@ class GroupController extends Controller
     public function editGroupView(Group $group)
     {
         return view('groups.add_edit')
-            ->with('formAction', 'group/edit/' . $group[Constants::FLD_GROUPS_ID])
+            ->with('formAction', route(Constants::ROUTES_GROUPS_EDIT, $group[Constants::FLD_GROUPS_ID]))
             ->with('btnText', 'Edit')
             ->with('group', $group)
             ->with('pageTitle', config('app.name') . ' | ' . $group[Constants::FLD_GROUPS_NAME]);
@@ -107,7 +106,7 @@ class GroupController extends Controller
 
         $group->save();
 
-        return redirect('group/' . $group[Constants::FLD_GROUPS_ID]);
+        return redirect(route(Constants::ROUTES_GROUPS_DISPLAY, $group[Constants::FLD_GROUPS_ID]));
     }
 
     /**
@@ -125,7 +124,7 @@ class GroupController extends Controller
         $group[Constants::FLD_GROUPS_NAME] = $request->get('name');
         $group->save();
 
-        return redirect('group/' . $group[Constants::FLD_GROUPS_ID]);
+        return redirect(route(Constants::ROUTES_GROUPS_DISPLAY, $group[Constants::FLD_GROUPS_ID]));
     }
 
     /**
@@ -139,7 +138,7 @@ class GroupController extends Controller
     public function deleteGroup(Group $group)
     {
         $group->delete();
-        return redirect('groups/');
+        return redirect(route(Constants::ROUTES_GROUPS_INDEX));
     }
 
     /**
@@ -309,116 +308,62 @@ class GroupController extends Controller
     }
 
     /**
-     * Get group basic info (owner)
-     *
-     * @protected by auth middleware
-     *
-     * @param User $user
-     * @param Group $group
-     * @param array $data
-     */
-    private function getBasicGroupInfo(User $user, Group $group, &$data)
-    {
-        $groupInfo = [];
-
-        // Get group id
-        $groupInfo[Constants::SINGLE_GROUP_ID_KEY] = $group[Constants::FLD_GROUPS_ID];
-
-        // Get group name
-        $groupInfo[Constants::SINGLE_GROUP_NAME_KEY] = $group[Constants::FLD_GROUPS_NAME];
-
-        // Get owner name
-        $groupInfo[Constants::SINGLE_GROUP_OWNER_KEY] = $group->owner[Constants::FLD_USERS_USERNAME];
-
-        // Is current user an owner?
-        $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_OWNER]
-            = ($user->owningGroups()->find($group[Constants::FLD_GROUPS_ID]) != null);
-
-        // Is current user an member?
-        $isMember = ($user->joiningGroups()->find($group[Constants::FLD_GROUPS_ID]) != null);
-        $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_IS_USER_MEMBER]
-            = $isMember;
-
-        // Is current user not a member and he has already sent joining request ?
-        $hasUserSentRequest = false;
-        if (!$isMember && $user->seekingJoinGroups()->find($group[Constants::FLD_GROUPS_ID])) {
-            $hasUserSentRequest = true;
-        }
-
-        $data[Constants::SINGLE_GROUP_EXTRA_KEY][Constants::SINGLE_GROUP_USER_SENT_REQUEST]
-            = $hasUserSentRequest;
-
-        // Set group info
-        $data[Constants::SINGLE_GROUP_GROUP_KEY] = $groupInfo;
-    }
-
-
-    /**
      * Get group members data
      *
      * @param Group $group
-     * @param array $data
+     * @param array $members
      */
-    private function getMembersInfo(Group $group, &$data)
+    private function getMembersInfo(Group $group, &$members)
     {
         $members = $group
             ->members()
             ->select(Constants::MEMBERS_DISPLAYED_FIELDS)
             ->get();
 
-        // Set group members
-        $data[Constants::SINGLE_GROUP_MEMBERS_KEY] = $members;
     }
 
     /**
      * Get group contests data
      *
      * @param Group $group
-     * @param array $data
+     * @param array $contests
      */
-    private function getContestsInfo(Group $group, &$data)
+    private function getContestsInfo(Group $group, &$contests)
     {
         $contests = $group
             ->contests()
             ->select(Constants::CONTESTS_DISPLAYED_FIELDS)
             ->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
-
-        // Set group members
-        $data[Constants::SINGLE_GROUP_CONTESTS_KEY] = $contests;
     }
 
     /**
      * Get group joining requests data
      *
      * @param Group $group
-     * @param array $data
+     * @param array $seekers
      */
-    private function getRequestsInfo(Group $group, &$data)
+    private function getRequestsInfo(Group $group, &$seekers)
     {
         $seekers = $group
             ->membershipSeekers()
             ->select(Constants::REQUESTS_DISPLAYED_FIELDS)
             ->get();
 
-        // Set group members
-        $data[Constants::SINGLE_GROUP_REQUESTS_KEY] = $seekers;
     }
 
     /**
      * Get group sheets
      *
      * @param Group $group
-     * @param array $data
+     * @param array $sheets
      */
-    private function getSheetsInfo(Group $group, &$data)
+    private function getSheetsInfo(Group $group, &$sheets)
     {
         $sheets = $group
             ->sheets()
             ->select(Constants::SHEETS_DISPLAYED_FIELDS)
             ->get();
 
-        // Set group members
-        $data[Constants::SINGLE_GROUP_SHEETS_KEY] = $sheets;
     }
 
     /**

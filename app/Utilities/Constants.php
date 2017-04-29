@@ -12,6 +12,31 @@ class Constants
     // Contests routes
 
     // Groups routes
+    const ROUTES_GROUPS_INDEX = 'groups';
+    const ROUTES_GROUPS_CREATE = 'groups.create';
+    const ROUTES_GROUPS_STORE = 'groups.store';
+    const ROUTES_GROUPS_EDIT = 'groups.edit';
+    const ROUTES_GROUPS_UPDATE = 'groups.update';
+    const ROUTES_GROUPS_DELETE = 'groups.delete';
+    const ROUTES_GROUPS_DISPLAY = 'groups.display';
+    const ROUTES_GROUPS_LEAVE = 'groups.leave';
+    const ROUTES_GROUPS_SHEET_CREATE = 'groups.sheets.create';
+    const ROUTES_GROUPS_SHEET_STORE = 'groups.sheets.store';
+    const ROUTES_GROUPS_SHEET_EDIT = 'groups.sheets.edit';
+    const ROUTES_GROUPS_SHEET_UPDATE = 'groups.sheets.update';
+    const ROUTES_GROUPS_SHEET_DISPLAY = 'groups.sheets.display';
+    const ROUTES_GROUPS_SHEET_DELETE = 'groups.sheets.delete';
+    const ROUTES_GROUPS_SHEET_SOLUTION_STORE = 'groups.sheets.problem.solution.store';
+    const ROUTES_GROUPS_SHEET_SOLUTION_DISPLAY = 'groups.sheets.problem.solution.display';
+    const ROUTES_GROUPS_SHEET_SYNC_FILTERS = 'groups.sheets.create.sync_filters';
+    const ROUTES_GROUPS_SHEET_DETACH_FILTERS = 'groups.sheets.create.detach_filters';
+    const ROUTES_GROUPS_INVITEES_AUTO_COMPLETE = 'groups.invitees.auto_complete';
+    const ROUTES_GROUPS_INVITATION_STORE = 'groups.invitations.store';
+    const ROUTES_GROUPS_REQUEST_STORE = 'groups.request.store';
+    const ROUTES_GROUPS_REQUEST_ACCEPT = 'groups.request.accept';
+    const ROUTES_GROUPS_REQUEST_REJECT = 'groups.request.reject';
+    const ROUTES_GROUPS_MEMBER_REMOVE = 'groups.members.remove';
+    const ROUTES_GROUPS_CONTEST_CREATE = 'groups.contests.create';
 
     // Teams routes
     const ROUTES_TEAMS_CREATE = 'teams.create';
@@ -27,7 +52,6 @@ class Constants
     const ROUTES_TEAMS_INVITATIONS_REJECT = 'teams.invitations.reject';
 
     // Blogs routes
-
 
     // Profile routes
     const ROUTES_PROFILE = 'profile';
@@ -515,7 +539,7 @@ class Constants
     const TBL_TEAM_MEMBERS = "team_members";
     const TBL_COMMENTS_REPLIES = "comments_replies";
     const TBL_LIKEABLES = "likeables";
-    const TBL_UP_VOTES = "up_votes";
+    const TBL_VOTES = "votes";
     const TBL_DOWN_VOTES = "down_votes";
 
     //
@@ -672,7 +696,7 @@ class Constants
     const FLD_TEAM_MEMBERS_USER_ID = "user_id";
 
     //Blogs
-    const FLD_BLOGS_BLOG_ID =  "id";
+    const FLD_BLOGS_BLOG_ID = "id";
     const FLD_BLOGS_OWNER_ID = "owner_id";
 
     //POSTS
@@ -686,7 +710,7 @@ class Constants
     const FLD_POSTS_IMAGE = "image"; //TODO @ Samir
 
     //Comments
-    const FLD_COMMENTS_COMMENT_ID = "id";
+    const FLD_COMMENTS_ID = "id";
     const FLD_COMMENTS_USER_ID = "user_id";
     const FLD_COMMENTS_POST_ID = "post_id";
     const FLD_COMMENTS_PARENT_ID = "parent_id";
@@ -708,23 +732,13 @@ class Constants
     const FLD_LIKEABLES_CREATED_AT = "created_at";
 
     //Up Vote
-    const FLD_UP_VOTES_ID = "id";
-    const FLD_UP_VOTES_USER_ID = "user_id";
-    const FLD_UP_VOTES_VOTED_ID = "up_votes_id";
-    const FLD_UP_VOTES_VOTED_TYPE = "up_votes_type";
-    const FLD_UP_VOTES_DELETED_AT = "deleted_at";
-    const FLD_UP_VOTES_CREATED_AT = "created_at";
-
-    //Down Vote
-    const FLD_DOWN_VOTES_ID = "id";
-    const FLD_DOWN_VOTES_USER_ID = "user_id";
-    const FLD_DOWN_VOTES_VOTED_ID = "down_votes_id";
-    const FLD_DOWN_VOTES_VOTED_TYPE = "down_votes_type";
-    const FLD_DOWN_VOTES_DELETED_AT = "deleted_at";
-    const FLD_DOWN_VOTES_CREATED_AT = "created_at";
-
-
-
+    const FLD_VOTES_ID = "id";
+    const FLD_VOTES_USER_ID = "user_id";
+    const FLD_VOTES_VOTED_ID = "votes_id";
+    const FLD_VOTES_VOTED_TYPE = "votes_type";
+    const FLD_VOTES_TYPE = "type";
+    const FLD_VOTES_DELETED_AT = "deleted_at";
+    const FLD_VOTES_CREATED_AT = "created_at";
 
     // ============================================================
 

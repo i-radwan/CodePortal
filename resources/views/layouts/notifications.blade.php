@@ -35,7 +35,7 @@
                             break;
                         case \App\Utilities\Constants::NOTIFICATION_TYPE_GROUP:
                             $resource = \App\Models\Group::find($notification->resource_id);
-                            $resourceLink = 'group/' . $resource->id;
+                            $resourceLink = 'groups/' . $resource->id;
                             $icon = 'fa-users';
                             break;
                         case \App\Utilities\Constants::NOTIFICATION_TYPE_TEAM:

@@ -43,10 +43,10 @@ class GroupFlowTest extends DuskTestCase
             //================================================
             // Add group
             // Try invalid (empty) name first
-            $browser->visit('http://127.0.0.1:8000/group/new')
+            $browser->visit('http://127.0.0.1:8000/groups/create')
                 ->type('name', '')
                 ->press('Add')
-                ->assertPathIs('/group/new')
+                ->assertPathIs('/groups/create')
                 ->type('name', $groupName)
                 ->press('Add');
 
