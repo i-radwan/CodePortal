@@ -18,7 +18,7 @@
         </div>
         <hr>
         {{--Tags AutoComplete--}}
-        @include('components.auto_complete', ['itemsType' => 'tags', 'itemName' => 'Tag', 'itemsLink' => url('tags_auto_complete'), 'hiddenID' => '', 'hiddenName' => ''])
+        @include('components.auto_complete', ['itemsType' => 'tags', 'itemName' => 'Tag', 'itemsLink' => route(\App\Utilities\Constants::ROUTES_CONTESTS_TAGS_AUTO_COMPLETE), 'hiddenID' => '', 'hiddenName' => ''])
 
         {{--Apply filters & Clear buttons--}}
         <p>

@@ -27,7 +27,7 @@
 
                 {{--Name--}}
                 <td>
-                    <a href="{{ url('contest/' . $contestID) }}">
+                    <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_DISPLAY, $contestID) }}">
                         {{ $contestName }}
                     </a>
                 </td>

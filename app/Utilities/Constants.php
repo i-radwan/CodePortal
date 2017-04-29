@@ -10,6 +10,30 @@ class Constants
     const ROUTES_PROBLEMS_INDEX = 'problems';
 
     // Contests routes
+    const ROUTES_CONTESTS_INDEX = 'contests.index';
+    const ROUTES_CONTESTS_CREATE = 'contests.create';
+    const ROUTES_CONTESTS_STORE = 'contests.store';
+    const ROUTES_CONTESTS_EDIT = 'contests.edit';
+    const ROUTES_CONTESTS_UPDATE = 'contests.update';
+    const ROUTES_CONTESTS_DELETE = 'contests.delete';
+    const ROUTES_CONTESTS_REORDER = 'contests.reorder';
+    const ROUTES_CONTESTS_LEAVE = 'contests.leave';
+    const ROUTES_CONTESTS_JOIN = 'contests.join';
+    const ROUTES_CONTESTS_DISPLAY = 'contests.display';
+    const ROUTES_CONTESTS_PROBLEMS = 'contests.problems';
+    const ROUTES_CONTESTS_STANDINGS = 'contests.standings';
+    const ROUTES_CONTESTS_STATUS = 'contests.status';
+    const ROUTES_CONTESTS_PARTICIPANTS = 'contests.participants';
+    const ROUTES_CONTESTS_QUESTIONS = 'contests.questions';
+    const ROUTES_CONTESTS_QUESTIONS_ANNOUNCE = 'contests.questions.announce';
+    const ROUTES_CONTESTS_QUESTIONS_RENOUNCE = 'contests.questions.renounce';
+    const ROUTES_CONTESTS_QUESTIONS_STORE = 'contests.questions.store';
+    const ROUTES_CONTESTS_QUESTIONS_ANSWER_STORE = 'contests.questions.answer.store';
+    const ROUTES_CONTESTS_FILTERS_SYNC = 'contests.filters.sync';
+    const ROUTES_CONTESTS_FILTERS_DETACH = 'contests.filters.detach';
+    const ROUTES_CONTESTS_INVITEES_AUTO_COMPLETE = 'contests.invitees.auto_complete';
+    const ROUTES_CONTESTS_ORGANIZERS_AUTO_COMPLETE = 'contests.organizers.auto_complete';
+    const ROUTES_CONTESTS_TAGS_AUTO_COMPLETE = 'contests.tags.auto_complete';
 
     // Groups routes
     const ROUTES_GROUPS_INDEX = 'groups';
@@ -37,6 +61,7 @@ class Constants
     const ROUTES_GROUPS_REQUEST_REJECT = 'groups.request.reject';
     const ROUTES_GROUPS_MEMBER_REMOVE = 'groups.members.remove';
     const ROUTES_GROUPS_CONTEST_CREATE = 'groups.contests.create';
+    const ROUTES_GROUPS_CONTEST_STORE = 'groups.contests.store';
 
     // Teams routes
     const ROUTES_TEAMS_CREATE = 'teams.create';

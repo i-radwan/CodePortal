@@ -100,18 +100,19 @@ class Utilities
      *
      * @param int $time
      * @param string $format
-     * @return string|void
+     *
+     * @return string
      */
     public static function convertSecondsToDaysHoursMins($time, $format = '%02d:%02d:%02d')
     {
         if ($time < 1) {
-            return;
+            return "";
         }
         $days = floor($time / 86400);
         $hours = floor(($time % 86400) / 3600);
         $minutes = floor(($time % 86400) % 3600 / 60);
 
-        return CarbonInterval::create(0, 0, 0, $days, $hours, $minutes, 0);
+        return CarbonInterval::create(0, 0, 0, $days, $hours, $minutes, 0)->forHumans();
     }
 
     /**

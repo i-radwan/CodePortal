@@ -60,11 +60,11 @@
 
                     {{--Announce Form--}}
                     @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && strlen($answer)>0)
-                        @include('components.action_form', ['url' => url('contest/question/announce/' . $questionID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-primary testing-question-action-button announce', 'btnIDs' => '', 'btnTxt' => 'Announce'])
+                        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_QUESTIONS_ANNOUNCE, $questionID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-primary testing-question-action-button announce', 'btnIDs' => '', 'btnTxt' => 'Announce'])
 
                         {{--Renounce Form--}}
                     @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1)
-                        @include('components.action_form', ['url' => url('contest/question/renounce/' . $questionID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-primary testing-question-action-button renounce', 'btnIDs' => '', 'btnTxt' => 'Renounce'])
+                        @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_QUESTIONS_RENOUNCE, $questionID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-primary testing-question-action-button renounce', 'btnIDs' => '', 'btnTxt' => 'Renounce'])
 
                     @endif
                 </td>

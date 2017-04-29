@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="panel panel-default contests-panel">
-            <a href="{{ url('/contest/add') }}">
+            <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_CREATE) }}">
                 <span class="btn btn-link text-dark pull-right margin-5px">New</span>
             </a>
             <div class="panel-heading contests-panel-heading">Contests</div>

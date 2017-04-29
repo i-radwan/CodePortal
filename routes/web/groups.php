@@ -66,7 +66,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->middleware(['can:owner-group,sheet']);
 
     // Create new group sheet
-    Route::post('groups/{group}/sheets/store', 'SheetController@addSheet')
+    Route::post('groups/{group}/sheets', 'SheetController@addSheet')
         ->name(Constants::ROUTES_GROUPS_SHEET_STORE)
         ->middleware(['can:owner-group,group']);
 
@@ -80,12 +80,12 @@ Route::group(['middleware' => 'auth'], function () {
         ->name(Constants::ROUTES_GROUPS_REQUEST_STORE);
 
     // Update group
-    Route::post('groups/{group}/edit', 'GroupController@editGroup')
+    Route::post('groups/{group}', 'GroupController@editGroup')
         ->name(Constants::ROUTES_GROUPS_UPDATE)
         ->middleware(['can:owner-group,group']);
 
     // Add new group
-    Route::post('groups/create', 'GroupController@addGroup')
+    Route::post('groups', 'GroupController@addGroup')
         ->name(Constants::ROUTES_GROUPS_STORE);
 
     // Accept user request

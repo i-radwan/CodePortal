@@ -2,7 +2,7 @@
 <div class="contest-ask-question centered">
     <div class="contest-ask-question-title">Ask Question!</div>
 
-    <form method="post" action="{{ url('contest/question/' . $contestID) }}">
+    <form method="post" action="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_QUESTIONS_STORE, $contestID) }}">
         {{ csrf_field() }}
 
         {{--Question title--}}

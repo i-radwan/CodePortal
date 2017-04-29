@@ -90,7 +90,7 @@ class ContestController extends Controller
 
             $problems = [];
 
-            if ($isContestRunning || $isContestEnded) {
+            if ($isContestRunning || $isContestEnded || $isUserOrganizer || $isOwner) {
                 $this->getProblemsInfo($contest, $problems);
             }
 
@@ -101,7 +101,7 @@ class ContestController extends Controller
 
             $standings = $problems = [];
 
-            if ($isContestRunning || $isContestEnded) {
+            if ($isContestRunning || $isContestEnded || $isUserOrganizer || $isOwner) {
                 $this->getStandingsInfo($contest, $standings);
                 $this->getProblemsInfo($contest, $problems);
             }
@@ -250,9 +250,9 @@ class ContestController extends Controller
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
             ->with('filtersApplied', $areFiltersApplied)
-            ->with('formURL', (!$contest[Constants::FLD_CONTESTS_ID]) ? url('contest/add') : url('contest/' . $contest[Constants::FLD_CONTESTS_ID] . '/edit'))
-            ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
-            ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
+            ->with('formURL', (!$contest[Constants::FLD_CONTESTS_ID]) ? route(Constants::ROUTES_CONTESTS_INDEX) : route(Constants::ROUTES_CONTESTS_UPDATE, $contest[Constants::FLD_CONTESTS_ID]))
+            ->with('syncFiltersURL', route(Constants::ROUTES_CONTESTS_FILTERS_SYNC))
+            ->with('detachFiltersURL', route(Constants::ROUTES_CONTESTS_FILTERS_DETACH))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
             ->with('pageTitle', config('app.name') . ' | ' . ((isset($contest)) ? $contest[Constants::FLD_CONTESTS_NAME] : 'Contest'));
@@ -278,9 +278,9 @@ class ContestController extends Controller
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
             ->with('group', $group)
-            ->with('formURL', url('groups/' . $group[Constants::FLD_GROUPS_ID] . '/contest/add'))
-            ->with('syncFiltersURL', url('/contest/add/contest_tags_judges_filters_sync'))
-            ->with('detachFiltersURL', url('/contest/add/contest_tags_judges_filters_detach'))
+            ->with('formURL', route(Constants::ROUTES_GROUPS_CONTEST_STORE, $group[Constants::FLD_GROUPS_ID]))
+            ->with('syncFiltersURL', route(Constants::ROUTES_CONTESTS_FILTERS_SYNC))
+            ->with('detachFiltersURL', route(Constants::ROUTES_CONTESTS_FILTERS_DETACH))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
             ->with('pageTitle', config('app.name') . ' | Add Contest');

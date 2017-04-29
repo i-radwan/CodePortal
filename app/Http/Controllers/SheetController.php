@@ -56,7 +56,7 @@ class SheetController extends Controller
             ->with('syncFiltersURL', url('sheets/create/sheet_tags_judges_filters_sync'))
             ->with('detachFiltersURL', url('sheets/create/sheet_tags_judges_filters_detach'))
             ->with('action', 'Add')
-            ->with('url', 'groups/' . $group[Constants::FLD_GROUPS_ID] . '/sheets/store')
+            ->with('url', 'groups/' . $group[Constants::FLD_GROUPS_ID] . '/sheets/create')
             ->with('pageTitle', config('app.name') . ' | Sheet');
     }
 
