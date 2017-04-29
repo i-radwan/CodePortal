@@ -60,7 +60,7 @@
                                             data-toggle="modal"
                                             id="testing-solution-btn-problem-{{ $problemID }}"
                                             data-target="#problem-solution-model"
-                                            onclick="app.fillAnswerModal('{{ $problemID }}', '{{ $sheetID }}', '{{url("sheet/solution/$sheetID/" . $problemID)}}', '{{ $solutionLang }}');">
+                                            onclick="app.fillAnswerModal('{{ $problemID }}', '{{ $sheetID }}', '{{ route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_SOLUTION_DISPLAY, [$sheetID, $problemID]) }}', '{{ $solutionLang }}');">
                                         Solution
                                     </button>
                                 </td>

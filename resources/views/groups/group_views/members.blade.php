@@ -37,7 +37,7 @@
                 <td class="text-center">
 
                     {{--Remove member--}}
-                    @include('components.action_form', ['url' => url('group/member/' . $groupID .'/' . $memberID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove this member? This action cannot be undone!'", 'btnIDs' => "testing-remove-member-$memberID", 'btnClasses' => 'btn btn-link text-dark', 'btnTxt' => 'Remove'])
+                    @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_GROUPS_MEMBER_REMOVE, [$groupID, $memberID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove this member? This action cannot be undone!'", 'btnIDs' => "testing-remove-member-$memberID", 'btnClasses' => 'btn btn-link text-dark', 'btnTxt' => 'Remove'])
 
                 </td>
             @endif

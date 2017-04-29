@@ -20,20 +20,20 @@
         <tr>
             <td> {{ $sheetID }} </td>
             <td>
-                <a href="{{url('sheet/' . $sheetID)}}">{{ $sheetName }}</a>
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_DISPLAY, $sheetID) }}">{{ $sheetName }}</a>
             </td>
             <td> {{ $sheetProblemsCount }}</td>
             @if($isOwner)
                 <td class="text-center">
 
                     {{--Edit sheet--}}
-                    <a href="{{url('sheet/edit/' . $sheetID)}}}"
+                    <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_EDIT, $sheetID) }}"
                        class="btn btn-link text-dark testing-edit-sheet">
                         Edit
                     </a>
 
                     {{--Delete sheet--}}
-                    @include('components.action_form', ['halfWidth' => true, 'url' => url('sheet/' . $sheetID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this sheet? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark testing-delete-sheet', 'btnTxt' => 'Delete'])
+                    @include('components.action_form', ['halfWidth' => true, 'url' => route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_DELETE, $sheetID) , 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this sheet? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark testing-delete-sheet', 'btnTxt' => 'Delete'])
 
                 </td>
             @endif

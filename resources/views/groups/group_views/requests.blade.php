@@ -29,10 +29,10 @@
             {{--Action : Accept/Reject--}}
             <td>
                 {{--Accept Form--}}
-                @include('components.action_form', ['halfWidth' => true, 'url' => url('group/request/accept/' . $groupID . '/' . $seekerID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-accept-request-$seekerID", 'btnTxt' => 'Accept'])
+                @include('components.action_form', ['halfWidth' => true, 'url' => route(\App\Utilities\Constants::ROUTES_GROUPS_REQUEST_ACCEPT, [$groupID, $seekerID]), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-accept-request-$seekerID", 'btnTxt' => 'Accept'])
 
                 {{--Reject Form--}}
-                @include('components.action_form', ['halfWidth' => true, 'url' => url('group/request/reject/' . $groupID . '/' . $seekerID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-reject-request-$seekerID", 'btnTxt' => 'Reject'])
+                @include('components.action_form', ['halfWidth' => true, 'url' => route(\App\Utilities\Constants::ROUTES_GROUPS_REQUEST_REJECT, [$groupID, $seekerID]), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark', 'btnIDs' => "testing-reject-request-$seekerID", 'btnTxt' => 'Reject'])
 
             </td>
         </tr>

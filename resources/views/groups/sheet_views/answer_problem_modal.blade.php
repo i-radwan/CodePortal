@@ -9,7 +9,7 @@
             </div>
 
             @if($isOwner)
-                <form method="post" action="{{url('sheet/problem/solution')}}" name="answerForm">
+                <form method="post" action="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_SOLUTION_STORE)}}" name="answerForm">
                     {{csrf_field()}}
 
                     <div class="modal-body">

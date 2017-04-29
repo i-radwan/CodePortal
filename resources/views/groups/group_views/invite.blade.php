@@ -1,4 +1,4 @@
-<form class="form-group" role="form" method="POST" action="{{url('group/member/invite/'.$groupID)}}">
+<form class="form-group" role="form" method="POST" action="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_INVITATION_STORE, $groupID) }}">
     {{ csrf_field() }}
     <div class="input-group input-group-lg">
 
@@ -9,7 +9,7 @@
         <input id="invitees-auto" type="text" class="form-control autocomplete-input" onkeypress="return event.keyCode != 13;"
                data-session-key="group_invitees_session_key"
                data-list-id="invitees-list"
-               data-path="{{ url('group/' . $groupID . '/invitees_auto_complete') }}"
+               data-path="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_INVITEES_AUTO_COMPLETE, $groupID) }}"
                autocomplete="off" placeholder="Username...">
 
         {{--Invite Button--}}
