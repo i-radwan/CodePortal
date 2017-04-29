@@ -398,19 +398,12 @@ class ContestController extends Controller
 
                 foreach ($invitees as $invitee) {
                     // Send notifications
-                    try {
-                        Notification::make(Auth::user(), $invitee, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
-                    } catch (InvitationException $e) {
-                    }
+                    Notification::make(Auth::user(), $invitee, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
                 }
             } else if ($group) { // Send group members invitations
                 // Get invitees
                 foreach ($group->members()->get() as $member) {
-                    // Send notifications
-                    try {
-                        Notification::make(Auth::user(), $member, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
-                    } catch (InvitationException $e) {
-                    }
+                    Notification::make(Auth::user(), $member, $contest, Constants::NOTIFICATION_TYPE_CONTEST, false);
                 }
 
                 // Associate contest with group

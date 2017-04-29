@@ -122,6 +122,7 @@ class GroupController extends Controller
     {
         // Update name and save
         $group[Constants::FLD_GROUPS_NAME] = $request->get('name');
+
         $group->save();
 
         return redirect(route(Constants::ROUTES_GROUPS_DISPLAY, $group[Constants::FLD_GROUPS_ID]));

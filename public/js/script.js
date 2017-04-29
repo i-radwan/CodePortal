@@ -999,26 +999,6 @@ var app = {
         sessionStorage.setItem(app.contestPrivateVisibilitySessionKey, "");
     },
 
-
-    // ==================================================
-    //          GROUP PAGE FUNCTIONS
-    // ==================================================
-
-    /**
-     * Move group invitees from session to field
-     * @param fldID
-     * @param sessionKey
-     * @param clear
-     */
-    moveInviteesFromSessionToField: function (fldID, sessionKey, clear) {
-        // Set value
-        $("#" + fldID).val(JSON.parse(sessionStorage.getItem(sessionKey)).join());
-
-        // Clear sessions
-        if (clear) {
-            sessionStorage.setItem(sessionKey, '');
-        }
-    },
     // ==================================================
     //        SHEET PAGE FILTERS FUNCTIONS
     // ==================================================

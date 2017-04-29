@@ -58,6 +58,9 @@ trait RetrieveProblems
         $searchStr = "";
         $tagsIDs = (count(Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)->get()) == 0) ? null : Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)->get()->pluck(Constants::FLD_TAGS_ID)->toArray();
         $judgesIDs = count($judgesIDs) == 0 ? null : $judgesIDs;
+
+        // ToDo duplicate with ProblemsController getSortFilter function
+        // ==============================================================
         $sortParam = $request->get(Constants::URL_QUERY_SORT_PARAM_KEY);
         if ($sortParam && !array_key_exists($sortParam, Constants::PROBLEMS_SORT_PARAMS)) {
             $sortParam = Constants::URL_QUERY_SORT_PARAM_ID_KEY;
@@ -67,6 +70,8 @@ trait RetrieveProblems
             $sortOrder = 'asc';
         }
         $sortParams = [Constants::PROBLEMS_SORT_PARAMS[$sortParam] => $sortOrder];
+        // ==============================================================
+
         $problems = $this->filterProblems($searchStr, $judgesIDs, $tagsIDs, $sortParams);
         return $problems;
     }

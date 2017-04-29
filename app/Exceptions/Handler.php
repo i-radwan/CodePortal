@@ -53,26 +53,24 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof MethodNotAllowedHttpException ||
             $exception instanceof ModelNotFoundException ||
-            $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            $exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+        ) {
             return redirect(route(Constants::ROUTES_ERRORS_404));
         }
 
         if ($exception instanceof AuthorizationException ||
-            $exception instanceof TokenMismatchException) {
+            $exception instanceof TokenMismatchException
+        ) {
 
-            // return json response
-            if ($request->expectsJson()) {
-                return response()->json(['error' => 'Unauthorized.'], 401);
-            }
-
-            // If user is not logged in (move to login page)
-            // else move to 401 page (means he is logged in but trying to make
-            // unauthorized action)
-            if (Auth::check()) {
+            // Call the unauthenticated function if not authenticated
+            if (!Auth::check()) {
+                return $this->unauthenticated($request);
+            } else {
+                if ($request->expectsJson()) {
+                    return response()->json(['error' => 'Unauthorized.'], 401);
+                }
                 return redirect(route(Constants::ROUTES_ERRORS_401));
             }
-
-            return Redirect::guest(route(Constants::ROUTES_AUTH_LOGIN));
         }
 
         return parent::render($request, $exception);
@@ -89,13 +87,6 @@ class Handler extends ExceptionHandler
     {
         if ($request->expectsJson()) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
-        }
-
-        // If user is not logged in (move to login page)
-        // else move to 401 page (means he is logged in but trying to make
-        // unauthorized action)
-        if (Auth::check()) {
-            return redirect(route(Constants::ROUTES_ERRORS_401));
         }
 
         return Redirect::guest(route(Constants::ROUTES_AUTH_LOGIN));

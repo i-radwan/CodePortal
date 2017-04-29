@@ -62,34 +62,37 @@ class Notification extends Model
      */
     public static function make(User $sender, User $receiver, Model $resource, $type, $duplicationAllowed = false)
     {
-        if ($sender == null || $receiver == null || $resource == null || $type == null) {
-            return;
-        }
-
-        // Check if user already received this notification
-        if (!$duplicationAllowed) {
-            // Get same resource notifications count
-            $prevNotificationsCount = $receiver->receivedNotifications()
-                ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $resource->id)
-                ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', $type)
-                ->count();
-
-            if ($prevNotificationsCount > 0) {
-                // Stop and prevent saving new one
-                throw new InvitationException(
-                    Constants::INVITATION_EXCEPTION_MSGS[Constants::INVITATION_EXCEPTION_INVITED]
-                );
+        try {
+            if ($sender == null || $receiver == null || $resource == null || $type == null) {
+                return;
             }
-        }
 
-        // Save the notification after checking the duplication
-        $notification = new Notification();
-        $notification[Constants::FLD_NOTIFICATIONS_STATUS] = Constants::NOTIFICATION_STATUS_UNREAD;
-        $notification[Constants::FLD_NOTIFICATIONS_TYPE] = $type;
-        $notification->sender()->associate($sender);
-        $notification->receiver()->associate($receiver);
-        $notification->resource()->associate($resource);
-        $notification->save();
+            // Check if user already received this notification
+            if (!$duplicationAllowed) {
+                // Get same resource notifications count
+                $prevNotificationsCount = $receiver->receivedNotifications()
+                    ->where(Constants::FLD_NOTIFICATIONS_RESOURCE_ID, '=', $resource->id)
+                    ->where(Constants::FLD_NOTIFICATIONS_TYPE, '=', $type)
+                    ->count();
+
+                if ($prevNotificationsCount > 0) {
+                    // Stop and prevent saving new one
+                    throw new InvitationException(
+                        Constants::INVITATION_EXCEPTION_MSGS[Constants::INVITATION_EXCEPTION_INVITED]
+                    );
+                }
+            }
+
+            // Save the notification after checking the duplication
+            $notification = new Notification();
+            $notification[Constants::FLD_NOTIFICATIONS_STATUS] = Constants::NOTIFICATION_STATUS_UNREAD;
+            $notification[Constants::FLD_NOTIFICATIONS_TYPE] = $type;
+            $notification->sender()->associate($sender);
+            $notification->receiver()->associate($receiver);
+            $notification->resource()->associate($resource);
+            $notification->save();
+        } catch (InvitationException $e) {
+        }
     }
 
     /**
@@ -145,7 +148,7 @@ class Notification extends Model
      */
     public function scopeOfType(Builder $query, $type = null)
     {
-        if ($type == null ) {
+        if ($type == null) {
             return $query;
         }
 
@@ -167,7 +170,7 @@ class Notification extends Model
      */
     public function scopeOfStatus(Builder $query, $status = null)
     {
-        if ($status == null ) {
+        if ($status == null) {
             return $query;
         }
 
@@ -189,7 +192,7 @@ class Notification extends Model
      */
     public function scopeOfSender(Builder $query, $senderID = null)
     {
-        if ($senderID == null ) {
+        if ($senderID == null) {
             return $query;
         }
 
@@ -211,7 +214,7 @@ class Notification extends Model
      */
     public function scopeOfReceiver(Builder $query, $receiverID = null)
     {
-        if ($receiverID == null ) {
+        if ($receiverID == null) {
             return $query;
         }
 
@@ -233,7 +236,7 @@ class Notification extends Model
      */
     public function scopeOfResource(Builder $query, $resourceID = null)
     {
-        if ($resourceID == null ) {
+        if ($resourceID == null) {
             return $query;
         }
 

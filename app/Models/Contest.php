@@ -332,6 +332,18 @@ class Contest extends Model
     }
 
     /**
+     * Contest end time
+     * @return false|int
+     */
+    private function getContestEndTime()
+    {
+        return strtotime(
+            $this[Constants::FLD_CONTESTS_TIME] . ' + ' .
+            $this[Constants::FLD_CONTESTS_DURATION] . ' minute'
+        );
+    }
+
+    /**
      * Check if contest is currently running
      *
      * @return bool
@@ -339,10 +351,7 @@ class Contest extends Model
     public function isRunning()
     {
         // Get contest end time by adding its duration to its start time
-        $contestEndTime = strtotime(
-            $this[Constants::FLD_CONTESTS_TIME] . ' + ' .
-            $this[Constants::FLD_CONTESTS_DURATION] . ' minute'
-        );
+        $contestEndTime = $this->getContestEndTime();
 
         // Check if contest is running
         return (date("Y-m-d H:i:s") > $this->time && date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime));
@@ -356,10 +365,7 @@ class Contest extends Model
     public function isEnded()
     {
         // Get contest end time by adding its duration to its start time
-        $contestEndTime = strtotime(
-            $this[Constants::FLD_CONTESTS_TIME] . ' + ' .
-            $this[Constants::FLD_CONTESTS_DURATION] . ' minute'
-        );
+        $contestEndTime = $this->getContestEndTime();
 
         // Check if contest is running
         return (

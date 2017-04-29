@@ -126,7 +126,7 @@ class SheetController extends Controller
         Session::forget([Constants::SHEET_PROBLEMS_SELECTED_FILTERS]);
 
         // Return to sheets
-        return redirect('groups/' . $group[Constants::FLD_GROUPS_ID] . '#sheets');
+        return redirect(route(Constants::ROUTES_GROUPS_DISPLAY, $group[Constants::FLD_GROUPS_ID]) . '#sheets');
     }
 
     /**
@@ -147,7 +147,7 @@ class SheetController extends Controller
         $sheet->problems()->sync($problemsIDs);
 
         // Return to sheets
-        return redirect('sheets/' . $sheet[Constants::FLD_SHEETS_ID]);
+        return redirect(route(Constants::ROUTES_GROUPS_SHEET_DISPLAY, $sheet[Constants::FLD_SHEETS_ID]));
     }
 
 
