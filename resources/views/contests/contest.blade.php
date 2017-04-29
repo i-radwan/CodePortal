@@ -24,10 +24,11 @@
             @if($isOwner)
 
                 {{-- Delete Form --}}
-                @include('components.action_form', ['url' => url('contest/delete/'.$contestID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this contest? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
+                @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_DELETE, $contestID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this contest? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
 
                 {{-- Edit Form --}}
-                <a href="{{url('contest/'.$contestID.'/edit')}}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_EDIT, $contestID) }}"
+                   class="btn btn-link text-dark pull-right margin-5px">Edit</a>
 
                 {{-- Reorder Contest Problems --}}
                 <span class="btn btn-link text-dark pull-right margin-5px"
@@ -37,12 +38,12 @@
             @if($isParticipant)
 
                 {{--Leave Form--}}
-                @include('components.action_form', ['url' => url('contest/leave/'.$contestID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave this contest?'", 'btnIDs' => 'testing-contest-leave-btn', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
+                @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_LEAVE, $contestID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave this contest?'", 'btnIDs' => 'testing-contest-leave-btn', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
 
             @elseif(Auth::check())
 
                 {{--Join Form--}}
-                @include('components.action_form', ['url' => url('contest/join/'.$contestID), 'method' => 'POST', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnIDs' => 'testing-contest-join-btn', 'btnTxt' => 'Join'])
+                @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_JOIN, $contestID) , 'method' => 'POST', 'confirm' => false, 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnIDs' => 'testing-contest-join-btn', 'btnTxt' => 'Join'])
 
             @endif
 
@@ -60,19 +61,19 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist">
                         <li {{($view == "problems")?'class=active':''}}>
-                            <a href="{{ url("/contest/$contestID/problems") }}">Problems</a>
+                            <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_PROBLEMS, $contestID) }}">Problems</a>
                         </li>
                         <li {{($view == "standings")?'class=active':''}}>
-                            <a href="{{ url("/contest/$contestID/standings") }}">Standings</a>
+                            <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_STANDINGS, $contestID) }}">Standings</a>
                         </li>
                         <li {{($view == "submissions")?'class=active':''}}>
-                            <a href="{{ url("/contest/$contestID/status") }}">Status</a>
+                            <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_STATUS, $contestID) }}">Status</a>
                         </li>
                         <li {{($view == "participants")?'class=active':''}}>
-                            <a href="{{ url("/contest/$contestID/participants") }}">Participants</a>
+                            <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_PARTICIPANTS, $contestID) }}">Participants</a>
                         </li>
                         <li {{($view == "questions")?'class=active':''}}>
-                            <a href="{{ url("/contest/$contestID/questions") }}">Questions</a>
+                            <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_QUESTIONS, $contestID) }}">Questions</a>
                         </li>
                     </ul>
 
@@ -85,12 +86,12 @@
                                 @if($problems && count($problems))
                                     <button
                                             type="submit" class="btn btn-primary pull-right problems-reorder-view save"
-                                            onclick="app.saveProblemsOrderToDB('{{url('contest/reorder/'.$contestID)}}', '{{csrf_token()}}')">
+                                            onclick="app.saveProblemsOrderToDB('{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_REORDER, $contestID) }}', '{{csrf_token()}}')">
                                         Save
                                     </button>
                                     @include('contests.contest_views.problems')
                                 @else
-                                    @if(!$isContestRunning && !$isContestEnded)
+                                    @if(!$isContestRunning && !$isContestEnded && !$isOwnerOrOrganizer)
                                         <p>Problems will be visible when the contest begins!</p>
                                     @else
                                         <p>No problems!</p>

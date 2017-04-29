@@ -15,7 +15,7 @@ class AddContestPage extends BasePage
      */
     public function url()
     {
-        return 'http://127.0.0.1:8000/contest/add';
+        return 'http://127.0.0.1:8000/contests/create';
     }
 
     /**

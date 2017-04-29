@@ -21,7 +21,7 @@
                     @endforeach
                 </p>
             @endif
-            <p class="duration-p"><strong>Duration: </strong>{{ $contestDuration }} days</p>
+            <p class="duration-p"><strong>Duration: </strong>{{ $contestDuration }}</p>
         </div>
     </div>
 </div>

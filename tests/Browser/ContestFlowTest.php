@@ -58,7 +58,7 @@ class ContestFlowTest extends DuskTestCase
             $browser->visit(new Contests)
                 ->clickLink('New')
                 ->assertSee('Add')
-                ->assertPathIs('/contest/add')
+                ->assertPathIs('/contests/create')
                 ->on(new AddContestPage);
 
             // empty data

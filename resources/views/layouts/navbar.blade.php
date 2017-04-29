@@ -22,7 +22,7 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li class="{{ Request::is('contests') ? 'active' : '' }}">
-                        <a href="{{ url('contests') }}">Contests</a>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_INDEX) }}">Contests</a>
                     </li>
 
                     <li class="{{ Request::is(route(\App\Utilities\Constants::ROUTES_PROBLEMS_INDEX)) ? 'active' : '' }}">
@@ -34,7 +34,7 @@
                     </li>
 
                     <li class="{{ Request::is('groups') ? 'active' : '' }}">
-                        <a href="{{ url('groups') }}">Groups</a>
+                        <a href="{{ url(\App\Utilities\Constants::ROUTES_GROUPS_INDEX) }}">Groups</a>
                     </li>
                 </ul>
 

@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="panel panel-default">
-            <div class="panel-heading">{{ Request::is('contest/add') ? 'Add' : '' }} {{ Request::is('contest/edit') ? 'Edit' : '' }}
+            <div class="panel-heading">{{ Request::is('contests/create') ? 'Add' : '' }} {{ Request::is('contest/edit') ? 'Edit' : '' }}
                 {{ isset($contest)? $contest[\App\Utilities\Constants::FLD_CONTESTS_NAME]:'Contest' }}
             </div>
 
@@ -82,7 +82,7 @@
                             <div class="col-md-4">
 
                                 {{--Organinsers Auto Complete--}}
-                                @include('components.auto_complete', ['itemsType' => 'organisers', 'itemName' => 'Organiser', 'itemsLink' => url('contest/add/organisers_auto_complete'), 'hiddenID' => '', 'hiddenName' => ''])
+                                @include('components.auto_complete', ['itemsType' => 'organisers', 'itemName' => 'Organiser', 'itemsLink' => route(\App\Utilities\Constants::ROUTES_CONTESTS_ORGANIZERS_AUTO_COMPLETE), 'hiddenID' => '', 'hiddenName' => ''])
 
                             </div>
                         </div>
@@ -94,7 +94,7 @@
                             <div class="col-md-4">
 
                                 {{--Organinsers Auto Complete--}}
-                                @include('components.auto_complete', ['itemsType' => 'invitees', 'itemName' => 'Invitee', 'itemsLink' => url('contest/add/invitees_auto_complete'), 'hiddenID' => '', 'hiddenName' => ''])
+                                @include('components.auto_complete', ['itemsType' => 'invitees', 'itemName' => 'Invitee', 'itemsLink' => route(\App\Utilities\Constants::ROUTES_CONTESTS_INVITEES_AUTO_COMPLETE), 'hiddenID' => '', 'hiddenName' => ''])
 
                             </div>
                         </div>

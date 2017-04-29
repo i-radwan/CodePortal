@@ -2,7 +2,7 @@
 <div id="question-answer-model" class="modal fade question-answer-mode" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
-        <form method="post" action="{{url('contest/question/answer')}}" name="answerForm">
+        <form method="post" action="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_QUESTIONS_ANSWER_STORE) }}" name="answerForm">
             {{csrf_field()}}
             <div class="modal-content">
                 <div class="modal-header">
