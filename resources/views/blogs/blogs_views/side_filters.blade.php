@@ -59,13 +59,17 @@
     <!-- Side Widget Well -->
     @if(isset($topContributors))
     <div class="well">
-        <h4>Top Contributors</h4>
-        <ol class="lead">
-        @foreach( $topContributors as $userName => $contributions)
-            <li> {{$userName}} {{$contributions}}</li>
-        @endforeach
-        </ol>
+        <h4 style="color: blue;">Top Contributors</h4>
+        <table class = 'table lead'>
+            <tbody>
+            @foreach( $topContributors as $userName => $contributions)
+                <tr>
+                    <td> {{$userName}}</td>
+                    <td style="color: blue;">{{$contributions}}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
     </div>
     @endif
-
 </div>

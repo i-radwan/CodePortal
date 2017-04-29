@@ -399,14 +399,14 @@ class User extends Authenticatable
      * Get User up Voted Posts
      */
     public function upVotedPosts() {
-        return $this->morphedByMany(Post::class, Constants::TBL_UP_VOTES)->whereDeletedAt(null);
+        return $this->morphedByMany(Post::class, Constants::TBL_VOTES)->whereDeletedAt(null);
     }
 
     /**
      * Get User up Voted Comments
      */
     public function upVotedComments() {
-        return $this->morphedByMany(Comment::class, Constants::TBL_UP_VOTES)->whereDeletedAt(null);
+        return $this->morphedByMany(Comment::class, Constants::TBL_VOTES)->whereDeletedAt(null);
     }
 
     /**

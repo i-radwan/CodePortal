@@ -515,7 +515,7 @@ class Constants
     const TBL_TEAM_MEMBERS = "team_members";
     const TBL_COMMENTS_REPLIES = "comments_replies";
     const TBL_LIKEABLES = "likeables";
-    const TBL_UP_VOTES = "up_votes";
+    const TBL_VOTES = "votes";
     const TBL_DOWN_VOTES = "down_votes";
 
     //
@@ -708,21 +708,13 @@ class Constants
     const FLD_LIKEABLES_CREATED_AT = "created_at";
 
     //Up Vote
-    const FLD_UP_VOTES_ID = "id";
-    const FLD_UP_VOTES_USER_ID = "user_id";
-    const FLD_UP_VOTES_VOTED_ID = "up_votes_id";
-    const FLD_UP_VOTES_VOTED_TYPE = "up_votes_type";
-    const FLD_UP_VOTES_DELETED_AT = "deleted_at";
-    const FLD_UP_VOTES_CREATED_AT = "created_at";
-
-    //Down Vote
-    const FLD_DOWN_VOTES_ID = "id";
-    const FLD_DOWN_VOTES_USER_ID = "user_id";
-    const FLD_DOWN_VOTES_VOTED_ID = "down_votes_id";
-    const FLD_DOWN_VOTES_VOTED_TYPE = "down_votes_type";
-    const FLD_DOWN_VOTES_DELETED_AT = "deleted_at";
-    const FLD_DOWN_VOTES_CREATED_AT = "created_at";
-
+    const FLD_VOTES_ID = "id";
+    const FLD_VOTES_USER_ID = "user_id";
+    const FLD_VOTES_VOTED_ID = "votes_id";
+    const FLD_VOTES_VOTED_TYPE = "votes_type";
+    const FLD_VOTES_TYPE = "type";
+    const FLD_VOTES_DELETED_AT = "deleted_at";
+    const FLD_VOTES_CREATED_AT = "created_at";
 
 
 

@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Utilities\Constants;
 use Auth;
 use Session;
-use App\Models\UpVote;
-use App\Models\DownVote;
+use App\Models\Vote;
 use App\Models\Post;
 use App\Models\Comment;
 use Illuminate\Http\Request;
@@ -19,7 +18,7 @@ class VoteController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function upVotePost($post){
-        $this->processUpVote(Post::class, $post);
+        $this->processVote(Post::class, $post, 1);
         return redirect()->back();
     }
 
@@ -29,7 +28,7 @@ class VoteController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function upVoteComment($comment){
-        $this->processUpVote(Comment::class, $comment);
+        $this->processVote(Comment::class, $comment, 1);
         return redirect()->back();
     }
 
@@ -39,7 +38,7 @@ class VoteController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function downVoteComment($comment){
-        $this->processDownVote(Comment::class, $comment);
+        $this->processVote(Comment::class, $comment, 0);
         return redirect()->back();
     }
 
@@ -49,83 +48,50 @@ class VoteController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function downVotePost($post){
-        $this->processDownVote(Post::class, $post);
+        $this->processVote(Post::class, $post, 0);
         return redirect()->back();
     }
 
     /**
-     * Handle the Up Vote with removing the Down Vote if it's already found active
+     * Handle the Up/Down Vote with removing the Down/Up Vote if it's already found active
      * @param $type
      * @param $id
+     * @param $voteType
      */
-    public function processUpVote($type, $id){
+    public function processVote($type, $id, $voteType){
         //Check for the previous up and down votes for the single post with $id
-        $previousUpVote = UpVote::withTrashed()->whereUpVotesType($type)->whereUpVotesId($id)->whereUserId(Auth::id())->first();
-        $previousDownVote = DownVote::withTrashed()->whereDownVotesType($type)->whereDownVotesId($id)->whereUserId(Auth::id())->first();
+        //UP
+        $previousVote = Vote::withTrashed()->whereVotesType($type)->whereVotesId($id)->whereUserId(Auth::id())->whereType($voteType)->first();
+        //DOWN
+        $previousComplementaryVote = Vote::withTrashed()->whereVotesType($type)->whereVotesId($id)->whereUserId(Auth::id())->whereType(1 - $voteType)->first();
 
-        if(is_null($previousUpVote)){ //No Previous Up Vote applied for this post with that id
+        if(is_null($previousVote)){ //No Previous Up Vote applied for this post with that id
             //Add New Up Vote
-            $upVote = new UpVote([
-                Constants::FLD_UP_VOTES_USER_ID=> Auth::id(),
-                Constants::FLD_UP_VOTES_VOTED_ID   => $id,
-                Constants::FLD_UP_VOTES_VOTED_TYPE => $type
+            $upVote = new Vote([
+                Constants::FLD_VOTES_USER_ID=> Auth::id(),
+                Constants::FLD_VOTES_VOTED_ID   => $id,
+                Constants::FLD_VOTES_VOTED_TYPE => $type,
+                Constants::FLD_VOTES_TYPE => $voteType,
             ]);
             //Check if Saved Successfully
             if($upVote->save()){
                 //Remove the down Vote if it's found and is not soft deleted
-                if(!is_null($previousDownVote) and is_null($previousDownVote[Constants::FLD_DOWN_VOTES_DELETED_AT]) ){
-                    $previousDownVote->delete();
+                if(!is_null($previousComplementaryVote) and is_null($previousComplementaryVote[Constants::FLD_VOTES_DELETED_AT]) ){
+                    $previousComplementaryVote->delete();
                 }
             }
         }
-        else { //There Exists A Previous UpVote, So we need to reverse it's state between(Soft deleted or Not)
-            if (is_null($previousUpVote->deleted_at)) { //It's UpVoted
-                $previousUpVote->delete(); //Soft Delete the UpVote
-            } else { //restore the UpVote
-                $previousUpVote->restore();
+        else { //There Exists A Previous Vote, So we need to reverse it's state between(Soft deleted or Not)
+            if (is_null($previousVote->deleted_at)) { //It's UpVoted
+                $previousVote->delete(); //Soft Delete the Vote
+            } else { //restore the Vote
+                $previousVote->restore();
                 //Remove the down Vote if it's found and is not soft deleted
-                if(!is_null($previousDownVote) and is_null($previousDownVote[Constants::FLD_DOWN_VOTES_DELETED_AT]) ){
-                    $previousDownVote->delete();
+                if(!is_null($previousComplementaryVote) and is_null($previousComplementaryVote[Constants::FLD_VOTES_DELETED_AT]) ){
+                    $previousComplementaryVote->delete();
                 }
             }
         }
     }
 
-    /**
-     * Handle the Down Vote with removing the Up Vote if it's already found active
-     * @param $type
-     * @param $id
-     */
-    public function processDownVote($type, $id){
-        //Check for the previous up and down votes for the single post with $id
-        $previousDownVote = DownVote::withTrashed()->whereDownVotesType($type)->whereDownVotesId($id)->whereUserId(Auth::id())->first();
-        $previousUpVote = UpVote::withTrashed()->whereUpVotesType($type)->whereUpVotesId($id)->whereUserId(Auth::id())->first();
-
-        if(is_null($previousDownVote)){ //No Previous Down Vote applied for this post with that id
-            //Add New Down Vote
-            $downVote = new DownVote([
-                Constants::FLD_DOWN_VOTES_USER_ID=> Auth::id(),
-                Constants::FLD_DOWN_VOTES_VOTED_ID   => $id,
-                Constants::FLD_DOWN_VOTES_VOTED_TYPE => $type
-            ]);
-            //Check if Saved Successfully
-            if($downVote->save()){
-                //Remove the up Vote if it's found and is not soft deleted
-                if(!is_null($previousUpVote) and is_null($previousUpVote[Constants::FLD_UP_VOTES_DELETED_AT]) ){
-                    $previousUpVote->delete();
-                }
-            }
-        }
-        else { //There Exists A Previous UpVote, So we need to reverse it's state between(Soft deleted or Not)
-            if (is_null($previousDownVote->deleted_at)) { //It's UpVoted
-                $previousDownVote->delete(); //Soft Delete the UpVote
-            } else { //restore the UpVote
-                $previousDownVote->restore();
-                //Remove the down Vote if it's found and is not soft deleted
-                if(!is_null($previousUpVote) and is_null($previousUpVote[Constants::FLD_UP_VOTES_DELETED_AT]) ){
-                    $previousUpVote->delete();
-                }
-            }
-        }
-    }
 }
