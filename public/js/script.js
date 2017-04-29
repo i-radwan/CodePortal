@@ -437,10 +437,13 @@ var app = {
      * @param string url for solution file
      * @param solution_lang
      */
-    fillAnswerModal: function (problemID, sheetID, url, solution_lang) {
+    fillAnswerModal: function (problemID, sheetID, url, solutionLang) {
+        var solution_lang = '';
         // If no solution_lang, means no previous solution is provided
         // Assume that c_cpp is going to be used
-        if (!solution_lang.length) solution_lang = "c_cpp";
+        if (!solutionLang.length) {
+            solution_lang = "c_cpp";
+        }
 
         // Set selected language in solution_lang menu
         $("#solution_lang").val(solution_lang);
@@ -503,17 +506,19 @@ var app = {
      * @returns {boolean}
      */
     cancelNotification: function (e, token, url, element) {
+        var event = e;
         // Prevent click event propagation (such that dropdown menu doesn't
         // close after deleting) notification
-        if (!e)
-            e = window.event;
+        if (!event) {
+            event = window.event;
+        }
         //IE9 & Other Browsers
-        if (e.stopPropagation) {
-            e.stopPropagation();
+        if (event.stopPropagation) {
+            event.stopPropagation();
         }
         //IE8 and Lower
         else {
-            e.cancelBubble = true;
+            event.cancelBubble = true;
         }
         // Send lazy delete request
         $.ajax({
@@ -838,7 +843,7 @@ var app = {
                     app.renderListElements(itemName, list, sessionKey);
                 }
                 //Don't return the item name back in order not to keep it in the text box field
-                return;
+
             }
         });
     },
@@ -1218,19 +1223,19 @@ var app = {
         var tags = element.data('selected-tags');
         var judges = element.data('selected-judges');
         if (tags) {
-            var selected_tags = '["' + tags.replace(',', '","') + '"]';
+            var selectedTags = '["' + tags.replace(',', '","') + '"]';
             // Sync with session
-            app.syncDataFromRequestToSession(app.tagsSessionKey, selected_tags);
+            app.syncDataFromRequestToSession(app.tagsSessionKey, selectedTags);
         }
         if (judges) {
-            var selected_judges;
+            var selectedJudges;
             try {
-                selected_judges = '["' + judges.replace(',', '","') + '"]';
+                selectedJudges = '["' + judges.replace(',', '","') + '"]';
             } catch (e) {
-                selected_judges = '["' + judges + '"]';
+                selectedJudges = '["' + judges + '"]';
             }
             // Sync with session
-            app.syncDataFromRequestToSession(app.judgesSessionKey, selected_judges);
+            app.syncDataFromRequestToSession(app.judgesSessionKey, selectedJudges);
         }
     }
 };

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Services\JudgeSyncService;
-use App\Utilities\Constants;
+
+
 use App\Services\CodeforcesSyncService;
 use App\Services\UVaSyncService;
 use App\Services\LiveArchiveSyncService;
@@ -45,8 +45,6 @@ class SyncJudgeProblems extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
     public function handle()
     {

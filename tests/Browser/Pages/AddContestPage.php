@@ -2,7 +2,7 @@
 
 namespace Tests\Browser\Pages;
 
-use App\Utilities\Constants;
+
 use Laravel\Dusk\Browser;
 use Laravel\Dusk\Page as BasePage;
 
@@ -38,7 +38,6 @@ class AddContestPage extends BasePage
      * @param array $problemsIDs
      * @param array $organizers
      * @param array $invitees
-     * @return mixed
      */
     public function saveContest(Browser $browser, $name, $time, $duration, $visibility, $problemsIDs = [], $organizers = [], $invitees = [])
     {

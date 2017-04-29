@@ -73,7 +73,7 @@ class Question extends Model
     public static function askQuestion(array $attributes = [], $user = null, $contest = null, $problem = null)
     {
         if (!$user || !$contest || !$problem) {
-            return;
+            return null;
         }
 
         $q = new Question($attributes);
@@ -145,6 +145,6 @@ class Question extends Model
         Validator::make($this->attributes, $this->answerQuestionRules)->validate();
 
         // Save the answer
-        $this->save();
+        return $this->save();
     }
 }

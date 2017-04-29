@@ -17,7 +17,7 @@
 			<div class="col-md-3">
 				<div class="text-center">
 
-					<img src="{{ asset('images/' . $user->profile_picture)}}" class="avatar img-circle" onerror=this.src="/images/profile/UserDefault.png" width="200" height="200" alt="avatar">
+					<img src="{{ asset('images/' . $user->profile_picture)}}" class="avatar img-circle" onerror=this.src="/images/profile/UserDefault.png"; width="200" height="200" alt="avatar">
 
 					<label class="control-label"></label>
 					<input type="file" class="file" name="profile_picture">

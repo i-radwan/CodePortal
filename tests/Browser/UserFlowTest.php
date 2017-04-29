@@ -13,7 +13,7 @@ use Tests\Browser\Pages\Problems;
 use Tests\Browser\Pages\Register;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+
 
 class UserFlowTest extends DuskTestCase
 {

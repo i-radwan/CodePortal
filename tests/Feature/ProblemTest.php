@@ -2,13 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\ProblemController;
+
+use App\Http\Controllers\RetrieveProblems;
 use Illuminate\Validation\ValidationException;
 use App\Models\Problem;
 use App\Utilities\Constants;
 
 class ProblemTest extends DatabaseTest
 {
+    use RetrieveProblems;
 
     /**
      * A basic test example.
@@ -54,7 +56,7 @@ class ProblemTest extends DatabaseTest
 
         // Test pagination
         for ($i = 0; $i < 100; $i++) $this->insertProblem('Problem1', 10, 20, $judge, '123' . $i, '213' . $i);
-        $problems = ProblemController::filterProblems();
+        $problems = $this->filterProblems();
         $this->assertEquals($problems->count(), Constants::PROBLEMS_COUNT_PER_PAGE);
 
         // Test problems filtering
@@ -68,7 +70,6 @@ class ProblemTest extends DatabaseTest
         $judge1Count = 0;
         $judge2Count = 0;
         $tag1Count = 0;
-        $tag2Count = 0;
 
         for ($i = 0; $i < 100; $i++) {
             if ($i % 2 == 0) {

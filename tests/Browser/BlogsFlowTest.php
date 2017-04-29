@@ -26,7 +26,6 @@ class BlogsFlowTest extends DuskTestCase
         sleep(1);
         $faker = Factory::create();
         $this->browse(function (Browser $browser, Browser $browser2) use ($faker) {
-            $user2 = User::find(12)[Constants::FLD_USERS_USERNAME];
             // Login
             $browser->visit(new Login)
                 ->loginUser('asd', 'asdasd');
@@ -61,7 +60,6 @@ class BlogsFlowTest extends DuskTestCase
 
             $latestComment = Comment::query()->orderByDesc(Constants::FLD_COMMENTS_ID)->first();
             $latestCommentID = $latestComment[Constants::FLD_COMMENTS_ID];
-            $latestCommentBody = $latestComment[Constants::FLD_COMMENTS_BODY];
 
             //============================================================
             // • User can vote blog

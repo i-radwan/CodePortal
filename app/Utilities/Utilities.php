@@ -103,7 +103,7 @@ class Utilities
      *
      * @return string
      */
-    public static function convertSecondsToDaysHoursMins($time, $format = '%02d:%02d:%02d')
+    public static function convertSecondsToDaysHoursMins($time)
     {
         if ($time < 1) {
             return "";

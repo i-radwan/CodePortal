@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use DB;
+
 use App\Utilities\Constants;
-use App\Models\User;
-use App\Models\Post;
-use Illuminate\Database\Eloquent\Builder;
+
+
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\VarDumper\Caster\ConstStub;
+
 
 class Comment extends Model
 {

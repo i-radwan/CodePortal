@@ -1,5 +1,5 @@
 <div class="panel panel-default problems-filters-panel">
-    <div class="panel-body" onload="alert(123)">
+    <div class="panel-body">
         {{--Judges checkboxes--}}
         <div>
             Online Judges:

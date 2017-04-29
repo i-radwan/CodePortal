@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+
 use App\Utilities\Constants;
-use App\Http\Controllers\ProblemController;
+
 use App\Models\Problem;
 use App\Models\User;
 use Carbon\Carbon;
 use Charts;
 use Image;
 use Symfony\Component\Intl\Intl;
-use Illuminate\Support\Facades\Validator;
+
 
 class UserController extends Controller
 {

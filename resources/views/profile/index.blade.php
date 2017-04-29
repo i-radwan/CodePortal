@@ -53,8 +53,8 @@
                                   <!-- first column -->
                                   <div class="col-md-3">
                                     <img class="thumbnail img-responsive"
-                                    src="{{ asset('images/'.$userData->profile_picture)}}" alt="profile pic"
-                                    onerror=this.src="/images/profile/UserDefault.png" width="200" height="300">
+                                         src="{{ asset('images/'.$userData->profile_picture)}}" alt="profile pic"
+                                         onerror=this.src="/images/profile/UserDefault.png"; width="200" height="300">
 
                                     <h3>{{ $userName }}</h3>
                                     @if(($userData->created_at)!= NULL)
