@@ -72,7 +72,8 @@ class TeamController extends Controller
         $team->save();
         $team->members()->attach($user[Constants::FLD_USERS_ID]);
 
-        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_ID]))->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' created successfully!']);
+        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_USERNAME]))
+            ->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' created successfully!']);
     }
 
     /**
@@ -87,7 +88,8 @@ class TeamController extends Controller
         $user = Auth::user();
         $team[Constants::FLD_TEAMS_NAME] = $request->get(Constants::FLD_TEAMS_NAME);
         $team->save();
-        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_ID]))->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' updated successfully!']);
+        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_USERNAME]))
+            ->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' updated successfully!']);
     }
 
     /**
@@ -195,7 +197,7 @@ class TeamController extends Controller
         // Add the user as a team member
         $team->members()->attach($user);
 
-        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_ID]));
+        return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_USERNAME]));
     }
 
     /**
