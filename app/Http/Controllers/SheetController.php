@@ -15,6 +15,8 @@ use Storage;
 
 class SheetController extends Controller
 {
+    use RetrieveProblems;
+
     /**
      * Show single sheet page which contains problems
      *
@@ -45,7 +47,11 @@ class SheetController extends Controller
         // Check server sessions for saved filters data (i.e. tags, organisers, judges)
         $tags = $judges = [];
 
-        $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
+        $problems = $this->getProblemsWithSessionFilters(
+            $request, $tags, $judges,
+            Constants::SHEET_PROBLEMS_SELECTED_FILTERS,
+            Constants::SHEET_PROBLEMS_SELECTED_JUDGES,
+            Constants::SHEET_PROBLEMS_SELECTED_TAGS);
 
         return view('groups.sheet_views.add_edit')
             ->with('problems', $problems)
@@ -53,10 +59,10 @@ class SheetController extends Controller
             ->with('checkBoxes', 'true')
             ->with(Constants::SHEET_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::SHEET_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('syncFiltersURL', url('sheets/create/sheet_tags_judges_filters_sync'))
-            ->with('detachFiltersURL', url('sheets/create/sheet_tags_judges_filters_detach'))
+            ->with('syncFiltersURL', route(Constants::ROUTES_GROUPS_SHEET_SYNC_FILTERS))
+            ->with('detachFiltersURL', route(Constants::ROUTES_GROUPS_SHEET_DETACH_FILTERS))
             ->with('action', 'Add')
-            ->with('url', 'groups/' . $group[Constants::FLD_GROUPS_ID] . '/sheets/create')
+            ->with('url', route(Constants::ROUTES_GROUPS_SHEET_STORE, $group[Constants::FLD_GROUPS_ID]))
             ->with('pageTitle', config('app.name') . ' | Sheet');
     }
 
@@ -72,7 +78,11 @@ class SheetController extends Controller
         // Check server sessions for saved filters data (i.e. tags, organisers, judges)
         $tags = $judges = [];
 
-        $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
+        $problems = $this->getProblemsWithSessionFilters(
+            $request, $tags, $judges,
+            Constants::SHEET_PROBLEMS_SELECTED_FILTERS,
+            Constants::SHEET_PROBLEMS_SELECTED_JUDGES,
+            Constants::SHEET_PROBLEMS_SELECTED_TAGS);
 
         // Show edit sheet view with sheet info attached
         return view('groups.sheet_views.add_edit')
@@ -83,10 +93,10 @@ class SheetController extends Controller
             ->with('checkBoxes', 'true')
             ->with(Constants::SHEET_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::SHEET_PROBLEMS_SELECTED_JUDGES, $judges)
-            ->with('syncFiltersURL', url('sheets/create/sheet_tags_judges_filters_sync'))
-            ->with('detachFiltersURL', url('sheets/create/sheet_tags_judges_filters_detach'))
+            ->with('syncFiltersURL', route(Constants::ROUTES_GROUPS_SHEET_SYNC_FILTERS))
+            ->with('detachFiltersURL', route(Constants::ROUTES_GROUPS_SHEET_DETACH_FILTERS))
             ->with('action', 'Edit')
-            ->with('url', 'sheets/' . $sheet[Constants::FLD_SHEETS_ID] . '/edit')
+            ->with('url', route(Constants::ROUTES_GROUPS_SHEET_UPDATE, $sheet[Constants::FLD_SHEETS_ID]))
             ->with('pageTitle', config('app.name') . ' | ' . $sheet[Constants::FLD_SHEETS_NAME]);
     }
 
@@ -217,31 +227,6 @@ class SheetController extends Controller
     {
         $problems = $sheet->problems()->get();
     }
-
-    /**
-     * Get the problems filtered by sheet tags and judges
-     *
-     * @param $request
-     * @param $tags
-     * @param $judges
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public static function getProblemsWithSessionFilters($request, &$tags, &$judges)
-    {
-        // Check server sessions for saved filters data (i.e. tags, organisers, judges)
-        if (Session::has(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)) {
-            if (isset(Session::get(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)[Constants::SHEET_PROBLEMS_SELECTED_JUDGES])) {
-                $judges = Session::get(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)[Constants::SHEET_PROBLEMS_SELECTED_JUDGES];
-            }
-            if (isset(Session::get(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)[Constants::SHEET_PROBLEMS_SELECTED_TAGS])) {
-                $tags = Session::get(Constants::SHEET_PROBLEMS_SELECTED_FILTERS)[Constants::SHEET_PROBLEMS_SELECTED_TAGS];
-            }
-        }
-
-        // Get problems with applied filters
-        return ProblemController::getProblemsWithFilters($request, $tags, $judges);
-    }
-
 
     /**
      * Save problems filters (tags, judges) into server session to later retrieval

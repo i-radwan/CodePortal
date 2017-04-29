@@ -24,7 +24,7 @@
 
                                     {{-- Only singed in users can see group details --}}
                                     @if(Auth::check())
-                                        <a href="{{ url('group/' . $groupID) }}">
+                                        <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_DISPLAY, $groupID) }}">
                                             {{ $groupName }}
                                         </a>
                                     @else

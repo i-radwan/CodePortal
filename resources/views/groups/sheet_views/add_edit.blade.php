@@ -13,7 +13,7 @@
 
                 {{--Name--}}
                 <form class="form-horizontal add-edit-sheet-form" role="form" method="POST"
-                      action="{{ url($url) }}">
+                      action="{{ $url }}">
                     {{ csrf_field() }}
                     <input type="hidden" id="problems-ids-hidden" name="problems"/>
 

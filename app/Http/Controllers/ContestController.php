@@ -22,6 +22,8 @@ use Illuminate\Http\Request;
 
 class ContestController extends Controller
 {
+    use RetrieveProblems;
+
     /**
      * Show all contests page
      *
@@ -240,7 +242,12 @@ class ContestController extends Controller
         // Check server sessions for saved filters data (i.e. tags, organisers, judges)
         $tags = $judges = [];
 
-        $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
+        $problems = $this->getProblemsWithSessionFilters(
+            $request, $tags, $judges,
+            Constants::CONTEST_PROBLEMS_SELECTED_FILTERS,
+            Constants::CONTEST_PROBLEMS_SELECTED_JUDGES,
+            Constants::CONTEST_PROBLEMS_SELECTED_TAGS
+        );
 
         // Are filters applied (to inform user that there're filters applied from previous visit)
         $areFiltersApplied = count($tags) || count($judges);
@@ -303,7 +310,12 @@ class ContestController extends Controller
         // Check server sessions for saved filters data (i.e. tags, organisers, judges)
         $tags = $judges = [];
 
-        $problems = self::getProblemsWithSessionFilters($request, $tags, $judges);
+        $problems = $this->getProblemsWithSessionFilters(
+            $request, $tags, $judges,
+            Constants::CONTEST_PROBLEMS_SELECTED_FILTERS,
+            Constants::CONTEST_PROBLEMS_SELECTED_JUDGES,
+            Constants::CONTEST_PROBLEMS_SELECTED_TAGS
+        );
 
         return view('contests.add_edit')
             ->with('problems', $problems)
@@ -335,7 +347,7 @@ class ContestController extends Controller
         ]);
 
         $editingContest = true;
-        
+
         if (!$contest) {
             // Create contest object
             $contest = new Contest($request->all());
@@ -524,7 +536,6 @@ class ContestController extends Controller
     public function deleteContest(Contest $contest)
     {
         // Check if current auth. user is the owner of the contest
-        // TODO: delete contest data from all tables
         if (Auth::check() && $contest->owner[Constants::FLD_USERS_ID]
             == Auth::user()[Constants::FLD_USERS_ID]
         ) {
@@ -850,28 +861,4 @@ class ContestController extends Controller
         }
     }
 
-
-    /**
-     * Get the problems filtered by contest tags and judges
-     *
-     * @param $request
-     * @param $tags
-     * @param $judges
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public static function getProblemsWithSessionFilters($request, &$tags, &$judges)
-    {
-        // Check server sessions for saved filters data (i.e. tags, organisers, judges)
-        if (Session::has(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)) {
-            if (isset(Session::get(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)[Constants::CONTEST_PROBLEMS_SELECTED_JUDGES])) {
-                $judges = Session::get(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)[Constants::CONTEST_PROBLEMS_SELECTED_JUDGES];
-            }
-            if (isset(Session::get(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)[Constants::CONTEST_PROBLEMS_SELECTED_TAGS])) {
-                $tags = Session::get(Constants::CONTEST_PROBLEMS_SELECTED_FILTERS)[Constants::CONTEST_PROBLEMS_SELECTED_TAGS];
-            }
-        }
-
-        // Get problems with applied filters
-        return ProblemController::getProblemsWithFilters($request, $tags, $judges);
-    }
 }
