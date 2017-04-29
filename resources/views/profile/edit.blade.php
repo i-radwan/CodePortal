@@ -73,6 +73,30 @@
 						</div>
 					</div>
 
+					<!-- CodeForces Handle -->
+					<div class="form-group">
+						<label class="col-lg-3 control-label">CodeForces Handle:</label>
+						<div class="col-lg-8">
+							<input name="codeForces" class="form-control" value="{{isset($handle['0']['original']['pivot_handle']) ? $handle['0']['original']['pivot_handle']: "" }}" type="text">
+						</div>
+					</div>
+
+					<!-- UVA Handle -->
+					<div class="form-group">
+						<label class="col-lg-3 control-label">Uva Handle:</label>
+						<div class="col-lg-8">
+							<input name="uva" class="form-control" value="{{isset($handle['1']['original']['pivot_handle']) ? $handle['1']['original']['pivot_handle']: "" }}" type="text">
+						</div>
+					</div>
+
+					<!-- Live Archive Handle -->
+					<div class="form-group">
+						<label class="col-lg-3 control-label">Live Archive Handle:</label>
+						<div class="col-lg-8">
+							<input name="liveArchive" class="form-control" value="{{isset($handle['2']['original']['pivot_handle']) ? $handle['2']['original']['pivot_handle']: "" }}" type="text">
+						</div>
+					</div>
+
 				<!-- GENDER -->
 					<label class="col-lg-3 control-label" for="gender">Gender:   &#160;</label>
 					<div class="controls col-lg-8 ">
@@ -93,6 +117,7 @@
 						</div>
 					</div>
 
+					
 				<!-- NEW PASSWORD -->
 					<div class="form-group">
 						<label class="col-md-3 control-label">New Password:</label>

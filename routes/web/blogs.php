@@ -24,7 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 // Blogs routes...
 Route::get('blogs', 'BlogController@index');
-Route::get('blogs/entries/{user}', 'BlogController@displayUserPosts');
+Route::get('blogs/entries/{user}', 'BlogController@displayUserPosts'); // i should call a different name
 Route::get('blogs/entry/{post}', 'BlogController@displayPost');
 
 
