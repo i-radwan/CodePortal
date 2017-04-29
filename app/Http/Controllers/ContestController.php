@@ -234,8 +234,9 @@ class ContestController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function addEditContestView(Request $request, Contest $contest = null)
+    private function addEditContestView(Request $request, Contest $contest = null)
     {
+
         // Check server sessions for saved filters data (i.e. tags, organisers, judges)
         $tags = $judges = [];
 
@@ -243,19 +244,50 @@ class ContestController extends Controller
 
         // Are filters applied (to inform user that there're filters applied from previous visit)
         $areFiltersApplied = count($tags) || count($judges);
-        return view('contests.add_edit')
-            ->with('contest', $contest)
-            ->with('group', $contest->groups()->first())
+
+        $view = view('contests.add_edit')
             ->with('problems', $problems)
             ->with('judges', Judge::all())
             ->with('checkBoxes', 'true')
             ->with('filtersApplied', $areFiltersApplied)
-            ->with('formURL', (!$contest[Constants::FLD_CONTESTS_ID]) ? route(Constants::ROUTES_CONTESTS_INDEX) : route(Constants::ROUTES_CONTESTS_UPDATE, $contest[Constants::FLD_CONTESTS_ID]))
+            ->with('formURL', route(Constants::ROUTES_CONTESTS_INDEX))
             ->with('syncFiltersURL', route(Constants::ROUTES_CONTESTS_FILTERS_SYNC))
             ->with('detachFiltersURL', route(Constants::ROUTES_CONTESTS_FILTERS_DETACH))
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_TAGS, $tags)
             ->with(Constants::CONTEST_PROBLEMS_SELECTED_JUDGES, $judges)
             ->with('pageTitle', config('app.name') . ' | ' . ((isset($contest)) ? $contest[Constants::FLD_CONTESTS_NAME] : 'Contest'));
+
+        // When editing
+        if ($contest) {
+            $view->with('contest', $contest)
+                ->with('group', $contest->groups()->first())
+                ->with('formURL', route(Constants::ROUTES_CONTESTS_UPDATE, $contest[Constants::FLD_CONTESTS_ID]));
+        }
+        return $view;
+    }
+
+    /**
+     * Return add contest view
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
+    public function addContestView(Request $request)
+    {
+        return $this->addEditContestView($request, null);
+    }
+
+    /**
+     * Return edit contest view
+     *
+     * @param Request $request
+     * @param Contest $contest
+     * @return \Illuminate\View\View
+     */
+    public function editContestView(Request $request, Contest $contest)
+    {
+        return $this->addEditContestView($request, $contest);
+
     }
 
     /**
@@ -297,7 +329,13 @@ class ContestController extends Controller
      */
     public function saveContest(Request $request, Group $group = null, Contest $contest = null)
     {
+        // Validate contest time at first
+        $this->validate($request, [
+            Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:' . Carbon::now(),
+        ]);
+
         $editingContest = true;
+        
         if (!$contest) {
             // Create contest object
             $contest = new Contest($request->all());

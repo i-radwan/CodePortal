@@ -25,7 +25,7 @@
                         <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_INDEX) }}">Contests</a>
                     </li>
 
-                    <li class="{{ Request::is(route(\App\Utilities\Constants::ROUTES_PROBLEMS_INDEX)) ? 'active' : '' }}">
+                    <li class="{{ Request::is('problems') ? 'active' : '' }}">
                         <a href="{{ route(\App\Utilities\Constants::ROUTES_PROBLEMS_INDEX) }}">Problems</a>
                     </li>
 

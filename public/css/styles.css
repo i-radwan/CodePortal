@@ -858,6 +858,13 @@ footer {
     border-right: 3px #eee solid;
 }
 
+.contest-time::after {
+    content: ' UTC';
+    color: #0D964B;
+    font-weight: 300;
+    font-size: 11px;
+}
+
 .centered {
     margin: auto;
     max-width: 700px;
@@ -1204,9 +1211,10 @@ td.problems-reorder-view > .fa-bars {
 .hide-input {
     display: none;
 }
+
 .form-group.required .control-label:after {
-  content:"*";
-  color:red;
+    content: "*";
+    color: red;
 }
 
 /**************************************/

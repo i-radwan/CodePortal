@@ -96,7 +96,6 @@ var app = {
 
         //endregion
 
-
         //region Maintain bootstrap tabs
 
         // Maintain bootstrap selected tabs on page reload
@@ -117,7 +116,7 @@ var app = {
 
         //endregion
 
-        //region Auto complete fields configurations
+        //region Auto complete fields configurations (used for invitees forms)
         var autoCompleteFields = $('.autocomplete-input');
 
         for (var i = 0; i < autoCompleteFields.length; i++) {
@@ -255,7 +254,7 @@ var app = {
                 //Get the text area element
                 var element = document.getElementById("edit-post-body");
                 var simplemde = new SimpleMDE({
-                    element: element ,
+                    element: element,
                     //Enables Auto Save which is removed when the form is submitted
                     autosave: {
                         enabled: $(element).data('autosave-enable'),
@@ -625,7 +624,6 @@ var app = {
     fetchAllTagsFromDB: function () {
         // Send request to path in tags-path data attr
         $.get($("#tags-auto").data('tags-path'), function (data) {
-            console.log(data);
             app.allTagsList = data;
         });
     },
@@ -687,8 +685,25 @@ var app = {
 
             // Fill form basic fields
             $("#name").val(sessionStorage.getItem(app.contestNameSessionKey));
-            $("#time").val(sessionStorage.getItem(app.contestTimeSessionKey));
             $("#duration").attr("value", sessionStorage.getItem(app.contestDurationSessionKey));
+
+            // ===============================================================
+            // Fill contest time
+            // ===============================================================
+            if (sessionStorage.getItem(app.contestTimeSessionKey)) {
+                var offset = new Date().getTimezoneOffset();
+                // Set date time field to server timezone
+                var m = moment(sessionStorage.getItem(app.contestTimeSessionKey)).format(); // User input (user timezone)
+                var d = new Date(m); // Convert to date
+
+                // Get time in server time zone
+                m = moment(d.toISOString()).add('m', -offset).format('YYYY-MM-DD HH:mm:ss');
+
+                // Send to server to check and then server will store in UTC
+                $("#time").val(m);
+            }
+
+            // ===============================================================
 
             // Set form fields on change listeners
             $("#name").change(function () {
@@ -749,7 +764,6 @@ var app = {
                 'selected_filters': filters,
             },
             success: function (data) {
-                console.log(data);
                 // Clear other sorting in URL queries
                 window.location.replace(redirectURL);
             }, error: function (data) {
@@ -935,6 +949,17 @@ var app = {
 
         if (sessionStorage.getItem(app.problemsIDsSessionKey))
             $("#problems-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.problemsIDsSessionKey)).join());
+
+        // Set date time field to server timezone
+        var m = moment($("#time").val()).format(); // User input (user timezone)
+        var d = new Date(m); // Convert to date
+        var timezoneDiff = d.getTimezoneOffset(); // Get client-server tz diff
+
+        // Get time in server time zone
+        m = moment(d.toISOString()).add('m', timezoneDiff).format('YYYY-MM-DD HH:mm:ss');
+
+        // Send to server to check and then server will store in UTC
+        $("#time").val(m);
 
         // Clear sessions
         app.clearSession();
@@ -1122,13 +1147,13 @@ var app = {
      * @param url the Delete  URL
      * @param token the CSRF Token
      */
-    deleteSinglePostComment: function (commentID, url , token) {
+    deleteSinglePostComment: function (commentID, url, token) {
         $.ajax({
             url: url,
             type: 'DELETE',
             data: {
                 _token: token,
-                comment_id : commentID,
+                comment_id: commentID,
             },
             success: function (result) {
 

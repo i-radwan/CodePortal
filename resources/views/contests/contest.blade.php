@@ -5,7 +5,14 @@
 
     $contestID = $contest[Constants::SINGLE_CONTEST_ID_KEY];
     $contestName = $contest[Constants::SINGLE_CONTEST_NAME_KEY];
-    $contestTime = date('D M d, H:i', strtotime($contest[Constants::FLD_CONTESTS_TIME]));
+    $contestDateTime = strtotime($contest[Constants::FLD_CONTESTS_TIME]);
+    $contestTime = date('D M d, H:i', $contestDateTime);
+    $contestYear = date('Y', $contestDateTime);
+    $contestMonth = date('m', $contestDateTime);
+    $contestDay = date('d', $contestDateTime);
+    $contestHour = date('H', $contestDateTime);
+    $contestMinute = date('i', $contestDateTime);
+
     $contestDuration = Utilities::convertSecondsToDaysHoursMins($contest[Constants::FLD_CONTESTS_DURATION]);
     $contestOrganizers = $contest->organizers()->pluck(Constants::FLD_USERS_USERNAME);
 

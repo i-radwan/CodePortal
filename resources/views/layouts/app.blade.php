@@ -61,9 +61,11 @@
 {{--Files of duration picker--}}
 <script src="/js/timingfield.js"></script>
 
+{{--Moment Library for client side date time processing--}}
+<script src="/js/moment.js"></script>
+
 <script src="/js/script.js"></script>
 
 </body>
 </html>
-
 

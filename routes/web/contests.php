@@ -13,11 +13,11 @@ Route::get('tags_auto_complete', 'ContestController@tagsAutoComplete')
 Route::group(['middleware' => 'auth'], function () {
 
     // Add new contest view
-    Route::get('contests/create', 'ContestController@addEditContestView')
+    Route::get('contests/create', 'ContestController@addContestView')
         ->name(\App\Utilities\Constants::ROUTES_CONTESTS_CREATE);
 
     // Edit contest view
-    Route::get('contests/{contest}/edit', 'ContestController@addEditContestView')
+    Route::get('contests/{contest}/edit', 'ContestController@editContestView')
         ->name(\App\Utilities\Constants::ROUTES_CONTESTS_EDIT)
         ->middleware(['can:owner-contest,contest']);
 

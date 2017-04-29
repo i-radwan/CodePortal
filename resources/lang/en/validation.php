@@ -104,6 +104,9 @@ return [
         'duration' => [
             'max' => 'The contest duration may not be more than 30 days',
         ],
+        'time' => [
+            'after' => 'The contest start time must be in future!',
+        ],
         'oldPassword' => [
             'old' => 'old password mismatch',
         ],

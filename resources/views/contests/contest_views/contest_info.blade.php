@@ -2,7 +2,9 @@
 <div class="container">
     <div class="row contest-info">
         <div class="col-md-7 col-sm-5 col-xs-12 contest-info-time">
-            <p class="contest-time pull-right">{{ $contestTime }}</p>
+            <a target="_blank" href="https://www.timeanddate.com/worldclock/fixedtime.html?day={{ $contestDay }}&month={{ $contestMonth }}&year={{ $contestYear }}&hour={{ $contestHour }}&min={{ $contestMinute }}">
+                <p class="contest-time pull-right">{{ $contestTime }}</p>
+            </a>
         </div>
         <div class="col-md-5 col-sm-7 cols-xs-12 contest-details">
             <p class="owner-p">
