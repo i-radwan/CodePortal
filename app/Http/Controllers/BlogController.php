@@ -8,6 +8,8 @@ use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Auth;
 use Session;
+use DB;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
 
 class BlogController extends Controller
 {
@@ -19,14 +21,15 @@ class BlogController extends Controller
     public function index()
     {
         //Getting Posts
-        $posts = Post::orderBy(Constants::FLD_POSTS_CREATED_AT, 'desc')->paginate(7);
+        $posts = Post::ofContent(request('q'))->orderBy(Constants::FLD_POSTS_CREATED_AT, 'desc')->paginate(7);
         $index = 0;
         foreach ($posts as $post){
             $posts[$index++] = $this->getPostInfo($post, true);
         }
         return view('blogs.index')
             ->with('posts', $posts )
-            ->with('topContributors', [])
+            ->with('q',request('q'))
+            ->with('topContributors', $this->getTopContributors())
             ->with('post_like_url', url("/blogs/up_vote/entry"))
             ->with('post_unlike_url', url("blogs/down_vote/entry"))
             ->with('comment_like_url', url("blogs/up_vote/comment"))
@@ -59,7 +62,7 @@ class BlogController extends Controller
             ->with('post_unlike_url', url("blogs/down_vote/entry"))
             ->with('comment_like_url', url("blogs/up_vote/comment"))
             ->with('comment_unlike_url', url("blogs/down_vote/comment"))
-            ->with('comment_form_url', url('blogs/entry/'. $post))
+            ->with('comment_form_url', url('blogs/add/comment/'. $post))
             ->with('pageTitle', config('app.name'). ' |'.$Post[Constants::FLD_POSTS_TITLE]);
     }
 
@@ -146,10 +149,6 @@ class BlogController extends Controller
         }
     }
 
-    public function editComment(Request $request){
-        dd("edit comment", $request);
-    }
-
     /**
      * Add new comment to a post
      * @param \Illuminate\Http\Request $request
@@ -158,22 +157,44 @@ class BlogController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      */
     public function addComment(Request $request, $post){
-        $comment = new Comment($request->all());
-        $comment->owner()->associate(Auth::user());
-        if( $comment->save()){
-            // Return success message
-            Session::flash("messages", ["Comment Added Successfully"]);
-            return redirect()->action(
-                'BlogController@displayPost', ['id' => $post]
-            );
+        //Check if the parent comment has null parents "To Avoid Multiple Levels)
+        if(Comment::find($request[Constants::FLD_COMMENTS_PARENT_ID])['parent'] == null) {
+            $comment = new Comment($request->all());
+            $comment->owner()->associate(Auth::user());
+            if ($comment->save()) {
+                // Return success message
+                Session::flash("messages", ["Comment Added Successfully"]);
+                return redirect()->action(
+                    'BlogController@displayPost', ['id' => $post]
+                );
+            } else {    // return error message
+                Session::flash("messages", ["Sorry, Comment was not added. Please retry later"]);
+                return redirect()->action(
+                    'BlogController@displayPost', ['id' => $post]
+                );
+            }
         }
-        else {    // return error message
-            Session::flash("messages", ["Sorry, Comment was not added. Please retry later"]);
-            return redirect()->action(
-                'BlogController@displayPost', ['id' => $post]
-            );
+        else{
+
         }
     }
+
+    public function editComment(Request $request){
+        dd("edit comment", $request);
+    }
+
+    /*
+     * Deletes a comment via Ajax Request
+     * @param \Illuminate\Http\Request $request
+     */
+    public function deleteComment(Request $request){
+        $comment = Comment::find($request['comment_id']);
+        //Check if the current user is the owner of the comment to be deleted
+        if( Auth::user()[Constants::FLD_USERS_ID] == $comment['owner'][Constants::FLD_USERS_ID]){
+            $comment->delete();
+        }
+    }
+
 
     /**
      * Get Single post info
@@ -217,7 +238,6 @@ class BlogController extends Controller
 
     /**
      * * Get the Post Comments "till now the first two levels"
-     * (ToDo @ Samir Add More depth to the comments replies "recursive Query using Baum)
      * @param Post &$Post the current Post model
      * @return mixed
      */
@@ -260,7 +280,7 @@ class BlogController extends Controller
         //Get Comment title
         $commentInfo[Constants::FLD_COMMENTS_TITLE] = $Comment[Constants::FLD_COMMENTS_TITLE];
         //Get Comment ID
-        $commentInfo[Constants::FLD_COMMENTS_COMMENT_ID] = $Comment[Constants::FLD_COMMENTS_COMMENT_ID];
+        $commentInfo[Constants::FLD_COMMENTS_ID] = $Comment[Constants::FLD_COMMENTS_ID];
         //Get Comment Body
         $commentInfo[Constants::FLD_COMMENTS_BODY] = $Comment[Constants::FLD_COMMENTS_BODY];
         //Get Comment Timestamp
@@ -271,13 +291,28 @@ class BlogController extends Controller
         $commentInfo[Constants::FLD_COMMENTS_UP_VOTES] = $Comment['upVotes']->count();
         //Get Comment owner user name
         $commentInfo["username"] = $Comment['owner'][Constants::FLD_USERS_USERNAME];
-        //if there is a user signed in display hos votes
-        if($user = Auth::user()){
+        //If there is a user signed in display hos votes
+        //Get the Current User
+        $user = Auth::user();
+        if($user){
             //1 means he voted Up 0 means Voted Down -1 means no votes
             $commentInfo["user_vote"] = ($Comment->isUpVoted()) ? 1 : ($Comment->isDownVoted() ? 0 : -1);
         }
-
+        //Add If the current user is the Owner or not
+        $commentInfo["isOwner"] = ($Comment[Constants::FLD_COMMENTS_USER_ID] == $user[Constants::FLD_USERS_ID] );
+        //Return Comment Info
         return $commentInfo;
+    }
+
+    /*
+     * Get Top Contributors
+     * @return mixed
+     */
+    public function getTopContributors(){
+        return $users =  Post::select(DB::raw('count(*) as contributions ,'. Constants::TBL_USERS. '.'. Constants::FLD_USERS_USERNAME))
+            ->join(Constants::TBL_USERS, Constants::TBL_USERS. '.' .Constants::FLD_USERS_ID, '=', Constants::TBL_POSTS. '.'. Constants::FLD_POSTS_OWNER_ID)
+            ->groupby( Constants::FLD_POSTS_OWNER_ID )
+            ->orderby('contributions', 'desc')->pluck("contributions", Constants::FLD_USERS_USERNAME);
     }
 
 }

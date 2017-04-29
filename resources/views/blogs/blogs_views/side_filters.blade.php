@@ -6,15 +6,17 @@
     </div>
     <!-- Blog Search Well -->
     <div class="well">
+        <form action="/blogs" method="get" role="form">
         <h4>Blog Search</h4>
         <div class="input-group">
-            <input type="text" class="form-control">
+            <input name="q" type="text" class="form-control" value="{{isset($q) ? $q: ""}}">
             <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">
-                                <span class="glyphicon glyphicon-search"></span>
-                        </button>
-                        </span>
+                <button class="btn btn-default" type="submit">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </span>
         </div>
+        </form>
         <!-- /.input-group -->
     </div>
 
@@ -57,9 +59,17 @@
     <!-- Side Widget Well -->
     @if(isset($topContributors))
     <div class="well">
-        <h4>Top Contributors</h4>
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+        <h4 style="color: blue;">Top Contributors</h4>
+        <table class = 'table lead'>
+            <tbody>
+            @foreach( $topContributors as $userName => $contributions)
+                <tr>
+                    <td> {{$userName}}</td>
+                    <td style="color: blue;">{{$contributions}}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
     </div>
     @endif
-
 </div>

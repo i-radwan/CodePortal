@@ -20,7 +20,7 @@
             <div class="row">
                 <!-- Blog Add Comments Form -->
                 <div class="container col-md-8">
-                    @include("blogs.blogs_views.add_comment_form")
+                    @include("blogs.blogs_views.add_comment_form", ['expandableCommentForm' => 'false'])
                 </div>
                 <hr>
             <!-- Comments -->

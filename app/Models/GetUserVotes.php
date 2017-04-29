@@ -9,7 +9,7 @@ trait GetUserVotes
     * Get the users who voted up the object and haven't un liked it (SoftDelete)
      * */
     public function upVotes(){
-        return $this->morphToMany(User::class, Constants::TBL_UP_VOTES)->whereDeletedAt(null);
+        return $this->morphToMany(User::class, Constants::TBL_VOTES)->whereType(1)->whereDeletedAt(null);
     }
 
     /*
@@ -24,7 +24,7 @@ trait GetUserVotes
     * Get the users who voted up the object and haven't un liked it (SoftDelete)
      * */
     public function downVotes(){
-        return $this->morphToMany(User::class, Constants::TBL_DOWN_VOTES)->whereDeletedAt(null);
+        return $this->morphToMany(User::class, Constants::TBL_VOTES)->whereType(0)->whereDeletedAt(null);
     }
 
     /*

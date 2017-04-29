@@ -3,14 +3,17 @@
 Route::group(['middleware' => 'auth'], function () {
     //Blogs Routes
     Route::get('blogs/add', 'BlogController@addEditPost');
-    Route::get('blogs/edit/entry/{post}', 'BlogController@addEditPost');
-
     Route::post('blogs/add', 'BlogController@addPost');
-    Route::post('blogs/edit/entry/{post}', 'BlogController@editPost');
-    Route::delete('blogs/delete/entry/{post}', 'BlogController@deletePost');
 
-    Route::post('blogs/entry/{post}', 'BlogController@addComment');
-    Route::post('blogs/edit/entry/{post}/{comment}', 'BlogController@editComment');
+    Route::get('blogs/edit/post/{post}', 'BlogController@addEditPost');
+    Route::post('blogs/edit/post/{post}', 'BlogController@editPost');
+
+
+    Route::delete('blogs/delete/post/{post}', 'BlogController@deletePost');
+
+    Route::post('blogs/add/comment/{post}', 'BlogController@addComment');
+    Route::post('blogs/edit/comment/{post}', 'BlogController@editComment');
+    Route::delete('blogs/delete/comment/{post}', 'BlogController@deleteComment');
 
     //Likes Routes
     Route::get('blogs/up_vote/entry/{post}', 'VoteController@upVotePost');

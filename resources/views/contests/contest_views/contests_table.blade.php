@@ -50,7 +50,6 @@
         @endforeach
         </tbody>
     </table>
-
     {{--Pagination--}}
     @if(!isset($isGroup))
         {{ $contests->appends(Request::all())->fragment($fragment)->render() }}

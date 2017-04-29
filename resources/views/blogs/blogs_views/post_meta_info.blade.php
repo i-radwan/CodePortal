@@ -7,18 +7,20 @@
 <div class="row">
 
     <!-- Author -->
-    <p class=" lead col-md-4">
+    <p class=" lead col-md-10">
         by <a href="/profile/{{$post["username"]}}">{{$post["username"]}}</a>
 
     </p>
 
-    <p class="col-md-4">
+    <p class="col-md-2">
         <!-- Edit and Delete Buttons if available -->
     @if( $post['isOwner'])
+        <!-- Edit Button -->
+            <a  href="/blogs/edit/post/{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}">
+                <i class="fa fa-pencil-square-o col-md-1" aria-hidden="true" style="font-size: 4.0vmin"></i>
+            </a>
         <!-- Delete Button -->
-            <a class="new_post_link" href="/blogs/edit/entry/{{$post[\App\Utilities\Constants::FLD_POSTS_ID]}}"> <button class="btn btn-primary right">  Edit </button></a>
-        <!-- Delete Button -->
-            @include('components.action_form', ['url' => url('blogs/delete/entry/'.$post[\App\Utilities\Constants::FLD_POSTS_ID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this post? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-primary ', 'btnTxt' => 'Delete'])
+            @include('components.action_form', ['url' => url('blogs/delete/post/'.$post[\App\Utilities\Constants::FLD_POSTS_ID]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this post? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-danger col-md-1', 'btnTxt' => 'Delete'])
     @endif
     </p>
 
@@ -50,7 +52,7 @@
 
 {{--TODO: @Samir Support Image--}}
 
-@if(!isset($post[\App\Utilities\Constants::FLD_POSTS_IMAGE]))
+@if(isset($post[\App\Utilities\Constants::FLD_POSTS_IMAGE]))
     <!-- Preview Image -->
     <img class="img-responsive" src="http://placehold.it/900x300" alt="">
     <hr>

@@ -26,14 +26,18 @@ class UserController extends Controller
     public function index($user)
     {
         $userData = User::where('username', $user)->first();
-
+        // dd($userData->organizingContests()->get());
         return view('profile.index', ['userName' => $user])
             ->with('pageTitle', config('app.name') . ' | ' . $user)
             ->withDate(UserController::userDate($user))
             ->with('problems', UserController::userWrongSubmissions($user))
             ->with('counter', UserController::userNumberOfSolvedProblems($user))
             ->with('chart', UserController::statistics())
-            ->with('userData', $userData);
+            ->with('userData', $userData)
+            ->with('admin',$userData->organizingContests()->paginate(5))
+            ->with('owned',$userData->owningContests()->paginate(5))
+            ->with('participatedContests',$userData->participatingContests()->paginate(5))
+            ->with('groups',$userData->joiningGroups()->paginate(5));
     }
 
     /**
@@ -200,5 +204,9 @@ class UserController extends Controller
         return count(User::getSolvedProblems($user));
     }
 
+    public function contestTab($user)
+    {
+
+    }
 
 }
