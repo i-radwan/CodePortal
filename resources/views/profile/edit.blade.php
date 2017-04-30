@@ -4,13 +4,7 @@
 <div class="container">
 	<h1>Edit Profile</h1>
 	<hr>
-	@if(count($errors)>0)
-	<ul>
-		@foreach($errors->all() as $error)
-		<li class="alert alert-danger">{{$error}}</li>
-		@endforeach
-	</ul>
-	@endif
+	@include('components.alert')
 	<form method="post"  class="form-horizontal" role="form" action="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_UPDATE) }}" enctype="multipart/form-data">
 		<div class="row">
 			<!-- left column -->
@@ -75,9 +69,9 @@
 
 					<!-- CodeForces Handle -->
 					<div class="form-group">
-						<label class="col-lg-3 control-label">CodeForces Handle:</label>
+						<label class="col-lg-3 control-label">Codeforces Handle:</label>
 						<div class="col-lg-8">
-							<input name="codeForces" class="form-control" value="{{isset($handle['0']['original']['pivot_handle']) ? $handle['0']['original']['pivot_handle']: "" }}" type="text">
+							<input name="{{ \App\Utilities\Constants::FLD_USERS_CODEFORCES_HANDLE }}" class="form-control" value="{{isset($handle['0']['original']['pivot_handle']) ? $handle['0']['original']['pivot_handle']: "" }}" type="text">
 						</div>
 					</div>
 
@@ -85,7 +79,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 control-label">Uva Handle:</label>
 						<div class="col-lg-8">
-							<input name="uva" class="form-control" value="{{isset($handle['1']['original']['pivot_handle']) ? $handle['1']['original']['pivot_handle']: "" }}" type="text">
+							<input name="{{ \App\Utilities\Constants::FLD_USERS_UVA_HANDLE }}" class="form-control" value="{{isset($handle['1']['original']['pivot_handle']) ? $handle['1']['original']['pivot_handle']: "" }}" type="text">
 						</div>
 					</div>
 
@@ -93,7 +87,7 @@
 					<div class="form-group">
 						<label class="col-lg-3 control-label">Live Archive Handle:</label>
 						<div class="col-lg-8">
-							<input name="liveArchive" class="form-control" value="{{isset($handle['2']['original']['pivot_handle']) ? $handle['2']['original']['pivot_handle']: "" }}" type="text">
+							<input name="{{ \App\Utilities\Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE }}" class="form-control" value="{{isset($handle['2']['original']['pivot_handle']) ? $handle['2']['original']['pivot_handle']: "" }}" type="text">
 						</div>
 					</div>
 
@@ -138,6 +132,7 @@
 						<div class="col-md-8">
 							<input class="btn btn-primary" value="Save Changes" type="submit">
 							<span></span>
+							{{--TODO: use route name--}}
 							<a href="/profile/{{ $user->username }}">
 							<input class="btn btn-default" value="Cancel" type="button">
 							</a>

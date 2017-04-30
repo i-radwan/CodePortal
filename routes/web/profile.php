@@ -3,13 +3,13 @@
 use App\Utilities\Constants;
 
 // Profile routes...
-// ToDo: @Abzo auth middleware required, choose better route
-Route::get('profile/edit', 'UserController@edit')
-    ->name(Constants::ROUTES_PROFILE_EDIT);
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('profile/edit', 'UserController@edit')
+        ->name(Constants::ROUTES_PROFILE_EDIT);
 
-// ToDo: @Abzo auth middleware required, choose better route
-Route::post('profile/edit', 'UserController@editProfile')
-    ->name(Constants::ROUTES_PROFILE_UPDATE);
+    Route::post('profile/edit', 'UserController@update')
+        ->name(Constants::ROUTES_PROFILE_UPDATE);
+});
 
 Route::get('profile/{user}', 'UserController@index')
     ->name(Constants::ROUTES_PROFILE);

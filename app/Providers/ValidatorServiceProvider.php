@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Auth;
 use App\Models\Contest;
 use App\Models\Group;
 use App\Utilities\Constants;
@@ -17,6 +18,11 @@ class ValidatorServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Validator::extend('old', function($attribute, $value, $parameters, $validator) {
+            //dd(\Auth::user()->password);
+            return (bcrypt($value) == Auth::user()->password);
+        });
+
         // Exists in the given table (which is another input e.g. notification type) validation rule
         // 'exists_in' rule
         Validator::extend('resource_exists_in_table', function ($attribute, $value, $parameters, $validator) {

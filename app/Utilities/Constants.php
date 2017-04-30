@@ -571,6 +571,10 @@ class Constants
     // Fields
     //
 
+    // General fields
+    const FLD_CREATED_AT = "created_at";
+    const FLD_UPDATED_AT = "updated_at";
+
     // Users
     const FLD_USERS_ID = "id";
     const FLD_USERS_USERNAME = "username";

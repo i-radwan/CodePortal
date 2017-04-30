@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use DB;
 use Validator;
 use App\Utilities\Constants;
 use Illuminate\Notifications\Notifiable;
@@ -34,6 +35,8 @@ class User extends Authenticatable
         Constants::FLD_USERS_EMAIL,
         Constants::FLD_USERS_PASSWORD,
         Constants::FLD_USERS_USERNAME,
+        Constants::FLD_USERS_FIRST_NAME,
+        Constants::FLD_USERS_LAST_NAME,
         Constants::FLD_USERS_GENDER,
         Constants::FLD_USERS_BIRTHDATE,
         Constants::FLD_USERS_PROFILE_PICTURE,
@@ -63,9 +66,8 @@ class User extends Authenticatable
         Constants::FLD_USERS_FIRST_NAME => 'nullable|max:20',
         Constants::FLD_USERS_LAST_NAME => 'nullable|max:20',
         Constants::FLD_USERS_GENDER => 'nullable|Regex:/([01])/',
-//        Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:2005-1-1',       //TODO: add more validation on birthdate and why organizers save check it ???!!!
-        Constants::FLD_USERS_ROLE => 'Regex:/([012])/',
-        //Constants::FLD_USERS_PROFILE_PICTURE=> 'nullable|mimes:jpg,jpeg,png', //its unseen
+        //Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:2005-1-1',       //TODO: add more validation on birthdate and why organizers save check it ???!!!
+        Constants::FLD_USERS_ROLE => 'Regex:/([012])/'
     ];
 
     /**
@@ -146,28 +148,6 @@ class User extends Authenticatable
         $this->handles()->attach($judgeId, [Constants::FLD_USER_HANDLES_HANDLE => $handle]);
     }
 
-    // /**
-    //  * Attach the given online judge handle to the current user
-    //  *
-    //  * @param int $judgeId
-    //  * @param string $handle
-    //  */
-    // public function updateHandle($userId,$judgeId, $handle)
-
-    // {
-    //     // dd($userId,$judgeId,$handle,$this->handles()->where(Constants::FLD_USER_HANDLES_USER_ID,$userId)->first());
-    //     $check=$this->handles()->where(Constants::FLD_USER_HANDLES_USER_ID,$userId)->find(1);
-    //     if($check)
-    //     {
-    //          $check->update([Constants::FLD_USER_HANDLES_HANDLE => $handle],[Constants::FLD_USER_HANDLES_JUDGE_ID => $judgeId]);
-    //     }
-    //     else 
-    //      {$this->handles()->attach($judgeId, [Constants::FLD_USER_HANDLES_HANDLE => $handle]);
-
-    //      }
-
-    // }
-
     /**
      * Return all the submission of the current user
      *
@@ -178,23 +158,41 @@ class User extends Authenticatable
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_USER_ID);
     }
 
-    // TODO: to be enhnaced
     /**
-     * Return all the wrong submission of the current user
+     * Return all problems correctly or wrongly solved
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @param bool $accepted Whether to return correctly or wrongly solved problems
+     * @return \Illuminate\Database\Query\Builder
      */
-    public static function getWrongAnswerProblems($user)
+    public function problems($accepted = true)
     {
-        $userData = User::where('username', $user)->first();
-        return $userData->submissions->where('verdict', '0')->pluck('problem_id');
-    }
+        $query = Problem::select(Problem::$basicProblemsQueryCols)
+            ->join(
+                Constants::TBL_SUBMISSIONS,
+                Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
+                '=',
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID
+            )
+            ->join(
+                Constants::TBL_USERS,
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_USER_ID,
+                '=',
+                Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID
+            )
+            ->where(
+                Constants::TBL_USERS . '.' . Constants::FLD_USERS_ID,
+                '=',
+                $this[Constants::FLD_USERS_ID]
+            )
+            ->distinct();
 
-    public static function getSolvedProblems($user)
-    {
-        //ToDo: for the statistics
-        $userData = User::where('username', $user)->first();
-        return $userData->submissions->where('verdict', '1')->pluck('problem_id');
+        $query->where(
+            Constants::FLD_SUBMISSIONS_VERDICT,
+            ($accepted ? '=' : '!='),
+            Constants::VERDICT_ACCEPTED
+        );
+
+        return $query;
     }
 
     /**

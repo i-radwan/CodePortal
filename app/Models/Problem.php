@@ -57,7 +57,7 @@ class Problem extends Model
      *
      * @var array
      */
-    private static $basicProblemsQueryCols = [
+    public static $basicProblemsQueryCols = [
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_ID,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_ID,
         Constants::TBL_PROBLEMS . '.' . Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY,

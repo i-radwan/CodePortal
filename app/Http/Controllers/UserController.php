@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Http\Request;
-
-use App\Utilities\Constants;
-
-use App\Models\Problem;
-use App\Models\User;
-use Carbon\Carbon;
 use Charts;
 use Image;
+use App\Models\User;
+use App\Models\Problem;
+use App\Utilities\Constants;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\Intl\Intl;
 
 
@@ -25,22 +23,17 @@ class UserController extends Controller
      */
     public function index(User $user)
     {
-        // dd($userData->handles()->get()['2']['original']['name'],$userData->handles()->get()['0']['original']['pivot_handle'],$userData->handles()->
-        //   get()['0']['original']['link']
-        
         return view('profile.index')
             ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
-            ->with('userName', $user[Constants::FLD_USERS_USERNAME])
-            ->withDate(UserController::userDate($user))
-            ->with('problems', UserController::userWrongSubmissions($user[Constants::FLD_USERS_USERNAME]))
-            ->with('counter', UserController::userNumberOfSolvedProblems($user[Constants::FLD_USERS_USERNAME]))
-            ->with('chart', UserController::statistics())
-            ->with('userData', $user)
-            ->with('admin',$user->organizingContests()->paginate(5))
-            ->with('owned',$user->owningContests()->paginate(5))
-            ->with('participatedContests',$user->participatingContests()->paginate(5))
-            ->with('groups',$user->joiningGroups()->paginate(5))
-            ->with('handle',$user->handles()->get());
+            ->with('user', $user)
+            ->with('chart', UserController::statistics());
+//            ->withDate(UserController::userDate($user))
+//            ->with('problems', UserController::userWrongSubmissions($user[Constants::FLD_USERS_USERNAME]))
+//            ->with('counter', UserController::userNumberOfSolvedProblems($user[Constants::FLD_USERS_USERNAME]))
+//            ->with('admin', $user->organizingContests()->paginate(5))
+//            ->with('owned', $user->owningContests()->paginate(5))
+//            ->with('participatedContests', $user->participatingContests()->paginate(5))
+//            ->with('groups', $user->joiningGroups()->paginate(5))
     }
 
     /**
@@ -51,15 +44,15 @@ class UserController extends Controller
      */
     public function statistics()
     {
-
         $weekDays = array(
-            Carbon::now()->format('l')
-        , Carbon::now()->subDays(1)->format('l')
-        , Carbon::now()->subDays(2)->format('l')
-        , Carbon::now()->subDays(3)->format('l')
-        , Carbon::now()->subDays(4)->format('l')
-        , Carbon::now()->subDays(5)->format('l')
-        , Carbon::now()->subDays(6)->format('l'));
+            Carbon::now()->format('l'),
+            Carbon::now()->subDays(1)->format('l'),
+            Carbon::now()->subDays(2)->format('l'),
+            Carbon::now()->subDays(3)->format('l'),
+            Carbon::now()->subDays(4)->format('l'),
+            Carbon::now()->subDays(5)->format('l'),
+            Carbon::now()->subDays(6)->format('l')
+        );
 
         $chart = Charts::multi('areaspline', 'highcharts')
             ->title('User Activity')
@@ -86,8 +79,7 @@ class UserController extends Controller
             ->with('pageTitle', config('app.name') . '|' . $user->username)
             ->with('user', $user)
             ->with('country', $countries)
-            ->with('handle',$user->handles()->get());
-
+            ->with('handle', $user->handles()->get());
     }
 
     /**
@@ -96,7 +88,7 @@ class UserController extends Controller
      * @param $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function editProfile(Request $request)
+    public function update(Request $request)
     {
         //TODO @Abzo image cropping
         //TODO delete old images of the same user
@@ -109,7 +101,8 @@ class UserController extends Controller
         $this->validate($request, array(
             'profile_picture' => 'nullable|mimes:jpg,jpeg,png|max:2500',
             'password' => 'nullable|min:6',
-            'oldPassword' => 'min:6|old',));
+            'oldPassword' => 'min:6|old'
+        ));
 
         //saving picture in database
         if ($request->hasFile('profile_picture')) {
@@ -128,28 +121,35 @@ class UserController extends Controller
                 $user->birthdate = $request->input('birthdate');
 
             } else {
-
+                // TODO: Use the same method of date parsing
                 $dateOfBirth = explode('/', $request->input('birthdate'));
 
                 if ((array_key_exists("2", $dateOfBirth)) && (array_key_exists("1", $dateOfBirth)) && (array_key_exists("0", $dateOfBirth))) {
 
                     $formattedBirth = $dateOfBirth['2'] . '-' . $dateOfBirth['1'] . '-' . $dateOfBirth['0'];
                     $user->birthdate = $formattedBirth;
-
                 }
             }
         }
-        // null!==($request->input('codeForces')) ? $user->updateHandle($user->id,0, $request->input('codeForces')): "" ;
-        // null!==($request->input('uva')) ? $user->updateHandle($user->id,1, $request->input('uva')): "" ;
-        // null!==($request->input('liveArchive')) ? $user->updateHandle($user->id,2, $request->input('liveArchive')): "" ;
 
-        
+        if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
+            $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $request[Constants::FLD_USERS_CODEFORCES_HANDLE]);
+        }
+
+        if ($request[Constants::FLD_USERS_UVA_HANDLE]) {
+            $user->addHandle(Constants::JUDGE_UVA_ID, $request[Constants::FLD_USERS_UVA_HANDLE]);
+        }
+
+        if ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]) {
+            $user->addHandle(Constants::JUDGE_LIVE_ARCHIVE_ID, $request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]);
+        }
+
         //saving pass,email,username,first,last names and gender in database
         //dd($request->input('password'));
-        if(strlen($request->input('password'))>= 6)
-        { 
-          $user->password = Hash::make($request->input('password'));
+        if (strlen($request->input('password')) >= 6) {
+            $user->password = bcrypt($request->input('password'));
         }
+        // TODO: $user->save($request);
         $user->email = $request->input('email');
         $user->first_name = $request->input('FirstName');
         $user->last_name = $request->input('LastName');
@@ -164,55 +164,7 @@ class UserController extends Controller
         //saving in the database
         $user->save();
 
-
         //redirecting with the id of the current/modified username
-        return redirect(route(Constants::ROUTES_PROFILE, $user->username));
+        return redirect(route(Constants::ROUTES_PROFILE, $user[Constants::FLD_USERS_USERNAME]));
     }
-
-    /**
-     * makes formatted joined date of the user
-     * @param $username
-     * @return $date
-     */
-    public function userDate(User $user)
-    {
-        $dateCreated = $user['created_at'];
-        if ($dateCreated != Null) {
-            $dateCreatedArr = preg_split("/[\s-]+/", $dateCreated);
-            $dt = Carbon::create($dateCreatedArr['0'], $dateCreatedArr['1'], $dateCreatedArr['2']);
-            $date = $dt->toFormattedDateString();
-        } else {
-            $date = NULL;
-        }
-        return $date;
-    }
-
-    /**
-     * gets user wrong submissions
-     *
-     * @param $username
-     * @return array of problems paginated
-     */
-    public function userWrongSubmissions($user)
-    {
-        $problemsArr = User::getWrongAnswerProblems($user);
-        return Problem::whereIn('id', $problemsArr)->paginate(5);
-    }
-
-    /**
-     * gets count of solved problems
-     *
-     * @param $username
-     * @return $int
-     */
-    public function userNumberOfSolvedProblems($user)
-    {
-        return count(User::getSolvedProblems($user));
-    }
-
-    public function contestTab($user)
-    {
-
-    }
-
 }
