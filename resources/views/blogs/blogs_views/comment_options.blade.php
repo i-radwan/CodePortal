@@ -3,7 +3,7 @@
 {{--Vote--}}
 <span>
         {{--Up Vote--}}
-    <a href="{{ $comment_unlike_url }}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_ID]}}"
+    <a href="{{ $commentDownVoteURL }}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_ID]}}"
        id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_ID] }}-down-vote-icon">
             @if(!isset($comment["user_vote"]) or $comment["user_vote"] != 0)
             <i class="fa fa-thumbs-o-down" aria-hidden="true"> </i>
@@ -16,7 +16,7 @@
         </span>
         &nbsp;
     {{--Down Vote--}}
-    <a href="{{$comment_like_url}}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_ID]}}"
+    <a href="{{$commentUpVoteURL}}/{{$comment[\App\Utilities\Constants::FLD_COMMENTS_ID]}}"
        id="comment-{{ $comment[\App\Utilities\Constants::FLD_COMMENTS_ID] }}-up-vote-icon">
         @if(!isset($comment["user_vote"]) or $comment["user_vote"] != 1)
             <i class="fa fa-thumbs-o-up" aria-hidden="true"> </i>

@@ -118,6 +118,7 @@ class Constants
     //region Limits
 
     const TEAM_MEMBERS_MAX_COUNT = 3;
+    const POSTS_COUNT_PER_PAGE = 7;
 
     //=============================================================
     //endregion

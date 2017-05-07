@@ -6,7 +6,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('blogs/add', 'BlogController@addEditPost');
     Route::post('blogs/add', 'BlogController@addPost');
 
-    Route::get('blogs/edit/post/{post}', 'BlogController@addEditPost');
+    Route::get('blogs/edit/post/{post}', 'BlogController@addEditPost')
+        ->middleware(['can:owner-post,post']);
     Route::post('blogs/edit/post/{post}', 'BlogController@editPost')
         ->name(Constants::ROUTES_BLOGS_POST_EDIT)
         ->middleware(['can:owner-post,post']);
