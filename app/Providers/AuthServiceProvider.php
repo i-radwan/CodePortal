@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Post;
 use App\Models\User;
 use App\Models\Contest;
 use App\Models\Group;
@@ -146,5 +147,18 @@ class AuthServiceProvider extends ServiceProvider
             // Check if user is invited to join the team
             return ($team->invitedUsers()->find($user[Constants::FLD_USERS_ID]));
         });
+
+        // Post owner
+        Gate::define("owner-post", function (User $user, Post $post) {
+            // Check if user is owner of the post
+            return $post->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID];
+        });
+
+        // Comment owner
+        Gate::define("owner-comment", function (User $user, Comment $comment) {
+            // Check if user is owner of the post
+            return $comment->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID];
+        });
+
     }
 }

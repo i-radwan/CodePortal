@@ -1,5 +1,5 @@
 <!-- Comments Form -->
-<div class="well" {{ ($expandableCommentForm == 'true') ? ("hidden"):("") }}>
+<div class="well non-displayed-elements">
     <h4>Leave a Comment:</h4>
     <form role="form" action="{{$comment_form_url}}" method="POST" >
         {{csrf_field()}}

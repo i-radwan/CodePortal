@@ -77,6 +77,11 @@ class Constants
     const ROUTES_TEAMS_INVITATIONS_REJECT = 'teams.invitations.reject';
 
     // Blogs routes
+    const ROUTES_BLOGS_POST_EDIT = 'blogs.post.edit';
+    const ROUTES_BLOGS_POST_DELETE = 'blogs.post.delete';
+    const ROUTES_BLOGS_COMMENT_EDIT = 'blogs.comment.edit';
+    const ROUTES_BLOGS_COMMENT_DELETE = 'blogs.comment.delete';
+
 
     // Profile routes
     const ROUTES_PROFILE = 'profile';

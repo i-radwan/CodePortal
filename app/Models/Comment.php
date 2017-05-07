@@ -37,10 +37,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        Constants::FLD_COMMENTS_POST_ID,
-        Constants::FLD_COMMENTS_USER_ID,
         Constants::FLD_COMMENTS_BODY,
-        Constants::FLD_COMMENTS_PARENT_ID
     ];
 
     /**
@@ -72,11 +69,18 @@ class Comment extends Model
     }
 
     /**
-     * @param array $options
+     * Get Comment Post
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function post(){
+        return $this->belongsTo( Post::class, Constants::FLD_COMMENTS_POST_ID);
+    }
+
+    /**
      * Get Comment Parent (null if not applicable)
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function parent(array $options = [])
+    public function parent()
     {
         return $this->belongsTo(Comment::class, Constants::FLD_COMMENTS_PARENT_ID);
     }

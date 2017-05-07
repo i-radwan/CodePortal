@@ -282,7 +282,7 @@ var app = {
             }
             //Render the comments in markdown
             //Get all comments in the post page
-            var comments = document.getElementsByClassName("comment_body");
+            var comments = document.getElementsByClassName("comment-body");
             //Loop over them and render each one in markdown
             for (var i = 0; i < comments.length; i++) {
                 comments[i].innerHTML = marked(comments[i].innerHTML);
@@ -1128,11 +1128,12 @@ var app = {
 
     /**
      * Sends Ajax Request to delete a comment
+     * @param element the delete icon element
      * @param commentID the Comment ID
      * @param url the Delete  URL
      * @param token the CSRF Token
      */
-    deleteSinglePostComment: function (commentID, url, token) {
+    deleteSinglePostComment: function (element, commentID, url, token) {
         $.ajax({
             url: url,
             type: 'DELETE',
@@ -1141,6 +1142,38 @@ var app = {
                 comment_id: commentID,
             },
             success: function (result) {
+                // Hide comment
+                $(element).parent().parent().parent().remove();
+            },
+            error: function (result) {
+            }
+        });
+    },
+
+    updateComment: function (element, commentID, url, token) {
+        var commentRootNode = $(element).parent().parent();
+        var commentBody = commentRootNode.find('.comment-body p');
+
+        // Get comment new body text
+        var commentNewValue = $(commentRootNode.find('.comment-edit-textarea')[0]).val();
+
+        // Send Ajax Request
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: {
+                _token: token,
+                comment_id: commentID,
+                body: commentNewValue,
+            },
+            success: function () {
+                commentBody.html(commentNewValue);
+
+                // Hide comment editor and show comment div
+                commentBody.show();
+
+                // Call cancel function to hide the editor div
+                app.cancelEditComment(commentRootNode.find('.edit-comment-icon')[0]);
 
             },
             error: function (result) {
@@ -1148,6 +1181,72 @@ var app = {
         });
     },
 
+    /**
+     * Show edit comment view
+     * @param element
+     */
+    editCommentClick: function (element) {
+
+        // Get comment value
+        var commentRootNode = $(element).parent().parent();
+        var commentBody = commentRootNode.find('.comment-body p');
+        var commentValue = $(commentBody).html();
+
+        // Hide comment paragraph
+        $(commentBody).hide();
+
+        // Add/Show textarea
+        if ($(commentRootNode.find('.comment-edit-textarea')).length == 0) { // no textarea for editing the comment
+
+            var newEditCommentEditor = $('<div class="comment-editor"></div>');
+            var newEditCommentTextarea = $('<textarea class="comment-edit-textarea">' + commentValue + '</textarea>');
+
+            newEditCommentEditor.append(newEditCommentTextarea);
+            $(commentBody).parent().append(newEditCommentEditor);
+
+            // SimpleMDE
+            var textarea = $(commentRootNode.find('.comment-edit-textarea'))[0];
+
+            var simplemde = new SimpleMDE({
+                element: textarea,
+                spellChecker: false, //Disable Spell Checker
+            });
+
+            // Set on change to update textarea whenever the smde changes
+            simplemde.codemirror.on("change", function () {
+                console.log(simplemde.value());
+                newEditCommentTextarea.html(simplemde.value());
+            });
+
+        } else { // Textarea exists
+            $($(commentRootNode.find('.comment-editor'))[0]).show();
+        }
+
+        // Show cancel icon and hide edit icon
+        $(commentRootNode.find('.cancel-edit-comment-icon')).show();
+        $(commentRootNode.find('.save-comment-icon')).show();
+        $(commentRootNode.find('.edit-comment-icon')).hide();
+    },
+    /**
+     * Hide edit comment view
+     *
+     * @param element
+     */
+    cancelEditComment: function (element) {
+        // Get comment value
+        var commentRootNode = $(element).parent().parent();
+        var commentBody = commentRootNode.find('.comment-body p');
+        var commentEditor = $(commentRootNode.find('.comment-editor'))[0];
+
+        // Hide comment paragraph
+        $(commentEditor).hide();
+        $(commentBody).show();
+
+        // Show edit icon and hide save/cancel icons
+        $(commentRootNode.find('.cancel-edit-comment-icon')).hide();
+        $(commentRootNode.find('.save-comment-icon')).hide();
+        $(commentRootNode.find('.edit-comment-icon')).show();
+    },
     // ==================================================
     //              UTILITIES FUNCTIONS
     // ==================================================
