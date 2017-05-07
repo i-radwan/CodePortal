@@ -37,7 +37,7 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        Constants::FLD_COMMENTS_BODY,
+        Constants::FLD_COMMENTS_BODY
     ];
 
     /**
@@ -46,38 +46,35 @@ class Comment extends Model
      * @var array
      */
     protected $rules = [
-
         Constants::FLD_COMMENTS_BODY => 'required|min:3',
-        Constants::FLD_COMMENTS_USER_ID => 'required|exists:'. Constants::TBL_USERS. ','. Constants::FLD_USERS_ID,
-        Constants::FLD_COMMENTS_POST_ID => 'required|exists:'. Constants::TBL_POSTS . ','. Constants::FLD_POSTS_ID,
-        Constants::FLD_COMMENTS_PARENT_ID => 'nullable|exists:' . Constants::TBL_COMMENTS . ','. Constants::FLD_COMMENTS_ID,
+        Constants::FLD_COMMENTS_USER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
+        Constants::FLD_COMMENTS_POST_ID => 'required|exists:' . Constants::TBL_POSTS . ',' . Constants::FLD_POSTS_ID,
+        Constants::FLD_COMMENTS_PARENT_ID => 'nullable|exists:' . Constants::TBL_COMMENTS . ',' . Constants::FLD_COMMENTS_ID,
     ];
 
-    /*
-     * Get all replies to that Comment
-     * @return Comments Collection
-     */
-    public function replies(){
-        return $this->hasMany(Comment::class, Constants::FLD_COMMENTS_PARENT_ID);
-    }
 
     /**
      * Get Comment Owner User Name
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function owner(){
-        return $this->belongsTo(User::class,Constants::FLD_COMMENTS_USER_ID);
+    public function owner()
+    {
+        return $this->belongsTo(User::class, Constants::FLD_COMMENTS_USER_ID);
     }
 
     /**
      * Get Comment Post
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function post(){
-        return $this->belongsTo( Post::class, Constants::FLD_COMMENTS_POST_ID);
+    public function post()
+    {
+        return $this->belongsTo(Post::class, Constants::FLD_COMMENTS_POST_ID);
     }
 
     /**
-     * Get Comment Parent (null if not applicable)
+     * Get comment parent (null if not applicable)
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function parent()
@@ -85,4 +82,13 @@ class Comment extends Model
         return $this->belongsTo(Comment::class, Constants::FLD_COMMENTS_PARENT_ID);
     }
 
+    /**
+     * Get all replies to that Comment
+     *
+     * @return Comments Collection
+     */
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, Constants::FLD_COMMENTS_PARENT_ID);
+    }
 }

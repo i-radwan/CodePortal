@@ -533,6 +533,13 @@ class Constants
         self::NOTIFICATION_TYPE_TEAM => "You're invited to join the private team: ",
     ];
 
+    const RESOURCE_VOTE_TYPE_DOWN = '0';
+    const RESOURCE_VOTE_TYPE_UP = '1';
+    const RESOURCE_VOTE_TYPES = [
+        self::RESOURCE_VOTE_TYPE_DOWN,
+        self::RESOURCE_VOTE_TYPE_UP
+    ];
+
     //
     // Tables
     //
@@ -729,11 +736,11 @@ class Constants
     const FLD_TEAM_MEMBERS_TEAM_ID = "team_id";
     const FLD_TEAM_MEMBERS_USER_ID = "user_id";
 
-    //Blogs
+    // Blogs
     const FLD_BLOGS_BLOG_ID = "id";
     const FLD_BLOGS_OWNER_ID = "owner_id";
 
-    //POSTS
+    // POSTS
     const FLD_POSTS_ID = "id";
     const FLD_POSTS_OWNER_ID = "owner_id";
     const FLD_POSTS_TITLE = "title";
@@ -741,9 +748,8 @@ class Constants
     const FLD_POSTS_UP_VOTES = "up_vote";
     const FLD_POSTS_DOWN_VOTES = "down_vote";
     const FLD_POSTS_CREATED_AT = "created_at";
-    const FLD_POSTS_IMAGE = "image"; //TODO @ Samir
 
-    //Comments
+    // Comments
     const FLD_COMMENTS_ID = "id";
     const FLD_COMMENTS_USER_ID = "user_id";
     const FLD_COMMENTS_POST_ID = "post_id";
@@ -754,22 +760,14 @@ class Constants
     const FLD_COMMENTS_DOWN_VOTES = "down_vote";
     const FLD_COMMENTS_CREATED_AT = "created_at";
 
-    //Comments Replies
+    // Comments Replies
     const COMMENTS_REPLIES = "replies";
 
-    // Likeables
-    const FLD_LIKEABLES_ID = "id";
-    const FLD_LIKEABLES_USER_ID = "user_id";
-    const FLD_LIKEABLES_LIKEABLE_ID = "likeable_id";
-    const FLD_LIKEABLES_LIKEABLE_TYPE = "likeable_type";
-    const FLD_LIKEABLES_DELETED_AT = "deleted_at";
-    const FLD_LIKEABLES_CREATED_AT = "created_at";
-
-    //Up Vote
+    // Up/Down Vote
     const FLD_VOTES_ID = "id";
     const FLD_VOTES_USER_ID = "user_id";
-    const FLD_VOTES_VOTED_ID = "votes_id";
-    const FLD_VOTES_VOTED_TYPE = "votes_type";
+    const FLD_VOTES_RESOURCE_ID = "resource_id";
+    const FLD_VOTES_RESOURCE_TYPE = "resource_type";
     const FLD_VOTES_TYPE = "type";
     const FLD_VOTES_DELETED_AT = "deleted_at";
     const FLD_VOTES_CREATED_AT = "created_at";

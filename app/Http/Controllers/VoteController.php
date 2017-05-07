@@ -69,8 +69,8 @@ class VoteController extends Controller
             //Add New Up Vote
             $upVote = new Vote([
                 Constants::FLD_VOTES_USER_ID=> Auth::id(),
-                Constants::FLD_VOTES_VOTED_ID   => $id,
-                Constants::FLD_VOTES_VOTED_TYPE => $type,
+                Constants::FLD_VOTES_RESOURCE_ID   => $id,
+                Constants::FLD_VOTES_RESOURCE_TYPE => $type,
                 Constants::FLD_VOTES_TYPE => $voteType,
             ]);
             //Check if Saved Successfully
