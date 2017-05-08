@@ -18,22 +18,11 @@
 
                         {{--Define variables--}}
                         @php
-                            $postID = $post[\App\Utilities\Constants::FLD_POSTS_ID];
-                            $postTitle = $post[\App\Utilities\Constants::FLD_POSTS_TITLE];
                             $postBody = $post[\App\Utilities\Constants::FLD_POSTS_BODY];
-                            $postCreatedAt = $post[\App\Utilities\Constants::FLD_POSTS_CREATED_AT];
-                            $postOwnerUsername = $post->owner[\App\Utilities\Constants::FLD_USERS_USERNAME];
-                            $isOwner = ((Auth::check()) ? (Auth::user()->posts()->find($postID) != null) : false);
-
-                            $didUserVote = ($post->upVotes()->ofUser(Auth::user()[\App\Utilities\Constants::FLD_USERS_ID])->count()) ? 1 :
-                            ($post->downVotes()->ofUser(Auth::user()[\App\Utilities\Constants::FLD_USERS_ID])->count() ? 0 : -1);
-
-                            $downVotesCount = $post->downVotes()->count();
-                            $upVotesCount = $post->upVotes()->count();
                         @endphp
 
                         {{--Post view--}}
-                        @include("blogs.blogs_views.post_meta_info")
+                        @include("blogs.blogs_views.post_meta_info", ['post' => $post])
                         <p class="post_small_paragraph">{{ $postBody }}</p>
                         <hr>
 

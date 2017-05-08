@@ -276,7 +276,7 @@ var app = {
             if (!sessionStorage.getItem('disableMDE')) {
                 var simplemde = new SimpleMDE({
                     //Get the text area element
-                    element: document.getElementById("add-comment-text"),
+                    element: document.getElementsByClassName("add-comment-text")[0],
                     spellChecker: false, //Disable Spell Checker
                 });
             }
@@ -1185,6 +1185,24 @@ var app = {
      * Show edit comment view
      * @param element
      */
+    showAddCommentSection: function (element) {
+
+        var commentRootNode = $(element).parent().parent();
+
+        var addCommentSection = commentRootNode.find('.add-comment-section')[0];
+
+        // Show add comment section
+        $(addCommentSection).show();
+
+        // Associate textarea with its SimpleMDE
+        app.associateTextAreaWithSimpleMDE($(addCommentSection.find('.comment-edit-textarea'))[0]);
+
+    },
+
+    /**
+     * Show edit comment view
+     * @param element
+     */
     editCommentClick: function (element) {
 
         // Get comment value
@@ -1205,18 +1223,7 @@ var app = {
             $(commentBody).parent().append(newEditCommentEditor);
 
             // SimpleMDE
-            var textarea = $(commentRootNode.find('.comment-edit-textarea'))[0];
-
-            var simplemde = new SimpleMDE({
-                element: textarea,
-                spellChecker: false, //Disable Spell Checker
-            });
-
-            // Set on change to update textarea whenever the smde changes
-            simplemde.codemirror.on("change", function () {
-                console.log(simplemde.value());
-                newEditCommentTextarea.html(simplemde.value());
-            });
+            app.associateTextAreaWithSimpleMDE($(commentRootNode.find('.comment-edit-textarea'))[0]);
 
         } else { // Textarea exists
             $($(commentRootNode.find('.comment-editor'))[0]).show();
@@ -1227,6 +1234,7 @@ var app = {
         $(commentRootNode.find('.save-comment-icon')).show();
         $(commentRootNode.find('.edit-comment-icon')).hide();
     },
+
     /**
      * Hide edit comment view
      *
@@ -1251,6 +1259,25 @@ var app = {
     //              UTILITIES FUNCTIONS
     // ==================================================
 
+    /**
+     * Associate the give textarea with simple mde
+     * such that any changes in the simple mde, reflect to the textarea
+     *
+     * @param textarea
+     */
+    associateTextAreaWithSimpleMDE: function (textarea) {
+
+        // SimpleMDE
+        var simplemde = new SimpleMDE({
+            element: textarea,
+            spellChecker: false, //Disable Spell Checker
+        });
+
+        // Set on change to update textarea whenever the smde changes
+        simplemde.codemirror.on("change", function () {
+            textarea.html(simplemde.value());
+        });
+    },
     /**
      * Move data from session to hidden field
      * @param fldID

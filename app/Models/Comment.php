@@ -102,6 +102,6 @@ class Comment extends Model
     {
         return $this
             ->hasMany(Vote::class, Constants::FLD_VOTES_RESOURCE_ID)
-            ->ofType(Constants::RESOURCE_VOTE_COMMENT);
+            ->ofResourceType(Constants::RESOURCE_VOTE_COMMENT);
     }
 }

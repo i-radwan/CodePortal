@@ -88,20 +88,17 @@ class VoteController extends Controller
             $vote = new Vote([
                 Constants::FLD_VOTES_TYPE => (string)$voteType
             ]);
-
             // Associate user
             $vote->user()->associate(Auth::user());
-
 
             // Associate resource
             $vote[Constants::FLD_VOTES_RESOURCE_TYPE] = $type;
 
             if ($type == Constants::RESOURCE_VOTE_POST) {
-                $vote->resource()->associate(Post::find($id)->first());
+                $vote->resource()->associate(Post::find($id));
             } else if ($type == Constants::RESOURCE_VOTE_COMMENT) {
-                $vote->resource()->associate(Comment::find($id)->first());
+                $vote->resource()->associate(Comment::find($id));
             }
-
 
             // Check if Saved Successfully
             if ($vote->save()) {

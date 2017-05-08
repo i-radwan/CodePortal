@@ -53,7 +53,7 @@ class BlogsFlowTest extends DuskTestCase
             // • User can comment
             //============================================================
 
-            $browser->type('#add-comment-text', $comment = $faker->sentence((30)))
+            $browser->type('.add-comment-text', $comment = $faker->sentence((30)))
                 ->press('Submit')
                 ->assertSee('Comment Added Successfully')
                 ->assertSee($comment);

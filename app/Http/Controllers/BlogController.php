@@ -49,7 +49,7 @@ class BlogController extends Controller
             ->with('postDownVoteURL', url("blogs/down_vote/entry"))
             ->with('commentUpVoteURL', url("blogs/up_vote/comment"))
             ->with('commentDownVoteURL', url("blogs/down_vote/comment"))
-            ->with('commentFormURL', url('blogs/add/comment/' . $post))
+            ->with('commentFormURL', url('blogs/add/comment/' . $post[Constants::FLD_POSTS_ID]))
             ->with('pageTitle', config('app.name') . ' | ' . $post[Constants::FLD_POSTS_TITLE]);
     }
 
@@ -150,24 +150,17 @@ class BlogController extends Controller
      * Add new comment to a post
      *
      * @param \Illuminate\Http\Request $request
-     * @param  $post
+     * @param  Post $post
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function addComment(Request $request, $post)
+    public function addComment(Request $request, Post $post)
     {
-        // Check if the parent comment has null parents "To Avoid Multiple Levels)
-        if ($request->has('parent_id')
-            && Comment::find($request->get('parent_id')->first()->parent())
-        ) {
-            return back()->withErrors('Cannot replay to a replay!');
-        }
-
         // Create the new comment
         $comment = new Comment($request->all());
 
         $comment->owner()->associate(Auth::user());
-        $comment->post()->associate($request->get(Constants::FLD_COMMENTS_POST_ID));
+        $comment->post()->associate($post);
 
         if ($request->has('parent_id'))
             $comment->parent()->associate($request->get(Constants::FLD_COMMENTS_PARENT_ID));
@@ -176,12 +169,10 @@ class BlogController extends Controller
 
             // Return success message
             Session::flash("messages", ["Comment Added Successfully"]);
-            return redirect()->action(
-                'BlogController@displayPost', ['id' => $post]);
+            return redirect(url('blogs/entry/' . $post[Constants::FLD_POSTS_ID]));
         } else {    // return error message
             Session::flash("messages", ["Sorry, Comment was not added. Please retry later"]);
-            return redirect()->action(
-                'BlogController@displayPost', ['id' => $post]);
+            return redirect(url('blogs/entry/' . $post[Constants::FLD_POSTS_ID]));
         }
         return back()->withErrors('Sorry, something went wrong!');
     }
