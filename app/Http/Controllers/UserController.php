@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Symfony\Component\Intl\Intl;
 
 
+
 class UserController extends Controller
 {
     /**
@@ -27,13 +28,6 @@ class UserController extends Controller
             ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
             ->with('user', $user)
             ->with('chart', UserController::statistics());
-//            ->withDate(UserController::userDate($user))
-//            ->with('problems', UserController::userWrongSubmissions($user[Constants::FLD_USERS_USERNAME]))
-//            ->with('counter', UserController::userNumberOfSolvedProblems($user[Constants::FLD_USERS_USERNAME]))
-//            ->with('admin', $user->organizingContests()->paginate(5))
-//            ->with('owned', $user->owningContests()->paginate(5))
-//            ->with('participatedContests', $user->participatingContests()->paginate(5))
-//            ->with('groups', $user->joiningGroups()->paginate(5))
     }
 
     /**
@@ -71,15 +65,16 @@ class UserController extends Controller
      */
     public function edit()
     {
+        //making an array of countries
         \Locale::setDefault('en');
         $countries = Intl::getRegionBundle()->getCountryNames();
-        // dd($countries);
+        $countries=array( "AA" => '')+$countries; 
+       
         $user = \Auth::user();
         return view('profile.edit')
             ->with('pageTitle', config('app.name') . '|' . $user->username)
             ->with('user', $user)
-            ->with('country', $countries)
-            ->with('handle', $user->handles()->get());
+            ->with('country', $countries);
     }
 
     /**
@@ -92,16 +87,12 @@ class UserController extends Controller
     {
         //TODO @Abzo image cropping
         //TODO delete old images of the same user
-        //TODO verficcation issue(picture and the pass)
-        //TODO show edited new info in the view
-        //TODO add missing fillable att in User model
         $user = \Auth::user();
-        //temporarly validation of picture and pass(should be in model)
-
         $this->validate($request, array(
-            'profile_picture' => 'nullable|mimes:jpg,jpeg,png|max:2500',
+            Constants::FLD_USERS_PROFILE_PICTURE => 'nullable|mimes:jpg,jpeg,png|max:2500',
             'password' => 'nullable|min:6',
-            'oldPassword' => 'min:6|old'
+            'oldPassword' => 'min:6|old',
+            Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:2005-1-1'
         ));
 
         //saving picture in database
@@ -113,46 +104,45 @@ class UserController extends Controller
             $user->profile_picture = $fileName;
         }
 
-        //changes date format to be saved in DB
-
+        //changes Date format to be saved in DB
         if (($request->input('birthdate') != null)) {
             if (strpos($request->input('birthdate'), '-') !== false) {
 
                 $user->birthdate = $request->input('birthdate');
 
             } else {
-                // TODO: Use the same method of date parsing
+
                 $dateOfBirth = explode('/', $request->input('birthdate'));
 
                 if ((array_key_exists("2", $dateOfBirth)) && (array_key_exists("1", $dateOfBirth)) && (array_key_exists("0", $dateOfBirth))) {
 
-                    $formattedBirth = $dateOfBirth['2'] . '-' . $dateOfBirth['1'] . '-' . $dateOfBirth['0'];
+                    $formattedBirth = $dateOfBirth['2'] . '-' . $dateOfBirth['0'] . '-' . $dateOfBirth['1'];
                     $user->birthdate = $formattedBirth;
+
                 }
             }
         }
 
-        if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
+        //saving user handles in DB
+        if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE] && ($request[Constants::FLD_USERS_CODEFORCES_HANDLE] != $user->getHandle(Constants::JUDGE_CODEFORCES_ID) )) {
+
             $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $request[Constants::FLD_USERS_CODEFORCES_HANDLE]);
         }
 
-        if ($request[Constants::FLD_USERS_UVA_HANDLE]) {
+        if ($request[Constants::FLD_USERS_UVA_HANDLE] && ($request[Constants::FLD_USERS_UVA_HANDLE] != $user->getHandle(Constants::JUDGE_UVA_ID)  )) {
             $user->addHandle(Constants::JUDGE_UVA_ID, $request[Constants::FLD_USERS_UVA_HANDLE]);
         }
 
-        if ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]) {
+        if ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE] && ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE] != $user->getHandle(Constants::JUDGE_LIVE_ARCHIVE_ID) )) {
             $user->addHandle(Constants::JUDGE_LIVE_ARCHIVE_ID, $request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]);
         }
 
         //saving pass,email,username,first,last names and gender in database
-        //dd($request->input('password'));
         if (strlen($request->input('password')) >= 6) {
             $user->password = bcrypt($request->input('password'));
         }
-        // TODO: $user->save($request);
-        $user->email = $request->input('email');
-        $user->first_name = $request->input('FirstName');
-        $user->last_name = $request->input('LastName');
+
+        if($request->input('country') != "")
         $user->country = $request->input('country');
 
         if ($request->input('gender') == 'Male') {
@@ -160,7 +150,10 @@ class UserController extends Controller
         } else {
             $user->gender = '1';
         }
-
+        $user->email = $request->input('email');
+        $user->first_name = $request->input('FirstName');
+        $user->last_name = $request->input('LastName');
+        
         //saving in the database
         $user->save();
 

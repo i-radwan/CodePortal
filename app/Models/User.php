@@ -134,6 +134,18 @@ class User extends Authenticatable
     }
 
     /**
+     * Returns user handle based on the judge's id
+     *
+     * @param int $judgeId
+     * @return string $handle
+     */
+    public function getHandle($judgeId)
+    {
+        $handle = DB::table(Constants::TBL_USER_HANDLES)->where(Constants::FLD_USER_HANDLES_JUDGE_ID,$judgeId)->where(Constants::FLD_USER_HANDLES_USER_ID, $this->id)->pluck(Constants::FLD_USER_HANDLES_HANDLE)->first();
+        return $handle;
+    }
+
+    /**
      * Attach the given online judge handle to the current user
      *
      * @param int $judgeId
