@@ -37,10 +37,10 @@ class BlogsSeeder extends Seeder
             ]);
         }
 
-        // Get all Posts IDs
+        // Get all posts IDs
         $postIDs = Post::pluck(Constants::FLD_POSTS_ID)->toArray();
 
-        // Insert First Level Comments
+        // Insert first Level comments
         foreach ( $postIDs as $postID){
             $commentsLimit= $faker->numberBetween(2,20);
             for( $i = 0; $i < $commentsLimit; $i++){
