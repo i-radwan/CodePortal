@@ -541,6 +541,9 @@ class Constants
         self::RESOURCE_VOTE_TYPE_UP
     ];
 
+    const RESOURCE_VOTE_POST = '0';
+    const RESOURCE_VOTE_COMMENT = '1';
+
     //
     // Tables
     //

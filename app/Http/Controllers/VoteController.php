@@ -19,7 +19,7 @@ class VoteController extends Controller
      */
     public function upVotePost($postID)
     {
-        $this->processVote(Post::class, $postID, 1);
+        $this->processVote(Constants::RESOURCE_VOTE_POST, $postID, Constants::RESOURCE_VOTE_TYPE_UP);
         return redirect()->back();
     }
 
@@ -30,7 +30,7 @@ class VoteController extends Controller
      */
     public function upVoteComment($commentID)
     {
-        $this->processVote(Comment::class, $commentID, 1);
+        $this->processVote(Constants::RESOURCE_VOTE_COMMENT, $commentID, Constants::RESOURCE_VOTE_TYPE_UP);
         return redirect()->back();
     }
 
@@ -41,7 +41,7 @@ class VoteController extends Controller
      */
     public function downVoteComment($comment)
     {
-        $this->processVote(Comment::class, $comment, Constants::RESOURCE_VOTE_TYPE_UP);
+        $this->processVote(Constants::RESOURCE_VOTE_COMMENT, $comment, Constants::RESOURCE_VOTE_TYPE_DOWN);
         return redirect()->back();
     }
 
@@ -52,7 +52,7 @@ class VoteController extends Controller
      */
     public function downVotePost($post)
     {
-        $this->processVote(Post::class, $post, Constants::RESOURCE_VOTE_TYPE_DOWN);
+        $this->processVote(Constants::RESOURCE_VOTE_POST, $post, Constants::RESOURCE_VOTE_TYPE_DOWN);
         return redirect()->back();
     }
 
@@ -68,30 +68,40 @@ class VoteController extends Controller
         // Check for the previous up and down votes for the single resource with $id
 
         // Up/Down vote check
-        $previousVote = Vote::withTrashed()
-            ->where(Constants::FLD_VOTES_TYPE, $type)
-            ->where(Constants::FLD_VOTES_RESOURCE_ID, $id)
-            ->where(Constants::FLD_VOTES_RESOURCE_TYPE, $voteType)
-            ->where(Constants::FLD_VOTES_USER_ID, Auth::user()[Constants::FLD_USERS_ID])
+        $previousVote = Vote::ofResourceType($type)
+            ->ofResource($id)
+            ->ofType($voteType)
+            ->ofUser(Auth::user()[Constants::FLD_USERS_ID])
+            ->withTrashed()
             ->first();
 
         // Down/Up vote check
-        $previousComplementaryVote = Vote::withTrashed()
-            ->where(Constants::FLD_VOTES_TYPE, $type)
-            ->where(Constants::FLD_VOTES_RESOURCE_ID, $id)
-            ->where(Constants::FLD_VOTES_RESOURCE_TYPE, Constants::RESOURCE_VOTE_TYPE_UP - $voteType)
-            ->where(Constants::FLD_VOTES_USER_ID, Auth::user()[Constants::FLD_USERS_ID])
+        $previousComplementaryVote = Vote::ofResourceType($type)
+            ->ofResource($id)
+            ->ofType((string)(intval(Constants::RESOURCE_VOTE_TYPE_UP) - intval($voteType)))
+            ->ofUser(Auth::user()[Constants::FLD_USERS_ID])
+            ->withTrashed()
             ->first();
 
         if (is_null($previousVote)) { // No previous vote
-
             // Add new vote
             $vote = new Vote([
-                Constants::FLD_VOTES_USER_ID => Auth::user()[Constants::FLD_USERS_ID],
-                Constants::FLD_VOTES_RESOURCE_ID => $id,
-                Constants::FLD_VOTES_RESOURCE_TYPE => $type,
-                Constants::FLD_VOTES_TYPE => $voteType,
+                Constants::FLD_VOTES_TYPE => (string)$voteType
             ]);
+
+            // Associate user
+            $vote->user()->associate(Auth::user());
+
+
+            // Associate resource
+            $vote[Constants::FLD_VOTES_RESOURCE_TYPE] = $type;
+
+            if ($type == Constants::RESOURCE_VOTE_POST) {
+                $vote->resource()->associate(Post::find($id)->first());
+            } else if ($type == Constants::RESOURCE_VOTE_COMMENT) {
+                $vote->resource()->associate(Comment::find($id)->first());
+            }
+
 
             // Check if Saved Successfully
             if ($vote->save()) {

@@ -415,6 +415,16 @@ class User extends Authenticatable
         return $this->receivedNotifications()->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
     }
 
+
+    /**
+     * Get user posts
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class, Constants::FLD_POSTS_OWNER_ID);
+    }
+
+
     /**
      * Return user unread notifications
      *
@@ -428,28 +438,32 @@ class User extends Authenticatable
     /**
      * Get User up Voted Posts
      */
-    public function upVotedPosts() {
-        return $this->morphedByMany(Post::class, Constants::TBL_VOTES)->whereDeletedAt(null);
+    public function upVotedPosts()
+    {
+        return $this->morphedByMany(Post::class, Constants::TBL_VOTES)->where(Constants::FLD_VOTES_DELETED_AT, null);
     }
 
     /**
      * Get User up Voted Comments
      */
-    public function upVotedComments() {
-        return $this->morphedByMany(Comment::class, Constants::TBL_VOTES)->whereDeletedAt(null);
+    public function upVotedComments()
+    {
+        return $this->morphedByMany(Comment::class, Constants::TBL_VOTES)->where(Constants::FLD_VOTES_DELETED_AT, null);
     }
 
     /**
      * Get User down Voted Posts
      */
-    public function downVotedPosts() {
-        return $this->morphedByMany(Post::class, Constants::TBL_DOWN_VOTES)->whereDeletedAt(null);
+    public function downVotedPosts()
+    {
+        return $this->morphedByMany(Post::class, Constants::TBL_DOWN_VOTES)->where(Constants::FLD_VOTES_DELETED_AT, null);
     }
 
     /**
      * Get User down Voted Comments
      */
-    public function downVotedComments() {
-        return $this->morphedByMany(Comment::class, Constants::TBL_DOWN_VOTES)->whereDeletedAt(null);
+    public function downVotedComments()
+    {
+        return $this->morphedByMany(Comment::class, Constants::TBL_DOWN_VOTES)->where(Constants::FLD_VOTES_DELETED_AT, null);
     }
 }

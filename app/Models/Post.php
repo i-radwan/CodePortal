@@ -14,8 +14,8 @@ class Post extends Model
     // Add Validation
     use ValidateModelData;
 
-    // Use Like Trait
-    use GetUserVotes;
+    // Trait to get resource up/down votes
+    use GetVotes;
 
     /**
      * The table associated with the model.
@@ -90,5 +90,17 @@ class Post extends Model
             'LIKE',
             "%$word%"
         );
+    }
+
+    /**
+     * Return all votes for this post
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function votes()
+    {
+        return $this
+            ->hasMany(Vote::class, Constants::FLD_VOTES_RESOURCE_ID)
+            ->ofResourceType(Constants::RESOURCE_VOTE_POST);
     }
 }

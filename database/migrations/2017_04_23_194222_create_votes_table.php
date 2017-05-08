@@ -18,8 +18,8 @@ class CreateVotesTable extends Migration
             $table->increments(Constants::FLD_VOTES_ID);
             $table->unsignedInteger(Constants::FLD_VOTES_USER_ID);
             $table->unsignedInteger(Constants::FLD_VOTES_RESOURCE_ID);
-            $table->enum(Constants::FLD_VOTES_TYPE, Constants::RESOURCE_VOTE_TYPES);
             $table->string(Constants::FLD_VOTES_RESOURCE_TYPE);
+            $table->enum(Constants::FLD_VOTES_TYPE, Constants::RESOURCE_VOTE_TYPES);
             $table->softDeletes();
             $table->timestamps();
         });

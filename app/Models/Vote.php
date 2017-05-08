@@ -5,13 +5,14 @@ namespace App\Models;
 use App\Utilities\Constants;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 class Vote extends Model
 {
-    //Add Validation
+    // Add Validation
     use ValidateModelData;
 
-    //Use Soft Delete
+    // Use Soft Delete
     use SoftDeletes;
 
     /**
@@ -43,22 +44,122 @@ class Vote extends Model
     ];
 
     /**
-     *  Get Votes for all Posts (we may not use this)
+     * Returns the user who sent this notification
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function posts()
+    public function user()
     {
-        return $this->morphedByMany(Comment::class, Constants::TBL_VOTES);
+        return $this->belongsTo(User::class, Constants::FLD_VOTES_USER_ID);
+    }
+
+
+    /**
+     * Returns the resource that this vote is for (post, comment, ...etc)
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
+     */
+    public function resource()
+    {
+        switch ($this[Constants::FLD_VOTES_RESOURCE_TYPE]) {
+            case Constants::RESOURCE_VOTE_POST:
+                $class = Contest::class;
+                break;
+            case Constants::RESOURCE_VOTE_COMMENT:
+                $class = Group::class;
+                break;
+            default:
+                return null;
+        }
+
+        return $this->belongsTo($class, Constants::FLD_VOTES_RESOURCE_ID);
     }
 
     /**
-     * Get Votes for all Comments (we may not use this)
+     * Scope a query to only include votes related to a certain resource
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @param Builder $query
+     * @param null $id
+     * @return Builder
      */
-    public function comments()
+    public function scopeOfResource(Builder $query, $id = null)
     {
-        return $this->morphedByMany(Post::class, Constants::TBL_VOTES);
+        if ($id == null) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_VOTES . '.' . Constants::FLD_VOTES_RESOURCE_ID,
+            '=',
+            $id
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include votes related to a certain resource type (post, comment ..etc)
+     *
+     * @param Builder $query
+     * @param string|null $type
+     * @return Builder
+     */
+    public function scopeOfResourceType(Builder $query, $type = null)
+    {
+        if ($type == null) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_VOTES . '.' . Constants::FLD_VOTES_RESOURCE_TYPE,
+            '=',
+            $type
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include votes of certain type (up, down)
+     *
+     * @param Builder $query
+     * @param $type
+     * @return Builder
+     */
+    public function scopeOfType(Builder $query, $type)
+    {
+        if ($type == null) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_VOTES . '.' . Constants::FLD_VOTES_TYPE,
+            '=',
+            $type
+        );
+
+        return $query;
+    }
+
+    /**
+     * Scope a query to only include votes of certain type (up, down)
+     *
+     * @param Builder $query
+     * @param $userId
+     * @return Builder
+     */
+    public function scopeOfUser(Builder $query, $userId)
+    {
+        if ($userId == null) {
+            return $query;
+        }
+
+        $query->where(
+            Constants::TBL_VOTES . '.' . Constants::FLD_VOTES_USER_ID,
+            '=',
+            $userId
+        );
+
+        return $query;
     }
 }

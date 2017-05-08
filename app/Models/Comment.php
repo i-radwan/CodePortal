@@ -7,15 +7,16 @@ use App\Utilities\Constants;
 
 
 use Illuminate\Database\Eloquent\Model;
+use PhpParser\Builder;
 
 
 class Comment extends Model
 {
-    //Add Validation
+    // Add Validation
     use ValidateModelData;
 
-    //Use Like Trait
-    use GetUserVotes;
+    // Trait to get resource up/down votes
+    use GetVotes;
 
     /**
      * The table associated with the model.
@@ -90,5 +91,17 @@ class Comment extends Model
     public function replies()
     {
         return $this->hasMany(Comment::class, Constants::FLD_COMMENTS_PARENT_ID);
+    }
+
+    /**
+     * Return all votes for this comment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function votes()
+    {
+        return $this
+            ->hasMany(Vote::class, Constants::FLD_VOTES_RESOURCE_ID)
+            ->ofType(Constants::RESOURCE_VOTE_COMMENT);
     }
 }
