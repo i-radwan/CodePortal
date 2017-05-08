@@ -22,7 +22,7 @@ class BlogsSeeder extends Seeder
 
         $faker = Faker\Factory::create();
 
-        // Limit of Posts
+        // Limit of posts
         $limit = 322;
 
         // Get all user IDs
@@ -38,15 +38,15 @@ class BlogsSeeder extends Seeder
         }
 
         // Get all Posts IDs
-        $postIDs = Post::pluck(Constants::FLD_POSTS_OWNER_ID)->toArray();
+        $postIDs = Post::pluck(Constants::FLD_POSTS_ID)->toArray();
 
         // Insert First Level Comments
         foreach ( $postIDs as $postID){
-            $commentsLimit= $faker->numberBetween(2,55);
+            $commentsLimit= $faker->numberBetween(2,20);
             for( $i = 0; $i < $commentsLimit; $i++){
                 DB::table(Constants::TBL_COMMENTS)->insert([
                     Constants::FLD_COMMENTS_USER_ID => $faker->randomElement($userIDs),
-                    Constants::FLD_COMMENTS_BODY_BODY => $faker->realText(160),
+                    Constants::FLD_COMMENTS_BODY => $faker->realText(160),
                     Constants::FLD_COMMENTS_POST_ID => $postID,
                     Constants::FLD_COMMENTS_PARENT_ID => null,
                 ]);
@@ -58,11 +58,11 @@ class BlogsSeeder extends Seeder
 
         // Insert replies
         foreach ( $commentIDs as $commentID){
-            $repliesLimit = $faker->numberBetween(0,15);
+            $repliesLimit = $faker->numberBetween(0,7);
             for( $i = 0; $i < $repliesLimit; $i++){
                 DB::table(Constants::TBL_COMMENTS)->insert([
                     Constants::FLD_COMMENTS_USER_ID => $faker->randomElement($userIDs),
-                    Constants::FLD_COMMENTS_BODY_BODY => $faker->realText(160),
+                    Constants::FLD_COMMENTS_BODY => $faker->realText(160),
                     Constants::FLD_COMMENTS_POST_ID => $postID,
                     Constants::FLD_COMMENTS_PARENT_ID => $commentID,
                 ]);

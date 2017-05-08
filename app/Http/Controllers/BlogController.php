@@ -312,6 +312,7 @@ class BlogController extends Controller
         return $users =  Post::select(DB::raw('count(*) as contributions ,'. Constants::TBL_USERS. '.'. Constants::FLD_USERS_USERNAME))
             ->join(Constants::TBL_USERS, Constants::TBL_USERS. '.' .Constants::FLD_USERS_ID, '=', Constants::TBL_POSTS. '.'. Constants::FLD_POSTS_OWNER_ID)
             ->groupby( Constants::FLD_POSTS_OWNER_ID )
+            ->limit(10)
             ->orderby('contributions', 'desc')->pluck("contributions", Constants::FLD_USERS_USERNAME);
     }
 
