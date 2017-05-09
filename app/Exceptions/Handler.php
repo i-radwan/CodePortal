@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Models\User;
 use Auth;
 use Exception;
 use App\Utilities\Constants;

@@ -24,6 +24,7 @@ class Constants
     const ROUTES_CONTESTS_STANDINGS = 'contests.standings';
     const ROUTES_CONTESTS_STATUS = 'contests.status';
     const ROUTES_CONTESTS_PARTICIPANTS = 'contests.participants';
+    const ROUTES_CONTESTS_PARTICIPANTS_DELETE = 'contests.participants.delete';
     const ROUTES_CONTESTS_QUESTIONS = 'contests.questions';
     const ROUTES_CONTESTS_QUESTIONS_ANNOUNCE = 'contests.questions.announce';
     const ROUTES_CONTESTS_QUESTIONS_RENOUNCE = 'contests.questions.renounce';

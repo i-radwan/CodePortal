@@ -69,11 +69,16 @@ class AuthServiceProvider extends ServiceProvider
         // Owner or organizer of contest
         Gate::define("owner-organizer-contest", function (User $user, $contestID) {
             // Check if user is organizer or owner
-            // TODO: what about sending the Contest Model to check its owner?
             return (
                 $user->organizingContests()->find($contestID) ||
                 $user->owningContests()->find($contestID)
             );
+        });
+
+        // Participant in contest
+        Gate::define("contest-participant", function (User $user, Contest $contest) {
+            // Check if user is member and not owner
+            return ($user->participatingContests()->find($contest[Constants::FLD_CONTESTS_ID]));
         });
 
         // Owner of group/sheet

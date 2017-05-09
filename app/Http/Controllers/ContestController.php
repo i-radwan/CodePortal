@@ -551,6 +551,19 @@ class ContestController extends Controller
     }
 
     /**
+     * Remove participant from the contest (by organiser/owner)
+     *
+     * @param Contest $contest
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function removeParticipant(Contest $contest, User $user)
+    {
+        $user->participatingContests()->detach($contest);
+        return back();
+    }
+
+    /**
      * Register user participation in a contest
      *
      * Authorization happens in the defined Gate

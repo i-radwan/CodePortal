@@ -67,6 +67,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('contests/{contest}/leave', 'ContestController@leaveContest')
         ->name(Constants::ROUTES_CONTESTS_LEAVE);
 
+    // Remove participant
+    Route::delete('contests/{contest}/remove/{user}', 'ContestController@removeParticipant')
+        ->name(Constants::ROUTES_CONTESTS_PARTICIPANTS_DELETE)
+        ->middleware(['can:owner-organizer-contest,contest', 'can:contest-participant,contest,user']);
+
     // Delete contest
     Route::delete('contests/{contest}/delete', 'ContestController@deleteContest')
         ->name(Constants::ROUTES_CONTESTS_DELETE);
