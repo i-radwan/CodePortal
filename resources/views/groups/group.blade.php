@@ -6,9 +6,9 @@
     $groupName = $group[Constants::FLD_GROUPS_NAME];
     $ownerUsername = $group->owner[Constants::FLD_USERS_USERNAME];
 
-    $isOwner = ((Auth::check()) ? (Auth::user()->owningGroups()->find($group[Constants::FLD_GROUPS_ID]) != null) : false);
-    $isMember = ((Auth::check()) ? (Auth::user()->joiningGroups()->find($group[Constants::FLD_GROUPS_ID]) != null) : false);
-    $userSentRequest = (Auth::check() && !$isMember && Auth::user()->seekingJoinGroups()->find($group[Constants::FLD_GROUPS_ID]));
+    $isOwner = ((Auth::check()) ? (Auth::user()->owningGroups()->find($groupID) != null) : false);
+    $isMember = ((Auth::check()) ? (Auth::user()->joiningGroups()->find($groupID) != null) : false);
+    $userSentRequest = (Auth::check() && !$isMember && Auth::user()->seekingJoinGroups()->find($groupID));
     $isGroup = true;
 
 @endphp

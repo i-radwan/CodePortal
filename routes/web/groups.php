@@ -60,7 +60,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('sheets/problem/solution', 'SheetController@saveProblemSolution')
         ->name(Constants::ROUTES_GROUPS_SHEET_SOLUTION_STORE);
 
-    // Edit sheet
+    // Update sheet
     Route::post('sheets/{sheet}/edit', 'SheetController@editSheet')
         ->name(Constants::ROUTES_GROUPS_SHEET_UPDATE)
         ->middleware(['can:owner-group,sheet']);

@@ -250,50 +250,59 @@ var app = {
 
         //Blogs Add Post page
         if ($("#add-edit-post-page-hidden-element").length) {
+
+            // For testing purposes, we will need to disable this feature (simpleMDE)
+            // So we've this flag stored in the session to determine weather to enable/disable
+            // this feature
             if (!sessionStorage.getItem('disableMDE')) {
-                //Get the text area element
+
+                // Get the textarea element (post body)
                 var element = document.getElementById("edit-post-body");
-                var simplemde = new SimpleMDE({
+
+                new SimpleMDE({
                     element: element,
-                    //Enables Auto Save which is removed when the form is submitted
+                    // Enables Auto Save which is removed when the form is submitted
                     autosave: {
                         enabled: $(element).data('autosave-enable'),
-                        uniqueId: "edit_post", //unique id for identifying saving purposes
-                        delay: 1000, //Time between saves milli seconds
+                        uniqueId: "edit_post", // Unique id for identifying saving purposes
+                        delay: 1000, // Time between saves milli seconds
                     },
-                    spellChecker: false, //Disable Spell Checker
+                    spellChecker: false, // Disable Spell Checker
                 });
             }
         }
 
         //Blogs View Single Post page
-        //Blogs add comment in a post page
         if ($("#view-post-page-hidden-element").length) {
-            //Render the post body in markdown
-            document.getElementById('current_post_body').innerHTML =
-                marked(document.getElementById('current_post_body').innerHTML);
-            //Add the comment markdown editor
+
+            // Render the post body in markdown
+            var bostBodyElement = document.getElementById('current_post_body');
+            bostBodyElement.innerHTML = marked(bostBodyElement.innerHTML);
+
+            // Add the comment markdown editor
             if (!sessionStorage.getItem('disableMDE')) {
-                var simplemde = new SimpleMDE({
-                    //Get the text area element
-                    element: document.getElementById("add-comment-text"),
-                    spellChecker: false, //Disable Spell Checker
+                new SimpleMDE({
+                    // Get the text area element
+                    element: document.getElementsByClassName("add-comment-text")[0],
+                    spellChecker: false, // Disable Spell Checker
                 });
             }
-            //Render the comments in markdown
-            //Get all comments in the post page
-            var comments = document.getElementsByClassName("comment_body");
-            //Loop over them and render each one in markdown
+
+            // Render the comments in markdown
+            var comments = document.getElementsByClassName("comment-body");
+
+            // Loop over them and render each one in markdown
             for (var i = 0; i < comments.length; i++) {
                 comments[i].innerHTML = marked(comments[i].innerHTML);
             }
         }
 
-
-        //Blogs Home Page
+        // Blogs Home Page
         if ($("#blogs-home-page-hidden-element").length) {
-            //Get all the blogs paragraph in the index page
-            var posts = document.getElementsByClassName('post_small_paragraph');
+
+            // Get all the blogs paragraph in the index page
+            var posts = document.getElementsByClassName('post-small-paragraph');
+
             //Loop over the paragraphs in the blog index page
             //Change the text in each paragraph to a marked version
             for (var i = 0; i < posts.length; i++) {
@@ -1123,24 +1132,68 @@ var app = {
     },
 
     // ==================================================
-    //            BlOGS FUNCTIONS
+    //            BLOGS FUNCTIONS
     // ==================================================
 
     /**
      * Sends Ajax Request to delete a comment
+     * @param element the delete icon element
      * @param commentID the Comment ID
      * @param url the Delete  URL
      * @param token the CSRF Token
      */
-    deleteSinglePostComment: function (commentID, url, token) {
+    deleteSinglePostComment: function (element, url, token) {
+
+        if (confirm('Are you sure you want to delete this comment?')) {
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    _token: token,
+                    _method: "DELETE"
+                },
+                success: function () {
+                    // Remove comment
+                    $(element).parent().parent().parent().remove();
+                },
+                error: function (result) {
+                }
+            });
+        }
+    },
+
+    /**
+     * Send update element request to server
+     *
+     * @param element
+     * @param url
+     * @param token
+     */
+    updateComment: function (element, url, token) {
+        var commentRootNode = $(element).parent().parent();
+        var commentBody = $(commentRootNode.find('.comment-body p')[0]);
+
+        // Get comment new body text
+        var commentNewValue = $(commentRootNode.find('.comment-edit-textarea')[0]).val();
+
+        // Send Ajax Request
         $.ajax({
             url: url,
-            type: 'DELETE',
+            type: 'post',
             data: {
                 _token: token,
-                comment_id: commentID,
+                method: 'PUT',
+                body: commentNewValue,
             },
-            success: function (result) {
+            success: function () {
+                commentBody.html(commentNewValue);
+
+                // Hide comment editor and show comment div
+                commentBody.show();
+
+                // Call cancel function to hide the editor div
+                app.cancelEditComment(commentRootNode.find('.edit-comment-icon')[0]);
 
             },
             error: function (result) {
@@ -1148,9 +1201,105 @@ var app = {
         });
     },
 
+    /**
+     * Show edit comment view
+     *
+     * @param element
+     */
+    showAddCommentSection: function (element) {
+
+        var commentRootNode = $(element).parent().parent();
+
+        var addCommentSection = commentRootNode.find('.add-comment-section')[0];
+
+        // Show add comment section
+        $(addCommentSection).show();
+
+        // Associate textarea with its SimpleMDE
+        app.associateTextAreaWithSimpleMDE($(addCommentSection.find('.comment-edit-textarea'))[0]);
+
+    },
+
+    /**
+     * Show edit comment view
+     *
+     * @param element
+     */
+    editCommentClick: function (element) {
+
+        // Get comment value
+        var commentRootNode = $(element).parent().parent();
+        var commentBody = commentRootNode.find('.comment-body p')[0];
+        var commentValue = $(commentBody).html();
+
+        // Hide comment paragraph
+        $(commentBody).hide();
+
+        // Add/Show textarea
+        if ($(commentRootNode.find('.comment-edit-textarea')).length == 0) { // no textarea for editing the comment
+
+            var newEditCommentEditor = $('<div class="comment-editor"></div>');
+            var newEditCommentTextarea = $('<textarea class="comment-edit-textarea">' + commentValue + '</textarea>');
+
+            newEditCommentEditor.append(newEditCommentTextarea);
+            $(commentBody).parent().append(newEditCommentEditor);
+
+            // SimpleMDE
+            app.associateTextAreaWithSimpleMDE($(commentRootNode.find('.comment-edit-textarea'))[0]);
+
+        } else { // Textarea exists
+            $($(commentRootNode.find('.comment-editor'))[0]).show();
+        }
+
+        // Show cancel icon and hide edit icon
+        $(commentRootNode.find('.cancel-edit-comment-icon')).show();
+        $(commentRootNode.find('.save-comment-icon')).show();
+        $(commentRootNode.find('.edit-comment-icon')).hide();
+    },
+
+    /**
+     * Hide edit comment view
+     *
+     * @param element
+     */
+    cancelEditComment: function (element) {
+        // Get comment value
+        var commentRootNode = $(element).parent().parent();
+        var commentBody = $(commentRootNode.find('.comment-body p')[0]);
+        var commentEditor = $(commentRootNode.find('.comment-editor'))[0];
+
+        // Hide comment paragraph
+        $(commentEditor).hide();
+        $(commentBody).show();
+
+        // Show edit icon and hide save/cancel icons
+        $(commentRootNode.find('.cancel-edit-comment-icon')).hide();
+        $(commentRootNode.find('.save-comment-icon')).hide();
+        $(commentRootNode.find('.edit-comment-icon')).show();
+    },
     // ==================================================
     //              UTILITIES FUNCTIONS
     // ==================================================
+
+    /**
+     * Associate the give textarea with simple mde
+     * such that any changes in the simple mde, reflect to the textarea
+     *
+     * @param textarea
+     */
+    associateTextAreaWithSimpleMDE: function (textarea) {
+
+        // SimpleMDE
+        var simplemde = new SimpleMDE({
+            element: textarea,
+            spellChecker: false, //Disable Spell Checker
+        });
+
+        // Set on change to update textarea whenever the smde changes
+        simplemde.codemirror.on("change", function () {
+            $(textarea).html(simplemde.value());
+        });
+    },
 
     /**
      * Move data from session to hidden field
@@ -1167,6 +1316,7 @@ var app = {
             sessionStorage.setItem(sessionKey, '');
         }
     },
+
     /**
      * Read a page's GET URL variables and return them as an associative array.
      */
@@ -1178,6 +1328,7 @@ var app = {
         });
         return queries;
     },
+
     /**
      * When the data provided by php contains data (e.g. filters) that should be
      * in sync with local session, but the user removed this session, we've to
@@ -1190,6 +1341,7 @@ var app = {
         // Set to session
         sessionStorage.setItem(sessionKey, array);
     },
+
     /**
      * Get the filters stored in server session (via php binding to data-X attributes)
      * and then format these filters to match javascript session format

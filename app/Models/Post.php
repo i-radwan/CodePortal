@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 
@@ -10,11 +11,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    //Add Validation
+    // Add Validation
     use ValidateModelData;
 
-    //Use Like Trait
-    use GetUserVotes;
+    // Trait to get resource up/down votes
+    use GetVotes;
 
     /**
      * The table associated with the model.
@@ -37,8 +38,7 @@ class Post extends Model
      */
     protected $fillable = [
         Constants::FLD_POSTS_TITLE,
-        Constants::FLD_POSTS_BODY,
-        Constants::FLD_POSTS_OWNER_ID
+        Constants::FLD_POSTS_BODY
     ];
 
     /**
@@ -48,28 +48,37 @@ class Post extends Model
      */
     protected $rules = [
         Constants::FLD_POSTS_BODY => 'required|min:50',
-        Constants::FLD_POSTS_TITLE => 'required|min:6',
-        Constants::FLD_POSTS_OWNER_ID => 'required|exists:'. Constants::TBL_USERS. ','. Constants::FLD_USERS_ID
+        Constants::FLD_POSTS_TITLE => 'required|min:6|max:100',
+        Constants::FLD_POSTS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID
     ];
 
-    /*
-     * Get Comments for this Post with hierarchy
+    /**
+     * Get comments for this Post
      */
-    public function comments(){
-        return  $this->hasMany(Comment::class)->where(Constants::FLD_COMMENTS_PARENT_ID, null); //ToDo: Samir Change that to  a more efficient Way
+    public function comments()
+    {
+        return $this->hasMany(Comment::class)->where(Constants::FLD_COMMENTS_PARENT_ID, null);
     }
 
-    /*
-     * Get Owner of the post
+    /**
+     * Get owner of the post
      */
-    public function owner(){
+    public function owner()
+    {
         return $this->belongsTo(User::class, Constants::FLD_POSTS_OWNER_ID);
     }
 
-    public function scopeOfContent(Builder $query, $word = null){
-        $query =  $this->select();
+    /**
+     * Retrieve posts that have title or content such as givens
+     *
+     * @param Builder $query
+     * @param null $word
+     * @return Builder
+     */
+    public function scopeOfContent(Builder $query, $word = null)
+    {
         //Check if name is empty or null
-        if( $word == null || $word == ""){
+        if ($word == null || $word == "") {
             return $query;
         }
 
@@ -83,5 +92,15 @@ class Post extends Model
         );
     }
 
-
+    /**
+     * Return all votes for this post
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function votes()
+    {
+        return $this
+            ->hasMany(Vote::class, Constants::FLD_VOTES_RESOURCE_ID)
+            ->ofResourceType(Constants::RESOURCE_VOTE_POST);
+    }
 }

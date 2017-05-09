@@ -2,43 +2,63 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <!-- Page Content -->
-            <div class="container">
+
+            {{--Blog Entries Column--}}
+            <div class="col-md-8">
+
+                {{--Heading--}}
+                <h1 class="page-header">
+                    Blogs
+                </h1>
+
                 {{--Alerts Area--}}
                 @include('components.alert')
 
-                <div class="row">
-                    <!-- Blog Entries Column -->
-                    <div class="col-md-8">
-                        <h1 class="page-header">
-                            Most Recent
-                            <small>Contributions</small>
-                        </h1>
+                @if(count($posts) > 0)
 
-                        @if(count($posts) > 0)
-                        {{--Render Recent Posts--}}
-                        @foreach( $posts as $post)
-                            @include("blogs.blogs_views.post_meta_info")
-                            <p  class = "post_small_paragraph" >{{$post[\App\Utilities\Constants::FLD_POSTS_BODY]}}</p>
-                            <hr>
-                        @endforeach
+                    {{--Render Recent Posts--}}
+                    @foreach($posts as $post)
 
-                        {{--TODO:Change Pagination style--}}
-                        {{$posts->render()}}
-                        @else
-                            <p class="lead">Sorry, No Blogs meeting your search word. </p>
-                        @endif
+                        {{--Define variables--}}
+                        @php
+                            $postID = $post[\App\Utilities\Constants::FLD_POSTS_ID];
+                            $postBody = $post[\App\Utilities\Constants::FLD_POSTS_BODY];
+                            $postTitle = $post[\App\Utilities\Constants::FLD_POSTS_TITLE];
+                            $postOwnerUsername = $post->owner[\App\Utilities\Constants::FLD_USERS_USERNAME];
+                            $isOwner = ((Auth::check()) ? (Auth::user()->posts()->find($postID) != null) : false);
+                            $postCreatedAt = \App\Utilities\Utilities::formatPastDateTime($post[\App\Utilities\Constants::FLD_POSTS_CREATED_AT]);
+                            $downVotesCount = $post->downVotes()->count();
+                            $upVotesCount = $post->upVotes()->count();
+                            $didUserVote = ($post->didUserUpVote(Auth::user())) ? 1 : ($post->didUserDownVote(Auth::user()) ? 0 : -1);
+                        @endphp
 
-                    </div>
+                        {{--Post meta info view--}}
+                        @include("blogs.blogs_views.post_meta_info")
 
-                    {{--Side Panes--}}
-                    @include("blogs.blogs_views.side_filters")
+                        <p class="post-small-paragraph">{{ $postBody }}</p>
 
-                </div>
+                        <hr/>
 
+                    @endforeach
+
+                    {{--Pagination--}}
+                    {{ $posts->render() }}
+
+                @else
+                    @if($q != '')
+                        <p class="lead">Sorry, no blogs were posted yet!</p>
+                    @else
+                        <p class="lead">Sorry, no blogs meeting your search word.</p>
+                    @endif
+                @endif
             </div>
+
+            {{--Side Panes--}}
+            @include("blogs.blogs_views.post_sidebar")
+
         </div>
     </div>
+
     {{--Identifying Page --}}
     <span class="page-distinguishing-element" id="blogs-home-page-hidden-element"></span>
 @endsection

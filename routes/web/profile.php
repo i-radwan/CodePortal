@@ -19,3 +19,7 @@ Route::get('profile/{user}', 'UserController@index')
 // User teams
 Route::get('profile/{user}/teams', 'TeamController@index')
     ->name(Constants::ROUTES_PROFILE_TEAMS);
+
+// User blogs
+Route::get('profile/{user}/blogs', 'BlogController@displayUserPosts')
+    ->name(Constants::ROUTES_PROFILE_BLOGS);

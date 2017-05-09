@@ -18,10 +18,10 @@
     <link href="/css/jquery.datetimepicker.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/bower_components/semantic/dist/semantic.min.css"/>
     <link rel="stylesheet" href="/bower_components/jquery-duration-picker/dist/jquery-duration-picker.min.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <link rel="stylesheet" href="/css/simplemde.min.css">
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,600" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
@@ -54,7 +54,7 @@
 <script src="/modules/code-editor/ace.js" type="text/javascript" charset="utf-8"></script>
 
 {{--Include files for Markdown Editor--}}
-<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script src="/js/simplemde.min.js"></script>
 {{--Include for Markdown preview--}}
 <script src="/js/marked.min.js"></script>
 
