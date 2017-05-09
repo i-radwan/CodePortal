@@ -29,36 +29,20 @@
     </div>
 </div>
 
-<p>
+<p class="post-created-at">
     {{--Posted time--}}
     <span class="glyphicon glyphicon-time"></span>
     Posted {{ $postCreatedAt }}
 
-    {{--Voting buttons--}}
-    <span>
-
-        {{--Upvote Link--}}
-        <a href="{{ $postDownVoteURL }}/{{ $postID }}" id="blog-down-vote-icon">
-            @if(!isset($didUserVote) || $didUserVote != \App\Utilities\Constants::RESOURCE_VOTE_TYPE_DOWN)
-                <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
-            @else
-                <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-            @endif
-        </a>
-
-        {{--Upvotes count--}}
-        <span id="blog-down-votes-count">{{ $downVotesCount }}</span>
-
-        {{--Downvote Link--}}
-        <a href="{{ $postUpVoteURL }}/{{ $postID }}" id="blog-up-vote-icon">
-            @if(!isset($didUserVote) || $didUserVote != \App\Utilities\Constants::RESOURCE_VOTE_TYPE_UP)
-                <i class="fa fa-thumbs-o-up" aria-hidden="true"> </i>
-            @else
-                <i class="fa fa-thumbs-up" aria-hidden="true"> </i>
-            @endif
-        </a>
-
-        {{--Downvotes Count--}}
-        <span id="blog-up-votes-count">{{ $upVotesCount }}</span>
-    </span>
+    {{--Voting section--}}
+    @include('blogs.blogs_views.voting_section',
+        ['upVoteFormURL' => route(\App\Utilities\Constants::ROUTES_BLOGS_UPVOTE, $postID),
+         'upVoteBtnID' => "blog-up-vote-icon",
+         'upVoteCountID' => "blog-up-votes-count",
+         'upVotesCount' => $upVotesCount,
+         'didUserVote' => $didUserVote,
+         'downVoteFormURL' => route(\App\Utilities\Constants::ROUTES_BLOGS_DOWNVOTE, $postID),
+         'downVoteBtnID' => "blog-down-vote-icon",
+         'downVoteCountID' => "blog-down-votes-count",
+         'downVotesCount' => $downVotesCount])
 </p>

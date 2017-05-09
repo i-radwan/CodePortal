@@ -1,38 +1,14 @@
-{{--Vote--}}
-<span>
-    {{--Up Vote--}}
-    <a href="{{ $commentDownVoteURL }}/{{ $commentID }}" id="comment-{{ $commentID }}-down-vote-icon">
-
-        {{--Up vote icon (highlighted if user already upvoted)--}}
-        @if(!isset($didUserVoteComment) || $didUserVoteComment != \App\Utilities\Constants::RESOURCE_VOTE_TYPE_DOWN)
-            <i class="fa fa-thumbs-o-down" aria-hidden="true"></i>
-        @else
-            <i class="fa fa-thumbs-down" aria-hidden="true"></i>
-        @endif
-    </a>
-
-    {{--Comment upvotes count--}}
-    <span id="comment-{{ $commentID }}-down-votes-count">
-        {{ $downCommentVotesCount }}
-    </span>
-
-    {{--Down Vote--}}
-    <a href="{{$commentUpVoteURL}}/{{ $commentID }}" id="comment-{{ $commentID }}-up-vote-icon">
-
-        {{--Down vote icon (highlighted if user already downvoted)--}}
-        @if(!isset($didUserVoteComment) || $didUserVoteComment != \App\Utilities\Constants::RESOURCE_VOTE_TYPE_UP)
-            <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-        @else
-            <i class="fa fa-thumbs-up" aria-hidden="true"></i>
-        @endif
-    </a>
-
-    {{--Comment downvotes count--}}
-    <span id="comment-{{ $commentID }}-up-votes-count">
-        {{ $upCommentVotesCount }}
-    </span>
-       
-</span>
+{{--Voting section--}}
+@include('blogs.blogs_views.voting_section',
+    ['upVoteFormURL' => route(\App\Utilities\Constants::ROUTES_BLOGS_COMMENT_UPVOTE, $commentID),
+     'upVoteBtnID' => "comment-$commentID-up-vote-icon",
+     'upVoteCountID' => "comment-$commentID-up-votes-count",
+     'upVotesCount' => $upCommentVotesCount,
+     'didUserVote' => $didUserVoteComment,
+     'downVoteFormURL' => route(\App\Utilities\Constants::ROUTES_BLOGS_COMMENT_DOWNVOTE, $commentID),
+     'downVoteBtnID' => "comment-$commentID-down-vote-icon",
+     'downVoteCountID' => "comment-$commentID-down-votes-count",
+     'downVotesCount' => $downCommentVotesCount])
 
 {{--Edit and delete comment if Applicable--}}
 <span class="comment-actions">

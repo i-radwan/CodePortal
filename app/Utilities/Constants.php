@@ -88,6 +88,10 @@ class Constants
     const ROUTES_BLOGS_COMMENT_STORE = 'blogs.comment.store';
     const ROUTES_BLOGS_COMMENT_UPDATE = 'blogs.comment.update';
     const ROUTES_BLOGS_COMMENT_DELETE = 'blogs.comment.delete';
+    const ROUTES_BLOGS_UPVOTE = 'blogs.upvote';
+    const ROUTES_BLOGS_DOWNVOTE = 'blogs.downvote';
+    const ROUTES_BLOGS_COMMENT_UPVOTE = 'blogs.comment.upvote';
+    const ROUTES_BLOGS_COMMENT_DOWNVOTE = 'blogs.comment.downvote';
 
 
     // Profile routes
