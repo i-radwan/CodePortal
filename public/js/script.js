@@ -293,7 +293,7 @@ var app = {
         //Blogs Home Page
         if ($("#blogs-home-page-hidden-element").length) {
             //Get all the blogs paragraph in the index page
-            var posts = document.getElementsByClassName('post_small_paragraph');
+            var posts = document.getElementsByClassName('post-small-paragraph');
             //Loop over the paragraphs in the blog index page
             //Change the text in each paragraph to a marked version
             for (var i = 0; i < posts.length; i++) {
@@ -1275,7 +1275,7 @@ var app = {
 
         // Set on change to update textarea whenever the smde changes
         simplemde.codemirror.on("change", function () {
-            textarea.html(simplemde.value());
+            $(textarea).html(simplemde.value());
         });
     },
     /**

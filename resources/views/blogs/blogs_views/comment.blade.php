@@ -4,52 +4,50 @@
 
     $commentID = $comment[Constants::FLD_COMMENTS_ID];
     $commentBody = $comment[Constants::FLD_COMMENTS_BODY];
-    $commentUsername = $comment->user[Constants::FLD_USERS_ID];
+    $commentUsername = $comment->owner[Constants::FLD_USERS_USERNAME];
     $commentCreatedAt = Utilities::formatPastDateTime($comment[Constants::FLD_COMMENTS_CREATED_AT]);
 
-    $didUserVoteComment = ($comment->upVotes()->ofUser(Auth::user()[Constants::FLD_USERS_ID])->count()) ? 1 :
-    ($comment->downVotes()->ofUser(Auth::user()[Constants::FLD_USERS_ID])->count() ? 0 : -1);
+    $didUserVoteComment = ($comment->didUserUpVote(Auth::user())) ? 1 : ($comment->didUserDownVote(Auth::user()) ? 0 : -1);
 
     $downCommentVotesCount = $comment->downVotes()->count();
     $upCommentVotesCount = $comment->upVotes()->count();
 
 @endphp
 
-<!-- Comment -->
 <div class="media">
 
-    {{--To BE Later Use the User profile Photo--}}
+    {{--User profile photo--}}
+    {{--ToDo: Use user profile photo @Samir --}}
     <a class="pull-left" href="#">
         <img class="media-object" src="https://placeholdit.imgix.net/~text?txtsize=22&txt=Hi&w=60&h=60" alt="">
     </a>
+
     <div class="media-body">
 
         <h4 class="media-heading">
-            {{--user Name--}}
+            {{--Username--}}
             <a href='/profile/{{ $commentUsername }}'>{{ $commentUsername }}</a>
 
-            {{--date and time--}}
-            <small>{{ $commentCreatedAt }}</small>
+            {{--Date and Time--}}
+            <small class="pull-right">{{ $commentCreatedAt }}</small>
         </h4>
 
-        {{--body--}}
+        {{--Body--}}
         <div class="well">
             <p class="comment-body">{{ $commentBody }}</p>
         </div>
 
-        {{--Add Comment Options--}}
+        {{--Comment Options--}}
         @include('blogs.blogs_views.comment_options')
 
         {{--Add Reply Form--}}
         @include('blogs.blogs_views.add_comment_form', ['displayable' => false])
 
         {{--Show Comment Replies--}}
-        @if( isset($comment->replies))
-            @foreach($comment->replies as $comment)
-                @include("blogs.blogs_views.comment")
-            @endforeach
+        @foreach($comment->replies as $comment)
+            @include("blogs.blogs_views.comment")
+        @endforeach
 
-        @endif
     </div>
 </div>
 

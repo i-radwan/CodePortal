@@ -66,6 +66,7 @@ html, body {
 .non-displayed-elements {
     display: none;
 }
+
 /**************************************/
 /*</editor-fold>*/
 
@@ -1228,12 +1229,26 @@ td.problems-reorder-view > .fa-bars {
 /*========== Blogs PAGE ===========*/
 /*====================================*/
 
-.new_post_link {
-    text-decoration: none;
-    color: white;
+.blog-post-container {
+    margin-bottom: 100px;
 }
 
-.new_post_link:hover {
+.comment-actions i {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.post-filters {
+    margin-top: 30px;
+}
+
+.new-post-link {
+    text-decoration: none;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.new-post-link:hover {
     text-decoration: none;
     color: white;
 }
@@ -1242,17 +1257,17 @@ td.problems-reorder-view > .fa-bars {
     resize: none;
 }
 
-.new_post_label {
+.new-post-label {
     display: inline-block;
     text-align: justify;
 }
 
-.post_small_paragraph {
+.post-small-paragraph {
     word-wrap: break-word;
     font-size: medium;
 }
 
-.post_paragraph {
+.post-paragraph {
     word-wrap: break-word;
     font-size: medium;
 }

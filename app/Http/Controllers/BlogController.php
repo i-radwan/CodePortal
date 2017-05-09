@@ -45,6 +45,7 @@ class BlogController extends Controller
         return view("blogs.post")
             ->with('post', $post)
             ->with('comments', $post->comments())
+            ->with('topContributors', $this->getTopContributors())
             ->with('postUpVoteURL', url("/blogs/up_vote/entry"))
             ->with('postDownVoteURL', url("blogs/down_vote/entry"))
             ->with('commentUpVoteURL', url("blogs/up_vote/comment"))
