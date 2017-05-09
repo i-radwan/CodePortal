@@ -250,50 +250,59 @@ var app = {
 
         //Blogs Add Post page
         if ($("#add-edit-post-page-hidden-element").length) {
+
+            // For testing purposes, we will need to disable this feature (simpleMDE)
+            // So we've this flag stored in the session to determine weather to enable/disable
+            // this feature
             if (!sessionStorage.getItem('disableMDE')) {
-                //Get the text area element
+
+                // Get the textarea element (post body)
                 var element = document.getElementById("edit-post-body");
-                var simplemde = new SimpleMDE({
+
+                new SimpleMDE({
                     element: element,
-                    //Enables Auto Save which is removed when the form is submitted
+                    // Enables Auto Save which is removed when the form is submitted
                     autosave: {
                         enabled: $(element).data('autosave-enable'),
-                        uniqueId: "edit_post", //unique id for identifying saving purposes
-                        delay: 1000, //Time between saves milli seconds
+                        uniqueId: "edit_post", // Unique id for identifying saving purposes
+                        delay: 1000, // Time between saves milli seconds
                     },
-                    spellChecker: false, //Disable Spell Checker
+                    spellChecker: false, // Disable Spell Checker
                 });
             }
         }
 
         //Blogs View Single Post page
-        //Blogs add comment in a post page
         if ($("#view-post-page-hidden-element").length) {
-            //Render the post body in markdown
-            document.getElementById('current_post_body').innerHTML =
-                marked(document.getElementById('current_post_body').innerHTML);
-            //Add the comment markdown editor
+
+            // Render the post body in markdown
+            var bostBodyElement = document.getElementById('current_post_body');
+            bostBodyElement.innerHTML = marked(bostBodyElement.innerHTML);
+
+            // Add the comment markdown editor
             if (!sessionStorage.getItem('disableMDE')) {
-                var simplemde = new SimpleMDE({
-                    //Get the text area element
+                new SimpleMDE({
+                    // Get the text area element
                     element: document.getElementsByClassName("add-comment-text")[0],
-                    spellChecker: false, //Disable Spell Checker
+                    spellChecker: false, // Disable Spell Checker
                 });
             }
-            //Render the comments in markdown
-            //Get all comments in the post page
+
+            // Render the comments in markdown
             var comments = document.getElementsByClassName("comment-body");
-            //Loop over them and render each one in markdown
+
+            // Loop over them and render each one in markdown
             for (var i = 0; i < comments.length; i++) {
                 comments[i].innerHTML = marked(comments[i].innerHTML);
             }
         }
 
-
-        //Blogs Home Page
+        // Blogs Home Page
         if ($("#blogs-home-page-hidden-element").length) {
-            //Get all the blogs paragraph in the index page
+
+            // Get all the blogs paragraph in the index page
             var posts = document.getElementsByClassName('post-small-paragraph');
+
             //Loop over the paragraphs in the blog index page
             //Change the text in each paragraph to a marked version
             for (var i = 0; i < posts.length; i++) {
@@ -1123,7 +1132,7 @@ var app = {
     },
 
     // ==================================================
-    //            BlOGS FUNCTIONS
+    //            BLOGS FUNCTIONS
     // ==================================================
 
     /**
@@ -1154,6 +1163,13 @@ var app = {
         }
     },
 
+    /**
+     * Send update element request to server
+     *
+     * @param element
+     * @param url
+     * @param token
+     */
     updateComment: function (element, url, token) {
         var commentRootNode = $(element).parent().parent();
         var commentBody = commentRootNode.find('.comment-body p');
@@ -1187,6 +1203,7 @@ var app = {
 
     /**
      * Show edit comment view
+     *
      * @param element
      */
     showAddCommentSection: function (element) {
@@ -1205,6 +1222,7 @@ var app = {
 
     /**
      * Show edit comment view
+     *
      * @param element
      */
     editCommentClick: function (element) {
@@ -1282,6 +1300,7 @@ var app = {
             $(textarea).html(simplemde.value());
         });
     },
+
     /**
      * Move data from session to hidden field
      * @param fldID
@@ -1297,6 +1316,7 @@ var app = {
             sessionStorage.setItem(sessionKey, '');
         }
     },
+
     /**
      * Read a page's GET URL variables and return them as an associative array.
      */
@@ -1308,6 +1328,7 @@ var app = {
         });
         return queries;
     },
+
     /**
      * When the data provided by php contains data (e.g. filters) that should be
      * in sync with local session, but the user removed this session, we've to
@@ -1320,6 +1341,7 @@ var app = {
         // Set to session
         sessionStorage.setItem(sessionKey, array);
     },
+    
     /**
      * Get the filters stored in server session (via php binding to data-X attributes)
      * and then format these filters to match javascript session format
