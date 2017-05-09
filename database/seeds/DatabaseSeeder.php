@@ -42,5 +42,11 @@ class DatabaseSeeder extends Seeder
 
         // Seed notifications
         $this->call(NotificationsTableSeeder::class);
+
+        // Seed blogs
+        $this->call(BlogsSeeder::class);
+
+        // Seed votes
+
     }
 }
