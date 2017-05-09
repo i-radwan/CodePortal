@@ -26,7 +26,7 @@
                             $postTitle = $post[\App\Utilities\Constants::FLD_POSTS_TITLE];
                             $postOwnerUsername = $post->owner[\App\Utilities\Constants::FLD_USERS_USERNAME];
                             $isOwner = ((Auth::check()) ? (Auth::user()->posts()->find($postID) != null) : false);
-                            $postCreatedAt = $post[\App\Utilities\Constants::FLD_POSTS_CREATED_AT];
+                            $postCreatedAt = \App\Utilities\Utilities::formatPastDateTime($post[\App\Utilities\Constants::FLD_POSTS_CREATED_AT]);
                             $downVotesCount = $post->downVotes()->count();
                             $upVotesCount = $post->upVotes()->count();
                             $didUserVote = ($post->didUserUpVote(Auth::user())) ? 1 : ($post->didUserDownVote(Auth::user()) ? 0 : -1);

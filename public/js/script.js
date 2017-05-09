@@ -1133,21 +1133,25 @@ var app = {
      * @param url the Delete  URL
      * @param token the CSRF Token
      */
-    deleteSinglePostComment: function (element, commentID, url, token) {
-        $.ajax({
-            url: url,
-            type: 'DELETE',
-            data: {
-                _token: token,
-                comment_id: commentID,
-            },
-            success: function (result) {
-                // Hide comment
-                $(element).parent().parent().parent().remove();
-            },
-            error: function (result) {
-            }
-        });
+    deleteSinglePostComment: function (element, url, token) {
+
+        if (confirm('Are you sure you want to delete this comment?')) {
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {
+                    _token: token,
+                    _method: "DELETE"
+                },
+                success: function () {
+                    // Remove comment
+                    $(element).parent().parent().parent().remove();
+                },
+                error: function (result) {
+                }
+            });
+        }
     },
 
     updateComment: function (element, commentID, url, token) {
@@ -1157,13 +1161,13 @@ var app = {
         // Get comment new body text
         var commentNewValue = $(commentRootNode.find('.comment-edit-textarea')[0]).val();
 
+        alert(url);
         // Send Ajax Request
         $.ajax({
             url: url,
             type: 'post',
             data: {
                 _token: token,
-                comment_id: commentID,
                 body: commentNewValue,
             },
             success: function () {

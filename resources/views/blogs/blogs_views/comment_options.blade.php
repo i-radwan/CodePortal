@@ -41,7 +41,7 @@
            onclick="app.editCommentClick(this);"> edit</i>
 
         <i class="fa fa-trash" aria-hidden="true"
-           onclick="app.deleteSinglePostComment(this, '{{ $commentID }}', '/blogs/delete/comment/{{ $postID }}', '{{ csrf_token() }}')"> delete</i>
+           onclick="app.deleteSinglePostComment(this, '/blogs/delete/comment/{{ $commentID }}', '{{ csrf_token() }}')"> delete</i>
     @endif
 </span>
 

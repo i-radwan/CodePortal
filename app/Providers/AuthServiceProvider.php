@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Contest;
@@ -142,8 +143,6 @@ class AuthServiceProvider extends ServiceProvider
 
         // Invitee of team
         Gate::define("invitee-team", function (User $user, Team $team) {
-//            dump($user);
-//            dd($team);
             // Check if user is invited to join the team
             return ($team->invitedUsers()->find($user[Constants::FLD_USERS_ID]));
         });

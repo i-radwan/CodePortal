@@ -22,6 +22,7 @@ class BlogController extends Controller
     {
         // Getting posts
         $posts = Post::ofContent(request('q'))
+            ->orderByDesc(Constants::FLD_BLOGS_BLOG_ID)
             ->paginate(Constants::POSTS_COUNT_PER_PAGE);
 
         return view('blogs.index')

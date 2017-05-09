@@ -21,7 +21,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->name(Constants::ROUTES_BLOGS_COMMENT_EDIT)
         ->middleware(['can:owner-comment,comment']);
 
-    Route::delete('blogs/delete/comment/{post}', 'BlogController@deleteComment')
+    Route::delete('blogs/delete/comment/{comment}', 'BlogController@deleteComment')
         ->name(Constants::ROUTES_BLOGS_COMMENT_DELETE)
         ->middleware(['can:owner-comment,comment']);
 
