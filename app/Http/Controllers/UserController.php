@@ -25,9 +25,9 @@ class UserController extends Controller
     public function index(User $user)
     {
         return view('profile.index')
-            ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
-            ->with('user', $user)
-            ->with('chart', UserController::statistics());
+        ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
+        ->with('user', $user)
+        ->with('chart', UserController::statistics($user));
     }
 
     /**
@@ -36,26 +36,56 @@ class UserController extends Controller
      *
      * @return $chart
      */
-    public function statistics()
+    public function statistics(User $user)
     {
-        $weekDays = array(
-            Carbon::now()->format('l'),
-            Carbon::now()->subDays(1)->format('l'),
-            Carbon::now()->subDays(2)->format('l'),
-            Carbon::now()->subDays(3)->format('l'),
-            Carbon::now()->subDays(4)->format('l'),
-            Carbon::now()->subDays(5)->format('l'),
-            Carbon::now()->subDays(6)->format('l')
-        );
+        $weekDays = [];
+        for($i = 6; $i >= 0; $i--)
+         array_push($weekDays, Carbon::now()->subDays($i)->format('l'));
+
+        $submissions = UserController::getSubmittedProblemsCount($weekDays, $user);
 
         $chart = Charts::multi('areaspline', 'highcharts')
-            ->title('User Activity')
-            ->colors(['#ff0000', '#00FFFF '])
-            ->labels([$weekDays['6'], $weekDays['5'], $weekDays['4'], $weekDays['3'], $weekDays['2'], $weekDays['1'], $weekDays['0']])
-            ->dataset('submitted porblems', [3, 4, 3, 5, 4, 10, 15])
-            ->dataset('problems solved', [1, 3, 4, 3, 3, 5, 4]);
+        ->title('User Activity')
+        ->colors(['#ff0000', '#00FFFF '])
+        ->labels($weekDays)
+        ->dataset('submitted porblems', $submissions['totalSubmissionsCount'])
+        ->dataset('problems solved',  $submissions['acceptedSubmissionsCount']);
         return $chart;
     }
+
+    public function getSubmittedProblemsCount($weekDays, $user)
+    {
+        $submissionsCount = [];
+
+        $dateE = Carbon::today();
+        $dateS = Carbon::today()->subDays(6);
+        
+        $submissions = $user->submissions()->whereBetween('created_at', [$dateS->format('Y-m-d')." 00:00:00", $dateE->format('Y-m-d')." 23:59:59"])->get();
+
+        $totalsubmissions = $submissions->groupBy(function($date) {
+            return Carbon::parse($date->created_at)->format('l'); } );
+        
+
+        $acceptedSubmissions = $submissions->whereIn(Constants::FLD_SUBMISSIONS_VERDICT, [Constants::VERDICT_ACCEPTED, Constants::VERDICT_PARTIAL_ACCEPTED])->groupBy(function($date) {
+            return Carbon::parse($date->created_at)->format('l'); } );
+
+
+        $ret =[];
+        foreach ($weekDays as $day) {
+           array_push($ret, ( isset($totalsubmissions[$day]) ? $totalsubmissions[$day]->count() : 0));
+       }
+       $submissionsCount['totalSubmissionsCount'] = $ret;
+
+
+       $ret =[];
+       foreach ($weekDays as $day) {
+           array_push($ret, ( isset($acceptedSubmissions[$day]) ? $acceptedSubmissions[$day]->count() : 0));
+       }
+       $submissionsCount['acceptedSubmissionsCount'] = $ret;
+
+       return $submissionsCount;
+       
+   }
 
     /**
      * Show the edit profile page.
@@ -69,12 +99,11 @@ class UserController extends Controller
         \Locale::setDefault('en');
         $countries = Intl::getRegionBundle()->getCountryNames();
         $countries=array( "AA" => '')+$countries; 
-       
         $user = \Auth::user();
         return view('profile.edit')
-            ->with('pageTitle', config('app.name') . '|' . $user->username)
-            ->with('user', $user)
-            ->with('country', $countries);
+        ->with('pageTitle', config('app.name') . '|' . $user->username)
+        ->with('user', $user)
+        ->with('country', $countries);
     }
 
     /**
@@ -93,7 +122,7 @@ class UserController extends Controller
             'password' => 'nullable|min:6',
             'oldPassword' => 'min:6|old',
             Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:2005-1-1'
-        ));
+            ));
 
         //saving picture in database
         if ($request->hasFile('profile_picture')) {
@@ -143,7 +172,7 @@ class UserController extends Controller
         }
 
         if($request->input('country') != "")
-        $user->country = $request->input('country');
+            $user->country = $request->input('country');
 
         if ($request->input('gender') == 'Male') {
             $user->gender = '0';
