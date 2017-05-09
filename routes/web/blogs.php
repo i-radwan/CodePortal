@@ -17,16 +17,17 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('blogs', 'BlogController@addPost')
         ->name(Constants::ROUTES_BLOGS_POST_STORE);
 
-    // Update blog post ToDo use put
-    Route::post('blogs/{post}', 'BlogController@editPost')
-        ->name(Constants::ROUTES_BLOGS_POST_UPDATE)
-        ->middleware(['can:owner-post,post']);
 
     // Add new comment
     Route::post('blogs/{post}/comment', 'BlogController@addComment')
         ->name(Constants::ROUTES_BLOGS_COMMENT_STORE);
 
-    // Update comment ToDo use put
+    // Update blog post
+    Route::put('blogs/{post}', 'BlogController@editPost')
+        ->name(Constants::ROUTES_BLOGS_POST_UPDATE)
+        ->middleware(['can:owner-post,post']);
+
+    // Update comment
     Route::post('comments/{comment}', 'BlogController@editComment')
         ->name(Constants::ROUTES_BLOGS_COMMENT_UPDATE)
         ->middleware(['can:owner-comment,comment']);

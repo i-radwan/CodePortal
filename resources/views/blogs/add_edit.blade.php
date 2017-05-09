@@ -22,6 +22,7 @@
                       action= {{ isset($postID) ? route(\App\Utilities\Constants::ROUTES_BLOGS_POST_UPDATE, $postID) : route(\App\Utilities\Constants::ROUTES_BLOGS_POST_STORE) }}>
 
                     {{--Hidden fields--}}
+                    {{method_field('PUT')}}
                     {{csrf_field()}}
 
                     {{--Post ID for editing--}}

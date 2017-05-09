@@ -1172,18 +1172,18 @@ var app = {
      */
     updateComment: function (element, url, token) {
         var commentRootNode = $(element).parent().parent();
-        var commentBody = commentRootNode.find('.comment-body p');
+        var commentBody = $(commentRootNode.find('.comment-body p')[0]);
 
         // Get comment new body text
         var commentNewValue = $(commentRootNode.find('.comment-edit-textarea')[0]).val();
 
-        alert(url);
         // Send Ajax Request
         $.ajax({
             url: url,
             type: 'post',
             data: {
                 _token: token,
+                method: 'PUT',
                 body: commentNewValue,
             },
             success: function () {
@@ -1229,7 +1229,7 @@ var app = {
 
         // Get comment value
         var commentRootNode = $(element).parent().parent();
-        var commentBody = commentRootNode.find('.comment-body p');
+        var commentBody = commentRootNode.find('.comment-body p')[0];
         var commentValue = $(commentBody).html();
 
         // Hide comment paragraph
@@ -1265,7 +1265,7 @@ var app = {
     cancelEditComment: function (element) {
         // Get comment value
         var commentRootNode = $(element).parent().parent();
-        var commentBody = commentRootNode.find('.comment-body p');
+        var commentBody = $(commentRootNode.find('.comment-body p')[0]);
         var commentEditor = $(commentRootNode.find('.comment-editor'))[0];
 
         // Hide comment paragraph
@@ -1341,7 +1341,7 @@ var app = {
         // Set to session
         sessionStorage.setItem(sessionKey, array);
     },
-    
+
     /**
      * Get the filters stored in server session (via php binding to data-X attributes)
      * and then format these filters to match javascript session format
