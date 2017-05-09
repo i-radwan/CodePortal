@@ -1154,7 +1154,7 @@ var app = {
         }
     },
 
-    updateComment: function (element, commentID, url, token) {
+    updateComment: function (element, url, token) {
         var commentRootNode = $(element).parent().parent();
         var commentBody = commentRootNode.find('.comment-body p');
 

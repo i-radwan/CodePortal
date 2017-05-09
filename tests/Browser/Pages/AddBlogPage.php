@@ -14,7 +14,7 @@ class AddBlogPage extends BasePage
      */
     public function url()
     {
-        return 'http://127.0.0.1:8000/blogs/add';
+        return 'http://127.0.0.1:8000/blogs/create';
     }
 
     /**

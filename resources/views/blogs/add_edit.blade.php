@@ -19,7 +19,7 @@
 
                 {{--New post form--}}
                 <form class="form-horizontal" role="form" method="post"
-                      action= {{isset($postID) ? "/blogs/edit/post/".($postID) : "/blogs/add" }}>
+                      action= {{ isset($postID) ? route(\App\Utilities\Constants::ROUTES_BLOGS_POST_UPDATE, $postID) : route(\App\Utilities\Constants::ROUTES_BLOGS_POST_STORE) }}>
 
                     {{--Hidden fields--}}
                     {{csrf_field()}}

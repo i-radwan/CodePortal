@@ -82,7 +82,7 @@ class GroupController extends Controller
     public function editGroupView(Group $group)
     {
         return view('groups.add_edit')
-            ->with('formAction', route(Constants::ROUTES_GROUPS_EDIT, $group[Constants::FLD_GROUPS_ID]))
+            ->with('formAction', route(Constants::ROUTES_GROUPS_UPDATE, $group[Constants::FLD_GROUPS_ID]))
             ->with('btnText', 'Edit')
             ->with('group', $group)
             ->with('pageTitle', config('app.name') . ' | ' . $group[Constants::FLD_GROUPS_NAME]);

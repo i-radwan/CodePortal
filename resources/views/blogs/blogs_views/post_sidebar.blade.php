@@ -2,7 +2,7 @@
 
     {{--New Post Button--}}
     <div class="text-right new-post-link">
-        <a href="/blogs/add">
+        <a href="{{ route(\App\Utilities\Constants::ROUTES_BLOGS_POST_CREATE) }}">
             <button class="btn btn-primary">New Post</button>
         </a>
     </div>
@@ -32,7 +32,7 @@
     @if(isset($topContributors))
         <div class="well">
             <h4>Top Contributors</h4>
-            
+
             <hr/>
 
             {{--Contributors List--}}

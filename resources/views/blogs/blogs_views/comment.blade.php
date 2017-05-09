@@ -26,7 +26,7 @@
 
         <h4 class="media-heading">
             {{--Username--}}
-            <a href='/profile/{{ $commentUsername }}'>{{ $commentUsername }}</a>
+            <a href='{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $commentUsername ) }}'>{{ $commentUsername }}</a>
 
             {{--Date and Time--}}
             <small class="pull-right">{{ $commentCreatedAt }}</small>

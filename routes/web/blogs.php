@@ -1,27 +1,43 @@
 <?php
 use App\Utilities\Constants;
 
+//Blogs Routes
 Route::group(['middleware' => 'auth'], function () {
-    //Blogs Routes
-    Route::get('blogs/add', 'BlogController@addEditPost');
-    Route::post('blogs/add', 'BlogController@addPost');
 
-    Route::get('blogs/edit/post/{post}', 'BlogController@addEditPost')
-        ->middleware(['can:owner-post,post']);
-    Route::post('blogs/edit/post/{post}', 'BlogController@editPost')
+    // Create blog post view
+    Route::get('blogs/create', 'BlogController@addEditPost')
+        ->name(Constants::ROUTES_BLOGS_POST_CREATE);
+
+    // Edit blog post view
+    Route::get('blogs/{post}/edit', 'BlogController@addEditPost')
         ->name(Constants::ROUTES_BLOGS_POST_EDIT)
         ->middleware(['can:owner-post,post']);
 
-    Route::delete('blogs/delete/post/{post}', 'BlogController@deletePost')
+    // Add new blog post
+    Route::post('blogs', 'BlogController@addPost')
+        ->name(Constants::ROUTES_BLOGS_POST_STORE);
+
+    // Update blog post
+    Route::post('blogs/{post}', 'BlogController@editPost')
+        ->name(Constants::ROUTES_BLOGS_POST_UPDATE)
+        ->middleware(['can:owner-post,post']);
+
+    // Add new comment
+    Route::post('blogs/{post}/comment', 'BlogController@addComment')
+        ->name(Constants::ROUTES_BLOGS_COMMENT_STORE);
+
+    // Update comment
+    Route::post('comments/{comment}', 'BlogController@editComment')
+        ->name(Constants::ROUTES_BLOGS_COMMENT_UPDATE)
+        ->middleware(['can:owner-comment,comment']);
+
+    // Delete blog post
+    Route::delete('blogs/{post}', 'BlogController@deletePost')
         ->name(Constants::ROUTES_BLOGS_POST_DELETE)
         ->middleware(['can:owner-post,post']);
 
-    Route::post('blogs/add/comment/{post}', 'BlogController@addComment');
-    Route::post('blogs/edit/{comment}', 'BlogController@editComment')
-        ->name(Constants::ROUTES_BLOGS_COMMENT_EDIT)
-        ->middleware(['can:owner-comment,comment']);
-
-    Route::delete('blogs/delete/comment/{comment}', 'BlogController@deleteComment')
+    // Delete comment
+    Route::delete('comments/{comment}', 'BlogController@deleteComment')
         ->name(Constants::ROUTES_BLOGS_COMMENT_DELETE)
         ->middleware(['can:owner-comment,comment']);
 
@@ -32,9 +48,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('blogs/down_vote/comment/{comment}', 'VoteController@downVoteComment');
 });
 
-// Blogs routes...
-Route::get('blogs', 'BlogController@index');
-Route::get('blogs/entries/{user}', 'BlogController@displayUserPosts'); // i should call a different name
-Route::get('blogs/entry/{post}', 'BlogController@displayPost');
+// Get all blog posts
+Route::get('blogs', 'BlogController@index')
+    ->name(Constants::ROUTES_BLOGS_INDEX);
+
+// Get certain post
+Route::get('blogs/{post}', 'BlogController@displayPost')
+    ->name(Constants::ROUTES_BLOGS_POST_DISPLAY);
 
 

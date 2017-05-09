@@ -2,7 +2,7 @@
 
     {{--Title--}}
     <h1 class="col-md-12">
-        <a href="/blogs/entry/{{ $postID }}">{{ $postTitle }}</a>
+        <a href="{{ route(\App\Utilities\Constants::ROUTES_BLOGS_POST_DISPLAY, $postID) }}">{{ $postTitle }}</a>
     </h1>
 
     {{--Subinfo--}}
@@ -10,7 +10,8 @@
 
         {{--Author--}}
         <p class="col-md-9">
-            by <a href="/profile/{{ $postOwnerUsername }}">{{ $postOwnerUsername }}</a>
+            by
+            <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $postOwnerUsername) }}">{{ $postOwnerUsername }}</a>
         </p>
 
         {{--Actions--}}
@@ -18,12 +19,12 @@
         @if($isOwner)
 
                 {{--Edit--}}
-                <a href="/blogs/edit/post/{{ $postID }}"
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_BLOGS_POST_EDIT, $postID) }}"
                    class="btn btn-link text-dark pull-right margin-5px">edit</a>
 
                 {{--Delete--}}
-                @include('components.action_form', ['halfWidth' => true, 'url' => url('blogs/delete/post/'. $postID ), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this post? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'delete'])
-        @endif
+                @include('components.action_form', ['halfWidth' => true, 'url' => route(\App\Utilities\Constants::ROUTES_BLOGS_POST_DELETE, $postID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this post? This action cannot be undone!'", 'btnIDs' => '', 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'delete'])
+            @endif
         </span>
     </div>
 </div>

@@ -41,7 +41,7 @@
            onclick="app.editCommentClick(this);"> edit</i>
 
         <i class="fa fa-trash" aria-hidden="true"
-           onclick="app.deleteSinglePostComment(this, '/blogs/delete/comment/{{ $commentID }}', '{{ csrf_token() }}')"> delete</i>
+           onclick="app.deleteSinglePostComment(this, '{{ route(\App\Utilities\Constants::ROUTES_BLOGS_COMMENT_DELETE, $commentID) }}', '{{ csrf_token() }}')"> delete</i>
     @endif
 </span>
 
@@ -60,5 +60,5 @@
 {{--Save Button --}}
 <span class="comment-actions">
     <i class="fa fa-save save-comment-icon non-displayed-elements" aria-hidden="true"
-       onclick="app.updateComment(this, '{{ $commentID }}', '/blogs/edit/{{ $commentID }}','{{ csrf_token() }}')"> save</i>
+       onclick="app.updateComment(this, '{{ route(\App\Utilities\Constants::ROUTES_BLOGS_COMMENT_UPDATE, $commentID) }}','{{ csrf_token() }}')"> save</i>
 </span>

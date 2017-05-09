@@ -30,11 +30,11 @@
                     </li>
 
                     <li class="{{ Request::is('blogs') ? 'active' : '' }}">
-                        <a href="{{ url('blogs') }}">Blogs</a>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_BLOGS_INDEX) }}">Blogs</a>
                     </li>
 
                     <li class="{{ Request::is('groups') ? 'active' : '' }}">
-                        <a href="{{ url(\App\Utilities\Constants::ROUTES_GROUPS_INDEX) }}">Groups</a>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_INDEX) }}">Groups</a>
                     </li>
                 </ul>
 

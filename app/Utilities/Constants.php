@@ -77,9 +77,16 @@ class Constants
     const ROUTES_TEAMS_INVITATIONS_REJECT = 'teams.invitations.reject';
 
     // Blogs routes
+    const ROUTES_BLOGS_INDEX = 'blogs';
+    const ROUTES_BLOGS_USER_POSTS_INDEX = 'blogs.user.index';
+    const ROUTES_BLOGS_POST_DISPLAY = 'blogs.display';
+    const ROUTES_BLOGS_POST_CREATE = 'blogs.post.create';
+    const ROUTES_BLOGS_POST_STORE = 'blogs.post.store';
     const ROUTES_BLOGS_POST_EDIT = 'blogs.post.edit';
+    const ROUTES_BLOGS_POST_UPDATE = 'blogs.post.update';
     const ROUTES_BLOGS_POST_DELETE = 'blogs.post.delete';
-    const ROUTES_BLOGS_COMMENT_EDIT = 'blogs.comment.edit';
+    const ROUTES_BLOGS_COMMENT_STORE = 'blogs.comment.store';
+    const ROUTES_BLOGS_COMMENT_UPDATE = 'blogs.comment.update';
     const ROUTES_BLOGS_COMMENT_DELETE = 'blogs.comment.delete';
 
 

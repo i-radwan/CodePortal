@@ -51,7 +51,7 @@ class BlogController extends Controller
             ->with('postDownVoteURL', url("blogs/down_vote/entry"))
             ->with('commentUpVoteURL', url("blogs/up_vote/comment"))
             ->with('commentDownVoteURL', url("blogs/down_vote/comment"))
-            ->with('commentFormURL', url('blogs/add/comment/' . $post[Constants::FLD_POSTS_ID]))
+            ->with('commentFormURL', route(Constants::ROUTES_BLOGS_COMMENT_STORE, $post[Constants::FLD_POSTS_ID]))
             ->with('pageTitle', config('app.name') . ' | ' . $post[Constants::FLD_POSTS_TITLE]);
     }
 
@@ -171,11 +171,9 @@ class BlogController extends Controller
 
             // Return success message
             Session::flash("messages", ["Comment Added Successfully"]);
-            return redirect(url('blogs/entry/' . $post[Constants::FLD_POSTS_ID]));
-        } else {    // return error message
-            Session::flash("messages", ["Sorry, Comment was not added. Please retry later"]);
-            return redirect(url('blogs/entry/' . $post[Constants::FLD_POSTS_ID]));
+            return redirect(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $post[Constants::FLD_POSTS_ID]));
         }
+
         return back()->withErrors('Sorry, something went wrong!');
     }
 
