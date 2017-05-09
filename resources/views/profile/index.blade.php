@@ -60,9 +60,9 @@
                     <!-- Problems tab -->
                     <div role="tabpanel" class="fade tab-pane" id="problems">
                         <strong>Answered problems</strong>
-                        @include("problems.table", ['problems' => $unsolvedProblems])
-                        <strong>Wrong answered problems</strong>
                         @include("problems.table", ['problems' => $solvedProblems])
+                        <strong>Wrong answered problems</strong>
+                        @include("problems.table", ['problems' => $unsolvedProblems])
                     </div>
 
                     <!-- Contests tab -->
