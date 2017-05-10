@@ -5,7 +5,7 @@
         <th class="text-center" width="10%">ID</th>
         <th class="text-center" width="60%">Name</th>
         <th class="text-center"># of Problems</th>
-        @if($isOwner)
+        @if($isOwnerOrAdmin)
             <th class="text-center">Actions</th>
         @endif
     </tr>
@@ -31,7 +31,7 @@
             <td> {{ $sheetProblemsCount }}</td>
 
             {{--Actions--}}
-            @if($isOwner)
+            @if($isOwnerOrAdmin)
                 <td class="text-center">
 
                     {{--Edit sheet--}}

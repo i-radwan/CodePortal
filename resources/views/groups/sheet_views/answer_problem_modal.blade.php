@@ -8,7 +8,7 @@
                 <h4 class="modal-title">Problem Solution</h4>
             </div>
 
-            @if($isOwner)
+            @if($isOwnerOrAdmin)
                 <form method="post" action="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_SOLUTION_STORE)}}" name="answerForm">
                     {{csrf_field()}}
 
@@ -30,7 +30,7 @@
                     {{--Buttons--}}
                     <div class="modal-footer">
                         {{--Languages List--}}
-                        @if($isOwner)
+                        @if($isOwnerOrAdmin)
                             <div class="pull-left">@include('groups.sheet_views.languages_list')</div>
                         @endif
 

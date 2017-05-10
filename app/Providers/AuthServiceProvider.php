@@ -157,7 +157,8 @@ class AuthServiceProvider extends ServiceProvider
                 // Check if user is owner or member of sheet's group
                 return (
                     $user->owningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID]) ||
-                    $user->joiningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID])
+                    $user->joiningGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID]) ||
+                    $user->administratingGroups()->find($resource[Constants::FLD_SHEETS_GROUP_ID])
                 );
             }
 
@@ -165,7 +166,8 @@ class AuthServiceProvider extends ServiceProvider
                 // Check if user is member or owner
                 return (
                     $user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID]) ||
-                    $user->joiningGroups()->find($resource[Constants::FLD_GROUPS_ID])
+                    $user->joiningGroups()->find($resource[Constants::FLD_GROUPS_ID]) ||
+                    $user->administratingGroups()->find($resource[Constants::FLD_GROUPS_ID])
                 );
             }
 

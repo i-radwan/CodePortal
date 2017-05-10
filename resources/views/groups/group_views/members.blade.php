@@ -5,7 +5,7 @@
         <th class="text-center" width="33%">Username</th>
         <th class="text-center" width="33%">Email</th>
         <th class="text-center">Country</th>
-        @if($isOwner)
+        @if($isOwnerOrAdmin)
             <th class="text-center">Actions</th>
         @endif
     </tr>
@@ -33,7 +33,7 @@
             <td> {{ $memberCountry }}</td>
 
             {{--Actions--}}
-            @if($isOwner)
+            @if($isOwnerOrAdmin)
                 <td class="text-center">
 
                     {{--Remove member--}}

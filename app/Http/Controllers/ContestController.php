@@ -300,7 +300,6 @@ class ContestController extends Controller
     /**
      * Show add group contest page
      *
-     * ToDo: divide this long function
      *
      * @param Group $group
      * @param Request $request
@@ -334,6 +333,8 @@ class ContestController extends Controller
 
     /**
      * Save contest to database
+     *
+     * ToDo: divide this long function
      *
      * @param Request $request
      * @param Group $group

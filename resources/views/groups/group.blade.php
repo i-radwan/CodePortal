@@ -7,6 +7,7 @@
     $ownerUsername = $group->owner[Constants::FLD_USERS_USERNAME];
 
     $isOwner = ((Auth::check()) ? (Auth::user()->owningGroups()->find($groupID) != null) : false);
+    $isOwnerOrAdmin = (Auth::check()) ? (\Gate::forUser(Auth::user())->allows('owner-admin-group', [$groupID])) : false;
     $isMember = ((Auth::check()) ? (Auth::user()->joiningGroups()->find($groupID) != null) : false);
     $userSentRequest = (Auth::check() && !$isMember && Auth::user()->seekingJoinGroups()->find($groupID));
     $isGroup = true;
@@ -35,7 +36,7 @@
                 {{--Leave Form--}}
                 @include('components.action_form', ['url' => rotue(\App\Utilities\Constants::ROUTES_GROUPS_LEAVE, $groupID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave the group?'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
 
-            @elseif(!$isOwner && !$isMember)
+            @elseif(!$isOwnerOrAdmin && !$isMember)
 
                 {{--Join From--}}
                 @if($userSentRequest)
@@ -53,7 +54,7 @@
             </div>
 
             <div class="panel-body">
-                @if($isMember || $isOwner)
+                @if($isMember || $isOwnerOrAdmin)
                     {{--Alerts Part--}}
                     @include('components.alert')
 
@@ -77,7 +78,7 @@
                                 <a href="#sheets" aria-controls="sheets" role="tab" data-toggle="tab"
                                    id="testing-sheets-link">Sheets</a>
                             </li>
-                            @if($isOwner)
+                            @if($isOwnerOrAdmin)
                                 <li role="presentation">
                                     <a href="#requests" aria-controls="requests" role="tab"
                                        data-toggle="tab" id="testing-requests-link">Requests
@@ -93,7 +94,7 @@
                         <div class="tab-content">
 
                             <div role="tabpanel" class="tab-pane active horizontal-scroll" id="members">
-                                @if($isOwner)
+                                @if($isOwnerOrAdmin)
                                     @include('groups.group_views.invite')
                                 @endif
                                 @if(count($members))
@@ -112,7 +113,7 @@
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="contests">
-                                @if($isOwner)
+                                @if($isOwnerOrAdmin)
                                     <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_CONTEST_CREATE, $groupID) }}"
                                        class="btn-sm btn btn-primary pull-right new-sheet-link"
                                        id="testing-group-new-contest-link">New Contest</a>
@@ -123,7 +124,7 @@
                             </div>
 
                             <div role="tabpanel" class="tab-pane" id="sheets">
-                                @if($isOwner)
+                                @if($isOwnerOrAdmin)
                                     <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_SHEET_CREATE, $groupID) }}"
                                        class="btn-sm btn btn-primary pull-right new-sheet-link">New Sheet</a>
                                 @endif
@@ -134,7 +135,7 @@
                                 @endif
                             </div>
 
-                            @if($isOwner)
+                            @if($isOwnerOrAdmin)
                                 <div role="tabpanel" class="tab-pane horizontal-scroll" id="requests">
                                     @if(count($seekers))
                                         @include('groups.group_views.requests')
