@@ -81,6 +81,7 @@ class AuthServiceProvider extends ServiceProvider
             return ($user->participatingContests()->find($contest[Constants::FLD_CONTESTS_ID]));
         });
 
+
         // Owner of group/sheet
         Gate::define("owner-group", function (User $user, $resource) {
 
@@ -103,6 +104,37 @@ class AuthServiceProvider extends ServiceProvider
 
                 // Check if user is owner
                 return ($user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID]));
+            }
+
+            return false;
+        });
+
+
+        // Owner or admin of group/sheet
+        Gate::define("owner-admin-group", function (User $user, $resource) {
+
+            // If resource is sheet
+            if ($resource instanceof Sheet) {
+
+                // Get sheet group
+                if ($group = Group::find($resource[Constants::FLD_SHEETS_GROUP_ID])) {
+
+                    // Check if user is organizer or owner
+                    if ($user->owningGroups()->find($group[Constants::FLD_GROUPS_ID])
+                        || $user->administratingGroups()->find($group[Constants::FLD_GROUPS_ID])
+                    ) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            // If resource is group
+            if ($resource instanceof Group) {
+
+                // Check if user is owner
+                return ($user->owningGroups()->find($resource[Constants::FLD_GROUPS_ID])
+                    || $user->administratingGroups()->find($resource[Constants::FLD_GROUPS_ID]));
             }
 
             return false;

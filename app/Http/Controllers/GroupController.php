@@ -176,7 +176,7 @@ class GroupController extends Controller
     /**
      * Remove user membership from a group
      *
-     * @protected by auth & can:owner-group middleware
+     * @protected by auth & can:owner-admin-group middleware
      *
      * @param Group $group
      * @param User $user
@@ -192,7 +192,7 @@ class GroupController extends Controller
     /**
      * Invite user to a group
      *
-     * @protected by auth & can:owner-group middleware
+     * @protected by auth & can:owner-admin-group middleware
      * @protected by ModalNotFoundException for Group modal
      *
      * @param Request $request

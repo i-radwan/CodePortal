@@ -582,7 +582,7 @@ class ContestController extends Controller
     /**
      * Reorder problems in a contest
      *
-     * Authorization happens in the defined Gate (owner-group)
+     * Authorization happens in the defined Gate (owner-contest)
      *
      * @param Request $request
      * @param Contest $contest

@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Add group contest
     Route::post('groups/{group}/contests', 'ContestController@addGroupContest')
         ->name(Constants::ROUTES_GROUPS_CONTEST_STORE)
-        ->middleware(['can:owner-group,group']);
+        ->middleware(['can:owner-admin-group,group']);
 
     // Sync filters with server session
     Route::post('contests/create/contest_tags_judges_filters_sync', 'ContestController@applyProblemsFilters')
