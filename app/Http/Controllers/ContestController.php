@@ -300,6 +300,8 @@ class ContestController extends Controller
     /**
      * Show add group contest page
      *
+     * ToDo: divide this long function
+     *
      * @param Group $group
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -348,6 +350,7 @@ class ContestController extends Controller
 
         $editingContest = true;
 
+        // Adding new contest and assign the owner
         if (!$contest) {
             // Create contest object
             $contest = new Contest($request->all());
@@ -357,6 +360,7 @@ class ContestController extends Controller
 
             $editingContest = false;
         } else {
+            // Update contest ToDo use update function
             $contest[Constants::FLD_CONTESTS_NAME] = $request->get('name');
             $contest[Constants::FLD_CONTESTS_TIME] = $request->get('time');
             $contest[Constants::FLD_CONTESTS_DURATION] = floor($request->get('duration'));
@@ -382,7 +386,7 @@ class ContestController extends Controller
                 if ($editingContest)
                     $contest->organizers()->detach();
 
-                // Save Organisers if not group contest // ToDo add group admins later
+                // Save Organisers if not group contest
                 $organisers = explode(",", $request->get('organisers'));
                 $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
                 foreach ($organisers as $organiser) {
@@ -390,6 +394,24 @@ class ContestController extends Controller
                         $contest->organizers()->save($organiser);
                 }
             }
+            // Private group contest
+            // Add group admins and owner as contest organisers
+            else {
+                if ($editingContest)
+                    $contest->organizers()->detach();
+
+                // Set group owner as organiser if not already the owner
+                if ($group->owner() != Auth::user()) {
+                    $contest->organizers()->attach($group->owner());
+                }
+
+                // Set group admins as organisers
+                foreach ($group->admins() as $admin) {
+                    if ($admin[Constants::FLD_USERS_ID] != Auth::user()[Constants::FLD_USERS_ID])
+                        $contest->organizers()->save($admin);
+                }
+            }
+
             // Send notifications to Invitees if private contest and not for specific group
             if (!$group && $request->get('visibility') == Constants::CONTEST_VISIBILITY_PRIVATE) {
                 // Get invitees
