@@ -6,8 +6,6 @@ use Log;
 use Exception;
 use App\Models\User;
 use App\Models\Problem;
-
-
 use App\Models\Tag;
 use App\Models\Language;
 use App\Utilities\Constants;
@@ -161,7 +159,8 @@ class CodeforcesSyncService extends JudgeSyncService
         ]);
 
         $this->judge->problems()->save($problem);
-        $this->attachProblemTags($problem, $problemData[Codeforces::PROBLEM_TAGS]);
+        //$this->attachProblemTags($problem, $problemData[Codeforces::PROBLEM_TAGS]);
+        // TODO: fix syncing tags after the new API from Codeforces
     }
 
     /**
@@ -175,7 +174,7 @@ class CodeforcesSyncService extends JudgeSyncService
     {
         try {
             if ($user) {
-                $handle = $user->handle($this->judge);
+                $handle = $user->handle($this->judge[Constants::FLD_JUDGES_ID]);
 
                 if (!$handle) {
                     Log::warning("$user->username has no handle on $this->judgeName.");

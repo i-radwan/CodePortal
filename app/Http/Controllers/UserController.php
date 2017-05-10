@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Symfony\Component\Intl\Intl;
 
 
-
 class UserController extends Controller
 {
     /**
@@ -25,9 +24,9 @@ class UserController extends Controller
     public function index(User $user)
     {
         return view('profile.index')
-        ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
-        ->with('user', $user)
-        ->with('chart', UserController::statistics($user));
+            ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
+            ->with('user', $user)
+            ->with('chart', UserController::statistics($user));
     }
 
     /**
@@ -39,17 +38,17 @@ class UserController extends Controller
     public function statistics(User $user)
     {
         $weekDays = [];
-        for($i = 6; $i >= 0; $i--)
-         array_push($weekDays, Carbon::now()->subDays($i)->format('l'));
+        for ($i = 6; $i >= 0; $i--)
+            array_push($weekDays, Carbon::now()->subDays($i)->format('l'));
 
         $submissions = UserController::getSubmittedProblemsCount($weekDays, $user);
 
         $chart = Charts::multi('areaspline', 'highcharts')
-        ->title('User Activity')
-        ->colors(['#ff0000', '#00FFFF '])
-        ->labels($weekDays)
-        ->dataset('submitted porblems', $submissions['totalSubmissionsCount'])
-        ->dataset('problems solved',  $submissions['acceptedSubmissionsCount']);
+            ->title('User Activity')
+            ->colors(['#ff0000', '#00FFFF '])
+            ->labels($weekDays)
+            ->dataset('submitted porblems', $submissions['totalSubmissionsCount'])
+            ->dataset('problems solved', $submissions['acceptedSubmissionsCount']);
         return $chart;
     }
 
@@ -59,33 +58,35 @@ class UserController extends Controller
 
         $dateE = Carbon::today();
         $dateS = Carbon::today()->subDays(6);
-        
-        $submissions = $user->submissions()->whereBetween('created_at', [$dateS->format('Y-m-d')." 00:00:00", $dateE->format('Y-m-d')." 23:59:59"])->get();
 
-        $totalsubmissions = $submissions->groupBy(function($date) {
-            return Carbon::parse($date->created_at)->format('l'); } );
-        
+        $submissions = $user->submissions()->whereBetween('created_at', [$dateS->format('Y-m-d') . " 00:00:00", $dateE->format('Y-m-d') . " 23:59:59"])->get();
 
-        $acceptedSubmissions = $submissions->whereIn(Constants::FLD_SUBMISSIONS_VERDICT, [Constants::VERDICT_ACCEPTED, Constants::VERDICT_PARTIAL_ACCEPTED])->groupBy(function($date) {
-            return Carbon::parse($date->created_at)->format('l'); } );
+        $totalsubmissions = $submissions->groupBy(function ($date) {
+            return Carbon::parse($date->created_at)->format('l');
+        });
 
 
-        $ret =[];
+        $acceptedSubmissions = $submissions->whereIn(Constants::FLD_SUBMISSIONS_VERDICT, [Constants::VERDICT_ACCEPTED, Constants::VERDICT_PARTIAL_ACCEPTED])->groupBy(function ($date) {
+            return Carbon::parse($date->created_at)->format('l');
+        });
+
+
+        $ret = [];
         foreach ($weekDays as $day) {
-           array_push($ret, ( isset($totalsubmissions[$day]) ? $totalsubmissions[$day]->count() : 0));
-       }
-       $submissionsCount['totalSubmissionsCount'] = $ret;
+            array_push($ret, (isset($totalsubmissions[$day]) ? $totalsubmissions[$day]->count() : 0));
+        }
+        $submissionsCount['totalSubmissionsCount'] = $ret;
 
 
-       $ret =[];
-       foreach ($weekDays as $day) {
-           array_push($ret, ( isset($acceptedSubmissions[$day]) ? $acceptedSubmissions[$day]->count() : 0));
-       }
-       $submissionsCount['acceptedSubmissionsCount'] = $ret;
+        $ret = [];
+        foreach ($weekDays as $day) {
+            array_push($ret, (isset($acceptedSubmissions[$day]) ? $acceptedSubmissions[$day]->count() : 0));
+        }
+        $submissionsCount['acceptedSubmissionsCount'] = $ret;
 
-       return $submissionsCount;
-       
-   }
+        return $submissionsCount;
+
+    }
 
     /**
      * Show the edit profile page.
@@ -98,12 +99,12 @@ class UserController extends Controller
         //making an array of countries
         \Locale::setDefault('en');
         $countries = Intl::getRegionBundle()->getCountryNames();
-        $countries=array( "AA" => '')+$countries; 
+        $countries = array("AA" => '') + $countries;
         $user = \Auth::user();
         return view('profile.edit')
-        ->with('pageTitle', config('app.name') . '|' . $user->username)
-        ->with('user', $user)
-        ->with('country', $countries);
+            ->with('pageTitle', config('app.name') . ' | ' . $user->username)
+            ->with('user', $user)
+            ->with('countries', $countries);
     }
 
     /**
@@ -122,7 +123,7 @@ class UserController extends Controller
             'password' => 'nullable|min:6',
             'oldPassword' => 'min:6|old',
             Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:2005-1-1'
-            ));
+        ));
 
         //saving picture in database
         if ($request->hasFile('profile_picture')) {
@@ -153,16 +154,15 @@ class UserController extends Controller
         }
 
         //saving user handles in DB
-        if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE] && ($request[Constants::FLD_USERS_CODEFORCES_HANDLE] != $user->getHandle(Constants::JUDGE_CODEFORCES_ID) )) {
-
+        if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
             $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $request[Constants::FLD_USERS_CODEFORCES_HANDLE]);
         }
 
-        if ($request[Constants::FLD_USERS_UVA_HANDLE] && ($request[Constants::FLD_USERS_UVA_HANDLE] != $user->getHandle(Constants::JUDGE_UVA_ID)  )) {
+        if ($request[Constants::FLD_USERS_UVA_HANDLE]) {
             $user->addHandle(Constants::JUDGE_UVA_ID, $request[Constants::FLD_USERS_UVA_HANDLE]);
         }
 
-        if ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE] && ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE] != $user->getHandle(Constants::JUDGE_LIVE_ARCHIVE_ID) )) {
+        if ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]) {
             $user->addHandle(Constants::JUDGE_LIVE_ARCHIVE_ID, $request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]);
         }
 
@@ -171,7 +171,7 @@ class UserController extends Controller
             $user->password = bcrypt($request->input('password'));
         }
 
-        if($request->input('country') != "")
+        if ($request->input('country') != "")
             $user->country = $request->input('country');
 
         if ($request->input('gender') == 'Male') {
@@ -182,7 +182,7 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->first_name = $request->input('FirstName');
         $user->last_name = $request->input('LastName');
-        
+
         //saving in the database
         $user->save();
 

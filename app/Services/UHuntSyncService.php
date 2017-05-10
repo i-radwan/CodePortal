@@ -102,13 +102,14 @@ abstract class UHuntSyncService extends JudgeSyncService
     /**
      * Fetch submissions data from the online judge's API
      * and synchronize them with our local database
+     *
      * @param User $user
      * @return bool Whether the submissions synchronization process completed successfully
      */
     public function syncSubmissions(User $user = null)
     {
         try {
-            $handle = $user->handle($this->judge);
+            $handle = $user->handle($this->judge[Constants::FLD_JUDGES_ID]);
 
             if (!$handle) {
                 Log::warning("$user->username has no handle on $this->judgeName.");
