@@ -64,11 +64,13 @@ class ProblemController extends Controller
 
             // Get tags names as array
             $tagsNames = explode(",", request()->get(Constants::URL_QUERY_TAG_KEY));
+
             // Get tags IDs from names
             $tagsIDs = Tag::whereIn(Constants::FLD_TAGS_NAME, $tagsNames)
                 ->get()
                 ->pluck(Constants::FLD_TAGS_ID)
                 ->toArray();
+
             return $tagsIDs;
         }
 
@@ -97,5 +99,4 @@ class ProblemController extends Controller
 
         return [Constants::PROBLEMS_SORT_PARAMS[$sortParam] => $sortOrder];
     }
-
 }

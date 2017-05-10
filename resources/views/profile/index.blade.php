@@ -8,7 +8,7 @@
     $owned = $user->owningContests()->paginate(10);
     $participatedContests = $user->participatingContests()->paginate(10);
     $groups = $user->joiningGroups()->paginate(10);
-           
+
 @endphp
 
 {!! Charts::assets() !!}
@@ -70,12 +70,17 @@
                         @include('profile.contest')
                     </div>
 
-                    <!-- groups tab -->
+                    <!-- Groups tab -->
                     <div role="tabpanel" class="fade tab-pane " id="groups">
                         <strong>Your groups</strong>
                         @include('groups.groups_table')
                     </div>
 
+                    <!-- Groups tab -->
+                    <div role="tabpanel" class="fade tab-pane " id="teams">
+                        <strong>Your teams</strong>
+                        {{--TODO: add teams and split routes --}}
+                    </div>
                 </div>
             </div>
         </div>

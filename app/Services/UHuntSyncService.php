@@ -76,11 +76,11 @@ abstract class UHuntSyncService extends JudgeSyncService
     {
         // Search for the problem in the local database, if it does not exists then create a new instance of it
         $problem = $this->judge->problems()->firstOrNew([
-            Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $problemData[UHunt::PROBLEM_ID]
+            Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $problemData[self::PROBLEM_ID]
         ]);
 
         // Extract problem info
-        $problemSolvedCount = $problemData[UHunt::PROBLEM_ACCEPTED_COUNT];
+        $problemSolvedCount = $problemData[self::PROBLEM_ACCEPTED_COUNT];
 
         // If the problem already exists then just update its info
         if ($problem->exists) {
@@ -91,8 +91,8 @@ abstract class UHuntSyncService extends JudgeSyncService
 
         // Fill the problem's data and save it to our local database
         $problem->fill([
-            Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $problemData[UHunt::PROBLEM_NUMBER],
-            Constants::FLD_PROBLEMS_NAME => $problemData[UHunt::PROBLEM_TITLE],
+            Constants::FLD_PROBLEMS_JUDGE_SECOND_KEY => $problemData[self::PROBLEM_NUMBER],
+            Constants::FLD_PROBLEMS_NAME => $problemData[self::PROBLEM_TITLE],
             Constants::FLD_PROBLEMS_SOLVED_COUNT => $problemSolvedCount
         ]);
 
@@ -153,7 +153,7 @@ abstract class UHuntSyncService extends JudgeSyncService
     protected function syncSubmissionsWithDatabase(User $user)
     {
         $data = json_decode($this->rawDataString, true);
-        $submissions = $data[UHunt::SUBMISSION_RESPONSE_RESULT];
+        $submissions = $data[self::SUBMISSION_RESPONSE_RESULT];
 
         foreach ($submissions as $submissionData) {
             $this->saveSubmission($user, $submissionData);
@@ -175,12 +175,12 @@ abstract class UHuntSyncService extends JudgeSyncService
         // Find if submission already exists
         $submission = $this->judge->submissions()->firstOrNew([
             Constants::FLD_SUBMISSIONS_USER_ID => $user->id,
-            Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => $submissionData[UHunt::SUBMISSION_ID]
+            Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => $submissionData[self::SUBMISSION_ID]
         ]);
 
         // Extract submission info
-        $submissionExecutionTime = $submissionData[UHunt::SUBMISSION_EXECUTION_TIME];
-        $submissionVerdict = $this->getVerdict($submissionData[UHunt::SUBMISSION_VERDICT]);
+        $submissionExecutionTime = $submissionData[self::SUBMISSION_EXECUTION_TIME];
+        $submissionVerdict = $this->getVerdict($submissionData[self::SUBMISSION_VERDICT]);
 
         // If submission already exists then just update its verdict and execution time
         if ($submission->exists) {
@@ -193,7 +193,7 @@ abstract class UHuntSyncService extends JudgeSyncService
 
         // Get submission problem model
         $problem = $this->judge->problems()->firstOrNew([
-            Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $submissionData[UHunt::SUBMISSION_PROBLEM_ID]
+            Constants::FLD_PROBLEMS_JUDGE_FIRST_KEY => $submissionData[self::SUBMISSION_PROBLEM_ID]
         ]);
         if (!$problem->exists) {
             // If the problem is not found in our database then skip saving this submission
@@ -202,14 +202,14 @@ abstract class UHuntSyncService extends JudgeSyncService
 
         // Get language model or create it if it does not exist
         $language = Language::firstOrCreate([
-            Constants::FLD_LANGUAGES_NAME => $this->getLanguageName($submissionData[UHunt::SUBMISSION_LANGUAGE])
+            Constants::FLD_LANGUAGES_NAME => $this->getLanguageName($submissionData[self::SUBMISSION_LANGUAGE])
         ]);
 
         // Fill in submission data and store it in our local database
         $submission->fill([
             Constants::FLD_SUBMISSIONS_PROBLEM_ID => $problem->id,
             Constants::FLD_SUBMISSIONS_LANGUAGE_ID => $language->id,
-            Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => $submissionData[UHunt::SUBMISSION_TIME],
+            Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => $submissionData[self::SUBMISSION_TIME],
             Constants::FLD_SUBMISSIONS_EXECUTION_TIME => $submissionExecutionTime,
             Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY => 0,  //TODO:
             Constants::FLD_SUBMISSIONS_VERDICT => $submissionVerdict

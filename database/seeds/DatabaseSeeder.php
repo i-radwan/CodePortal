@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
         $this->call(NotificationsTableSeeder::class);
 
         // Seed blogs
-        $this->call(BlogsSeeder::class);
+        $this->call(BlogsTableSeeder::class);
 
         // Seed votes
 

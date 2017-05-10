@@ -13,13 +13,12 @@ class CreateCommentsTable extends Migration
      */
     public function up()
     {
-        //
         Schema::create(\App\Utilities\Constants::TBL_COMMENTS, function (Blueprint $table) {
             $table->increments(\App\Utilities\Constants::FLD_COMMENTS_ID);
             $table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_POST_ID);
             $table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_USER_ID);
             $table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_PARENT_ID)->nullable(); //ToDo: Samir Change that to normalized table
-//            $table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_PARENT_ID)->default(0);
+            //$table->unsignedInteger(\App\Utilities\Constants::FLD_COMMENTS_PARENT_ID)->default(0);
             $table->text(\App\Utilities\Constants::FLD_COMMENTS_BODY);
             $table->timestamps();
 
