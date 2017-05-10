@@ -106,7 +106,7 @@
                     {{--Submit--}}
                     <div class="form-group">
                         <div class="col-md-12 text-center">
-                            <button onclick="app.moveSessionDataToHiddenFields()" type="submit"
+                            <button onclick="app.moveContestSessionDataToHiddenFields()" type="submit"
                                     class="btn btn-primary" id="add-save-contest">
                                 @if(!isset($contest))
                                     Add

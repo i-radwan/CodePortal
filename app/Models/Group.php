@@ -105,6 +105,21 @@ class Group extends Model
     }
 
     /**
+     * Return this group admins
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function admins()
+    {
+        return $this->belongsToMany(
+            User::class,
+            Constants::TBL_GROUP_ADMINS,
+            Constants::FLD_GROUP_ADMINS_GROUP_ID,
+            Constants::FLD_GROUP_ADMINS_ADMIN_ID
+        );
+    }
+
+    /**
      * Return all members of this group
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

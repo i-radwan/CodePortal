@@ -63,6 +63,7 @@ class Constants
     const ROUTES_GROUPS_MEMBER_REMOVE = 'groups.members.remove';
     const ROUTES_GROUPS_CONTEST_CREATE = 'groups.contests.create';
     const ROUTES_GROUPS_CONTEST_STORE = 'groups.contests.store';
+    const ROUTES_GROUPS_ADMINS_AUTO_COMPLETE = 'groups.admins.auto_complete';
 
     // Teams routes
     const ROUTES_TEAMS_CREATE = 'teams.create';
@@ -585,6 +586,7 @@ class Constants
     const TBL_CONTEST_TEAMS = "contest_teams";
     const TBL_CONTEST_ADMINS = "contest_admins";
     const TBL_PROBLEM_TAGS = "problem_tags";
+    const TBL_GROUP_ADMINS = "group_admins";
     const TBL_GROUP_MEMBERS = "group_members";
     const TBL_GROUP_CONTESTS = "group_contests";
     const TBL_GROUP_JOIN_REQUESTS = "group_join_requests";
@@ -741,6 +743,10 @@ class Constants
     // Group join requests
     const FLD_GROUPS_JOIN_REQUESTS_USER_ID = "user_id";
     const FLD_GROUPS_JOIN_REQUESTS_GROUP_ID = "group_id";
+
+    // Group admins
+    const FLD_GROUP_ADMINS_ADMIN_ID = "user_id";
+    const FLD_GROUP_ADMINS_GROUP_ID = "group_id";
 
     // Sheet problems
     const FLD_SHEET_PROBLEMS_SHEET_ID = "sheet_id";

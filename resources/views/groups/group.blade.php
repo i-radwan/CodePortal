@@ -25,7 +25,8 @@
                 @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_GROUPS_DELETE, $groupID), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to delete this group? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Delete'])
 
                 {{--Edit Link--}}
-                <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_EDIT, $groupID) }}" class="btn btn-link text-dark pull-right margin-5px">Edit</a>
+                <a href="{{ route(\App\Utilities\Constants::ROUTES_GROUPS_EDIT, $groupID) }}"
+                   class="btn btn-link text-dark pull-right margin-5px">Edit</a>
             @endif
 
 
@@ -65,6 +66,10 @@
                                    id="testing-members-link">Members</a>
                             </li>
                             <li role="presentation">
+                                <a href="#admins" aria-controls="admins" role="tab" data-toggle="tab"
+                                   id="testing-admins-link">Admins</a>
+                            </li>
+                            <li role="presentation">
                                 <a href="#contests" aria-controls="contests" role="tab" data-toggle="tab"
                                    id="testing-contests-link">Contests</a>
                             </li>
@@ -95,6 +100,14 @@
                                     @include('groups.group_views.members')
                                 @else
                                     <p class="margin-30px">No members!</p>
+                                @endif
+                            </div>
+
+                            <div role="tabpanel" class="tab-pane horizontal-scroll" id="admins">
+                                @if(count($admins))
+                                    @include('groups.group_views.admins')
+                                @else
+                                    <p class="margin-30px">No admins!</p>
                                 @endif
                             </div>
 

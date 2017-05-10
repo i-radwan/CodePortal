@@ -31,7 +31,7 @@
 
                 {{--Remove participant--}}
                 <td class="text-center">
-                    @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_PARTICIPANTS_DELETE, [$contestID, $userName]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove this participant? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark', 'btnTxt' => 'Delete'])
+                    @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_PARTICIPANTS_DELETE, [$contestID, $userName]), 'method' => 'DELETE', 'confirm' => true, 'confirmMsg' => "'Are you sure want to remove this participant? This action cannot be undone!'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark', 'btnTxt' => 'Remove'])
                 </td>
             @endif
         </tr>

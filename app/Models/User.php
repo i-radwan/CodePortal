@@ -141,7 +141,7 @@ class User extends Authenticatable
      */
     public function getHandle($judgeId)
     {
-        $handle = DB::table(Constants::TBL_USER_HANDLES)->where(Constants::FLD_USER_HANDLES_JUDGE_ID,$judgeId)->where(Constants::FLD_USER_HANDLES_USER_ID, $this->id)->pluck(Constants::FLD_USER_HANDLES_HANDLE)->first();
+        $handle = DB::table(Constants::TBL_USER_HANDLES)->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $judgeId)->where(Constants::FLD_USER_HANDLES_USER_ID, $this->id)->pluck(Constants::FLD_USER_HANDLES_HANDLE)->first();
         return $handle;
     }
 
@@ -310,6 +310,21 @@ class User extends Authenticatable
     public function owningGroups()
     {
         return $this->hasMany(Group::class, Constants::FLD_GROUPS_OWNER_ID);
+    }
+
+    /**
+     * Return the groups that the current user is administrating
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function administratingGroups()
+    {
+        return $this->belongsToMany(
+            Group::class,
+            Constants::TBL_GROUP_ADMINS,
+            Constants::FLD_GROUP_ADMINS_ADMIN_ID,
+            Constants::FLD_GROUP_ADMINS_GROUP_ID
+        );
     }
 
     /**

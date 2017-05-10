@@ -45,6 +45,7 @@ class GroupController extends Controller
     public function displayGroup(Group $group)
     {
         $this->getMembersInfo($group, $members);
+        $this->getAdminsInfo($group, $admins);
         $this->getRequestsInfo($group, $seekers);
         $this->getSheetsInfo($group, $sheets);
         $this->getContestsInfo($group, $contests);
@@ -52,6 +53,7 @@ class GroupController extends Controller
         return view('groups.group')
             ->with('group', $group)
             ->with('members', $members)
+            ->with('admins', $admins)
             ->with('seekers', $seekers)
             ->with('sheets', $sheets)
             ->with('contests', $contests)
@@ -104,7 +106,20 @@ class GroupController extends Controller
         // Assign group owner to current user
         $group[Constants::FLD_GROUPS_OWNER_ID] = Auth::user()[Constants::FLD_USERS_ID];
 
-        $group->save();
+        if ($group->save()) {
+
+            // Assign admins
+            $admins = explode(",", $request->get('admins'));
+            $admins = User::whereIn('username', $admins)->get(); //It's a Collection but a Model is needed
+            foreach ($admins as $admin) {
+                if ($admin[Constants::FLD_USERS_ID] != Auth::user()[Constants::FLD_USERS_ID])
+                    $group->admins()->save($admin);
+            }
+
+        } else {        // return error message
+            \Session::flash("messages", ["Sorry, Group was not saved. Please retry later"]);
+            return redirect(route(Constants::ROUTES_GROUPS_INDEX));
+        }
 
         return redirect(route(Constants::ROUTES_GROUPS_DISPLAY, $group[Constants::FLD_GROUPS_ID]));
     }
@@ -123,7 +138,23 @@ class GroupController extends Controller
         // Update name and save
         $group[Constants::FLD_GROUPS_NAME] = $request->get('name');
 
-        $group->save();
+        if ($group->save()) {
+
+            // Remove add admins then reattach
+            $group->admins()->detach();
+
+            // Update admins
+            $admins = explode(",", $request->get('admins'));
+
+            $admins = User::whereIn('username', $admins)->get(); //It's a Collection but a Model is needed
+            foreach ($admins as $admin) {
+                if ($admin[Constants::FLD_USERS_ID] != Auth::user()[Constants::FLD_USERS_ID])
+                    $group->admins()->save($admin);
+            }
+        } else {        // return error message
+            \Session::flash("messages", ["Sorry, Group was not saved. Please retry later"]);
+            return redirect(route(Constants::ROUTES_GROUPS_INDEX));
+        }
 
         return redirect(route(Constants::ROUTES_GROUPS_DISPLAY, $group[Constants::FLD_GROUPS_ID]));
     }
@@ -324,6 +355,21 @@ class GroupController extends Controller
     }
 
     /**
+     * Get group members data
+     *
+     * @param Group $group
+     * @param array $admins
+     */
+    private function getAdminsInfo(Group $group, &$admins)
+    {
+        $admins = $group
+            ->admins()
+            ->select(Constants::MEMBERS_DISPLAYED_FIELDS)
+            ->get();
+
+    }
+
+    /**
      * Get group contests data
      *
      * @param Group $group
@@ -389,4 +435,20 @@ class GroupController extends Controller
         return response()->json($data);
     }
 
+
+    /**
+     * Retrieve usernames for auto complete
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function adminsAutoComplete(Request $request)
+    {
+        $query = $request->get('query');
+        $users = User::select([Constants::FLD_USERS_USERNAME . ' as name'])
+            ->where(Constants::FLD_USERS_USERNAME, 'LIKE', "%$query%")
+            ->where(Constants::FLD_USERS_USERNAME, '!=', Auth::user()[Constants::FLD_USERS_USERNAME])
+            ->get();
+        return response()->json($users);
+    }
 }

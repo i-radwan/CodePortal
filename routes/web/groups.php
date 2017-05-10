@@ -44,9 +44,14 @@ Route::group(['middleware' => 'auth'], function () {
         ->name(Constants::ROUTES_GROUPS_EDIT)
         ->middleware(['can:owner-group,group']);
 
+    // Admins auto complete
+    Route::get('groups/admins_auto_complete', 'GroupController@adminsAutoComplete')
+        ->name(Constants::ROUTES_GROUPS_ADMINS_AUTO_COMPLETE);
+
     // Get group view
     Route::get('groups/{group}', 'GroupController@displayGroup')
         ->name(Constants::ROUTES_GROUPS_DISPLAY);
+
 
     // Save sheets problems filters to server session
     Route::post('sheets/create/sheet_tags_judges_filters_sync', 'SheetController@applyProblemsFilters')

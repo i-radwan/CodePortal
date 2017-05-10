@@ -377,12 +377,12 @@ class ContestController extends Controller
 
         if ($contest->save()) {
 
-            //Get Organisers and problems
+            // Get Organisers and problems
             if (!$group) {
                 if ($editingContest)
                     $contest->organizers()->detach();
 
-                //Save Organisers if not group contest // ToDo add group admins later
+                // Save Organisers if not group contest // ToDo add group admins later
                 $organisers = explode(",", $request->get('organisers'));
                 $organisers = User::whereIn('username', $organisers)->get(); //It's a Collection but a Model is needed
                 foreach ($organisers as $organiser) {

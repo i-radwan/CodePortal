@@ -186,6 +186,22 @@ var app = {
 
         }
 
+        // Add/Edit group page
+        if ($("#add-edit-group-page-hidden-element").length) {
+
+            this.organisersList = document.getElementById("admins-list");
+            app.organizersSessionKey = 'group_admins_session_key';
+
+            // If edit page is on let's fill some sessions first
+            if ($("#add-edit-group-page-hidden-element").data('admins')) {
+                app.fillSessionWithGroupData();
+
+                // Fill admins list
+                app.retrieveListsFromSession(app.organizersSessionKey, app.organisersList);
+            }
+            $('#admins-auto').typeahead(app.autoCompleteList($("#admins-auto").data('admins-path'), app.organisersList, app.organizersSessionKey));
+        }
+
         // Add/Edit sheet page
         if ($("#add-edit-sheet-page-hidden-element").length) {
             // Set the session keys for sheets problems
@@ -567,6 +583,60 @@ var app = {
         $(element).parent().remove();
     },
 
+
+    // ==================================================
+    //               GROUP FUNCTIONS
+    // ==================================================
+
+    /**
+     * Set hidden inputs values from sessions, then clear sessions
+     */
+    moveGroupSessionDataToHiddenFields: function () {
+        // Set value
+        if (sessionStorage.getItem(app.organizersSessionKey))
+            $("#admins-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.organizersSessionKey)).join());
+
+        // Clear sessions
+        app.clearSession();
+    },
+
+    /**
+     * Fill session with the sheet data bound to element
+     * #add-edit-sheet-page-hidden-element
+     */
+    fillSessionWithSheetData: function () {
+        // Set sessionKey to editMode
+        app.problemsIDsSessionKey = 'edit_sheet_problems_ids_session_key';
+
+        // Fetch contest data
+        var element = $("#add-edit-sheet-page-hidden-element");
+
+        var sheetProblems = '';
+
+        if (element.data('problems').length)
+            sheetProblems = '["' + element.data('problems').toString().replace(/,/g, '","') + '"]';
+
+        // Fill sessions
+        sessionStorage.setItem(app.problemsIDsSessionKey, sheetProblems);
+
+    },
+
+    /**
+     * Fill session with the sheet data bound to element
+     * #add-edit-sheet-page-hidden-element
+     */
+    fillSessionWithGroupData: function () {
+        // Fetch contest data
+        var element = $("#add-edit-group-page-hidden-element");
+
+        var groupAdmins = '';
+        if (element.data('admins').length)
+            groupAdmins = '["' + element.data('admins').toString().replace(/,/g, '","') + '"]';
+
+        // Fill sessions
+        sessionStorage.setItem(app.organizersSessionKey, groupAdmins);
+
+    },
     // ==================================================
     //            ADD/EDIT CONTEST FUNCTIONS
     // ==================================================
@@ -608,26 +678,6 @@ var app = {
         sessionStorage.setItem(app.contestPrivateVisibilitySessionKey, contestVisibility);
         sessionStorage.setItem(app.organizersSessionKey, contestOrganizers);
         sessionStorage.setItem(app.problemsIDsSessionKey, contestProblems);
-
-    },
-    /**
-     * Fill session with the sheet data bound to element
-     * #add-edit-sheet-page-hidden-element
-     */
-    fillSessionWithSheetData: function () {
-        // Set sessionKey to editMode
-        app.problemsIDsSessionKey = 'edit_sheet_problems_ids_session_key';
-
-        // Fetch contest data
-        var element = $("#add-edit-sheet-page-hidden-element");
-
-        var sheetProblems = '';
-
-        if (element.data('problems').length)
-            sheetProblems = '["' + element.data('problems').toString().replace(/,/g, '","') + '"]';
-
-        // Fill sessions
-        sessionStorage.setItem(app.problemsIDsSessionKey, sheetProblems);
 
     },
 
@@ -834,7 +884,9 @@ var app = {
                     // Use this threshold to prevent looking for username
                     // using the first letter only (a lot of possibilities exist)
                     if (query.length >= 2) {
+                        console.log(path);
                         return $.get(path, {query: query}, function (data) {
+                            console.log(data);
                             return process(data);
                         });
                     }
@@ -953,7 +1005,7 @@ var app = {
     /**
      * Set hidden inputs values from sessions, then clear sessions
      */
-    moveSessionDataToHiddenFields: function () {
+    moveContestSessionDataToHiddenFields: function () {
         // Set value
         if (sessionStorage.getItem(app.organizersSessionKey))
             $("#organisers-ids-hidden").val(JSON.parse(sessionStorage.getItem(app.organizersSessionKey)).join());

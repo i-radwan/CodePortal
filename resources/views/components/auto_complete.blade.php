@@ -13,8 +13,7 @@
             <input id="{{ $itemsType }}-auto" type="text" class="form-control search-box"
                    placeholder="{{ $itemName }} name..."
                    data-{{ $itemsType }}-path="{{ $itemsLink }}"
-                   onkeypress="return event.keyCode != 13;"
-                    autocomplete="off">
+                   onkeypress="return event.keyCode != 13;" autocomplete="off">
 
         </div>
     </div>
