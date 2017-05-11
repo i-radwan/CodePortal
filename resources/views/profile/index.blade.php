@@ -11,7 +11,7 @@
            
 @endphp
 
-{!! Charts::assets() !!}
+{!! \ConsoleTVs\Charts\Facades\Charts::assets() !!}
 @extends('layouts.app')
 
 @section('content')

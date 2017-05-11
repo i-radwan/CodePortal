@@ -1,4 +1,5 @@
 <?php
+use App\Utilities\Constants;
 
 return [
 
@@ -105,7 +106,7 @@ return [
             'max' => 'The contest duration may not be more than 30 days',
         ],
         'time' => [
-            'after' => 'The contest start time must be in future!',
+            'after' => 'The contest start time must be in the next ' . Constants::CONTESTS_MAX_START_DATETIME . ' days',
         ],
         'oldPassword' => [
             'old' => 'old password mismatch',
