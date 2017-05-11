@@ -376,16 +376,16 @@ class ContestController extends Controller
 
         // Fill relations
         if ($contest->save()) {
-            
+
             // Detach contest old organisers
             if ($editingContest)
                 $contest->organizers()->detach();
 
             // Assign organisers
-            $this->associateContestOrganisers($contest, $group, $request->get('organisers'));
+            $this->associateContestOrganisers($contest, $request->get('organisers'), $group);
 
             // Send notifications
-            $this->sendPrivateContestInvitations($contest, $group, $request->get('invitees'), $request->get('visibility'));
+            $this->sendPrivateContestInvitations($contest, $request->get('invitees'), $request->get('visibility'), $group);
 
             // Add problems
             $this->associateContestProblems($contest, $request->get('problems_ids'));
@@ -397,7 +397,7 @@ class ContestController extends Controller
             Session::flash("messages", ["Contest Saved Successfully"]);
             return redirect(route(Constants::ROUTES_CONTESTS_DISPLAY, $contest[Constants::FLD_CONTESTS_ID]));
 
-        } else {        // return error message
+        } else {   // return error message
             Session::flash("messages", ["Sorry, Contest was not saved. Please retry later"]);
             return redirect(route(Constants::ROUTES_CONTESTS_INDEX));
         }
@@ -837,10 +837,10 @@ class ContestController extends Controller
      * Associate the given contest with the given organisers
      *
      * @param Contest $contest
-     * @param Group $group
      * @param $organisers
+     * @param Group $group
      */
-    private function associateContestOrganisers(Contest $contest, Group $group, $organisers)
+    private function associateContestOrganisers(Contest $contest, $organisers, Group $group = null)
     {
         // For private contests (not in groups) we set the organisers as received
         // from the request
@@ -872,12 +872,12 @@ class ContestController extends Controller
      * Send private contest invitations to invitees
      * If group contest, the invitations will be sent to group memebers
      *
-     * @param $contest
-     * @param $group
+     * @param Contest $contest
      * @param $invitees
      * @param $visibility
+     * @param Group $group
      */
-    private function sendPrivateContestInvitations($contest, $group, $invitees, $visibility)
+    private function sendPrivateContestInvitations(Contest $contest, $invitees, $visibility, Group $group = null)
     {
         // Send notifications to Invitees if private contest and not for specific group
         if (!$group && $visibility == Constants::CONTEST_VISIBILITY_PRIVATE) {

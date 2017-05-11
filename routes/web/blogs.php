@@ -11,7 +11,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Edit blog post view
     Route::get('blogs/{post}/edit', 'BlogController@addEditPost')
         ->name(Constants::ROUTES_BLOGS_POST_EDIT)
-        ->middleware(['can:owner-post,post']);
+        ->middleware(['canGateForUser:owner-post,post']);
 
     // Add new blog post
     Route::post('blogs', 'BlogController@addPost')
@@ -25,12 +25,12 @@ Route::group(['middleware' => 'auth'], function () {
     // Update blog post
     Route::put('blogs/{post}', 'BlogController@editPost')
         ->name(Constants::ROUTES_BLOGS_POST_UPDATE)
-        ->middleware(['can:owner-post,post']);
+        ->middleware(['canGateForUser:owner-post,post']);
 
     // Update comment
     Route::post('comments/{comment}', 'BlogController@editComment')
         ->name(Constants::ROUTES_BLOGS_COMMENT_UPDATE)
-        ->middleware(['can:owner-comment,comment']);
+        ->middleware(['canGateForUser:owner-comment,comment']);
 
     // Upvote blog post
     Route::put('blogs/{post}/up_vote', 'VoteController@upVotePost')
@@ -51,12 +51,12 @@ Route::group(['middleware' => 'auth'], function () {
     // Delete blog post
     Route::delete('blogs/{post}', 'BlogController@deletePost')
         ->name(Constants::ROUTES_BLOGS_POST_DELETE)
-        ->middleware(['can:owner-post,post']);
+        ->middleware(['canGateForUser:owner-post,post']);
 
     // Delete comment
     Route::delete('comments/{comment}', 'BlogController@deleteComment')
         ->name(Constants::ROUTES_BLOGS_COMMENT_DELETE)
-        ->middleware(['can:owner-comment,comment']);
+        ->middleware(['canGateForUser:owner-comment,comment']);
 });
 
 // Get all blog posts

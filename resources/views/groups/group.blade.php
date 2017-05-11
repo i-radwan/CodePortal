@@ -7,7 +7,7 @@
     $ownerUsername = $group->owner[Constants::FLD_USERS_USERNAME];
 
     $isOwner = ((Auth::check()) ? (Auth::user()->owningGroups()->find($groupID) != null) : false);
-    $isOwnerOrAdmin = (Auth::check()) ? (\Gate::forUser(Auth::user())->allows('owner-admin-group', [$groupID])) : false;
+    $isOwnerOrAdmin = (Auth::check()) ? (\Gate::forUser(Auth::user())->allows('owner-admin-group', $group)) : false;
     $isMember = ((Auth::check()) ? (Auth::user()->joiningGroups()->find($groupID) != null) : false);
     $userSentRequest = (Auth::check() && !$isMember && Auth::user()->seekingJoinGroups()->find($groupID));
     $isGroup = true;

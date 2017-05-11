@@ -21,7 +21,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Edit contest view
     Route::get('contests/{contest}/edit', 'ContestController@editContestView')
         ->name(Constants::ROUTES_CONTESTS_EDIT)
-        ->middleware(['can:owner-contest,contest']);
+        ->middleware(['canGateForUser:owner-contest,contest']);
 
     // Organizers auto complete
     Route::get('contests/organisers_auto_complete', 'ContestController@usersAutoComplete')
@@ -38,7 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Add group contest
     Route::post('groups/{group}/contests', 'ContestController@addGroupContest')
         ->name(Constants::ROUTES_GROUPS_CONTEST_STORE)
-        ->middleware(['can:owner-admin-group,group']);
+        ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Sync filters with server session
     Route::post('contests/create/contest_tags_judges_filters_sync', 'ContestController@applyProblemsFilters')
@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Update contest
     Route::post('contests/{contest}', 'ContestController@editContest')
         ->name(Constants::ROUTES_CONTESTS_UPDATE)
-        ->middleware(['can:owner-contest,contest']);
+        ->middleware(['canGateForUser:owner-contest,contest']);
 
     // Join contest
     Route::post('contests/{contest}/join', 'ContestController@joinContest')
@@ -61,7 +61,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Save contest new order
     Route::put('contests/{contest}/reorder', 'ContestController@reorderContest')
         ->name(Constants::ROUTES_CONTESTS_REORDER)
-        ->middleware(['can:owner-contest,contest']);
+        ->middleware(['canGateForUser:owner-contest,contest']);
 
     // Leave contest
     Route::put('contests/{contest}/leave', 'ContestController@leaveContest')
@@ -70,7 +70,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Remove participant
     Route::delete('contests/{contest}/remove/{user}', 'ContestController@removeParticipant')
         ->name(Constants::ROUTES_CONTESTS_PARTICIPANTS_DELETE)
-        ->middleware(['can:owner-organizer-contest,contest', 'can:contest-participant,contest,user']);
+        ->middleware(['canGateForUser:owner-organizer-contest,contest', 'canGateForUser:contest-participant,contest,user']);
 
     // Delete contest
     Route::delete('contests/{contest}/delete', 'ContestController@deleteContest')

@@ -8,32 +8,32 @@ Route::group(['middleware' => 'auth'], function () {
     // Create new sheet for the given group
     Route::get('groups/{group}/sheets/create', 'SheetController@addSheetView')
         ->name(Constants::ROUTES_GROUPS_SHEET_CREATE)
-        ->middleware(['can:owner-admin-group,group']);
+        ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Get sheet problem solution
     Route::get('sheets/{sheet}/solution/{problemID}', 'SheetController@retrieveProblemSolution')
         ->name(Constants::ROUTES_GROUPS_SHEET_SOLUTION_DISPLAY)
-        ->middleware(['can:owner-or-member-group,sheet']);
+        ->middleware(['canGateForUser:owner-or-member-group,sheet']);
 
     // Get edit sheet view
     Route::get('sheets/{sheet}/edit', 'SheetController@editSheetView')
         ->name(Constants::ROUTES_GROUPS_SHEET_EDIT)
-        ->middleware(['can:owner-admin-group,sheet']);
+        ->middleware(['canGateForUser:owner-admin-group,sheet']);
 
     // Get sheet
     Route::get('sheets/{sheet}', 'SheetController@displaySheet')
         ->name(Constants::ROUTES_GROUPS_SHEET_DISPLAY)
-        ->middleware(['can:owner-or-member-group,sheet']);
+        ->middleware(['canGateForUser:owner-or-member-group,sheet']);
 
     // Get group invitees auto complete users list
     Route::get('groups/{group}/invitees_auto_complete', 'GroupController@usersAutoComplete')
         ->name(Constants::ROUTES_GROUPS_INVITEES_AUTO_COMPLETE)
-        ->middleware(['can:owner-admin-group,group']);
+        ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Create group private contest
     Route::get('groups/{group}/contests/create', 'ContestController@addGroupContestView')
         ->name(Constants::ROUTES_GROUPS_CONTEST_CREATE)
-        ->middleware(['can:owner-admin-group,group']);
+        ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Create new group
     Route::get('groups/create', 'GroupController@addGroupView')
@@ -42,7 +42,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Edit group
     Route::get('groups/{group}/edit', 'GroupController@editGroupView')
         ->name(Constants::ROUTES_GROUPS_EDIT)
-        ->middleware(['can:owner-group,group']);
+        ->middleware(['canGateForUser:owner-group,group']);
 
     // Admins auto complete
     Route::get('groups/admins_auto_complete', 'GroupController@adminsAutoComplete')
@@ -68,17 +68,17 @@ Route::group(['middleware' => 'auth'], function () {
     // Update sheet
     Route::post('sheets/{sheet}/edit', 'SheetController@editSheet')
         ->name(Constants::ROUTES_GROUPS_SHEET_UPDATE)
-        ->middleware(['can:owner-admin-group,sheet']);
+        ->middleware(['canGateForUser:owner-admin-group,sheet']);
 
     // Create new group sheet
     Route::post('groups/{group}/sheets', 'SheetController@addSheet')
         ->name(Constants::ROUTES_GROUPS_SHEET_STORE)
-        ->middleware(['can:owner-admin-group,group']);
+        ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Invite member to group
     Route::post('groups/{group}/members/invite', 'GroupController@inviteMember')
         ->name(Constants::ROUTES_GROUPS_INVITATION_STORE)
-        ->middleware(['can:owner-admin-group,group']);
+        ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Join group
     Route::post('groups/{group}/join', 'GroupController@joinGroup')
@@ -87,7 +87,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Update group
     Route::post('groups/{group}', 'GroupController@editGroup')
         ->name(Constants::ROUTES_GROUPS_UPDATE)
-        ->middleware(['can:owner-group,group']);
+        ->middleware(['canGateForUser:owner-group,group']);
 
     // Add new group
     Route::post('groups', 'GroupController@addGroup')
@@ -96,32 +96,32 @@ Route::group(['middleware' => 'auth'], function () {
     // Accept user request
     Route::put('groups/{group}/requests/accept/{user}', 'GroupController@acceptRequest')
         ->name(Constants::ROUTES_GROUPS_REQUEST_ACCEPT)
-        ->middleware(['can:owner-admin-group,group']);
+        ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Reject user request
     Route::put('groups/{group}/requests/reject/{user}', 'GroupController@rejectRequest')
         ->name(Constants::ROUTES_GROUPS_REQUEST_REJECT)
-        ->middleware(['can:owner-admin-group,group']);
+        ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Leave group
     Route::put('groups/{group}/leave', 'GroupController@leaveGroup')
         ->name(Constants::ROUTES_GROUPS_LEAVE)
-        ->middleware(['can:member-group,group']);
+        ->middleware(['canGateForUser:member-group,group']);
 
     // Remove group member
     Route::delete('groups/{group}/members/{user}', 'GroupController@removeMember')
         ->name(Constants::ROUTES_GROUPS_MEMBER_REMOVE)
-        ->middleware(['can:owner-admin-group,group', 'can:member-group,group,user']);
+        ->middleware(['canGateForUser:owner-admin-group,group', 'canGateForUser:member-group,group,user']);
 
     // Delete group
     Route::delete('groups/{group}', 'GroupController@deleteGroup')
         ->name(Constants::ROUTES_GROUPS_DELETE)
-        ->middleware(['can:owner-group,group']);
+        ->middleware(['canGateForUser:owner-group,group']);
 
     // Delete sheet
     Route::delete('sheets/{sheet}', 'SheetController@deleteSheet')
         ->name(Constants::ROUTES_GROUPS_SHEET_DELETE)
-        ->middleware(['can:owner-admin-group,sheet']);
+        ->middleware(['canGateForUser:owner-admin-group,sheet']);
 });
 
 // Get all groups
