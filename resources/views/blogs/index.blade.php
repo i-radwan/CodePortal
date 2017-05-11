@@ -29,7 +29,7 @@
                             $postCreatedAt = \App\Utilities\Utilities::formatPastDateTime($post[\App\Utilities\Constants::FLD_POSTS_CREATED_AT]);
                             $downVotesCount = $post->downVotes()->count();
                             $upVotesCount = $post->upVotes()->count();
-                            $didUserVote = ($post->didUserUpVote(Auth::user())) ? 1 : ($post->didUserDownVote(Auth::user()) ? 0 : -1);
+                            $didUserVote = ((Auth::check()) ? (($post->didUserUpVote(Auth::user())) ? 1 : ($post->didUserDownVote(Auth::user()) ? 0 : -1)) : false);
                         @endphp
 
                         {{--Post meta info view--}}
