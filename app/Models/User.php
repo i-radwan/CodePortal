@@ -145,7 +145,7 @@ class User extends Authenticatable
         // TODO: add these handles in a queue to fetch their submissions
         // TODO: validate
 
-        // If adding the same handle then no need to proceed
+        // If adding the same handle as before then no need to proceed further
         if ($this->handle($judgeId) == $handle) {
             return;
         }

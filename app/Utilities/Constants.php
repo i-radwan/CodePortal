@@ -95,7 +95,6 @@ class Constants
     const ROUTES_BLOGS_COMMENT_UPVOTE = 'blogs.comment.upvote';
     const ROUTES_BLOGS_COMMENT_DOWNVOTE = 'blogs.comment.downvote';
 
-
     // Profile routes
     const ROUTES_PROFILE = 'profile';
     const ROUTES_PROFILE_INFO = 'profile.info';
