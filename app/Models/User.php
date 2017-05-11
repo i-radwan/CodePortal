@@ -461,36 +461,4 @@ class User extends Authenticatable
     {
         return $this->receivedNotifications()->ofStatus(Constants::NOTIFICATION_STATUS_UNREAD);
     }
-
-    /**
-     * Get User up Voted Posts
-     */
-    public function upVotedPosts()
-    {
-        return $this->morphedByMany(Post::class, Constants::TBL_VOTES)->where(Constants::FLD_VOTES_DELETED_AT, null);
-    }
-
-    /**
-     * Get User up Voted Comments
-     */
-    public function upVotedComments()
-    {
-        return $this->morphedByMany(Comment::class, Constants::TBL_VOTES)->where(Constants::FLD_VOTES_DELETED_AT, null);
-    }
-
-    /**
-     * Get User down Voted Posts
-     */
-    public function downVotedPosts()
-    {
-        return $this->morphedByMany(Post::class, Constants::TBL_DOWN_VOTES)->where(Constants::FLD_VOTES_DELETED_AT, null);
-    }
-
-    /**
-     * Get User down Voted Comments
-     */
-    public function downVotedComments()
-    {
-        return $this->morphedByMany(Comment::class, Constants::TBL_DOWN_VOTES)->where(Constants::FLD_VOTES_DELETED_AT, null);
-    }
 }
