@@ -78,51 +78,6 @@
                                     </div>
                                 </div>
 
-                                {{-- Codeforces handle--}}
-                                <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_CODEFORCES_HANDLE) ? ' has-error' : '' }}">
-                                    <label for="codeforces-handle" class="col-md-4 control-label">Codeforces' Handle</label>
-
-                                    <div class="col-md-6">
-                                        <input id="codeforces-handle" type="text" class="form-control" name="{{ \App\Utilities\Constants::FLD_USERS_CODEFORCES_HANDLE }}" value="{{ old(\App\Utilities\Constants::FLD_USERS_CODEFORCES_HANDLE) }}" placeholder="Codeforces' Handle (Optional)">
-
-                                        @if ($errors->has(\App\Utilities\Constants::FLD_USERS_CODEFORCES_HANDLE))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first(\App\Utilities\Constants::FLD_USERS_CODEFORCES_HANDLE) }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                {{-- UVA handle --}}
-                                <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_UVA_HANDLE) ? ' has-error' : '' }}">
-                                    <label for="uva-handle" class="col-md-4 control-label">UVA's Handle</label>
-
-                                    <div class="col-md-6">
-                                        <input id="uva-handle" type="text" class="form-control" name="{{ \App\Utilities\Constants::FLD_USERS_UVA_HANDLE }}" value="{{ old(\App\Utilities\Constants::FLD_USERS_UVA_HANDLE) }}" placeholder="UVA's Handle (Optional)">
-
-                                        @if ($errors->has(\App\Utilities\Constants::FLD_USERS_UVA_HANDLE))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first(\App\Utilities\Constants::FLD_USERS_UVA_HANDLE) }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                {{-- Live Archive hanlde --}}
-                                <div class="form-group{{ $errors->has(\App\Utilities\Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE) ? ' has-error' : '' }}">
-                                    <label for="live-archive-handle" class="col-md-4 control-label">Live Archive's Handle</label>
-
-                                    <div class="col-md-6">
-                                        <input id="live-archive-handle" type="text" class="form-control" name="{{ \App\Utilities\Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE }}" value="{{ old(\App\Utilities\Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE) }}" placeholder="Live Archive's Handle (Optional)">
-
-                                        @if ($errors->has(\App\Utilities\Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE))
-                                            <span class="help-block">
-                                                <strong>{{ $errors->first(\App\Utilities\Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE) }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-
                                 <div class="form-group">
                                     <div class="col-md-6 col-md-offset-4">
                                         <button type="submit" class="btn btn-primary">

@@ -40,7 +40,7 @@ class ContestsTableSeeder extends Seeder
                 Constants::FLD_CONTESTS_OWNER_ID => $faker->randomElement($userIDs),
                 Constants::FLD_CONTESTS_NAME => $faker->sentence,
                 Constants::FLD_CONTESTS_VISIBILITY => $faker->randomElement(Constants::CONTEST_VISIBILITIES),
-                Constants::FLD_CONTESTS_TIME => $faker->dateTimeThisMonth,
+                Constants::FLD_CONTESTS_TIME => $faker->dateTimeBetween('-2 week', '+1 week'),
                 Constants::FLD_CONTESTS_DURATION => $faker->numberBetween(30, 340),
             ]);
         }

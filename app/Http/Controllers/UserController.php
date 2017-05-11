@@ -46,6 +46,7 @@ class UserController extends Controller
             ->labels($weekDays)
             ->dataset('submitted problems', $submissions['totalSubmissionsCount'])
             ->dataset('solved problems', $submissions['acceptedSubmissionsCount']);
+
         return $chart;
     }
 
@@ -59,22 +60,28 @@ class UserController extends Controller
         // Why created_at ?!
         $submissions = $user->submissions()->whereBetween('created_at', [$dateS->format('Y-m-d') . " 00:00:00", $dateE->format('Y-m-d') . " 23:59:59"])->get();
 
+
         $totalsubmissions = $submissions->groupBy(function ($date) {
             return Carbon::parse($date->created_at)->format('l');
         });
-
 
         $acceptedSubmissions = $submissions->whereIn(Constants::FLD_SUBMISSIONS_VERDICT, [Constants::VERDICT_ACCEPTED, Constants::VERDICT_PARTIAL_ACCEPTED])->groupBy(function ($date) {
             return Carbon::parse($date->created_at)->format('l');
         });
 
-
         $ret = [];
+
         foreach ($weekDays as $day) {
             array_push($ret, (isset($totalsubmissions[$day]) ? $totalsubmissions[$day]->count() : 0));
         }
         $submissionsCount['totalSubmissionsCount'] = $ret;
 
+
+        $ret = [];
+        foreach ($weekDays as $day) {
+            array_push($ret, (isset($acceptedSubmissions[$day]) ? $acceptedSubmissions[$day]->count() : 0));
+        }
+        $submissionsCount['acceptedSubmissionsCount'] = $ret;
 
         $ret = [];
         foreach ($weekDays as $day) {
@@ -152,7 +159,6 @@ class UserController extends Controller
 
         //saving user handles in DB
         if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE] && ($request[Constants::FLD_USERS_CODEFORCES_HANDLE] != $user->getHandle(Constants::JUDGE_CODEFORCES_ID))) {
-
             $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $request[Constants::FLD_USERS_CODEFORCES_HANDLE]);
         }
 

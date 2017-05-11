@@ -13,7 +13,6 @@ class CreateVotesTable extends Migration
      */
     public function up()
     {
-        //
         Schema::create(Constants::TBL_VOTES, function (Blueprint $table) {
             $table->increments(Constants::FLD_VOTES_ID);
             $table->unsignedInteger(Constants::FLD_VOTES_USER_ID);

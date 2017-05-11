@@ -68,7 +68,7 @@ class Question extends Model
      * @param Contest $contest
      * @param Problem $problem
      *
-     * @return Question $q
+     * @return Question
      */
     public static function askQuestion(array $attributes = [], $user = null, $contest = null, $problem = null)
     {

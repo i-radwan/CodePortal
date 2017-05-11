@@ -787,7 +787,7 @@ class ContestController extends Controller
         // If user is logged in and not organizer, get his questions too
         if ($user && !$isOwnerOrOrganizer) {
             // Get user specific questions
-            $questions = $user->contestQuestions($contest[Constants::FLD_CONTESTS_ID])->get();
+            $questions = $user->questions($contest[Constants::FLD_CONTESTS_ID])->get();
 
             // Merge announcements and user questions
             $announcements = $announcements->merge($questions);

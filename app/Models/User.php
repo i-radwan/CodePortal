@@ -119,30 +119,18 @@ class User extends Authenticatable
     /**
      * Return user's handle corresponding to the given judge, if not found then null is returned
      *
-     * @param Judge $judge
+     * @param int $judgeId
      * @return string|null
      */
-    public function handle(Judge $judge)
+    public function handle($judgeId)
     {
-        $judgeHandle = $this->handles()->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $judge->id)->first();
+        $judgeHandle = $this->handles()->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $judgeId)->first();
 
         if (!$judgeHandle) {
             return null;
         }
 
-        return $judgeHandle->pivot->handle;
-    }
-
-    /**
-     * Returns user handle based on the judge's id
-     *
-     * @param int $judgeId
-     * @return string $handle
-     */
-    public function getHandle($judgeId)
-    {
-        $handle = DB::table(Constants::TBL_USER_HANDLES)->where(Constants::FLD_USER_HANDLES_JUDGE_ID, $judgeId)->where(Constants::FLD_USER_HANDLES_USER_ID, $this->id)->pluck(Constants::FLD_USER_HANDLES_HANDLE)->first();
-        return $handle;
+        return $judgeHandle->pivot[Constants::FLD_USER_HANDLES_HANDLE];
     }
 
     /**
@@ -155,9 +143,16 @@ class User extends Authenticatable
     {
         // TODO: Omar Wael
         // TODO: add these handles in a queue to fetch their submissions
-        // TODO: update handle
         // TODO: validate
-        $this->handles()->attach($judgeId, [Constants::FLD_USER_HANDLES_HANDLE => $handle]);
+
+        // If adding the same handle then no need to proceed
+        if ($this->handle($judgeId) == $handle) {
+            return;
+        }
+
+        $this->handles()->syncWithoutDetaching([
+            $judgeId => [Constants::FLD_USER_HANDLES_HANDLE => $handle]
+        ]);
     }
 
     /**
@@ -172,6 +167,8 @@ class User extends Authenticatable
 
     /**
      * Return all problems correctly or wrongly solved
+     *
+     * TODO: fix problems that is both correctly & wrongly solved
      *
      * @param bool $accepted Whether to return correctly or wrongly solved problems
      * @return \Illuminate\Database\Query\Builder
@@ -208,18 +205,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the contests that the current user participated in
+     * Return the contests that the current user owns
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function participatingContests()
+    public function owningContests()
     {
-        return $this->belongsToMany(
-            Contest::class,
-            Constants::TBL_CONTEST_PARTICIPANTS,
-            Constants::FLD_CONTEST_PARTICIPANTS_USER_ID,
-            Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID
-        )->withTimestamps();
+        return $this->hasMany(Contest::class, Constants::FLD_CONTESTS_OWNER_ID);
     }
 
     /**
@@ -238,13 +230,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Return the contests that the current user owns
+     * Return the contests that the current user participated in
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function owningContests()
+    public function participatingContests()
     {
-        return $this->hasMany(Contest::class, Constants::FLD_CONTESTS_OWNER_ID);
+        return $this->belongsToMany(
+            Contest::class,
+            Constants::TBL_CONTEST_PARTICIPANTS,
+            Constants::FLD_CONTEST_PARTICIPANTS_USER_ID,
+            Constants::FLD_CONTEST_PARTICIPANTS_CONTEST_ID
+        )->withTimestamps();
     }
 
     /**
@@ -268,25 +265,21 @@ class User extends Authenticatable
     }
 
     /**
-     * Return all questions asked by the current user
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function questions()
-    {
-        return $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID);
-    }
-
-    /**
-     * Return all questions asked by the current user in the given contest
+     * Return all questions asked by the current user in the given contest.
+     * If no contest is passed then all questions in all contests will be returned
      *
      * @param int $contestId
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function contestQuestions($contestId)
+    public function questions($contestId = null)
     {
-        return $this->questions()
-            ->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
+        $query = $this->hasMany(Question::class, Constants::FLD_QUESTIONS_USER_ID);
+
+        if ($contestId != null) {
+            $query->where(Constants::FLD_QUESTIONS_CONTEST_ID, '=', $contestId);
+        }
+
+        return $query;
     }
 
     /**
@@ -442,16 +435,6 @@ class User extends Authenticatable
         return $this->receivedNotifications()->orderByDesc(Constants::FLD_NOTIFICATIONS_ID);
     }
 
-
-    /**
-     * Get user posts
-     */
-    public function posts()
-    {
-        return $this->hasMany(Post::class, Constants::FLD_POSTS_OWNER_ID);
-    }
-
-
     /**
      * Return user unread notifications
      *
@@ -460,5 +443,15 @@ class User extends Authenticatable
     public function unreadNotifications()
     {
         return $this->receivedNotifications()->ofStatus(Constants::NOTIFICATION_STATUS_UNREAD);
+    }
+
+    /**
+     * Get user posts
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class, Constants::FLD_POSTS_OWNER_ID);
     }
 }

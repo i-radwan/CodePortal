@@ -151,10 +151,9 @@ class Contest extends Model
                 DB::raw('NOW()')
             )
             ->whereRaw(  // DATE_ADD(time, INTERVAL duration MINUTE) > NOW()
-                "DATE_ADD(" . Constants::FLD_CONTESTS_TIME
-                . ", INTERVAL " .
-                Constants::FLD_CONTESTS_DURATION
-                . " MINUTE) > NOW()"
+                "DATE_ADD(" .
+                Constants::FLD_CONTESTS_TIME . ", INTERVAL " .
+                Constants::FLD_CONTESTS_DURATION . " MINUTE) > NOW()"
             );
     }
 
@@ -168,10 +167,8 @@ class Contest extends Model
     {
         return $query
             ->whereRaw(  // DATE_ADD(time, INTERVAL duration MINUTE) < NOW()
-                "DATE_ADD(" . Constants::FLD_CONTESTS_TIME
-                . ", INTERVAL " .
-                Constants::FLD_CONTESTS_DURATION
-                . " MINUTE) < NOW()"
+                "DATE_ADD(" . Constants::FLD_CONTESTS_TIME . ", INTERVAL " .
+                Constants::FLD_CONTESTS_DURATION . " MINUTE) < NOW()"
             );
     }
 
@@ -332,7 +329,8 @@ class Contest extends Model
     }
 
     /**
-     * Contest end time
+     * Return contest end time
+     *
      * @return false|int
      */
     private function getContestEndTime()
@@ -354,7 +352,10 @@ class Contest extends Model
         $contestEndTime = $this->getContestEndTime();
 
         // Check if contest is running
-        return (date("Y-m-d H:i:s") > $this->time && date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime));
+        return (
+            date("Y-m-d H:i:s") > $this[Constants::FLD_CONTESTS_TIME] &&
+            date("Y-m-d H:i:s") < date("Y-m-d H:i:s", $contestEndTime)
+        );
     }
 
     /**

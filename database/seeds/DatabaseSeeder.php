@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         Eloquent::unguard();
 
         // Sync problems
-        $this->call(ProblemsSeeder::class);
+        $this->call(ProblemsTableSeeder::class);
 
         // Seed users
         $this->call(UsersTableSeeder::class);
@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
         $this->call(NotificationsTableSeeder::class);
 
         // Seed blogs
-        $this->call(BlogsSeeder::class);
+        $this->call(BlogsTableSeeder::class);
 
         // Seed votes
 
