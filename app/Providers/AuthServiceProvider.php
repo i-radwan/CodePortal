@@ -33,6 +33,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        //
+        // CONTESTs
+        //
+
         // View or join contest gate
         // User can view and join contest if and only if the contest
         // is public, or the user has non-deleted invitation regarding this contest
@@ -61,17 +65,17 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         // Owner of contest
-        Gate::define("owner-contest", function (User $user, $contestID) {
+        Gate::define("owner-contest", function (User $user, Contest $contest) {
             // Check if user is owner
-            return ($user->owningContests()->find($contestID));
+            return ($contest[Constants::FLD_CONTESTS_OWNER_ID] == $user[Constants::FLD_USERS_ID]);
         });
 
         // Owner or organizer of contest
-        Gate::define("owner-organizer-contest", function (User $user, $contestID) {
+        Gate::define("owner-organizer-contest", function (User $user, Contest $contest) {
             // Check if user is organizer or owner
             return (
-                $user->organizingContests()->find($contestID) ||
-                $user->owningContests()->find($contestID)
+                $contest[Constants::FLD_CONTESTS_OWNER_ID] == $user[Constants::FLD_USERS_ID] ||
+                $user->organizingContests()->find($contest[Constants::FLD_CONTESTS_ID])
             );
         });
 
@@ -81,6 +85,10 @@ class AuthServiceProvider extends ServiceProvider
             return ($user->participatingContests()->find($contest[Constants::FLD_CONTESTS_ID]));
         });
 
+
+        //
+        // GROUPs
+        //
 
         // Owner of group/sheet
         Gate::define("owner-group", function (User $user, $resource) {
@@ -173,6 +181,9 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
+        //
+        // TEAMs
+        //
 
         // Member of team
         Gate::define("member-team", function (User $user, Team $team) {
@@ -186,6 +197,9 @@ class AuthServiceProvider extends ServiceProvider
             return ($team->invitedUsers()->find($user[Constants::FLD_USERS_ID]));
         });
 
+        //
+        // BLOGs
+        //
 
         // Post owner
         Gate::define("owner-post", function (User $user, Post $post) {

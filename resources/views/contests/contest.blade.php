@@ -13,11 +13,24 @@
     $contestHour = date('H', $contestDateTime);
     $contestMinute = date('i', $contestDateTime);
 
+    $isContestRunning = $contest->isRunning();
+    $isContestEnded = $contest->isEnded();
+
     $contestDuration = Utilities::convertSecondsToDaysHoursMins($contest[Constants::FLD_CONTESTS_DURATION]);
     $contestOrganizers = $contest->organizers()->pluck(Constants::FLD_USERS_USERNAME);
-
     $ownerUsername = $contest->owner[Constants::FLD_USERS_USERNAME];
-    $isOwnerOrOrganizer = $isOwner || $isUserOrganizer;
+
+    $authUser = Auth::user();
+
+    $isOwner = $isParticipant = $isOrganizer = false;
+
+    if ($authUser) {
+        $isOwner = ($contest[Constants::FLD_CONTESTS_OWNER_ID] == $authUser[Constants::FLD_USERS_ID]);
+        $isOrganizer = ($authUser->organizingContests()->find($contest[Constants::FLD_CONTESTS_ID]) != null);
+        $isParticipant = ($contest->participants()->find($authUser[Constants::FLD_USERS_ID]) != null);
+    }
+
+    $isOwnerOrOrganizer = $isOwner || $isOrganizer;
 @endphp
 
 @extends('layouts.app')

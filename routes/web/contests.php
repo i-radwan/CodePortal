@@ -14,9 +14,15 @@ Route::get('tags_auto_complete', 'Contest\ContestController@tagsAutoComplete')
 
 Route::group(['middleware' => 'auth'], function () {
 
-    // Add new contest view
-    Route::get('contests/create', 'Contest\ContestController@addContestView')
+    // Create new contest page
+    Route::get('contests/create', 'Contest\ContestController@create')
         ->name(Constants::ROUTES_CONTESTS_CREATE);
+
+    // Store newly create contest route
+    Route::post('contests', 'Contest\ContestController@store')
+        ->name(Constants::ROUTES_CONTESTS_STORE);
+
+
 
     // Edit contest view
     Route::get('contests/{contest}/edit', 'Contest\ContestController@editContestView')
@@ -30,10 +36,6 @@ Route::group(['middleware' => 'auth'], function () {
     // Invitees auto complete
     Route::get('contests/invitees_auto_complete', 'Contest\ContestController@usersAutoComplete')
         ->name(Constants::ROUTES_CONTESTS_INVITEES_AUTO_COMPLETE);
-
-    // Add contest
-    Route::post('contests', 'Contest\ContestController@addContest')
-        ->name(Constants::ROUTES_CONTESTS_STORE);
 
     // Add group contest
     Route::post('groups/{group}/contests', 'Contest\ContestController@addGroupContest')
@@ -74,7 +76,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Delete contest
     Route::delete('contests/{contest}/delete', 'Contest\ContestController@deleteContest')
-        ->name(Constants::ROUTES_CONTESTS_DELETE);
+        ->name(Constants::ROUTES_CONTESTS_DELETE)
+        ->middleware(['canGateForUser:owner-contest,contest']);;
 
     //
     // Question routes...
