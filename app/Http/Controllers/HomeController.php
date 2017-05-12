@@ -7,15 +7,6 @@ use App\Utilities\Constants;
 class HomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     */
-    public function __construct()
-    {
-        //$this->middleware('auth');
-    }
-
-    /**
      * Show the application home page.
      *
      * @return \Illuminate\View\View
@@ -29,7 +20,7 @@ class HomeController extends Controller
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
                 'img' => '/images/features/contest-md.jpg',
                 'link_title' => 'Prepare Contests',
-                'url' => 'contests'
+                'url' => route(Constants::ROUTES_CONTESTS_INDEX)
             ],
             [
                 'title' => 'Problems',
@@ -43,14 +34,14 @@ class HomeController extends Controller
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
                 'img' => '/images/features/blog-md.jpg',
                 'link_title' => 'Write Blogs',
-                'url' => 'blogs'
+                'url' => route(Constants::ROUTES_BLOGS_INDEX)
             ],
             [
                 'title' => 'Groups',
                 'description' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
                 'img' => '/images/features/group-md.jpg',
                 'link_title' => 'Manage Groups',
-                'url' => 'groups'
+                'url' => route(Constants::ROUTES_GROUPS_INDEX)
             ]
         ];
 
@@ -95,10 +86,10 @@ class HomeController extends Controller
             ]
         ];
 
-        return view('home.index', [
-            'features' => $features,
-            'quotes' => $quotes,
-            'sponsors' => $sponsors
-        ])->with('pageTitle', config('app.name'));
+        return view('home.index')
+            ->with('features', $features)
+            ->with('quotes', $quotes)
+            ->with('sponsors', $sponsors)
+            ->with('pageTitle', config('app.name'));
     }
 }

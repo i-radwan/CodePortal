@@ -11,7 +11,7 @@ use App\Utilities\Constants;
 
 class ProblemController extends Controller
 {
-    use RetrieveProblems;
+    use RetrievesProblems;
 
     /**
      * Show the problems page.

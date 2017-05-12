@@ -16,7 +16,7 @@
 
             <th class="text-center">
                 <a href="{{ $link }}" title="{{ $id . ' - ' . $problem->name }}">
-                    P{{ $loop->index + 1 }}
+                    P{{ $loop->iteration }}
                 </a>
             </th>
         @endforeach
@@ -26,7 +26,7 @@
     @foreach($standings as $row)
         <tr>
             {{--TODO: get rank from database--}}
-            <td>{{ $loop->index + 1 }}</td>
+            <td>{{ $loop->iteration }}</td>
             <td>{{ $row[\App\Utilities\Constants::FLD_USERS_USERNAME] }}</td>
             <td>{{ $row[\App\Utilities\Constants::FLD_USERS_SOLVED_COUNT] }}/ {{ $row[\App\Utilities\Constants::FLD_USERS_TRAILS_COUNT] }}</td>
             <td>{{ $row[\App\Utilities\Constants::FLD_USERS_PENALTY] }}</td>

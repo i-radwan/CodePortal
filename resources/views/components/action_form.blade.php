@@ -2,16 +2,14 @@
 
     {{--Hidden Fields--}}
     {{ csrf_field() }}
-    {{ method_field( $method ) }}
+    {{ method_field($method) }}
 
-    <button
+    <button type="submit"
+            class="{{ $btnClasses }}"
+            id="{{ $btnIDs }}"
             @if($confirm)
-            onclick="return confirm({{ $confirmMsg }});"
-            @endif
-            type="submit" class="{{ $btnClasses }}"
-            id="{{ $btnIDs }}">
-
+                onclick="return confirm({{ $confirmMsg }});"
+            @endif>
         {{ $btnTxt }}
-
     </button>
 </form>

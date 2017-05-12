@@ -3,14 +3,14 @@
 namespace Tests\Feature;
 
 
-use App\Http\Controllers\RetrieveProblems;
+use App\Http\Controllers\RetrievesProblems;
 use Illuminate\Validation\ValidationException;
 use App\Models\Problem;
 use App\Utilities\Constants;
 
 class ProblemTest extends DatabaseTest
 {
-    use RetrieveProblems;
+    use RetrievesProblems;
 
     /**
      * A basic test example.

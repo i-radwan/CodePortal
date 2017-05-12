@@ -3,9 +3,15 @@
     <div class="panel-body">
 
         @foreach ($tags as $tag)
-            <a href="{{ Request::url() . '?' . http_build_query([\App\Utilities\Constants::URL_QUERY_TAG_KEY => $tag[\App\Utilities\Constants::FLD_TAGS_NAME]]) }}">
+            @php
+                $tagName = $tag[\App\Utilities\Constants::FLD_TAGS_NAME];
+                $urlQuery = http_build_query([\App\Utilities\Constants::URL_QUERY_TAG_KEY => $tagName]);
+                $url = Request::url() . '?' . $urlQuery;
+            @endphp
+
+            <a href="{{ $url }}">
                 <span class="badge problems-tag-badge">
-                    {{ $tag[\App\Utilities\Constants::FLD_TAGS_NAME] }}
+                    {{ $tagName }}
                 </span>
             </a>
         @endforeach

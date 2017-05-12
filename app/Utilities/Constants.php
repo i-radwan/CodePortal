@@ -16,7 +16,7 @@ class Constants
     const ROUTES_CONTESTS_EDIT = 'contests.edit';
     const ROUTES_CONTESTS_UPDATE = 'contests.update';
     const ROUTES_CONTESTS_DELETE = 'contests.delete';
-    const ROUTES_CONTESTS_REORDER = 'contests.reorder';
+    const ROUTES_CONTESTS_REORDER_PROBLEMS = 'contests.reorder';
     const ROUTES_CONTESTS_LEAVE = 'contests.leave';
     const ROUTES_CONTESTS_JOIN = 'contests.join';
     const ROUTES_CONTESTS_DISPLAY = 'contests.display';

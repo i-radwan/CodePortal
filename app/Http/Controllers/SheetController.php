@@ -15,7 +15,7 @@ use Storage;
 
 class SheetController extends Controller
 {
-    use RetrieveProblems;
+    use RetrievesProblems;
 
     /**
      * Show single sheet page which contains problems

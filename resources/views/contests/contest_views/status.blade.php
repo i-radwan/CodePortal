@@ -18,21 +18,21 @@
             @php
                 $submission = (array)$submission;
                 $submissionID = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID];
-                $submissionUsername = $submission[\App\Utilities\Constants::FLD_USERS_USERNAME];
-                $submissionProblemName = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_PROBLEM_NAME];
-                $submissionProblemLink = \App\Utilities\Utilities::generateProblemLink(new \App\Models\Problem($submission));
-                $submissionJudgeID = $submission[\App\Utilities\Constants::FLD_PROBLEMS_JUDGE_ID];
-                $judgeData = \App\Utilities\Constants::JUDGES[$submissionJudgeID];
-                $submissionJudgeName = $judgeData[\App\Utilities\Constants::JUDGE_NAME_KEY];
-                $submissionJudgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
-                $submissionVerdictId = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_VERDICT];
-                $submissionVerdictName = \App\Utilities\Constants::VERDICT_NAMES[$submissionVerdictId];
-                $submissionExecutionTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_EXECUTION_TIME];
-                $submissionConsumedMemory = round($submission[\App\Utilities\Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY] / 1024);
-                $submissionLanguage = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_LANGUAGE_NAME];
-                $submissionTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_SUBMISSION_TIME];
-                $submissionTime = date('Y-m-d H:i:s', $submissionTime);
-                $style = $submissionVerdictId == \App\Utilities\Constants::VERDICT_ACCEPTED ? 'success' : '';
+                $username = $submission[\App\Utilities\Constants::FLD_USERS_USERNAME];
+                $problemName = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_PROBLEM_NAME];
+                $problemLink = \App\Utilities\Utilities::generateProblemLink(new \App\Models\Problem($submission));
+                $judgeID = $submission[\App\Utilities\Constants::FLD_PROBLEMS_JUDGE_ID];
+                $judgeData = \App\Utilities\Constants::JUDGES[$judgeID];
+                $judgeName = $judgeData[\App\Utilities\Constants::JUDGE_NAME_KEY];
+                $judgeLink = $judgeData[\App\Utilities\Constants::JUDGE_LINK_KEY];
+                $verdictId = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_VERDICT];
+                $verdictName = \App\Utilities\Constants::VERDICT_NAMES[$verdictId];
+                $executionTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_EXECUTION_TIME];
+                $consumedMemory = round($submission[\App\Utilities\Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY] / 1024);
+                $language = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_LANGUAGE_NAME];
+                $submittedTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_SUBMISSION_TIME];
+                $submittedTime = date('Y-m-d H:i:s', $submissionTime);
+                $style = ($verdictId == \App\Utilities\Constants::VERDICT_ACCEPTED ? 'success' : '');
             @endphp
 
             <tr>
@@ -40,28 +40,28 @@
                 <td>{{ $submissionID }}</td>
 
                 {{--Username--}}
-                <td><a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $submissionUsername) }}">{{ $submissionUsername }}</a></td>
+                <td><a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $username) }}">{{ $username }}</a></td>
 
                 {{--Problem name--}}
-                <td><a href="{{ $submissionProblemLink }}" target="_blank">{{ $submissionProblemName }}</a></td>
+                <td><a href="{{ $problemLink }}" target="_blank">{{ $problemName }}</a></td>
 
                 {{--Judge--}}
-                <td><a href="{{ $submissionJudgeLink }}" target="_blank">{{ $submissionJudgeName }}</a></td>
+                <td><a href="{{ $judgeLink }}" target="_blank">{{ $judgeName }}</a></td>
 
                 {{--Verdict--}}
-                <td class="{{ $style }}">{{ $submissionVerdictName }}</td>
+                <td class="{{ $style }}">{{ $verdictName }}</td>
 
                 {{--Execution time--}}
-                <td>{{ $submissionExecutionTime . ' ms' }}</td>
+                <td>{{ $executionTime . ' ms' }}</td>
 
                 {{--Consumed Memory--}}
-                <td>{{ $submissionConsumedMemory . ' KB' }}</td>
+                <td>{{ $consumedMemory . ' KB' }}</td>
 
                 {{--Language--}}
-                <td>{{ $submissionLanguage }}</td>
+                <td>{{ $language }}</td>
 
                 {{--Submitted at time--}}
-                <td>{{ $submissionTime }}</td>
+                <td>{{ $submittedTime }}</td>
             </tr>
         @endforeach
     </tbody>

@@ -7,7 +7,7 @@ use App\Models\Tag;
 use App\Utilities\Constants;
 use Session;
 
-trait RetrieveProblems
+trait RetrievesProblems
 {
     /**
      * Get the problems filtered by sheet tags and judges

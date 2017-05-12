@@ -34,7 +34,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         //
-        // CONTESTs
+        // CONTESTS
         //
 
         // View or join contest gate
@@ -87,7 +87,7 @@ class AuthServiceProvider extends ServiceProvider
 
 
         //
-        // GROUPs
+        // GROUPS
         //
 
         // Owner of group/sheet
@@ -182,7 +182,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         //
-        // TEAMs
+        // TEAMS
         //
 
         // Member of team
@@ -198,7 +198,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         //
-        // BLOGs
+        // BLOGS
         //
 
         // Post owner

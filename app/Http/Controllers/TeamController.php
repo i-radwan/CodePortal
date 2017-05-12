@@ -41,22 +41,6 @@ class TeamController extends Controller
     }
 
     /**
-     * Show the form for editing the specified team.
-     *
-     * @param Team $team
-     * @return \Illuminate\View\View
-     */
-    public function edit(Team $team)
-    {
-        return view('teams.add_edit')
-            ->with('actionTitle', 'Edit Team')
-            ->with('actionUrl', route(Constants::ROUTES_TEAMS_UPDATE, $team[Constants::FLD_TEAMS_ID]))
-            ->with('actionBtnTitle', 'Save')
-            ->with('teamName', $team[Constants::FLD_TEAMS_NAME])
-            ->with('pageTitle', config('app.name') . ' | ' . $team[Constants::FLD_TEAMS_NAME]);
-    }
-
-    /**
      * Store a newly created team in database
      *
      * @param \Illuminate\Http\Request $request
@@ -77,6 +61,22 @@ class TeamController extends Controller
     }
 
     /**
+     * Show the form for editing the specified team.
+     *
+     * @param Team $team
+     * @return \Illuminate\View\View
+     */
+    public function edit(Team $team)
+    {
+        return view('teams.add_edit')
+            ->with('actionTitle', 'Edit Team')
+            ->with('actionUrl', route(Constants::ROUTES_TEAMS_UPDATE, $team[Constants::FLD_TEAMS_ID]))
+            ->with('actionBtnTitle', 'Save')
+            ->with('teamName', $team[Constants::FLD_TEAMS_NAME])
+            ->with('pageTitle', config('app.name') . ' | ' . $team[Constants::FLD_TEAMS_NAME]);
+    }
+
+    /**
      * Update the specified team in storage
      *
      * @param \Illuminate\Http\Request $request
@@ -88,6 +88,7 @@ class TeamController extends Controller
         $user = Auth::user();
         $team[Constants::FLD_TEAMS_NAME] = $request->get(Constants::FLD_TEAMS_NAME);
         $team->save();
+
         return redirect(route(Constants::ROUTES_PROFILE_TEAMS, $user[Constants::FLD_USERS_USERNAME]))
             ->with('messages', [$team[Constants::FLD_TEAMS_NAME] . ' updated successfully!']);
     }
@@ -101,7 +102,7 @@ class TeamController extends Controller
      */
     public function inviteMember(Request $request, Team $team)
     {
-        $errors = '';
+        $errors = [];
 
         // Get users
         $usernames = explode(",", $request->get(Constants::FLD_USERS_USERNAME));
@@ -111,40 +112,38 @@ class TeamController extends Controller
 
             // Check if user doesn't exist
             if (!$user) {
-                $errors .= $username . " doesn't exist!\n";
+                $errors[] = $username . " doesn't exist!\n";
                 continue;
             }
 
             // Check if user is already a member
             if ($team->members()->find($user[Constants::FLD_USERS_ID])) {
-                $errors .= $username . " is already a member in the team!\n";
+                $errors[] = $username . " is already a member in the team!\n";
                 continue;
             }
 
             $membersCount = $team->members()->count() + $team->invitedUsers()->count();
 
             if ($membersCount >= Constants::TEAM_MEMBERS_MAX_COUNT) {
-                $errors .= "The  team is full!";
+                $errors[] = "The  team is full!";
                 continue;
             }
 
             // Create new notification if user isn't already invited
             try {
-
                 Notification::make(Auth::user(), $user, $team, Constants::NOTIFICATION_TYPE_TEAM, false);
-
-            } // If the user is already invited the make function throws this exception
+            }
+            // If the user is already invited the make function throws this exception
             catch (InvitationException $e) {
-
-                $errors .= "$username is already invited\n";
-                continue;
+                $errors[] = "$username is already invited\n";
             }
         }
-        if ($errors == '') {
-            return back()->with('messages', ['Users are invited successfully!']);
-        } else {
+
+        if ($errors != []) {
             return back()->withErrors($errors);
         }
+
+        return back()->with('messages', ['Users were invited successfully!']);
     }
 
     /**
