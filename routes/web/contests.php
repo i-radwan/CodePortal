@@ -124,6 +124,6 @@ Route::group(['middleware' => 'contestAccessAuth:view-join-contest,contest'], fu
     Route::get('contests/{contest}/participants', 'Contest\ContestController@displayContestParticipants')
         ->name(Constants::ROUTES_CONTESTS_PARTICIPANTS);
 
-    Route::get('contests/{contest}/questions', 'Contest\ContestController@displayContestQuestions')
+    Route::get('contests/{contest}/questions', 'Contest\QuestionController@displayContestQuestions')
         ->name(Constants::ROUTES_CONTESTS_QUESTIONS);
 });

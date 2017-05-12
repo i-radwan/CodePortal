@@ -15,8 +15,8 @@
 
         {{--Define some vars--}}
         @php
-            $answer = $question[\App\Utilities\Constants::FLD_QUESTIONS_ANSWER];
             $questionID = $question[\App\Utilities\Constants::FLD_QUESTIONS_ID];
+            $answer = $question[\App\Utilities\Constants::FLD_QUESTIONS_ANSWER];
         @endphp
 
 

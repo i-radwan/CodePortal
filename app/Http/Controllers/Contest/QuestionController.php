@@ -133,7 +133,7 @@ class QuestionController
      */
     private function getQuestionsInfo(Contest $contest, User $user)
     {
-        $isOwnerOrOrganizer = \Gate::forUser($user)->allows('owner-organizer-contest', [$contest[Constants::FLD_CONTESTS_ID]]);
+        $isOwnerOrOrganizer = Gate::forUser($user)->allows('owner-organizer-contest', [$contest]);
 
         // Get contest announcements
         $announcements = $contest->announcements()->get();

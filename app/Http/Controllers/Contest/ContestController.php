@@ -315,7 +315,6 @@ class ContestController extends Controller
      */
     public function addGroupContestView(Request $request, Group $group)
     {
-
         // Check server sessions for saved filters data (i.e. tags, organisers, judges)
         $tags = $judges = [];
 
