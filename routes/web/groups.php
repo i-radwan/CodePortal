@@ -31,7 +31,7 @@ Route::group(['middleware' => 'auth'], function () {
         ->middleware(['canGateForUser:owner-admin-group,group']);
 
     // Create group private contest
-    Route::get('groups/{group}/contests/create', 'ContestController@addGroupContestView')
+    Route::get('groups/{group}/contests/create', 'Contest\ContestController@addGroupContestView')
         ->name(Constants::ROUTES_GROUPS_CONTEST_CREATE)
         ->middleware(['canGateForUser:owner-admin-group,group']);
 

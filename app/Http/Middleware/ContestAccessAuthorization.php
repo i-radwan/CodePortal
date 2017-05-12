@@ -27,7 +27,7 @@ class ContestAccessAuthorization extends Authorize
         if (Auth::guest()) {
             $contest = $this->getGateArguments($request, $models)[0];
 
-            if ($contest->visibility == Constants::CONTEST_VISIBILITY_PUBLIC) {
+            if ($contest[Constants::FLD_CONTESTS_VISIBILITY] == Constants::CONTEST_VISIBILITY_PUBLIC) {
                 return $next($request);
             }
 

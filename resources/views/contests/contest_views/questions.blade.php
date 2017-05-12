@@ -15,26 +15,26 @@
 
         {{--Define some vars--}}
         @php
-            $answer = $question[Constants::FLD_QUESTIONS_ANSWER];
-            $questionID = $question[Constants::FLD_QUESTIONS_ID];
+            $answer = $question[\App\Utilities\Constants::FLD_QUESTIONS_ANSWER];
+            $questionID = $question[\App\Utilities\Constants::FLD_QUESTIONS_ID];
         @endphp
 
 
-        <tr class="{{$question[Constants::FLD_QUESTIONS_STATUS] ==  Constants::QUESTION_STATUS_ANNOUNCEMENT ? 'announcement':''}}">
+        <tr class="{{$question[\App\Utilities\Constants::FLD_QUESTIONS_STATUS] ==  \App\Utilities\Constants::QUESTION_STATUS_ANNOUNCEMENT ? 'announcement':''}}">
 
             {{--Problem ID--}}
-            <td>{{$question[Constants::FLD_QUESTIONS_PROBLEM_ID]}}</td>
+            <td>{{$question[\App\Utilities\Constants::FLD_QUESTIONS_PROBLEM_ID]}}</td>
 
             {{--Question+Answer--}}
             <td class="text-left questions-table-question-cell">
 
                 {{--Question Title--}}
                 <h4 class="break-word">
-                    <strong>{{$question[Constants::FLD_QUESTIONS_TITLE]}}</strong>
+                    <strong>{{$question[\App\Utilities\Constants::FLD_QUESTIONS_TITLE]}}</strong>
                 </h4><br/>
 
                 {{--Question Contest--}}
-                <p class="break-word">{{$question[Constants::FLD_QUESTIONS_CONTENT]}}</p>
+                <p class="break-word">{{$question[\App\Utilities\Constants::FLD_QUESTIONS_CONTENT]}}</p>
 
                 <br/>
 
@@ -45,7 +45,7 @@
             </td>
 
             {{--Organizer ID--}}
-            <td>{{$question[Constants::FLD_QUESTIONS_ADMIN_ID]}}</td>
+            <td>{{$question[\App\Utilities\Constants::FLD_QUESTIONS_ADMIN_ID]}}</td>
 
             {{--Organizer Actions--}}
             @if($isContestRunning && $isOwnerOrOrganizer)
@@ -59,11 +59,11 @@
                     </button>
 
                     {{--Announce Form--}}
-                    @if($question[Constants::FLD_QUESTIONS_STATUS]==0 && strlen($answer)>0)
+                    @if($question[\App\Utilities\Constants::FLD_QUESTIONS_STATUS]==0 && strlen($answer)>0)
                         @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_QUESTIONS_ANNOUNCE, $questionID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-primary testing-question-action-button announce', 'btnIDs' => '', 'btnTxt' => 'Announce'])
 
                         {{--Renounce Form--}}
-                    @elseif($question[Constants::FLD_QUESTIONS_STATUS]==1)
+                    @elseif($question[\App\Utilities\Constants::FLD_QUESTIONS_STATUS]==1)
                         @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_CONTESTS_QUESTIONS_RENOUNCE, $questionID), 'method' => 'PUT', 'confirm' => false, 'btnClasses' => 'btn btn-primary testing-question-action-button renounce', 'btnIDs' => '', 'btnTxt' => 'Renounce'])
 
                     @endif

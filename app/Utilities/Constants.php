@@ -95,7 +95,6 @@ class Constants
     const ROUTES_BLOGS_COMMENT_UPVOTE = 'blogs.comment.upvote';
     const ROUTES_BLOGS_COMMENT_DOWNVOTE = 'blogs.comment.downvote';
 
-
     // Profile routes
     const ROUTES_PROFILE = 'profile';
     const ROUTES_PROFILE_INFO = 'profile.info';
@@ -189,25 +188,6 @@ class Constants
     // Single contest page constants
     //
 
-    // Main keys
-    const SINGLE_CONTEST_CONTEST_KEY = "contest";
-    const SINGLE_CONTEST_PROBLEMS_KEY = "problems";
-    const SINGLE_CONTEST_STANDINGS_KEY = "standings";
-    const SINGLE_CONTEST_STATUS_KEY = "status";
-    const SINGLE_CONTEST_PARTICIPANTS_KEY = "participants";
-    const SINGLE_CONTEST_QUESTIONS_KEY = "questions";
-    const SINGLE_CONTEST_EXTRA_KEY = "extra";
-
-    // Details keys
-
-    // Contest
-    const SINGLE_CONTEST_ID_KEY = "id";
-    const SINGLE_CONTEST_NAME_KEY = "name";
-    const SINGLE_CONTEST_OWNER_KEY = "owner";
-    const SINGLE_CONTEST_ORGANIZERS_KEY = "organizers";
-    const SINGLE_CONTEST_TIME_KEY = "time";
-    const SINGLE_CONTEST_DURATION_KEY = "duration";
-
     // Add/edit contest page keys
     const CONTEST_PROBLEMS_SELECTED_FILTERS = "contest_selected_filters";
     const CONTEST_PROBLEMS_SELECTED_JUDGES = "selected_judges";
@@ -221,13 +201,6 @@ class Constants
         self::FLD_USERS_USERNAME,
         self::FLD_USERS_COUNTRY
     ];
-
-    // Extra
-    const SINGLE_CONTEST_IS_USER_PARTICIPATING = "user_is_participant";
-    const SINGLE_CONTEST_IS_USER_OWNER = "user_is_owner";
-    const SINGLE_CONTEST_IS_USER_AN_ORGANIZER = "user_is_organizer";
-    const SINGLE_CONTEST_RUNNING_STATUS = "contest_running_status";
-    const SINGLE_CONTEST_ENDED_STATUS = "contest_ended_status";
     // ============================================================
     //endregion
 

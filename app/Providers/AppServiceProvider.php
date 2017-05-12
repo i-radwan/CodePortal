@@ -17,12 +17,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-           //dont change Hash to bycrypt 
-       Validator::extend('old', function($attribute, $value, $parameters) {
+        //dont change Hash to bycrypt
+        Validator::extend('old', function ($attribute, $value, $parameters) {
             //dd(\Auth::user()->password);
-         return Hash::check($value, \Auth::user()->password);
-        }); 
-        
+            return Hash::check($value, \Auth::user()->password);
+        });
+
     }
 
     /**

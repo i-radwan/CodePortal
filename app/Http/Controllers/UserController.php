@@ -106,9 +106,9 @@ class UserController extends Controller
         $countries = array("AA" => '') + $countries;
         $user = \Auth::user();
         return view('profile.edit')
-            ->with('pageTitle', config('app.name') . '|' . $user->username)
+            ->with('pageTitle', config('app.name') . ' | ' . $user->username)
             ->with('user', $user)
-            ->with('country', $countries);
+            ->with('countries', $countries);
     }
 
     /**
@@ -158,15 +158,15 @@ class UserController extends Controller
         }
 
         //saving user handles in DB
-        if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE] && ($request[Constants::FLD_USERS_CODEFORCES_HANDLE] != $user->getHandle(Constants::JUDGE_CODEFORCES_ID))) {
+        if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
             $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $request[Constants::FLD_USERS_CODEFORCES_HANDLE]);
         }
 
-        if ($request[Constants::FLD_USERS_UVA_HANDLE] && ($request[Constants::FLD_USERS_UVA_HANDLE] != $user->getHandle(Constants::JUDGE_UVA_ID))) {
+        if ($request[Constants::FLD_USERS_UVA_HANDLE]) {
             $user->addHandle(Constants::JUDGE_UVA_ID, $request[Constants::FLD_USERS_UVA_HANDLE]);
         }
 
-        if ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE] && ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE] != $user->getHandle(Constants::JUDGE_LIVE_ARCHIVE_ID))) {
+        if ($request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]) {
             $user->addHandle(Constants::JUDGE_LIVE_ARCHIVE_ID, $request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]);
         }
 
@@ -183,6 +183,7 @@ class UserController extends Controller
         } else {
             $user->gender = '1';
         }
+
         $user->email = $request->input('email');
         $user->first_name = $request->input('FirstName');
         $user->last_name = $request->input('LastName');

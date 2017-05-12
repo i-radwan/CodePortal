@@ -103,5 +103,4 @@ trait RetrieveProblems
         // Execute the problems paginated query
         return $problems->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
     }
-
 }

@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Contest;
 
 use Auth;
 use Session;
-use Redirect;
-use URL;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Tag;
 use App\Models\Judge;
 use App\Models\Contest;
-use App\Models\Question;
 use App\Models\Group;
 use App\Models\Notification;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
-use App\Exceptions\InvitationException;
-use Carbon\Carbon;
+use App\Http\Controllers\RetrieveProblems;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ContestController extends Controller
@@ -54,93 +52,6 @@ class ContestController extends Controller
     }
 
     /**
-     * Display specific contest view
-     *
-     * @param Contest $contest
-     * @param $displayProblems
-     * @param $displayStandings
-     * @param $displaySubmissions
-     * @param $displayParticipants
-     * @param $displayQuestions
-     * @return \Illuminate\View\View
-     */
-    private function displayContestView(Contest $contest, $displayProblems, $displayStandings, $displaySubmissions, $displayParticipants, $displayQuestions)
-    {
-
-        // Get contest common info (shared by all contest views [problems, participants, ...etc])
-        if (!$this->getContestCommonInfo($contest, $isOwner, $isParticipant, $isUserOrganizer)) {
-            return redirect('contests/'); // contest doesn't exist
-        }
-
-        // Get contest status
-        $isContestRunning = $contest->isRunning();
-        $isContestEnded = $contest->isEnded();
-
-        // Get common view
-        $view = view('contests.contest')
-            ->with('contest', $contest)
-            ->with('isOwner', $isOwner)
-            ->with('isUserOrganizer', $isUserOrganizer)
-            ->with('isParticipant', $isParticipant)
-            ->with('isContestRunning', $isContestRunning)
-            ->with('isContestEnded', $isContestEnded)
-            ->with('view', 'problems')
-            ->with('pageTitle', config('app.name') . ' | ' . $contest[Constants::FLD_CONTESTS_NAME]);
-
-        // Get specific contest view data and attach to the view
-        if ($displayProblems) {
-
-            $problems = [];
-
-            if ($isContestRunning || $isContestEnded || $isUserOrganizer || $isOwner) {
-                $this->getProblemsInfo($contest, $problems);
-            }
-
-            $view->with('problems', $problems)
-                ->with('view', 'problems');
-
-        } else if ($displayStandings) {
-
-            $standings = $problems = [];
-
-            if ($isContestRunning || $isContestEnded || $isUserOrganizer || $isOwner) {
-                $this->getStandingsInfo($contest, $standings);
-                $this->getProblemsInfo($contest, $problems);
-            }
-
-            $view->with('standings', $standings)
-                ->with('problems', $problems)
-                ->with('view', 'standings');
-
-        } else if ($displaySubmissions) {
-
-            $this->getStatusInfo($contest, $submissions);
-
-            $view->with('submissions', $submissions)
-                ->with('view', 'submissions');
-
-        } else if ($displayParticipants) {
-
-            $this->getParticipantsInfo($contest, $participants);
-
-            $view->with('participants', $participants)
-                ->with('view', 'participants');
-
-        } else if ($displayQuestions) {
-
-            $this->getProblemsInfo($contest, $problems);
-            $this->getQuestionsInfo(Auth::user(), $contest, $questions);
-
-            $view->with('questions', $questions)
-                ->with('problems', $problems)
-                ->with('view', 'questions');
-
-        }
-
-        return $view;
-    }
-
-    /**
      * Show single contest problems page
      *
      * Authorization happens in the defined Gate
@@ -150,7 +61,17 @@ class ContestController extends Controller
      */
     public function displayContestProblems(Contest $contest)
     {
-        return $this->displayContestView($contest, true, false, false, false, false);
+        if (!$contest) {
+            return redirect(route(Constants::ROUTES_CONTESTS_INDEX)); // contest doesn't exist
+        }
+
+        $problems = $contest->problemStatistics()->get();
+
+        return view('contests.contest')
+            ->with('contest', $contest)
+            ->with('problems', $problems)
+            ->with('view', 'problems')
+            ->with('pageTitle', config('app.name') . ' | ' . $contest[Constants::FLD_CONTESTS_NAME]);
     }
 
     /**
@@ -163,7 +84,19 @@ class ContestController extends Controller
      */
     public function displayContestStandings(Contest $contest)
     {
-        return $this->displayContestView($contest, false, true, false, false, false);
+        if (!$contest) {
+            return redirect(route(Constants::ROUTES_CONTESTS_INDEX)); // contest doesn't exist
+        }
+
+        $problems = $contest->problemStatistics()->get();
+        $standings = $this->getStandingsInfo($contest);
+
+        return view('contests.contest')
+            ->with('contest', $contest)
+            ->with('standings', $standings)
+            ->with('problems', $problems)
+            ->with('view', 'standings')
+            ->with('pageTitle', config('app.name') . ' | ' . $contest[Constants::FLD_CONTESTS_NAME]);
     }
 
     /**
@@ -176,7 +109,19 @@ class ContestController extends Controller
      */
     public function displayContestStatus(Contest $contest)
     {
-        return $this->displayContestView($contest, false, false, true, false, false);
+        if (!$contest) {
+            return redirect(route(Constants::ROUTES_CONTESTS_INDEX)); // contest doesn't exist
+        }
+
+        $submissions = $contest
+            ->submissions()
+            ->paginate(Constants::CONTEST_SUBMISSIONS_PER_PAGE);
+
+        return view('contests.contest')
+            ->with('contest', $contest)
+            ->with('submissions', $submissions)
+            ->with('view', 'submissions')
+            ->with('pageTitle', config('app.name') . ' | ' . $contest[Constants::FLD_CONTESTS_NAME]);
     }
 
     /**
@@ -189,7 +134,20 @@ class ContestController extends Controller
      */
     public function displayContestParticipants(Contest $contest)
     {
-        return $this->displayContestView($contest, false, false, false, true, false);
+        if (!$contest) {
+            return redirect(route(Constants::ROUTES_CONTESTS_INDEX)); // contest doesn't exist
+        }
+
+        $participants = $contest
+            ->participants()
+            ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
+            ->paginate(Constants::CONTEST_PARTICIPANTS_PER_PAGE);
+
+        return view('contests.contest')
+            ->with('contest', $contest)
+            ->with('participants', $participants)
+            ->with('view', 'participants')
+            ->with('pageTitle', config('app.name') . ' | ' . $contest[Constants::FLD_CONTESTS_NAME]);
     }
 
     /**
@@ -202,30 +160,19 @@ class ContestController extends Controller
      */
     public function displayContestQuestions(Contest $contest)
     {
-        return $this->displayContestView($contest, false, false, false, false, true);
-    }
-
-    /**
-     * Prepare contest common info (needed by all contest tabs) for contest views
-     *
-     * @param Contest $contest
-     * @param $isOwner
-     * @param $isParticipant
-     * @param $isUserOrganizer
-     * @return bool
-     */
-    private function getContestCommonInfo(Contest $contest, &$isOwner, &$isParticipant, &$isUserOrganizer)
-    {
-        $currentUser = Auth::user();
-
         if (!$contest) {
-            return false;
+            return redirect(route(Constants::ROUTES_CONTESTS_INDEX)); // contest doesn't exist
         }
 
-        // Check if user is participating or owning the contest to show buttons
-        $this->getUserOwnerOrParticipant($currentUser, $contest, $isOwner, $isParticipant, $isUserOrganizer);
+        $problems = $contest->problemStatistics()->get();
+        $questions = $this->getQuestionsInfo($contest, Auth::user());
 
-        return true;
+        return view('contests.contest')
+            ->with('contest', $contest)
+            ->with('questions', $questions)
+            ->with('problems', $problems)
+            ->with('view', 'questions')
+            ->with('pageTitle', config('app.name') . ' | ' . $contest[Constants::FLD_CONTESTS_NAME]);
     }
 
     /**
@@ -279,7 +226,7 @@ class ContestController extends Controller
      * @param Request $request
      * @return \Illuminate\View\View
      */
-    public function addContestView(Request $request)
+    public function create(Request $request)
     {
         return $this->addEditContestView($request, null);
     }
@@ -410,7 +357,7 @@ class ContestController extends Controller
      *
      * @return $this|\Illuminate\Http\RedirectResponse
      */
-    public function addContest(Request $request)
+    public function store(Request $request)
     {
         return $this->saveContest($request, null, null);
     }
@@ -489,18 +436,15 @@ class ContestController extends Controller
     /**
      * Delete a certain contest if you're owner
      *
+     * Authorization happens in the defined Gate (owner-contest)
+     *
      * @param Contest $contest
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function deleteContest(Contest $contest)
     {
-        // Check if current auth. user is the owner of the contest
-        if (Auth::check() && $contest->owner[Constants::FLD_USERS_ID]
-            == Auth::user()[Constants::FLD_USERS_ID]
-        ) {
-            $contest->delete();
-        }
-        return redirect('contests/');
+        $contest->delete();
+        return redirect(route(Constants::ROUTES_CONTESTS_INDEX));
     }
 
     /**
@@ -540,8 +484,7 @@ class ContestController extends Controller
     public function joinContest(Contest $contest)
     {
         $user = Auth::user();
-        $user->participatingContests()
-            ->syncWithoutDetaching([$contest[Constants::FLD_CONTESTS_ID]]);
+        $user->participatingContests()->syncWithoutDetaching([$contest[Constants::FLD_CONTESTS_ID]]);
         return back();
     }
 
@@ -562,140 +505,14 @@ class ContestController extends Controller
     }
 
     /**
-     * Ask question related to the contest problems
-     *
-     * @param Request $request
-     * @param int $contestID
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function addQuestion(Request $request, $contestID)
-    {
-        $user = Auth::user();
-
-        // Check if user is a participant
-        $contest = $user->participatingContests()->find($contestID);
-        $problem = $contest->problems()->find($request->get(Constants::FLD_QUESTIONS_PROBLEM_ID));
-
-        // Check if contest exists (user participating in it) and the contest is running now
-        if ($contest && $contest->isRunning()) {
-            Question::askQuestion($request->all(), $user, $contest, $problem);
-            return Redirect::to(URL::previous() . "#questions");
-        }
-
-        Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
-        return Redirect::to(URL::previous() . "#questions");
-    }
-
-    /**
-     * Mark question as announcement
-     *
-     * @param Question $question
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function announceQuestion(Question $question)
-    {
-        // Check if question exists
-        if ($question) {
-            if (\Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
-                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_ANNOUNCEMENT;
-                $question->save();
-            }
-        }
-
-        return Redirect::to(URL::previous() . "#questions");
-    }
-
-    /**
-     * Un-mark question as announcement
-     *
-     * @param Question $question
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function renounceQuestion(Question $question)
-    {
-        // Check if question exists
-        if ($question) {
-            if (\Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
-                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_NORMAL;
-                $question->save();
-            }
-        }
-
-        return Redirect::to(URL::previous() . "#questions");
-    }
-
-    /**
-     * Save question answer (provided by contest organizers)
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function answerQuestion(Request $request)
-    {
-        $questionID = $request->get('question_id');
-        $questionAnswer = $request->get('question_answer');
-        $question = Question::find($questionID);
-        $user = Auth::user();
-
-        // Check if question exists
-        if ($question) {
-            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
-                $question->saveAnswer($questionAnswer, $user);
-            }
-        }
-
-        return Redirect::to(URL::previous() . "#questions");
-    }
-
-    /**
-     * Check if the user owns the contest and
-     * check if the user is participating in this contest
-     *
-     * @param User $user
-     * @param Contest $contest
-     * @param $isOwner
-     * @param $isParticipant
-     * @param $isUserOrganizer
-     */
-    private function getUserOwnerOrParticipant($user, $contest, &$isOwner, &$isParticipant, &$isUserOrganizer)
-    {
-        $isOwner = $isParticipant = $isUserOrganizer = false;
-
-        if ($user && $contest->owner) {
-            // Check if the user is the owner of this contest
-            $isOwner = ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]);
-
-            // Check if the user has joined this contest
-            $isParticipant = ($contest->participants()->find($user[Constants::FLD_USERS_ID]) != null);
-
-            // Check if user is organizer
-            $isUserOrganizer = ($user->organizingContests()->find($contest[Constants::FLD_CONTESTS_ID]) != null);
-        }
-    }
-
-    /**
-     * Get contest problems data
-     *
-     * @param Contest $contest
-     * @param $problems
-     */
-    private function getProblemsInfo($contest, &$problems)
-    {
-//        \DB::enableQueryLog();
-        $problems = $contest->problemStatistics()->get();
-//        dd(\DB::getQueryLog());
-
-    }
-
-    /**
      * Get contest standings data
      *
      * ToDo comment function content
      *
      * @param Contest $contest
-     * @param array $standings
+     * @return array
      */
-    private function getStandingsInfo($contest, &$standings)
+    private function getStandingsInfo($contest)
     {
         //\DB::enableQueryLog();
 
@@ -739,45 +556,18 @@ class ContestController extends Controller
             --$i;
             ++$idx;
         }
-    }
 
-    /**
-     * Get contest status data
-     *
-     * @param Contest $contest
-     * @param $submissions
-     */
-    private function getStatusInfo($contest, &$submissions)
-    {
-        $submissions = $contest
-            ->submissions()
-            ->paginate(Constants::CONTEST_SUBMISSIONS_PER_PAGE);
-
-    }
-
-    /**
-     * Get contest participants specific data
-     *
-     * @param Contest $contest
-     * @param $participants
-     */
-    private function getParticipantsInfo($contest, &$participants)
-    {
-        $participants = $contest
-            ->participants()
-            ->select(Constants::PARTICIPANTS_DISPLAYED_FIELDS)
-            ->paginate(Constants::CONTEST_PARTICIPANTS_PER_PAGE);
-        // Set contest participants
+        return $standings;
     }
 
     /**
      * Get contest questions info
      *
-     * @param User $user
      * @param Contest $contest
-     * @param $announcements
+     * @param User $user
+     * return mixed
      */
-    private function getQuestionsInfo($user, $contest, &$announcements)
+    private function getQuestionsInfo(Contest $contest, User $user)
     {
         $isOwnerOrOrganizer = \Gate::forUser($user)->allows('owner-organizer-contest', [$contest[Constants::FLD_CONTESTS_ID]]);
 
@@ -813,6 +603,7 @@ class ContestController extends Controller
                 Utilities::generateProblemNumber(Problem::find($announcement[Constants::FLD_QUESTIONS_PROBLEM_ID]));
         }
 
+        return $announcements;
     }
 
     /**
@@ -870,7 +661,7 @@ class ContestController extends Controller
 
     /**
      * Send private contest invitations to invitees
-     * If group contest, the invitations will be sent to group memebers
+     * If group contest, the invitations will be sent to group members
      *
      * @param Contest $contest
      * @param $invitees

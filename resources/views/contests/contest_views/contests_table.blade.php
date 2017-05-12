@@ -11,6 +11,7 @@
             @endif
         </tr>
         </thead>
+
         <tbody>
         @foreach($contests as $contest)
             @php
@@ -20,8 +21,8 @@
                 $contestDuration = \App\Utilities\Utilities::convertSecondsToDaysHoursMins($contest[\App\Utilities\Constants::FLD_CONTESTS_DURATION]);
                 $contestOwnerUsername = $contest->owner[\App\Utilities\Constants::FLD_USERS_USERNAME];
             @endphp
-            <tr>
 
+            <tr>
                 {{--ID--}}
                 <td class="testing-contest-id-cell">{{ $contestID }}</td>
 
@@ -50,12 +51,14 @@
         @endforeach
         </tbody>
     </table>
+
     {{--Pagination--}}
     @if(!isset($isGroup))
         {{ $contests->appends(Request::all())->fragment($fragment)->render() }}
     @else
         {{ $contests->fragment('contests')->links() }}
     @endif
+
 @else
     <p class="margin-30px">No contests!</p>
 @endif
