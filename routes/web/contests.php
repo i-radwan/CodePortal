@@ -89,26 +89,29 @@ Route::group(['middleware' => 'auth'], function () {
     //
     // Question routes...
     //
-    // Announce questions
-    Route::put('contests/{question}/announce', 'Contest\QuestionController@announceQuestion')
-        ->name(Constants::ROUTES_CONTESTS_QUESTIONS_ANNOUNCE);
-
-    // Renounce question
-    Route::put('contests/{question}/renounce', 'Contest\QuestionController@renounceQuestion')
-        ->name(Constants::ROUTES_CONTESTS_QUESTIONS_RENOUNCE);
-
-    // Save question answer
-    Route::post('contests/question/answer', 'Contest\QuestionController@answerQuestion')
-        ->name(Constants::ROUTES_CONTESTS_QUESTIONS_ANSWER_STORE);
 
     // Post new question
-    Route::post('contests/question/{contestID}', 'Contest\QuestionController@askQuestion')
-        ->name(Constants::ROUTES_CONTESTS_QUESTIONS_STORE);
+    Route::post('contests/{contest}/questions/store', 'Contest\QuestionController@askQuestion')
+        ->name(Constants::ROUTES_CONTESTS_QUESTIONS_STORE)
+        ->middleware('canGateForUser:contest-participant,contest');
+
+    // Save question answer
+    Route::post('contests/questions/answer', 'Contest\QuestionController@answerQuestion')
+        ->name(Constants::ROUTES_CONTESTS_QUESTIONS_ANSWER_STORE);
+
+    // Announce questions
+    Route::put('contests/questions/{question}/announce', 'Contest\QuestionController@announceQuestion')
+        ->name(Constants::ROUTES_CONTESTS_QUESTIONS_ANNOUNCE)
+        ->middleware('canGateForUser:owner-organizer-contest-question,question');
+
+    // Renounce question
+    Route::put('contests/questions/{question}/renounce', 'Contest\QuestionController@renounceQuestion')
+        ->name(Constants::ROUTES_CONTESTS_QUESTIONS_RENOUNCE)
+        ->middleware('canGateForUser:owner-organizer-contest-question,question');
 });
 
 Route::group(['middleware' => 'contestAccessAuth:view-join-contest,contest'], function () {
 
-    // Get contest views
     Route::get('contests/{contest}', 'Contest\ContestController@displayContestProblems')
         ->name(Constants::ROUTES_CONTESTS_DISPLAY);
 

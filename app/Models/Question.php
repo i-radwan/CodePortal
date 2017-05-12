@@ -42,9 +42,9 @@ class Question extends Model
      * @var array
      */
     protected $rules = [
-        Constants::FLD_QUESTIONS_CONTEST_ID => 'required|integer|exists:' . Constants::TBL_CONTESTS . ',' . Constants::FLD_CONTESTS_ID,
-        Constants::FLD_QUESTIONS_PROBLEM_ID => 'required|integer|exists:' . Constants::TBL_PROBLEMS . ',' . Constants::FLD_PROBLEMS_ID,
-        Constants::FLD_QUESTIONS_USER_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
+        //Constants::FLD_QUESTIONS_CONTEST_ID => 'required|integer|exists:' . Constants::TBL_CONTESTS . ',' . Constants::FLD_CONTESTS_ID,
+        //Constants::FLD_QUESTIONS_PROBLEM_ID => 'required|integer|exists:' . Constants::TBL_PROBLEMS . ',' . Constants::FLD_PROBLEMS_ID,
+        //Constants::FLD_QUESTIONS_USER_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_QUESTIONS_TITLE => 'required|max:255',
         Constants::FLD_QUESTIONS_CONTENT => 'required|min:50',
         Constants::FLD_QUESTIONS_STATUS => 'Regex:/([01])/',
@@ -57,7 +57,7 @@ class Question extends Model
      */
     protected $answerQuestionRules = [
         Constants::FLD_QUESTIONS_ANSWER => 'required',
-        Constants::FLD_QUESTIONS_ADMIN_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID
+        //Constants::FLD_QUESTIONS_ADMIN_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID
     ];
 
     /**
@@ -67,7 +67,6 @@ class Question extends Model
      * @param User $user
      * @param Contest $contest
      * @param Problem $problem
-     *
      * @return Question
      */
     public static function askQuestion(array $attributes = [], $user = null, $contest = null, $problem = null)
@@ -84,6 +83,28 @@ class Question extends Model
         $q->save();
 
         return $q;
+    }
+
+    /**
+     * Save question answer
+     *
+     * @param string $newAnswer
+     * @param User $admin
+     * @return bool
+     */
+    public function saveAnswer($newAnswer, $admin)
+    {
+        // Associate organizer who answered the question
+        $this->admin()->associate($admin);
+
+        // Save the provided answer
+        $this->attributes[Constants::FLD_QUESTIONS_ANSWER] = $newAnswer;
+
+        // Validate against rules
+        Validator::make($this->attributes, $this->answerQuestionRules)->validate();
+
+        // Save the answer
+        return $this->save();
     }
 
     /**
@@ -124,27 +145,5 @@ class Question extends Model
     public function problem()
     {
         return $this->belongsTo(Problem::class, Constants::FLD_QUESTIONS_PROBLEM_ID);
-    }
-
-    /**
-     * Save question answer
-     *
-     * @param $newAnswer
-     * @param $admin
-     * @return bool
-     */
-    public function saveAnswer($newAnswer, $admin)
-    {
-        // Associate organizer who answered the question
-        $this->admin()->associate($admin);
-
-        // Save the provided answer
-        $this->attributes[Constants::FLD_QUESTIONS_ANSWER] = $newAnswer;
-
-        // Validate against rules
-        Validator::make($this->attributes, $this->answerQuestionRules)->validate();
-
-        // Save the answer
-        return $this->save();
     }
 }

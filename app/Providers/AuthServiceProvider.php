@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\Question;
 use App\Models\User;
 use App\Models\Contest;
 use App\Models\Group;
@@ -47,7 +48,7 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             // Check if owner
-            if ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) {
+            if ($contest->owner()[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) {
                 return true;
             }
 
@@ -57,7 +58,7 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             // Check if user is invited to private contest
-            if ($contest->notifications()->ofReceiver($user->id)->count() > 0) {
+            if ($contest->notifications()->ofReceiver($user[Constants::FLD_USERS_ID])->count() > 0) {
                 return true;
             }
 
@@ -85,6 +86,16 @@ class AuthServiceProvider extends ServiceProvider
             return ($user->participatingContests()->find($contest[Constants::FLD_CONTESTS_ID]));
         });
 
+        // Owner or organizer of question's contest
+        Gate::define("owner-organizer-contest-question", function (User $user, Question $question) {
+            $contest = Contest::find($question[Constants::FLD_QUESTIONS_CONTEST_ID]);
+
+            // Check if user is organizer or owner
+            return (
+                $contest[Constants::FLD_CONTESTS_OWNER_ID] == $user[Constants::FLD_USERS_ID] ||
+                $user->organizingContests()->find($contest[Constants::FLD_CONTESTS_ID])
+            );
+        });
 
         //
         // GROUPS

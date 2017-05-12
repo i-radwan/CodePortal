@@ -45,7 +45,7 @@ class Contest extends Model
      */
     protected $rules = [
         Constants::FLD_CONTESTS_NAME => 'required|max:100',
-        Constants::FLD_CONTESTS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
+        //Constants::FLD_CONTESTS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:today',
         Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1|max:' . Constants::CONTESTS_DURATION_MAX,
         Constants::FLD_CONTESTS_VISIBILITY => 'required|Regex:/([01])/'

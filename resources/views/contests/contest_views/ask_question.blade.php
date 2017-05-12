@@ -22,8 +22,13 @@
         </select>
 
         {{--Question content--}}
-        <textarea class="form-control" cols="30" rows="5" name="content" id="content" placeholder="Question content..."
-                  required></textarea>
+        <textarea class="form-control"
+                  name="content"
+                  id="content"
+                  cols="30" rows="5"
+                  placeholder="Question content..."
+                  required>
+        </textarea>
 
         {{--Display Errors--}}
         @if(Session::has('question-error'))

@@ -7,11 +7,9 @@ use Gate;
 use Session;
 use Redirect;
 use App\Models\User;
-use App\Models\Problem;
 use App\Models\Contest;
 use App\Models\Question;
 use App\Utilities\Constants;
-use App\Utilities\Utilities;
 use Illuminate\Http\Request;
 
 class QuestionController
@@ -46,20 +44,15 @@ class QuestionController
      * Ask question related to the contest problems
      *
      * @param Request $request
-     * @param int $contestID
+     * @param Contest $contest
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function askQuestion(Request $request, $contestID)
+    public function askQuestion(Request $request, Contest $contest)
     {
         $user = Auth::user();
+        $problem = $contest->problems()->find($request->get(Constants::FLD_QUESTIONS_PROBLEM_ID));
 
-        // Check if user is a participant
-        $contest = $user->participatingContests()->find($contestID);
-        $problemID = $request->get(Constants::FLD_QUESTIONS_PROBLEM_ID);
-        $problem = $contest->problems()->find($problemID);
-
-        // Check if contest exists (user participating in it) and the contest is running now
-        if ($contest && $contest->isRunning()) {
+        if ($contest->isRunning()) {
             Question::askQuestion($request->all(), $user, $contest, $problem);
         }
         else {
@@ -83,7 +76,7 @@ class QuestionController
         $user = Auth::user();
 
         // Check if question exists
-        if ($question && Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
+        if ($question && Gate::allows('owner-organizer-contest-question', $question)) {
             $question->saveAnswer($questionAnswer, $user);
         }
 
@@ -98,12 +91,8 @@ class QuestionController
      */
     public function announceQuestion(Question $question)
     {
-        // Check if question exists
-        if ($question && Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
-            $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_ANNOUNCEMENT;
-            $question->save();
-        }
-
+        $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_ANNOUNCEMENT;
+        $question->save();
         return Redirect::back();
     }
 
@@ -115,12 +104,8 @@ class QuestionController
      */
     public function renounceQuestion(Question $question)
     {
-        // Check if question exists
-        if ($question && Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
-            $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_NORMAL;
-            $question->save();
-        }
-
+        $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_NORMAL;
+        $question->save();
         return Redirect::back();
     }
 
@@ -131,42 +116,27 @@ class QuestionController
      * @param User $user
      * return mixed
      */
-    private function getQuestionsInfo(Contest $contest, User $user)
+    private function getQuestionsInfo(Contest $contest, User $user = null)
     {
-        $isOwnerOrOrganizer = Gate::forUser($user)->allows('owner-organizer-contest', [$contest]);
-
-        // Get contest announcements
         $announcements = $contest->announcements()->get();
 
-        // If user is logged in and not organizer, get his questions too
-        if ($user && !$isOwnerOrOrganizer) {
-            // Get user specific questions
-            $questions = $user->questions($contest[Constants::FLD_CONTESTS_ID])->get();
+        if (!$user) {
+            return $announcements;
+        }
 
-            // Merge announcements and user questions
-            $announcements = $announcements->merge($questions);
-        } else if ($user && $isOwnerOrOrganizer) {
+        $isOwnerOrOrganizer = Gate::forUser($user)->allows('owner-organizer-contest', [$contest]);
 
-            // If admin get all questions
+        // If admin get un-answered questions
+        if ($isOwnerOrOrganizer) {
             $questions = $contest->questions()
-                ->where(Constants::FLD_QUESTIONS_STATUS, '!=', Constants::QUESTION_STATUS_ANNOUNCEMENT);
-
-            // Merge announcements and all questions
-            $announcements = $announcements->merge($questions->get());
+                ->where(Constants::FLD_QUESTIONS_STATUS, '!=', Constants::QUESTION_STATUS_ANNOUNCEMENT)
+                ->get();
+        }
+        // Else get user specific questions
+        else {
+            $questions = $user->questions($contest[Constants::FLD_CONTESTS_ID])->get();
         }
 
-        // Get extra data from foreign keys
-        foreach ($announcements as $announcement) {
-            // Get admin username from id if answer is provided
-            if ($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])
-                $announcement[Constants::FLD_QUESTIONS_ADMIN_ID] =
-                    User::find($announcement[Constants::FLD_QUESTIONS_ADMIN_ID])->username;
-
-            // Get problem number from id
-            $announcement[Constants::FLD_QUESTIONS_PROBLEM_ID] =
-                Utilities::generateProblemNumber(Problem::find($announcement[Constants::FLD_QUESTIONS_PROBLEM_ID]));
-        }
-
-        return $announcements;
+        return $announcements->merge($questions);
     }
 }

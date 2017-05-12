@@ -31,7 +31,7 @@
                 $consumedMemory = round($submission[\App\Utilities\Constants::FLD_SUBMISSIONS_CONSUMED_MEMORY] / 1024);
                 $language = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_LANGUAGE_NAME];
                 $submittedTime = $submission[\App\Utilities\Constants::FLD_SUBMISSIONS_SUBMISSION_TIME];
-                $submittedTime = date('Y-m-d H:i:s', $submissionTime);
+                $submittedTime = date('Y-m-d H:i:s', $submittedTime);
                 $style = ($verdictId == \App\Utilities\Constants::VERDICT_ACCEPTED ? 'success' : '');
             @endphp
 
