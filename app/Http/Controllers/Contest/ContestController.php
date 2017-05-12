@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Contest;
 
 use Auth;
 use Session;
-use Redirect;
-use URL;
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Problem;
 use App\Models\Tag;
 use App\Models\Judge;
 use App\Models\Contest;
-use App\Models\Question;
 use App\Models\Group;
 use App\Models\Notification;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
-use App\Exceptions\InvitationException;
-use Carbon\Carbon;
+use App\Http\Controllers\RetrieveProblems;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class ContestController extends Controller
@@ -69,7 +67,7 @@ class ContestController extends Controller
 
         // Get contest common info (shared by all contest views [problems, participants, ...etc])
         if (!$this->getContestCommonInfo($contest, $isOwner, $isParticipant, $isUserOrganizer)) {
-            return redirect('contests/'); // contest doesn't exist
+            return redirect(route(Constants::ROUTES_CONTESTS_INDEX)); // contest doesn't exist
         }
 
         // Get contest status
@@ -559,92 +557,6 @@ class ContestController extends Controller
         $problemsIDsNewOrder = $request->get('problems_order');
         $this->updateContestProblemsOrder($contest, $problemsIDsNewOrder);
         return response()->json(['status' => 204], 200);
-    }
-
-    /**
-     * Ask question related to the contest problems
-     *
-     * @param Request $request
-     * @param int $contestID
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function addQuestion(Request $request, $contestID)
-    {
-        $user = Auth::user();
-
-        // Check if user is a participant
-        $contest = $user->participatingContests()->find($contestID);
-        $problem = $contest->problems()->find($request->get(Constants::FLD_QUESTIONS_PROBLEM_ID));
-
-        // Check if contest exists (user participating in it) and the contest is running now
-        if ($contest && $contest->isRunning()) {
-            Question::askQuestion($request->all(), $user, $contest, $problem);
-            return Redirect::to(URL::previous() . "#questions");
-        }
-
-        Session::flash('question-error', 'Sorry, you cannot perform this action right now!');
-        return Redirect::to(URL::previous() . "#questions");
-    }
-
-    /**
-     * Mark question as announcement
-     *
-     * @param Question $question
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function announceQuestion(Question $question)
-    {
-        // Check if question exists
-        if ($question) {
-            if (\Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
-                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_ANNOUNCEMENT;
-                $question->save();
-            }
-        }
-
-        return Redirect::to(URL::previous() . "#questions");
-    }
-
-    /**
-     * Un-mark question as announcement
-     *
-     * @param Question $question
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function renounceQuestion(Question $question)
-    {
-        // Check if question exists
-        if ($question) {
-            if (\Gate::allows('owner-organizer-contest', $question[Constants::FLD_QUESTIONS_CONTEST_ID])) {
-                $question[Constants::FLD_QUESTIONS_STATUS] = Constants::QUESTION_STATUS_NORMAL;
-                $question->save();
-            }
-        }
-
-        return Redirect::to(URL::previous() . "#questions");
-    }
-
-    /**
-     * Save question answer (provided by contest organizers)
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function answerQuestion(Request $request)
-    {
-        $questionID = $request->get('question_id');
-        $questionAnswer = $request->get('question_answer');
-        $question = Question::find($questionID);
-        $user = Auth::user();
-
-        // Check if question exists
-        if ($question) {
-            if (\Gate::allows('owner-organizer-contest', $question->contest_id)) {
-                $question->saveAnswer($questionAnswer, $user);
-            }
-        }
-
-        return Redirect::to(URL::previous() . "#questions");
     }
 
     /**

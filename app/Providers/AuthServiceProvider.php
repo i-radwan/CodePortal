@@ -37,13 +37,13 @@ class AuthServiceProvider extends ServiceProvider
         // User can view and join contest if and only if the contest
         // is public, or the user has non-deleted invitation regarding this contest
         Gate::define("view-join-contest", function (User $user, Contest $contest) {
-            // Check if owner
-            if ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) {
+            // Check if contest is public
+            if ($contest[Constants::FLD_CONTESTS_VISIBILITY] == Constants::CONTEST_VISIBILITY_PUBLIC) {
                 return true;
             }
 
-            // Check if contest is public
-            if ($contest[Constants::FLD_CONTESTS_VISIBILITY] == Constants::CONTEST_VISIBILITY_PUBLIC) {
+            // Check if owner
+            if ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) {
                 return true;
             }
 
@@ -109,7 +109,6 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
-
         // Owner or admin of group/sheet
         Gate::define("owner-admin-group", function (User $user, $resource) {
 
@@ -174,6 +173,7 @@ class AuthServiceProvider extends ServiceProvider
             return false;
         });
 
+
         // Member of team
         Gate::define("member-team", function (User $user, Team $team) {
             // Check if user is member of the team
@@ -186,6 +186,7 @@ class AuthServiceProvider extends ServiceProvider
             return ($team->invitedUsers()->find($user[Constants::FLD_USERS_ID]));
         });
 
+
         // Post owner
         Gate::define("owner-post", function (User $user, Post $post) {
             // Check if user is owner of the post
@@ -197,6 +198,5 @@ class AuthServiceProvider extends ServiceProvider
             // Check if user is owner of the post
             return $comment->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID];
         });
-
     }
 }

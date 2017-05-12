@@ -2,14 +2,14 @@
 
 @section('content')
     <div class="container">
-        <div class="panel panel-default contests-panel">
+        <div class="panel panel-default">
             <a href="{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_CREATE) }}">
                 <span class="btn btn-link text-dark pull-right margin-5px">New</span>
             </a>
-            <div class="panel-heading contests-panel-heading">Contests</div>
 
+            <div class="panel-heading">Contests</div>
 
-            <div class="panel-body contests-panel-body horizontal-scroll">
+            <div class="panel-body">
 
                 {{--Contests Tabs Section--}}
                 <div class="content-tabs card">
@@ -46,9 +46,8 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
+
     <span class="page-distinguishing-element" id="contests-page-hidden-element"></span>
 @endsection
