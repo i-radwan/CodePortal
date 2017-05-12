@@ -245,7 +245,7 @@ var app = {
 
             // Fill url filters into session
             var urlTags = app.getUrlVars()['tag'];
-            if (urlTags.trim().length)
+            if (urlTags && urlTags.trim().length)
                 sessionStorage.setItem(app.tagsSessionKey, '["' + app.getUrlVars()['tag'].replace(/%2C/g, '","') + '"]');
             else
                 sessionStorage.setItem(app.tagsSessionKey, '');
@@ -1375,8 +1375,10 @@ var app = {
     getUrlVars: function () {
         var queries = {};
         $.each(document.location.search.substr(1).split('&'), function (c, q) {
-            var i = q.split('=');
-            queries[i[0].toString()] = i[1].toString();
+            if (q.length > 0) {
+                var i = q.split('=');
+                queries[i[0].toString()] = i[1].toString();
+            }
         });
         return queries;
     },
