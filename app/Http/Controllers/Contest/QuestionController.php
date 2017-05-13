@@ -29,7 +29,7 @@ class QuestionController
             return redirect(route(Constants::ROUTES_CONTESTS_INDEX)); // contest doesn't exist
         }
 
-        $problems = $contest->problemStatistics()->get();
+        $problems = $contest->problems()->get();
         $questions = $this->getQuestionsInfo($contest, Auth::user());
 
         return view('contests.contest')
