@@ -41,6 +41,9 @@ html, body {
     margin: 5px;
 }
 
+.margin-10px {
+    margin: 10px;
+}
 .margin-30px {
     margin: 30px;
 }

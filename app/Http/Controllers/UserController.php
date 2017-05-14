@@ -23,74 +23,71 @@ class UserController extends Controller
         return view('profile.index')
             ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
             ->with('user', $user)
-            ->with('chart', $this->statistics($user));
+            ->with('chart', $this->submissionsStatistics($user));
     }
 
     /**
-     * Calculates user statistics
+     * Calculates user submissions statistics
      *
      * @param User $user
      * @return $chart
      */
-    public function statistics(User $user)
+    public function submissionsStatistics(User $user)
     {
+        // Generate days array
         $weekDays = [];
         for ($i = 6; $i >= 0; $i--)
             array_push($weekDays, Carbon::now()->subDays($i)->format('l'));
 
-        $submissions = $this->getSubmittedProblemsCount($weekDays, $user);
+        $this->getSubmittedProblemsCount($weekDays, $user, $totalSubmissionsCount, $acceptedSubmissionsCount);
 
         $chart = Charts::multi('areaspline', 'highcharts')
             ->title('User Activity')
             ->colors(['#ff0000', '#00FFFF'])
             ->labels($weekDays)
-            ->dataset('submitted problems', $submissions['totalSubmissionsCount'])
-            ->dataset('solved problems', $submissions['acceptedSubmissionsCount']);
+            ->dataset('Submitted Problems', $totalSubmissionsCount)
+            ->dataset('Solved Problems', $acceptedSubmissionsCount);
 
         return $chart;
     }
 
-    public function getSubmittedProblemsCount($weekDays, $user)
+    /**
+     * Get user submissions count
+     *
+     * @param $weekDays
+     * @param $user
+     * @param &$totalSubmissionsCount
+     * @param &$acceptedSubmissionsCount
+     */
+    public function getSubmittedProblemsCount($weekDays, $user, &$totalSubmissionsCount, &$acceptedSubmissionsCount)
     {
-        $submissionsCount = [];
+        $totalSubmissionsCount = $acceptedSubmissionsCount = [];
 
-        $dateE = Carbon::today();
-        $dateS = Carbon::today()->subDays(6);
+        $endDateTime = Carbon::now()->timestamp;
+        $startDateTime = Carbon::now()->subDay(6)->timestamp;
 
-        // Why created_at ?!
-        $submissions = $user->submissions()->whereBetween('created_at', [$dateS->format('Y-m-d') . " 00:00:00", $dateE->format('Y-m-d') . " 23:59:59"])->get();
+        // Get all submissions within past 6-days perios
+        $submissions = $user->submissions()
+            ->whereBetween(Constants::FLD_SUBMISSIONS_SUBMISSION_TIME, [$startDateTime, $endDateTime])
+            ->get();
 
-
-        $totalsubmissions = $submissions->groupBy(function ($date) {
-            return Carbon::parse($date->created_at)->format('l');
+        // Group submissions by day names
+        $totalSubmissions = $submissions->groupBy(function ($submission) {
+            return Carbon::createFromTimestamp($submission[Constants::FLD_SUBMISSIONS_SUBMISSION_TIME])->format('l');
         });
 
-        $acceptedSubmissions = $submissions->whereIn(Constants::FLD_SUBMISSIONS_VERDICT, [Constants::VERDICT_ACCEPTED, Constants::VERDICT_PARTIAL_ACCEPTED])->groupBy(function ($date) {
-            return Carbon::parse($date->created_at)->format('l');
-        });
+        // Group accepted submissions by day names
+        $acceptedSubmissions = $submissions
+            ->whereIn(Constants::FLD_SUBMISSIONS_VERDICT, [Constants::VERDICT_ACCEPTED, Constants::VERDICT_PARTIAL_ACCEPTED])
+            ->groupBy(function ($submission) {
+                return Carbon::createFromTimestamp($submission[Constants::FLD_SUBMISSIONS_SUBMISSION_TIME])->format('l');
+            });
 
-        $ret = [];
-
+        // Fill submissions counts arrays
         foreach ($weekDays as $day) {
-            array_push($ret, (isset($totalsubmissions[$day]) ? $totalsubmissions[$day]->count() : 0));
+            array_push($totalSubmissionsCount, (isset($totalSubmissions[$day]) ? $totalSubmissions[$day]->count() : 0));
+            array_push($acceptedSubmissionsCount, (isset($acceptedSubmissions[$day]) ? $acceptedSubmissions[$day]->count() : 0));
         }
-        $submissionsCount['totalSubmissionsCount'] = $ret;
-
-
-        $ret = [];
-        foreach ($weekDays as $day) {
-            array_push($ret, (isset($acceptedSubmissions[$day]) ? $acceptedSubmissions[$day]->count() : 0));
-        }
-        $submissionsCount['acceptedSubmissionsCount'] = $ret;
-
-        $ret = [];
-        foreach ($weekDays as $day) {
-            array_push($ret, (isset($acceptedSubmissions[$day]) ? $acceptedSubmissions[$day]->count() : 0));
-        }
-        $submissionsCount['acceptedSubmissionsCount'] = $ret;
-
-        return $submissionsCount;
-
     }
 
     /**

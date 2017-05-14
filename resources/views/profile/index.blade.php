@@ -1,14 +1,14 @@
 @php
     use App\Utilities\Constants;
-    $authUser = Auth::user();
-    $isAuth = ($authUser != null && $authUser[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]);
+    $isProfileOwner = (Auth::check() && Auth::user()[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]);
     $solvedProblems = $user->problems(true)->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
     $unsolvedProblems = $user->problems(false)->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
-    $admin = $user->organizingContests()->paginate(10);
-    $owned = $user->owningContests()->paginate(10);
-    $participatedContests = $user->participatingContests()->paginate(10);
-    $groups = $user->joiningGroups()->paginate(10);
-
+    $organizingContests = $user->organizingContests()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
+    $owningContests = $user->owningContests()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
+    $participatedContests = $user->participatingContests()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
+    $joiningGroups = $user->joiningGroups()->paginate(Constants::GROUPS_COUNT_PER_PAGE);
+    $administratingGroups = $user->administratingGroups()->paginate(Constants::GROUPS_COUNT_PER_PAGE);
+    $owningGroups = $user->owningGroups()->paginate(Constants::GROUPS_COUNT_PER_PAGE);
 @endphp
 
 {!! \ConsoleTVs\Charts\Facades\Charts::assets() !!}
@@ -17,23 +17,21 @@
 @section('content')
     <div class="container">
         <div class="panel panel-default">
-            <div class="panel-heading">Profile</div>
 
-            @if($isAuth)
+            {{--Edit buttons--}}
+            @if($isProfileOwner)
                 <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_EDIT) }}"
-                   class="btn btn-link pull-right btn-sm RbtnMargin "
-                   role="button">
-                    Edit
-                    <i class="fa fa-gear"></i>
-                </a>
+                   class="btn btn-link text-dark pull-right margin-5px">Edit</a>
             @endif
 
-            <div class="content-tabs card margin-5px">
+            <div class="panel-heading">Profile</div>
 
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist">
+            <div class="row card margin-10px">
+
+                {{--Horizontal Nav tabs--}}
+                <ul class="nav nav-pills nav-stacked col-sm-3" role="tablist">
                     <li class=" nav-item active" role="presentation">
-                        <a href="#userInfo" role="tab" data-toggle="tab">User Info</a>
+                        <a href="#userInfo" role="tab" data-toggle="tab">Profile</a>
                     </li>
                     <li class="nav-item " role="presentation">
                         <a href="#problems" role="tab" data-toggle="tab">Problems</a>
@@ -49,19 +47,17 @@
                     </li>
                 </ul>
 
-                 <!-- Nav tabs contents -->
-                <div class="tab-content">
+                <!-- Nav tabs contents -->
+                <div class="tab-content col-sm-9">
                     <!-- User info tab -->
-                    <div role="tabpanel" class="fade in tab-pane active " id="userInfo">
+                    <div role="tabpanel" class="fade in tab-pane active" id="userInfo">
                         @include('profile.user_info')
-                         {!! $chart->render() !!}
+                        {!! $chart->render() !!}
                     </div>
 
                     <!-- Problems tab -->
                     <div role="tabpanel" class="fade tab-pane" id="problems">
-                        <strong>Answered problems</strong>
                         @include("problems.table", ['problems' => $solvedProblems])
-                        <strong>Wrong answered problems</strong>
                         @include("problems.table", ['problems' => $unsolvedProblems])
                     </div>
 
@@ -72,13 +68,11 @@
 
                     <!-- Groups tab -->
                     <div role="tabpanel" class="fade tab-pane " id="groups">
-                        <strong>Your groups</strong>
-                        @include('groups.groups_table')
+                        @include('groups.groups_table', ['groups' => $joiningGroups])
                     </div>
 
-                    <!-- Groups tab -->
+                    <!-- Teams tab -->
                     <div role="tabpanel" class="fade tab-pane " id="teams">
-                        <strong>Your teams</strong>
                         {{--TODO: add teams and split routes --}}
                     </div>
                 </div>
