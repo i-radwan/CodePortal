@@ -97,8 +97,9 @@ class Constants
 
     // Profile routes
     const ROUTES_PROFILE = 'profile';
-    const ROUTES_PROFILE_INFO = 'profile.info';
     const ROUTES_PROFILE_PROBLEMS = 'profile.problems';
+    const ROUTES_PROFILE_PROBLEMS_SOLVED = 'profile.problems.solved';
+    const ROUTES_PROFILE_PROBLEMS_UNSOLVED = 'profile.problems.unsolved';
     const ROUTES_PROFILE_CONTESTS = 'profile.contests';
     const ROUTES_PROFILE_GROUPS = 'profile.groups';
     const ROUTES_PROFILE_TEAMS = 'profile.teams';

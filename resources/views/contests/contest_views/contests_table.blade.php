@@ -1,5 +1,5 @@
 @if(count($contests))
-    <table class="table table-bordered table-hover" id="contests_table">
+    <table class="table table-bordered table-hover text-center" id="contests_table">
         <thead>
         <tr>
             <th class="text-center">ID</th>
@@ -53,10 +53,12 @@
     </table>
 
     {{--Pagination--}}
-    @if(!isset($isGroup))
-        {{ $contests->appends(Request::all())->fragment($fragment)->render() }}
-    @else
-        {{ $contests->fragment('contests')->links() }}
+    @if(!isset($disablePagination))
+        @if(!isset($isGroup))
+            {{ $contests->appends(Request::all())->fragment($fragment)->render() }}
+        @else
+            {{ $contests->fragment('contests')->links() }}
+        @endif
     @endif
 
 @else

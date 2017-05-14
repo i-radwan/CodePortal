@@ -9,6 +9,9 @@
                 {{--Heading--}}
                 <h1 class="page-header">
                     Blogs
+                    @if(isset($user))
+                        <small>by ({{ $user[\App\Utilities\Constants::FLD_USERS_USERNAME] }})</small>
+                    @endif
                 </h1>
 
                 {{--Alerts Area--}}

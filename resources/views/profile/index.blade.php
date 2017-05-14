@@ -1,14 +1,9 @@
 @php
     use App\Utilities\Constants;
+
     $isProfileOwner = (Auth::check() && Auth::user()[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]);
-    $solvedProblems = $user->problems(true)->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
-    $unsolvedProblems = $user->problems(false)->paginate(Constants::PROBLEMS_COUNT_PER_PAGE);
-    $organizingContests = $user->organizingContests()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
-    $owningContests = $user->owningContests()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
-    $participatedContests = $user->participatingContests()->paginate(Constants::CONTESTS_COUNT_PER_PAGE);
-    $joiningGroups = $user->joiningGroups()->paginate(Constants::GROUPS_COUNT_PER_PAGE);
-    $administratingGroups = $user->administratingGroups()->paginate(Constants::GROUPS_COUNT_PER_PAGE);
-    $owningGroups = $user->owningGroups()->paginate(Constants::GROUPS_COUNT_PER_PAGE);
+    $username = $user[Constants::FLD_USERS_USERNAME];
+
 @endphp
 
 {!! \ConsoleTVs\Charts\Facades\Charts::assets() !!}
@@ -30,50 +25,65 @@
 
                 {{--Horizontal Nav tabs--}}
                 <ul class="nav nav-pills nav-stacked col-sm-3" role="tablist">
-                    <li class=" nav-item active" role="presentation">
-                        <a href="#userInfo" role="tab" data-toggle="tab">Profile</a>
+                    <li {{ ($view == "info") ? 'class=active' : '' }}>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE, $username) }}">
+                            Profile
+                        </a>
                     </li>
-                    <li class="nav-item " role="presentation">
-                        <a href="#problems" role="tab" data-toggle="tab">Problems</a>
+                    <li {{ ($view == "problems") ? 'class=active' : '' }}>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_PROBLEMS, $username) }}">
+                            Problems
+                        </a>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <a href="#contests" role="tab" data-toggle="tab">Contests</a>
+                    <li {{ ($view == "contests") ? 'class=active' : '' }}>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_CONTESTS, $username) }}">
+                            Contests
+                        </a>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <a href="#groups" role="tab" data-toggle="tab">Groups</a>
+                    <li {{ ($view == "groups") ? 'class=active' : '' }}>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_GROUPS, $username) }}">
+                            Groups
+                        </a>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <a href="#teams" role="tab" data-toggle="tab">Teams</a>
+                    <li {{ ($view == "teams") ? 'class=active' : '' }}>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_TEAMS, $username) }}">
+                            Teams
+                        </a>
+                    </li>
+                    <li {{ ($view == "blogs") ? 'class=active' : '' }}>
+                        <a href="{{ route(\App\Utilities\Constants::ROUTES_PROFILE_BLOGS, $username) }}">
+                            Blogs
+                        </a>
                     </li>
                 </ul>
 
                 <!-- Nav tabs contents -->
                 <div class="tab-content col-sm-9">
                     <!-- User info tab -->
-                    <div role="tabpanel" class="fade in tab-pane active" id="userInfo">
-                        @include('profile.user_info')
-                        {!! $chart->render() !!}
-                    </div>
+                    <div role="tabpanel" class="fade in tab-pane active horizontal-scroll" id="userInfo">
 
-                    <!-- Problems tab -->
-                    <div role="tabpanel" class="fade tab-pane" id="problems">
-                        @include("problems.table", ['problems' => $solvedProblems])
-                        @include("problems.table", ['problems' => $unsolvedProblems])
-                    </div>
+                        {{--User profile info--}}
+                        @if($view == "info")
+                            @include('profile.user_info')
+                            {!! $chart->render() !!}
 
-                    <!-- Contests tab -->
-                    <div role="tabpanel" class="fade tab-pane " id="contests">
-                        @include('profile.contest')
-                    </div>
+                            {{--User problems--}}
+                        @elseif($view == "problems")
+                            @include('profile.problems')
 
-                    <!-- Groups tab -->
-                    <div role="tabpanel" class="fade tab-pane " id="groups">
-                        @include('groups.groups_table', ['groups' => $joiningGroups])
-                    </div>
+                            {{--User contests--}}
+                        @elseif($view == "contests")
+                            @include('profile.contests')
 
-                    <!-- Teams tab -->
-                    <div role="tabpanel" class="fade tab-pane " id="teams">
-                        {{--TODO: add teams and split routes --}}
+                            {{--User groups--}}
+                        @elseif($view == "groups")
+                            @include('profile.groups')
+
+                            {{--User groups--}}
+                        @elseif($view == "blogs")
+                            {{--@include('groups.groups_table')--}}
+                        @endif
+
                     </div>
                 </div>
             </div>

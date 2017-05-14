@@ -13,17 +13,87 @@ use ConsoleTVs\Charts\Facades\Charts;
 class UserController extends Controller
 {
     /**
-     * Show the user profile page.
+     * Show the user basic info profile page.
      *
      * @param $user
      * @return \Illuminate\View\View
      */
-    public function index(User $user)
+    public function displayUserInfo(User $user)
     {
         return view('profile.index')
             ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
             ->with('user', $user)
+            ->with('solvedProblems', $user->problems(true)->paginate(Constants::PROBLEMS_COUNT_PER_PAGE))
+            ->with('view', 'info')
             ->with('chart', $this->submissionsStatistics($user));
+    }
+
+    /**
+     * Show the user solved problems
+     *
+     * @param $user
+     * @return \Illuminate\View\View
+     */
+    public function displayUserSolvedProblems(User $user)
+    {
+        return view('profile.index')
+            ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
+            ->with('user', $user)
+            ->with('problems', $user->problems(true)->paginate(Constants::PROBLEMS_COUNT_PER_PAGE))
+            ->with('view', 'problems')
+            ->with('type', 'solved');
+    }
+
+    /**
+     * Show the user un-solved problems
+     *
+     * @param $user
+     * @return \Illuminate\View\View
+     */
+    public function displayUserUnSolvedProblems(User $user)
+    {
+        return view('profile.index')
+            ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
+            ->with('user', $user)
+            ->with('problems', $user->problems(false)->paginate(Constants::PROBLEMS_COUNT_PER_PAGE))
+            ->with('view', 'problems')
+            ->with('type', 'unsolved');
+    }
+
+    /**
+     * Show the user contests
+     *
+     * @param $user
+     * @return \Illuminate\View\View
+     */
+    public function displayUserContests(User $user)
+    {
+        return view('profile.index')
+            ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
+            ->with('user', $user)
+            ->with('owningContests', $user->owningContests()->get())
+            ->with('participatedContests', $user->participatingContests()->get())
+            ->with('organizingContests', $user->organizingContests()->get())
+            ->with('disablePagination', true)
+            ->with('view', 'contests');
+    }
+
+    /**
+     * Show the user groups
+     *
+     * @param $user
+     * @return \Illuminate\View\View
+     */
+    public function displayUserGroups(User $user)
+    {
+        return view('profile.index')
+            ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
+            ->with('user', $user)
+            ->with('joiningGroups', $user->joiningGroups()->get())
+            ->with('administratingGroups', $user->administratingGroups()->get())
+            ->with('owningGroups', $user->owningGroups()->get())
+            ->with('disablePagination', true)
+            ->with('view', 'groups');
     }
 
     /**

@@ -1,5 +1,5 @@
 @if($groups->count())
-    <table class="table table-bordered">
+    <table class="table table-bordered text-center">
         <thead>
         <tr>
             <th class="text-center">ID</th>
@@ -46,8 +46,9 @@
 
 
     {{--Pagination--}}
-    {{ $groups->appends(Request::all())->render() }}
-
+    @if(!isset($disablePagination))
+        {{ $groups->appends(Request::all())->render() }}
+    @endif
 @else
     <p class="margin-30px">No groups!</p>
 @endif

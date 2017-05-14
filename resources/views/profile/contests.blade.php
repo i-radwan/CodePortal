@@ -3,7 +3,7 @@
   <ul class="nav nav-tabs" role="tablist">
 
      <li class="nav-item active" role="presentation">
-          <a href="#part" role="tab" data-toggle="tab">Your Participated Contests</a>
+          <a href="#part" role="tab" data-toggle="tab">Participated Contests</a>
      </li>
 
      <li class="nav-item " role="presentation">
@@ -11,7 +11,7 @@
      </li>
 
      <li class="nav-item " role="presentation">
-          <a href="#admin" role="tab" data-toggle="tab">Contests you are admin in</a>
+          <a href="#admin" role="tab" data-toggle="tab">Administrating Contests</a>
      </li>
 
   </ul>

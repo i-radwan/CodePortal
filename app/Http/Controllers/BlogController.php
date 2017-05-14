@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\User;
 use App\Utilities\Constants;
 use Illuminate\Http\Request;
 use Auth;
@@ -58,13 +59,24 @@ class BlogController extends Controller
     /**
      * Shows certain user posts
      *
-     * ToDo finish this function
+     * @param User $user
      *
-     * @param $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function displayUserPosts($user)
+    public function displayUserPosts(User $user)
     {
-        dd($user);
+        // Getting posts
+        $posts = Post::ofUser($user)
+            ->orderByDesc(Constants::FLD_BLOGS_BLOG_ID)
+            ->paginate(Constants::POSTS_COUNT_PER_PAGE);
+
+        return view('blogs.index')
+            ->with('posts', $posts)
+            ->with('user', $user)
+            ->with('topContributors', $this->getTopContributors())
+            ->with('postUpVoteURL', url("/blogs/up_vote/entry"))
+            ->with('postDownVoteURL', url("blogs/down_vote/entry"))
+            ->with('pageTitle', config('app.name') . ' | Blogs');
     }
 
     /**

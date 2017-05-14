@@ -37,6 +37,10 @@ html, body {
     background: rgba(251, 240, 227, 0.83);
 }
 
+.no-margin {
+    margin: 0 !important;
+}
+
 .margin-5px {
     margin: 5px;
 }
@@ -44,6 +48,7 @@ html, body {
 .margin-10px {
     margin: 10px;
 }
+
 .margin-30px {
     margin: 30px;
 }

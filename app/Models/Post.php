@@ -69,6 +69,26 @@ class Post extends Model
     }
 
     /**
+     * Retrieve posts that are written by the given user
+     *
+     * @param Builder $query
+     * @param User $user
+     *
+     * @return Builder
+     */
+    public function scopeOfUser(Builder $query, User $user)
+    {
+        //Check if user is null
+        if ($user == null) {
+            return $query;
+        }
+
+        return $query->where(Constants::TBL_POSTS . '.' . Constants::FLD_POSTS_OWNER_ID,
+            '=',
+            $user[Constants::FLD_USERS_ID]);
+    }
+
+    /**
      * Retrieve posts that have title or content such as givens
      *
      * @param Builder $query
