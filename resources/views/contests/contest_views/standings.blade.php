@@ -12,26 +12,35 @@
                 $problem = new \App\Models\Problem((array)(array)$problem);
                 $id = \App\Utilities\Utilities::generateProblemNumber($problem);
                 $link = \App\Utilities\Utilities::generateProblemLink($problem);
+                $problemName = $problem[\App\Utilities\Constants::FLD_PROBLEMS_NAME];
             @endphp
 
             <th class="text-center">
-                <a href="{{ $link }}" title="{{ $id . ' - ' . $problem->name }}">
-                    P{{ $loop->index + 1 }}
+                <a href="{{ $link }}" title="{{ $id . ' - ' . $problemName }}">
+                    P{{ $loop->iteration }}
                 </a>
             </th>
         @endforeach
     </tr>
     </thead>
+
     <tbody>
     @foreach($standings as $row)
+        @php
+            $username = $row[\App\Utilities\Constants::FLD_USERS_USERNAME];
+            $solvedCount = $row[\App\Utilities\Constants::FLD_USERS_SOLVED_COUNT];
+            $trailsCount = $row[\App\Utilities\Constants::FLD_USERS_TRAILS_COUNT];
+            $penalty = $row[\App\Utilities\Constants::FLD_USERS_PENALTY];
+            $userProblems = $row[\App\Utilities\Constants::TBL_PROBLEMS];
+        @endphp
         <tr>
             {{--TODO: get rank from database--}}
-            <td>{{ $loop->index + 1 }}</td>
-            <td>{{ $row[\App\Utilities\Constants::FLD_USERS_USERNAME] }}</td>
-            <td>{{ $row[\App\Utilities\Constants::FLD_USERS_SOLVED_COUNT] }}/ {{ $row[\App\Utilities\Constants::FLD_USERS_TRAILS_COUNT] }}</td>
-            <td>{{ $row[\App\Utilities\Constants::FLD_USERS_PENALTY] }}</td>
+            <td>{{ $loop->iteration }}</td>
+            <td>{{ $username }}</td>
+            <td>{{ $solvedCount }} / {{ $trailsCount }}</td>
+            <td>{{ $penalty }}</td>
 
-            @foreach($row[\App\Utilities\Constants::TBL_PROBLEMS] as $problem)
+            @foreach($userProblems as $problem)
                 @php
                     $trialsCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_TRAILS_COUNT];
                     $solvedCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_SOLVED_COUNT];

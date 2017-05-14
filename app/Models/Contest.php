@@ -45,7 +45,7 @@ class Contest extends Model
      */
     protected $rules = [
         Constants::FLD_CONTESTS_NAME => 'required|max:100',
-        Constants::FLD_CONTESTS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
+        //Constants::FLD_CONTESTS_OWNER_ID => 'required|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:today',
         Constants::FLD_CONTESTS_DURATION => 'integer|required|min:1|max:' . Constants::CONTESTS_DURATION_MAX,
         Constants::FLD_CONTESTS_VISIBILITY => 'required|Regex:/([01])/'
@@ -194,12 +194,15 @@ class Contest extends Model
      */
     public function problems()
     {
-        return $this->belongsToMany(
-            Problem::class,
-            Constants::TBL_CONTEST_PROBLEMS,
-            Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
-            Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID
-        )->withPivot(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
+        return $this
+            ->belongsToMany(
+                Problem::class,
+                Constants::TBL_CONTEST_PROBLEMS,
+                Constants::FLD_CONTEST_PROBLEMS_CONTEST_ID,
+                Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ID
+            )
+            ->withPivot(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER)
+            ->orderBy(Constants::FLD_CONTEST_PROBLEMS_PROBLEM_ORDER);
     }
 
     /**
@@ -470,7 +473,7 @@ class Contest extends Model
         $query->where(
             Constants::TBL_CONTESTS . '.' . Constants::FLD_CONTESTS_ID,
             '=',
-            $this->id
+            $this[Constants::FLD_CONTESTS_ID]
         );
 
         return $query;
@@ -530,8 +533,8 @@ class Contest extends Model
     {
         // TODO: need to check timestamps accurately
         // TODO: It seems that Codeforces timestamp is leading 4 hours
-        $contestStartTime = strtotime($this->time);
-        $contestEndTime = strtotime($this->time . ' + ' . $this->duration . ' minute');
+        $contestStartTime = strtotime($this[Constants::FLD_CONTESTS_TIME]);
+        $contestEndTime = $this->getContestEndTime();
 
         if ($tillFirstAccepted) {
             $submissions = Submission::tillFirstAccepted($contestStartTime, $contestEndTime);

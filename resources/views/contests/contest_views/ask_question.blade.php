@@ -12,7 +12,6 @@
         <select class="form-control" name="problem_id" id="problem_id" required>
             @foreach($problems as $problem)
                 @php
-                    $problem = (array)$problem;
                     $problemId = $problem[\App\Utilities\Constants::FLD_PROBLEMS_ID];
                     $problemName = $problem[\App\Utilities\Constants::FLD_PROBLEMS_NAME];
                 @endphp
@@ -22,8 +21,13 @@
         </select>
 
         {{--Question content--}}
-        <textarea class="form-control" cols="30" rows="5" name="content" id="content" placeholder="Question content..."
-                  required></textarea>
+        <textarea class="form-control"
+                  name="content"
+                  id="content"
+                  cols="30" rows="5"
+                  placeholder="Question content..."
+                  required>
+        </textarea>
 
         {{--Display Errors--}}
         @if(Session::has('question-error'))

@@ -10,17 +10,13 @@
     </tr>
     </thead>
 
-    @php($user = Auth::user())
-    @php($i=0)
-
     <tbody id="contest-problems-tbody">
     @foreach($problems as $problem)
         @php
-            $i++;
             $problem = (array)$problem;
             $trailsCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_TRAILS_COUNT];
             $problem = new \App\Models\Problem((array)$problem);
-            $verdict = $problem->simpleVerdict($user);
+            $verdict = $problem->simpleVerdict($authUser);
             $problemRawID = $problem[\App\Utilities\Constants::FLD_PROBLEMS_ID];
             $problemName = $problem[\App\Utilities\Constants::FLD_PROBLEMS_NAME];
             $problemSolvedCount = $problem[\App\Utilities\Constants::FLD_PROBLEMS_SOLVED_COUNT];
@@ -36,7 +32,6 @@
                 $style = 'danger';
             else
                 $style = '';
-
         @endphp
 
         <tr class="{{ $style }}">
@@ -46,7 +41,7 @@
             </td>
 
             {{--ID--}}
-            <td class="testing-problem-order-{{ $i }}">{{ $id }}</td>
+            <td class="testing-problem-order-{{ $loop->iteration }}">{{ $id }}</td>
 
             {{--Name--}}
             <td><a href="{{ $link }}" target="_blank">{{ $problemName }}</a></td>

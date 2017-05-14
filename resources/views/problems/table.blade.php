@@ -2,13 +2,38 @@
     {{--Headings--}}
     <thead>
     <tr>
+        {{--Problem checkboxes--}}
         @if(isset($checkBoxes) && $checkBoxes = 'true')
             <th data-field="state" data-checkbox="true">#</th>
         @endif
-        @include('problems.sortable_heading', ['title' => 'ID', 'width' => '7%', 'sortParam' => \App\Utilities\Constants::URL_QUERY_SORT_PARAM_ID_KEY])
-        @include('problems.sortable_heading', ['title' => 'Name', 'width' => '46%', 'sortParam' => \App\Utilities\Constants::URL_QUERY_SORT_PARAM_NAME_KEY])
-        @include('problems.sortable_heading', ['title' => '#Acc.', 'width' => '7%', 'sortParam' => \App\Utilities\Constants::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY])
-        @include('problems.sortable_heading', ['title' => 'Judge', 'width' => '10%', 'sortParam' => \App\Utilities\Constants::URL_QUERY_SORT_PARAM_JUDGE_KEY])
+
+        {{--ID--}}
+        @include('problems.sortable_heading', [
+            'title' => 'ID',
+            'width' => '7%',
+            'sortParam' => \App\Utilities\Constants::URL_QUERY_SORT_PARAM_ID_KEY
+        ])
+
+        {{--Name--}}
+        @include('problems.sortable_heading', [
+            'title' => 'Name',
+            'width' => '46%',
+            'sortParam' => \App\Utilities\Constants::URL_QUERY_SORT_PARAM_NAME_KEY
+        ])
+
+        {{--# Accepted--}}
+        @include('problems.sortable_heading', [
+            'title' => '#Acc.',
+            'width' => '7%',
+            'sortParam' => \App\Utilities\Constants::URL_QUERY_SORT_PARAM_ACCEPTED_COUNT_KEY
+        ])
+
+        {{--Judge--}}
+        @include('problems.sortable_heading', [
+            'title' => 'Judge',
+            'width' => '10%',
+            'sortParam' => \App\Utilities\Constants::URL_QUERY_SORT_PARAM_JUDGE_KEY
+        ])
 
         {{--Tags--}}
         <th class="text-center" width="30%">Tags</th>
@@ -46,7 +71,7 @@
                     <input class="check_state"
                            type="checkbox"
                            id="problem-checkbox-{{ $rawID }}"
-                           onclick="app.syncDataWithSession(app.problemsIDsSessionKey, '{{ $rawID }}', true, this)" />
+                           onclick="app.syncDataWithSession(app.problemsIDsSessionKey, '{{ $rawID }}', true, this)"/>
                 </td>
             @endif
 
@@ -65,9 +90,15 @@
             {{--Tags--}}
             <td>
                 @foreach($problem->tags()->get() as $tag)
-                    <a class="problems-table-tag-link"
-                       href="{{ Request::url() . '?' . http_build_query([\App\Utilities\Constants::URL_QUERY_TAG_KEY => $tag[\App\Utilities\Constants::FLD_TAGS_ID]]) }}">
-                        {{ $tag[\App\Utilities\Constants::FLD_TAGS_NAME] }}
+                    @php
+                        $tagID = $tag[\App\Utilities\Constants::FLD_TAGS_ID];
+                        $tagName = $tag[\App\Utilities\Constants::FLD_TAGS_NAME];
+                        $urlQuery = http_build_query([\App\Utilities\Constants::URL_QUERY_TAG_KEY => $tagID]);
+                        $url = Request::url() . '?' . $urlQuery;
+                    @endphp
+
+                    <a class="problems-table-tag-link" href="{{ $url }}">
+                        {{ $tagName }}
                     </a>
                 @endforeach
             </td>

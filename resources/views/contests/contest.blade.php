@@ -90,9 +90,7 @@
                 ])
             @endif
 
-
             <div class="panel-heading">{{ $contestName }}</div>
-
             <div class="panel-body">
                 {{--Alerts Part--}}
                 @include('components.alert')
@@ -142,7 +140,7 @@
                                 @elseif($problems && count($problems))
                                     <button type="submit"
                                             class="btn btn-primary pull-right problems-reorder-view save"
-                                            onclick="app.saveProblemsOrderToDB('{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_REORDER, $contestID) }}', '{{csrf_token()}}')">
+                                            onclick="app.saveProblemsOrderToDB('{{ route(\App\Utilities\Constants::ROUTES_CONTESTS_REORDER_PROBLEMS, $contestID) }}', '{{csrf_token()}}')">
                                         Save
                                     </button>
                                     @include('contests.contest_views.problems')
