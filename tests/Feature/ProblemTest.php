@@ -2,8 +2,7 @@
 
 namespace Tests\Feature;
 
-
-use App\Http\Controllers\RetrievesProblems;
+use App\Http\Controllers\Problems\RetrievesProblems;
 use Illuminate\Validation\ValidationException;
 use App\Models\Problem;
 use App\Utilities\Constants;

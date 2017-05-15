@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Blogs;
 
-use App\Utilities\Constants;
 use Auth;
-
-use App\Models\Vote;
 use App\Models\Post;
 use App\Models\Comment;
-
+use App\Models\Vote;
+use App\Utilities\Constants;
+use App\Http\Controllers\Controller;
 
 class VoteController extends Controller
 {

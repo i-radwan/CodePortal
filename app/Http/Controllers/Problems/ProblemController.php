@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Problems;
 
 use App\Models\Tag;
 use App\Models\Judge;
 use App\Utilities\Utilities;
 use App\Utilities\Constants;
-
+use App\Http\Controllers\Controller;
 
 class ProblemController extends Controller
 {

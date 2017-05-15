@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Blogs;
 
-use App\Models\Comment;
-use App\Models\Post;
-use App\Models\User;
-use App\Utilities\Constants;
-use Illuminate\Http\Request;
 use Auth;
 use Session;
 use DB;
-
+use App\Models\User;
+use App\Models\Post;
+use App\Models\Comment;
+use App\Utilities\Constants;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {

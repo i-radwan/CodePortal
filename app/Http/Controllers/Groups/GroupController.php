@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Groups;
 
 use Auth;
 use Redirect;
@@ -11,6 +11,7 @@ use App\Models\Notification;
 use App\Utilities\Constants;
 use App\Utilities\Utilities;
 use App\Exceptions\InvitationException;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller

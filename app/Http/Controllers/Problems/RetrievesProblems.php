@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Problems;
 
+use Session;
 use App\Models\Problem;
 use App\Models\Tag;
 use App\Utilities\Constants;
-use Session;
 
 trait RetrievesProblems
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Contest;
+namespace App\Http\Controllers\Contests;
 
 use Auth;
 use Gate;

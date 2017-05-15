@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Contest;
+namespace App\Http\Controllers\Contests;
 
 use Auth;
 use Session;
@@ -30,7 +30,9 @@ trait SavesContests
         // Start datetime isn't in the past
         // End date is within the allowed period
         $this->validate($request, [
-            Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s|after:' . Carbon::now() . '|before:' . Carbon::now()->addDays(Constants::CONTESTS_MAX_START_DATETIME),
+            Constants::FLD_CONTESTS_TIME => 'required|date_format:Y-m-d H:i:s' .
+                '|after:' . Carbon::now() .
+                '|before:' . Carbon::now()->addDays(Constants::CONTESTS_MAX_START_DATETIME)
         ]);
 
         // Flag to indicate that we're saving old contest

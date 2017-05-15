@@ -1,17 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Groups;
 
-use Illuminate\Http\Request;
-use App\Utilities\Constants;
+use URL;
+use Redirect;
+use Session;
+use Storage;
 use App\Models\Group;
 use App\Models\Sheet;
 use App\Models\Judge;
-use Redirect;
-use URL;
-
-use Session;
-use Storage;
+use App\Utilities\Constants;
+use App\Http\Controllers\Problems\RetrievesProblems;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class SheetController extends Controller
 {

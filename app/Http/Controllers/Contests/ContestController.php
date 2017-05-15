@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Contest;
+namespace App\Http\Controllers\Contests;
 
 use Auth;
 use Session;
@@ -10,7 +10,7 @@ use App\Models\Judge;
 use App\Models\Contest;
 use App\Models\Group;
 use App\Utilities\Constants;
-use App\Http\Controllers\RetrievesProblems;
+use App\Http\Controllers\Problems\RetrievesProblems;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
