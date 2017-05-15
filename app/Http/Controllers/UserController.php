@@ -167,64 +167,56 @@ class UserController extends Controller
      */
     public function edit()
     {
-        //making an array of countries
+        // making an array of countries
         \Locale::setDefault('en');
         $countries = Intl::getRegionBundle()->getCountryNames();
-        $countries = array("AA" => '') + $countries;
+
         $user = \Auth::user();
+
         return view('profile.edit')
-            ->with('pageTitle', config('app.name') . ' | ' . $user->username)
+            ->with('pageTitle', config('app.name') . ' | ' . $user[Constants::FLD_USERS_USERNAME])
             ->with('user', $user)
             ->with('countries', $countries);
     }
 
     /**
-     * handling data request in edit profile page
+     * Handling data request in edit profile page
      *
      * @param $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function update(Request $request)
     {
-        //TODO @Abzo image cropping
-        //TODO delete old images of the same user
         $user = \Auth::user();
-        $this->validate($request, array(
-            Constants::FLD_USERS_PROFILE_PICTURE => 'nullable|mimes:jpg,jpeg,png|max:2500',
-            'password' => 'nullable|min:6',
-            'oldPassword' => 'min:6|old',
-            Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:2005-1-1'
-        ));
 
-        //saving picture in database
+        //TODO: @Abdo remove old pictures
+
+        // Validate request
+        $this->validate($request, [
+            Constants::FLD_USERS_PROFILE_PICTURE => 'nullable|mimes:jpg,jpeg,png|max:2500',
+            Constants::FLD_USERS_EMAIL => 'required|email|max:50|unique:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_EMAIL . ',' . $user[Constants::FLD_USERS_ID] . ',' . Constants::FLD_USERS_ID,
+            Constants::FLD_USERS_PASSWORD => 'nullable|min:6',
+            'oldPassword' => 'min:6|old',
+            Constants::FLD_USERS_GENDER => 'Regex:/([01])/',
+            Constants::FLD_USERS_FIRST_NAME => 'nullable|max:20',
+            Constants::FLD_USERS_LAST_NAME => 'nullable|max:20',
+            Constants::FLD_USERS_BIRTHDATE => 'nullable|date|before:' . Carbon::today()->subYears(10)->toDateString()
+        ]);
+
+        // Saving picture in folder and DB
+        // Remove user old photo
         if ($request->hasFile('profile_picture')) {
             $image = $request->file('profile_picture');
-            $fileName = $user->id . '.' . $image->getClientOriginalExtension();
-            $fileLocation = public_path('images/' . $fileName);
+            $fileName = $user[Constants::FLD_USERS_ID] . '.' . $image->getClientOriginalExtension();
+            $fileLocation = public_path('profile_pics/' . $fileName);
+
             Image::make($image)->save($fileLocation);
-            $user->profile_picture = $fileName;
+
+            $user[Constants::FLD_USERS_PROFILE_PICTURE] = $fileName;
         }
 
-        //changes Date format to be saved in DB
-        if (($request->input('birthdate') != null)) {
-            if (strpos($request->input('birthdate'), '-') !== false) {
 
-                $user->birthdate = $request->input('birthdate');
-
-            } else {
-
-                $dateOfBirth = explode('/', $request->input('birthdate'));
-
-                if ((array_key_exists("2", $dateOfBirth)) && (array_key_exists("1", $dateOfBirth)) && (array_key_exists("0", $dateOfBirth))) {
-
-                    $formattedBirth = $dateOfBirth['2'] . '-' . $dateOfBirth['0'] . '-' . $dateOfBirth['1'];
-                    $user->birthdate = $formattedBirth;
-
-                }
-            }
-        }
-
-        //saving user handles in DB
+        // Saving user handles in DB
         if ($request[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
             $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $request[Constants::FLD_USERS_CODEFORCES_HANDLE]);
         }
@@ -237,28 +229,22 @@ class UserController extends Controller
             $user->addHandle(Constants::JUDGE_LIVE_ARCHIVE_ID, $request[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]);
         }
 
-        //saving pass,email,username,first,last names and gender in database
-        if (strlen($request->input('password')) >= 6) {
-            $user->password = bcrypt($request->input('password'));
+        if ($request->get('password')) {
+            $user[Constants::FLD_USERS_PASSWORD] = \Hash::make($request->get('password'));
         }
 
-        if ($request->input('country') != "")
-            $user->country = $request->input('country');
+        // Save user data
+        $user[Constants::FLD_USERS_BIRTHDATE] = $request->input('birthdate');
+        $user[Constants::FLD_USERS_COUNTRY] = $request->input('country');
+        $user[Constants::FLD_USERS_GENDER] = $request->input('gender');
+        $user[Constants::FLD_USERS_EMAIL] = $request->input('email');
+        $user[Constants::FLD_USERS_FIRST_NAME] = $request->input('first_name');
+        $user[Constants::FLD_USERS_LAST_NAME] = $request->input('last_name');
 
-        if ($request->input('gender') == 'Male') {
-            $user->gender = '0';
-        } else {
-            $user->gender = '1';
-        }
-
-        $user->email = $request->input('email');
-        $user->first_name = $request->input('FirstName');
-        $user->last_name = $request->input('LastName');
-
-        //saving in the database
+        // Saving in the database
         $user->save();
 
-        //redirecting with the id of the current/modified username
+        // Redirecting with the id of the current/modified username
         return redirect(route(Constants::ROUTES_PROFILE, $user[Constants::FLD_USERS_USERNAME]));
     }
 }
