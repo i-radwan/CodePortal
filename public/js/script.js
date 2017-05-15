@@ -79,7 +79,7 @@ var app = {
 
         //birth Date picker
         $("#datepicker").datepicker({
-            format: 'Y-m-d',
+            dateFormat: 'yy-mm-dd',
             changeMonth: true,
             changeYear: true,
             yearRange: "-100:+0"
@@ -95,6 +95,20 @@ var app = {
         });
 
         //endregion
+
+        //<editor-fold desc="File upload event">
+        $(document).on('change', ':file', function () {
+            var input = $(this),
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [label]);
+        });
+
+        // Echo file name in p element
+        $(':file').on('fileselect', function (event, label) {
+            $("#profile-pic-name").text(label);
+        });
+
+        //</editor-fold>
 
         //region Maintain bootstrap tabs
 

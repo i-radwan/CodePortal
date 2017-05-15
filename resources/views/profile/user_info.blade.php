@@ -45,7 +45,7 @@
         </p>
 
         {{--Email--}}
-        @if(($email!=null) && ($isProfileOwner))
+        @if(($email != null) && ($isProfileOwner))
             <p class="row">
                 <strong class="col-sm-5">E-mail: </strong>
                 {{ $email }}

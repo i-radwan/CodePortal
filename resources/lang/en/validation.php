@@ -109,7 +109,7 @@ return [
             'after' => 'The contest start time must be in the next ' . Constants::CONTESTS_MAX_START_DATETIME . ' days',
         ],
         'oldPassword' => [
-            'old' => 'old password mismatch',
+            'old' => 'Old password mismatch',
         ],
 
     ],

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Utilities\Constants;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Dusk\DuskServiceProvider;
 use Illuminate\Support\Facades\Hash;
@@ -20,9 +21,8 @@ class AppServiceProvider extends ServiceProvider
         //dont change Hash to bycrypt
         Validator::extend('old', function ($attribute, $value, $parameters) {
             //dd(\Auth::user()->password);
-            return Hash::check($value, \Auth::user()->password);
+            return Hash::check($value, \Auth::user()[Constants::FLD_USERS_PASSWORD]);
         });
-
     }
 
     /**
