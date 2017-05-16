@@ -48,8 +48,13 @@
 
             {{--Options--}}
             <option>Please select country...</option>
-            @foreach($countries as $country)
-                <option>{{ $country }}</option>
+            @foreach($countries as $cou)
+                <option
+                        @if($cou == $country)
+                            selected
+                        @endif>
+                    {{ $cou }}
+                </option>
             @endforeach
 
         </select>

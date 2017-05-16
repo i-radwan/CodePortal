@@ -189,8 +189,6 @@ class UserController extends Controller
     {
         $user = \Auth::user();
 
-        //TODO: @Abdo remove old pictures
-
         // Validate request
         $this->validate($request, [
             Constants::FLD_USERS_PROFILE_PICTURE => 'nullable|mimes:jpg,jpeg,png|max:2500',
@@ -206,13 +204,18 @@ class UserController extends Controller
         // Saving picture in folder and DB
         // Remove user old photo
         if ($request->hasFile('profile_picture')) {
+            $oldFile = public_path('profile_pics/' . $user[Constants::FLD_USERS_PROFILE_PICTURE]);
+
+            // Create and save new image file
             $image = $request->file('profile_picture');
             $fileName = $user[Constants::FLD_USERS_ID] . '.' . $image->getClientOriginalExtension();
             $fileLocation = public_path('profile_pics/' . $fileName);
-
             Image::make($image)->save($fileLocation);
 
             $user[Constants::FLD_USERS_PROFILE_PICTURE] = $fileName;
+
+            // Delete user old file
+            unlink($oldFile);
         }
 
 

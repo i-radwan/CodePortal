@@ -14,7 +14,7 @@
     $birthDate = Carbon::parse($user[Constants::FLD_USERS_BIRTHDATE]);
     $userAge = Carbon::createFromDate($birthDate->year)->diff(Carbon::now())->format('%y');
 
-    if($gender == Constants::GENDER_FEMALE)
+    if ($gender == Constants::GENDER_FEMALE)
         $gender="female";
     else
         $gender="male";
@@ -94,7 +94,7 @@
                 $judgeLink = $handle[\App\Utilities\Constants::FLD_JUDGES_LINK];
             @endphp
 
-            <p>{{ $handleName }}
+            <p>• {{ $handleName }}
                 <small>(<a href="{{ $judgeLink }}">{{ $judgeName }}</a>)</small>
             </p>
         @endforeach
@@ -114,7 +114,7 @@
 
         {{--Profile Picture--}}
         <img class="thumbnail img-responsive pull-right margin-10px"
-             src="{{ asset('images/' . $profilePic) }}"
+             src="{{ asset('profile_pics/' . $profilePic) }}"
              alt="profile pic"
              width="200"
              height="300"

@@ -60,7 +60,7 @@
                 <!-- Nav tabs contents -->
                 <div class="tab-content col-sm-9">
                     <!-- User info tab -->
-                    <div role="tabpanel" class="fade in tab-pane active horizontal-scroll" id="userInfo">
+                    <div role="tabpanel" class="fade in tab-pane active horizontal-scroll container" id="userInfo">
 
                         {{--User profile info--}}
                         @if($view == "info")
