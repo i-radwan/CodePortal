@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\Utilities\Constants;
 use Faker\Factory;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\Browser\Pages\AddBlogPage;
 use Tests\Browser\Pages\Blogs;
 use Tests\Browser\Pages\Login;
@@ -44,7 +45,7 @@ class BlogsFlowTest extends DuskTestCase
             $latestEntryTitle = $latestEntry[Constants::FLD_POSTS_TITLE];
             $latestEntryBody = $latestEntry[Constants::FLD_POSTS_BODY];
 
-            $browser->assertPathIs('/blogs/entry/' . $latestEntryID)
+            $browser->pause(10000)->assertPathIs(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID, false))
                 ->assertSee('Post Added Successfully')
                 ->assertSee($latestEntryTitle)
                 ->assertSee($latestEntryBody);
@@ -107,16 +108,16 @@ class BlogsFlowTest extends DuskTestCase
             //============================================================
             // • Non-user cannot vote blogs/comments
             //============================================================
-            $browser2->visit('http://127.0.0.1:8000/blogs/entry/' . $latestEntryID)
+            $browser2->visit(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID))
                 ->click('#blog-up-vote-icon')
                 ->assertPathIs('/errors/401')
-                ->visit('http://127.0.0.1:8000/blogs/entry/' . $latestEntryID)
+                ->visit(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID))
                 ->click('#blog-down-vote-icon')
                 ->assertPathIs('/errors/401')
-                ->visit('http://127.0.0.1:8000/blogs/entry/' . $latestEntryID)
+                ->visit(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID))
                 ->click("#comment-$latestCommentID-up-vote-icon")// up vote
                 ->assertPathIs('/errors/401')
-                ->visit('http://127.0.0.1:8000/blogs/entry/' . $latestEntryID)
+                ->visit(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID))
                 ->click("#comment-$latestCommentID-down-vote-icon")//  down vote
                 ->assertPathIs('/errors/401');
 

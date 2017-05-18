@@ -48,7 +48,7 @@ class AuthServiceProvider extends ServiceProvider
             }
 
             // Check if owner
-            if ($contest->owner()[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) {
+            if ($contest->owner[Constants::FLD_USERS_ID] == $user[Constants::FLD_USERS_ID]) {
                 return true;
             }
 

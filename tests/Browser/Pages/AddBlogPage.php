@@ -39,7 +39,7 @@ class AddBlogPage extends BasePage
 
         $browser->type('#post-title', $title)
             ->type('#edit-post-body', $body)
-            ->press('Submit');
+            ->press('Add');
     }
 
     /**

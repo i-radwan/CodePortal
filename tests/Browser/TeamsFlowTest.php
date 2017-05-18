@@ -5,7 +5,9 @@ namespace Tests\Browser;
 use App\Models\Team;
 use App\Models\User;
 use App\Utilities\Constants;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\Browser\Pages\Login;
+use Tests\Browser\Pages\Register;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 
@@ -13,6 +15,7 @@ class TeamsFlowTest extends DuskTestCase
 {
     /**
      * Test teams flow
+     *
      * @group teams
      * @return void
      */
@@ -31,7 +34,8 @@ class TeamsFlowTest extends DuskTestCase
             // ====================================================
             // • User can create new team
             // ====================================================
-            $browser->visit('http://127.0.0.1:8000/teams/create')
+            $browser
+                ->visit(route(Constants::ROUTES_TEAMS_CREATE))
                 ->type('#name', 'TeamAlpha')
                 ->press('Create')
                 ->assertSee('TeamAlpha created successfully!');
@@ -41,7 +45,7 @@ class TeamsFlowTest extends DuskTestCase
             $teamID = $team[Constants::FLD_TEAMS_ID];
             $teamName = $team[Constants::FLD_TEAMS_NAME];
 
-            $browser->assertPathIs('/profile/1/teams')
+            $browser->assertPathIs(route(Constants::ROUTES_PROFILE_TEAMS, "asd", false))
                 ->assertSee($teamName);
 
             // ====================================================
@@ -60,9 +64,12 @@ class TeamsFlowTest extends DuskTestCase
             $invitee = User::find(13)[Constants::FLD_USERS_USERNAME];
             $invitee2 = User::find(14)[Constants::FLD_USERS_USERNAME];
 
+            $browser->script(["$('#testing-team-username-$teamID').show();",
+                "$('#testing-team-username-$teamID').attr('type', 'text');"]);
+
             $browser->type('#testing-team-username-' . $teamID, $invitee)
                 ->click('#testing-team-send-' . $teamID)
-                ->assertSee($invitee . ' invited successfully!');
+                ->assertSee('Users were invited successfully!');
 
             // Check invitation using browser 2
             $browser2->visit(new Login)
@@ -78,17 +85,21 @@ class TeamsFlowTest extends DuskTestCase
                 ->assertDontSeeIn("#testing-team-panel-$teamID", $invitee);
 
             // Confirm with browser 2
-            $browser2->refresh()
-                ->click('#testing-notification-link')
-                ->assertDontSeeIn('.notification-text', $teamName);
-
+            $browser2->refresh();
+            if ($browser2->element('#testing-notification-link')) {
+                $browser2->click('#testing-notification-link')
+                    ->assertDontSeeIn('.notification-text', $teamName);
+            }
             // ====================================================
             // • Invitee can accept the invitation to join the team
             // ====================================================
             // Re-invite again
+            $browser->script(["$('#testing-team-username-$teamID').show();",
+                "$('#testing-team-username-$teamID').attr('type', 'text');"]);
+
             $browser->type('#testing-team-username-' . $teamID, $invitee)
                 ->click('#testing-team-send-' . $teamID)
-                ->assertSee($invitee . ' invited successfully!');
+                ->assertSee('Users were invited successfully!');
 
             // Click notification to join
             $browser2->refresh()
@@ -102,17 +113,23 @@ class TeamsFlowTest extends DuskTestCase
                 }
             }
 
-            $browser2->assertPathIs('/profile/1/teams');
-            $browser2->click('#testing-reject-team-' . $teamID); // reject first
+            $browser2->assertPathIs(route(Constants::ROUTES_PROFILE_TEAMS, "asd", false))
+                ->click('#testing-reject-team-' . $teamID)
+                ->acceptDialog();// reject first
 
             // Check with browser 1
-            $browser->refresh()
+            $browser
+                ->pause(1000)
+                ->refresh()
                 ->assertDontSeeIn("#testing-team-panel-$teamID", $invitee);
 
             // Invite new user
+            $browser->script(["$('#testing-team-username-$teamID').show();",
+                "$('#testing-team-username-$teamID').attr('type', 'text');"]);
+
             $browser->type('#testing-team-username-' . $teamID, $invitee2)
                 ->click('#testing-team-send-' . $teamID)
-                ->assertSee($invitee2 . ' invited successfully!');
+                ->assertSee('Users were invited successfully!');
 
             // Check invitation using browser 2
             $browser2->clickLink('Logout')
@@ -130,9 +147,9 @@ class TeamsFlowTest extends DuskTestCase
                     break;
                 }
             }
-            $browser2->assertPathIs('/profile/1/teams')
+            $browser2->assertPathIs(route(Constants::ROUTES_PROFILE_TEAMS, "asd", false))
                 ->click('#testing-accept-team-' . $teamID)// accept
-                ->assertPathIs('/profile/14/teams')
+                ->assertPathIs(route(Constants::ROUTES_PROFILE_TEAMS, $invitee2, false))
                 ->assertSee($teamName);
 
             // Check with browser 1
@@ -149,7 +166,6 @@ class TeamsFlowTest extends DuskTestCase
             // remove member(invitee2)
             $browser->click("#testing-remove-member-team-$teamID-" . $invitee2)
                 ->acceptDialog()
-                ->pause(5000)
                 ->assertSee($invitee2 . ' was removed successfully from ' . $teamName . '!');
 
             // Check with browser 2

@@ -85,16 +85,22 @@ class BlogController extends Controller
      * @param Post $post
      * @return \Illuminate\View\View
      */
-    public function addEditPost(Post $post = null)
+    public function edit(Post $post)
     {
-        if ($post) {
-            return view("blogs.add_edit")
-                ->with('post', $post)
-                ->with('pageTitle', config('app.name') . ' | ' . $post[Constants::FLD_POSTS_TITLE]);
-        } else {
-            return view("blogs.add_edit")
-                ->with('pageTitle', config('app.name') . ' | Add Post');
-        }
+        return view("blogs.add_edit")
+            ->with('post', $post)
+            ->with('pageTitle', config('app.name') . ' | ' . $post[Constants::FLD_POSTS_TITLE]);
+    }
+
+    /**
+     * Shows edit post page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function create()
+    {
+        return view("blogs.add_edit")
+            ->with('pageTitle', config('app.name') . ' | Add Post');
     }
 
     /**
@@ -104,7 +110,7 @@ class BlogController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function addPost(Request $request)
+    public function add(Request $request)
     {
         // Create new Post
         $post = new Post($request->all());
@@ -114,16 +120,12 @@ class BlogController extends Controller
 
         // Verify Saving
         if ($post->save()) {
-
             // Return success message
             Session::flash("messages", ["Post added successfully!"]);
-            return redirect()->action(
-                'BlogController@displayPost', [Constants::FLD_POSTS_ID => $post[Constants::FLD_POSTS_ID]]);
-
+            return redirect(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $post[Constants::FLD_POSTS_ID]));
         } else { // return error message
-
             Session::flash("messages", ["Sorry, post was not added. Please retry later!"]);
-            return redirect()->action('BlogController@index');
+            return back();
         }
     }
 
@@ -135,14 +137,14 @@ class BlogController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function editPost(Request $request, Post $post)
+    public function update(Request $request, Post $post)
     {
         // Update Post
         $post->update($request->all());
 
         // Flash Success Message
         Session::flash('messages', ['Your post was edited successfully']);
-        return redirect()->action('BlogController@displayPost', [Constants::FLD_POSTS_ID => $post[Constants::FLD_POSTS_ID]]);
+        return redirect(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $post[Constants::FLD_POSTS_ID]));
     }
 
     /**
@@ -151,65 +153,13 @@ class BlogController extends Controller
      * @param Post $post
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function deletePost(Post $post)
+    public function delete(Post $post)
     {
         $post->delete();
 
         // Flash Success Message
         Session::flash('messages', ['Your post has been deleted successfully!']);
-        return redirect()->action('BlogController@index');
-    }
-
-    /**
-     * Add new comment to a post
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param  Post $post
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function addComment(Request $request, Post $post)
-    {
-        // Create the new comment
-        $comment = new Comment($request->all());
-
-        $comment->owner()->associate(Auth::user());
-        $comment->post()->associate($post);
-
-        if ($request->has('parent_id'))
-            $comment->parent()->associate($request->get(Constants::FLD_COMMENTS_PARENT_ID));
-
-        if ($comment->save()) {
-
-            // Return success message
-            Session::flash("messages", ["Comment Added Successfully"]);
-            return redirect(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $post[Constants::FLD_POSTS_ID]));
-        }
-
-        return back()->withErrors('Sorry, something went wrong!');
-    }
-
-    /**
-     * Edit comment
-     *
-     * @param Request $request
-     * @param Comment $comment
-     */
-    public function editComment(Request $request, Comment $comment)
-    {
-        $comment[Constants::FLD_COMMENTS_BODY] = $request->get('body');
-
-        $comment->save();
-    }
-
-    /**
-     * Deletes a comment via Ajax Request
-     *
-     * @param Comment $comment
-     */
-    public function deleteComment(Comment $comment)
-    {
-        $comment->delete();
+        return redirect(route(Constants::ROUTES_BLOGS_INDEX));
     }
 
     /**

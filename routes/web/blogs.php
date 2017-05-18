@@ -5,30 +5,29 @@ use App\Utilities\Constants;
 Route::group(['middleware' => 'auth'], function () {
 
     // Create blog post view
-    Route::get('blogs/create', 'Blogs\BlogController@addEditPost')
+    Route::get('blogs/create', 'Blogs\BlogController@create')
         ->name(Constants::ROUTES_BLOGS_POST_CREATE);
 
     // Edit blog post view
-    Route::get('blogs/{post}/edit', 'Blogs\BlogController@addEditPost')
+    Route::get('blogs/{post}/edit', 'Blogs\BlogController@edit')
         ->name(Constants::ROUTES_BLOGS_POST_EDIT)
         ->middleware(['canGateForUser:owner-post,post']);
 
     // Add new blog post
-    Route::post('blogs', 'Blogs\BlogController@addPost')
+    Route::post('blogs', 'Blogs\BlogController@add')
         ->name(Constants::ROUTES_BLOGS_POST_STORE);
 
-
     // Add new comment
-    Route::post('blogs/{post}/comment', 'Blogs\BlogController@addComment')
+    Route::post('blogs/{post}/comment', 'Blogs\CommentController@add')
         ->name(Constants::ROUTES_BLOGS_COMMENT_STORE);
 
     // Update blog post
-    Route::put('blogs/{post}', 'Blogs\BlogController@editPost')
+    Route::put('blogs/{post}', 'Blogs\BlogController@update')
         ->name(Constants::ROUTES_BLOGS_POST_UPDATE)
         ->middleware(['canGateForUser:owner-post,post']);
 
     // Update comment
-    Route::post('comments/{comment}', 'Blogs\BlogController@editComment')
+    Route::post('comments/{comment}', 'Blogs\CommentController@update')
         ->name(Constants::ROUTES_BLOGS_COMMENT_UPDATE)
         ->middleware(['canGateForUser:owner-comment,comment']);
 
@@ -49,12 +48,12 @@ Route::group(['middleware' => 'auth'], function () {
         ->name(Constants::ROUTES_BLOGS_COMMENT_DOWNVOTE);
 
     // Delete blog post
-    Route::delete('blogs/{post}', 'Blogs\BlogController@deletePost')
+    Route::delete('blogs/{post}', 'Blogs\BlogController@delete')
         ->name(Constants::ROUTES_BLOGS_POST_DELETE)
         ->middleware(['canGateForUser:owner-post,post']);
 
     // Delete comment
-    Route::delete('comments/{comment}', 'Blogs\BlogController@deleteComment')
+    Route::delete('comments/{comment}', 'Blogs\CommentController@delete')
         ->name(Constants::ROUTES_BLOGS_COMMENT_DELETE)
         ->middleware(['canGateForUser:owner-comment,comment']);
 });

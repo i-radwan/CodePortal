@@ -5,7 +5,7 @@
     $sheetName = $sheet[Constants::SINGLE_SHEET_NAME_KEY];
     $user = Auth::user();
     $isOwner = ($user) ? ($user->owningGroups()->find($sheet[Constants::FLD_SHEETS_GROUP_ID]) != null) : false;
-
+    $isOwnerOrAdmin = ($user) ? (\Gate::forUser(Auth::user())->allows('owner-admin-group', $sheet)) : false;
 @endphp
 @extends('layouts.app')
 

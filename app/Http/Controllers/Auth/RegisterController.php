@@ -66,22 +66,6 @@ class RegisterController extends Controller
             Constants::FLD_USERS_EMAIL => $data[Constants::FLD_USERS_EMAIL],
             Constants::FLD_USERS_PASSWORD => bcrypt($data[Constants::FLD_USERS_PASSWORD]),
         ]);
-
-        //
-        // TODO: move to profile page instead
-        //
-        if ($data[Constants::FLD_USERS_CODEFORCES_HANDLE]) {
-            $user->addHandle(Constants::JUDGE_CODEFORCES_ID, $data[Constants::FLD_USERS_CODEFORCES_HANDLE]);
-        }
-
-        if ($data[Constants::FLD_USERS_UVA_HANDLE]) {
-            $user->addHandle(Constants::JUDGE_UVA_ID, $data[Constants::FLD_USERS_UVA_HANDLE]);
-        }
-
-        if ($data[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]) {
-            $user->addHandle(Constants::JUDGE_LIVE_ARCHIVE_ID, $data[Constants::FLD_USERS_LIVE_ARCHIVE_HANDLE]);
-        }
-
         return $user;
     }
 }

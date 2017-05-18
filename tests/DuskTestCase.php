@@ -19,7 +19,6 @@ abstract class DuskTestCase extends BaseTestCase
     public static function prepare()
     {
         static::startChromeDriver();
-
     }
 
     /**

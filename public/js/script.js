@@ -477,10 +477,10 @@ var app = {
      * @param solution_lang
      */
     fillAnswerModal: function (problemID, sheetID, url, solutionLang) {
-        var solution_lang = '';
+        var solution_lang = solutionLang;
         // If no solution_lang, means no previous solution is provided
         // Assume that c_cpp is going to be used
-        if (!solutionLang.length) {
+        if (!solution_lang.length) {
             solution_lang = "c_cpp";
         }
 

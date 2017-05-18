@@ -66,7 +66,8 @@ trait SavesContests
                 $contest->organizers()->detach();
 
             // Assign organisers
-            $this->associateContestOrganisers($contest, $request->get('organisers'), $group);
+            if ($request->has('organisers'))
+                $this->associateContestOrganisers($contest, $request->get('organisers'), $group);
 
             // Send notifications
             $this->sendPrivateContestInvitations($contest, $request->get('invitees'), $request->get('visibility'), $group);

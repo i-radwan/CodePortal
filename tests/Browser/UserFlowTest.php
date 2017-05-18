@@ -4,6 +4,7 @@ namespace Tests\Browser;
 
 use App\Models\User;
 use App\Utilities\Constants;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\Browser\Pages\Blogs;
 use Tests\Browser\Pages\Contests;
 use Tests\Browser\Pages\Groups;
@@ -78,7 +79,6 @@ class UserFlowTest extends DuskTestCase
 
             // ToDo Go to forgot password
 
-
             // Sign up
 
             // invalid and empty data
@@ -92,7 +92,6 @@ class UserFlowTest extends DuskTestCase
                 ->assertSee('The password confirmation does not match.')
                 ->on(new Register);
 
-
             $browser->registerUser('', 'asd2@asd2.asd2', 'asd2asd2', 'asd2asd2')
                 ->on(new Register);
 
@@ -101,7 +100,6 @@ class UserFlowTest extends DuskTestCase
 
             $browser->registerUser('asd2', 'asd2@asd2.asd2', '', '')
                 ->on(new Register);
-
 
             // valid data
             $browser->registerUser('asd2', 'asd2@asd2.asd2', 'asd2asd2', 'asd2asd2')

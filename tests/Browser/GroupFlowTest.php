@@ -27,8 +27,7 @@ class GroupFlowTest extends DuskTestCase
     {
         sleep(1);
         $faker = Factory::create();
-        $now = Carbon::createFromFormat("Y-m-d H:i:s", Carbon::now()->addMinute(10))->toDateTimeString();
-
+        $now = Carbon::createFromFormat("Y-m-d H:i:s", Carbon::now()->addDays(10))->toDateTimeString();
         $this->browse(function (Browser $browser, Browser $browser2) use ($faker, $now) {
             // login
             $browser->visit(new Login)
@@ -43,17 +42,17 @@ class GroupFlowTest extends DuskTestCase
             //================================================
             // Add group
             // Try invalid (empty) name first
-            $browser->visit('http://127.0.0.1:8000/groups/create')
+            $browser->visit(route(Constants::ROUTES_GROUPS_CREATE))
                 ->type('name', '')
                 ->press('Add')
-                ->assertPathIs('/groups/create')
+                ->assertPathIs(route(Constants::ROUTES_GROUPS_CREATE, [], false))
                 ->type('name', $groupName)
                 ->press('Add');
 
             $lastGroup = Group::query()->orderByDesc(Constants::FLD_GROUPS_ID)
                 ->first();
 
-            $browser->assertPathIs('/group/' . $lastGroup[Constants::FLD_GROUPS_ID]);
+            $browser->assertPathIs(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false));
 
             // Check if group added
             $browser->visit(new Groups);
@@ -63,7 +62,7 @@ class GroupFlowTest extends DuskTestCase
                     $browser->assertSee($lastGroup[Constants::FLD_GROUPS_ID]);
                     break;
                 } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
-                    $browser->visit('http://127.0.0.1:8000/groups?page=' . $page);
+                    $browser->visit(route(Constants::ROUTES_GROUPS_INDEX) . '?page=' . $page);
                     $page++;
                 }
             }
@@ -84,14 +83,14 @@ class GroupFlowTest extends DuskTestCase
             //================================================
             // Edit group
             //================================================
-            $browser->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+            $browser->visit(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->assertSee(':: asd')// Check owner
                 ->clickLink('Edit')
-                ->assertPathIs('/group/edit/' . $lastGroup[Constants::FLD_GROUPS_ID])
+                ->assertPathIs(route(Constants::ROUTES_GROUPS_EDIT, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->assertInputValue('#name', $groupName)
                 ->type('#name', 'NewGroupName')
                 ->press('Edit')
-                ->assertPathIs('/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+                ->assertPathIs(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->assertSee('NewGroupName');
 
             //================================================
@@ -123,7 +122,7 @@ class GroupFlowTest extends DuskTestCase
                     break;
                 }
             }
-            $browser2->assertPathIs('/group/' . $lastGroup[Constants::FLD_GROUPS_ID]);
+            $browser2->assertPathIs(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false));
             $browser2->press('Join');
 
             // Should be member now
@@ -158,22 +157,22 @@ class GroupFlowTest extends DuskTestCase
 
             $groupContest = Contest::query()->orderBy(Constants::FLD_CONTESTS_ID, 'desc')->first();
             $browser2
-                ->visit('http://127.0.0.1:8000/contest/' . $groupContest[Constants::FLD_CONTESTS_ID])
-                ->assertPathIs('/contest/' . $groupContest[Constants::FLD_CONTESTS_ID]);
+                ->visit(route(Constants::ROUTES_CONTESTS_DISPLAY, $groupContest[Constants::FLD_CONTESTS_ID], false))
+                ->assertPathIs(route(Constants::ROUTES_CONTESTS_DISPLAY, $groupContest[Constants::FLD_CONTESTS_ID], false));
             $browser2->assertSee('Join');
 
             //================================================
             // Add sheet
             //================================================
             $browser
-                ->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+                ->visit(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->click('#testing-sheets-link')
                 ->clickLink('New Sheet')
-                ->assertPathIs('/sheet/new/' . $lastGroup[Constants::FLD_GROUPS_ID])
+                ->assertPathIs(route(Constants::ROUTES_GROUPS_SHEET_CREATE, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->type('name', 'NewGroupSheet')
                 ->check('#problem-checkbox-1')
                 ->press('Add')
-                ->assertPathIs('/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+                ->assertPathIs(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->click('#testing-sheets-link')
                 ->assertSee('NewGroupSheet');
 
@@ -207,7 +206,7 @@ class GroupFlowTest extends DuskTestCase
                 ->assertSelected('#solution_lang', 'java');
 
             // check using browser 2
-            $browser2->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+            $browser2->visit(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->click('#testing-sheets-link')
                 ->clickLink('NewGroupSheet')
                 ->click('#testing-solution-btn-problem-3')
@@ -217,7 +216,7 @@ class GroupFlowTest extends DuskTestCase
             // Delete sheet
             //================================================
             $browser
-                ->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+                ->visit(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->click('#testing-sheets-link')
                 ->click('.testing-delete-sheet')
                 ->acceptDialog()
@@ -234,10 +233,10 @@ class GroupFlowTest extends DuskTestCase
                 ->visit(new Login)
                 ->loginUser($username2, 'asdasd');
 
-            $browser2->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+            $browser2->visit(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->press('Join');
 
-            $browser->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+            $browser->visit(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->script([
                     "$('#usernames').attr('type', 'text');"
                 ]);
@@ -259,7 +258,7 @@ class GroupFlowTest extends DuskTestCase
             ]);
             $browser->type('#usernames', $username2);
             $browser->press('Invite');
-            $browser2->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+            $browser2->visit(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->press('Join')
                 ->assertSee('Leave');
             $browser2->press('Leave')
@@ -303,7 +302,7 @@ class GroupFlowTest extends DuskTestCase
             //================================================
             $browser->press('Delete')
                 ->acceptDialog()
-                ->visit('http://127.0.0.1:8000/group/' . $lastGroup[Constants::FLD_GROUPS_ID])
+                ->visit(route(Constants::ROUTES_GROUPS_DISPLAY, $lastGroup[Constants::FLD_GROUPS_ID], false))
                 ->assertPathIs('/errors/404');
 
         });

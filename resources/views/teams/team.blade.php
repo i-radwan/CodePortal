@@ -44,7 +44,7 @@
             'method' => 'PUT',
             'confirm' => true,
             'confirmMsg' => "'Are you sure?'",
-            'btnIDs' => "testing-accept-team-$teamID",
+            'btnIDs' => "testing-reject-team-$teamID",
             'btnClasses' => 'btn btn-link text-dark pull-right margin-5px',
             'btnTxt' => 'Reject'
         ])

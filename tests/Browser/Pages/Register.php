@@ -48,19 +48,13 @@ class Register extends BasePage
      * @param $email
      * @param $pass1
      * @param $pass2
-     * @param null $cfhandle
-     * @param null $uvahandle
-     * @param null $lahandle
      */
-    public function registerUser(Browser $browser, $username, $email, $pass1, $pass2, $cfhandle = null, $uvahandle = null, $lahandle = null)
+    public function registerUser(Browser $browser, $username, $email, $pass1, $pass2)
     {
         $browser->type('username', $username)
             ->type('email', $email)
             ->type('password', $pass1)
             ->type('#password-confirm', $pass2)
-            ->type('#codeforces-handle', $cfhandle)
-            ->type('#uva-handle', $uvahandle)
-            ->type('#live-archive-handle', $lahandle)
             ->press('Register');
     }
 }

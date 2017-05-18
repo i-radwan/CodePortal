@@ -1,9 +1,11 @@
 @php
     use App\Utilities\Constants;
 
-    $postID = $post[Constants::FLD_POSTS_ID];
-    $postTitle = $post[Constants::FLD_POSTS_TITLE];
-    $postBody = $post[Constants::FLD_POSTS_BODY];
+    if(isset($post)) {
+        $postID = $post[Constants::FLD_POSTS_ID];
+        $postTitle = $post[Constants::FLD_POSTS_TITLE];
+        $postBody = $post[Constants::FLD_POSTS_BODY];
+    }
 @endphp
 @extends("layouts.app")
 @section('content')
@@ -22,7 +24,9 @@
                       action= {{ isset($postID) ? route(\App\Utilities\Constants::ROUTES_BLOGS_POST_UPDATE, $postID) : route(\App\Utilities\Constants::ROUTES_BLOGS_POST_STORE) }}>
 
                     {{--Hidden fields--}}
-                    {{method_field('PUT')}}
+                    @if(isset($postID))
+                        {{method_field('PUT')}}
+                    @endif
                     {{csrf_field()}}
 
                     {{--Post ID for editing--}}
@@ -56,7 +60,6 @@
                     {{--Submit Button--}}
                     <button type="submit"
                             class="btn btn-primary center-block">{{ isset($postID) ? "Save" :"Add" }}</button>
-
                 </form>
             </div>
         </div>

@@ -32,7 +32,6 @@ Route::group(['middleware' => 'auth'], function () {
         ->name(Constants::ROUTES_TEAMS_INVITE)
         ->middleware(['canGateForUser:member-team,team']);
 
-    // TODO: check that the user we want to remove is really a team member
     // Remove team member
     Route::delete('teams/{team}/remove/{user}', 'TeamController@removeMember')
         ->name(Constants::ROUTES_TEAMS_MEMBERS_REMOVE)

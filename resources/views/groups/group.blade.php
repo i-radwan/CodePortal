@@ -34,7 +34,7 @@
             @if($isMember)
 
                 {{--Leave Form--}}
-                @include('components.action_form', ['url' => rotue(\App\Utilities\Constants::ROUTES_GROUPS_LEAVE, $groupID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave the group?'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
+                @include('components.action_form', ['url' => route(\App\Utilities\Constants::ROUTES_GROUPS_LEAVE, $groupID), 'method' => 'PUT', 'confirm' => true, 'confirmMsg' => "'Are you sure want to leave the group?'", 'btnIDs' => "", 'btnClasses' => 'btn btn-link text-dark pull-right margin-5px', 'btnTxt' => 'Leave'])
 
             @elseif(!$isOwnerOrAdmin && !$isMember)
 
