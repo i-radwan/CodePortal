@@ -7,7 +7,7 @@
     $commentUsername = $comment->owner[Constants::FLD_USERS_USERNAME];
     $commentCreatedAt = Utilities::formatPastDateTime($comment[Constants::FLD_COMMENTS_CREATED_AT]);
 
-    $didUserVoteComment = ($comment->didUserUpVote(Auth::user())) ? 1 : ($comment->didUserDownVote(Auth::user()) ? 0 : -1);
+    $didUserVoteComment = ((Auth::check()) ? ($comment->didUserUpVote(Auth::user())) ? 1 : ($comment->didUserDownVote(Auth::user()) ? 0 : -1) : -1);
 
     $downCommentVotesCount = $comment->downVotes()->count();
     $upCommentVotesCount = $comment->upVotes()->count();

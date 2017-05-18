@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Blogs;
 
+use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
 use App\Utilities\Constants;

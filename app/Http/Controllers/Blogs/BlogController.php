@@ -7,7 +7,6 @@ use Session;
 use DB;
 use App\Models\User;
 use App\Models\Post;
-use App\Models\Comment;
 use App\Utilities\Constants;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

@@ -45,8 +45,8 @@ class BlogsFlowTest extends DuskTestCase
             $latestEntryTitle = $latestEntry[Constants::FLD_POSTS_TITLE];
             $latestEntryBody = $latestEntry[Constants::FLD_POSTS_BODY];
 
-            $browser->pause(10000)->assertPathIs(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID, false))
-                ->assertSee('Post Added Successfully')
+            $browser->assertPathIs(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID, false))
+                ->assertSee('Post added successfully!')
                 ->assertSee($latestEntryTitle)
                 ->assertSee($latestEntryBody);
 
@@ -55,7 +55,7 @@ class BlogsFlowTest extends DuskTestCase
             //============================================================
 
             $browser->type('.add-comment-text', $comment = $faker->sentence((30)))
-                ->press('Submit')
+                ->press('Replay')
                 ->assertSee('Comment Added Successfully')
                 ->assertSee($comment);
 
@@ -110,16 +110,16 @@ class BlogsFlowTest extends DuskTestCase
             //============================================================
             $browser2->visit(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID))
                 ->click('#blog-up-vote-icon')
-                ->assertPathIs('/errors/401')
+                ->assertPathIs(route(Constants::ROUTES_AUTH_LOGIN, [], false))
                 ->visit(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID))
                 ->click('#blog-down-vote-icon')
-                ->assertPathIs('/errors/401')
+                ->assertPathIs(route(Constants::ROUTES_AUTH_LOGIN, [], false))
                 ->visit(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID))
                 ->click("#comment-$latestCommentID-up-vote-icon")// up vote
-                ->assertPathIs('/errors/401')
+                ->assertPathIs(route(Constants::ROUTES_AUTH_LOGIN, [], false))
                 ->visit(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID))
                 ->click("#comment-$latestCommentID-down-vote-icon")//  down vote
-                ->assertPathIs('/errors/401');
+                ->assertPathIs(route(Constants::ROUTES_AUTH_LOGIN, [], false));
 
             //============================================================
             // • User can view blogs

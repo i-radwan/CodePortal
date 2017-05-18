@@ -9,7 +9,7 @@
     $postOwnerUsername = $post->owner[Constants::FLD_USERS_USERNAME];
     $isOwner = ((Auth::check()) ? (Auth::user()->posts()->find($postID) != null) : false);
 
-    $didUserVote = ($post->didUserUpVote(Auth::user())) ? 1 : ($post->didUserDownVote(Auth::user()) ? 0 : -1);
+    $didUserVote = ((Auth::check()) ? ($post->didUserUpVote(Auth::user())) ? 1 : ($post->didUserDownVote(Auth::user()) ? 0 : -1) : -1);
 
     $downVotesCount = $post->downVotes()->count();
     $upVotesCount = $post->upVotes()->count();
