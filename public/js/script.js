@@ -16,6 +16,7 @@ var app = {
     contestPrivateVisibilitySessionKey: 'contest_private_visibility_session_key',
 
     contestProblemsMaxCount: 10,
+    blogPostMinimumBodyLength: 50 ,
 
     // ==================================================
     //                    Variables
@@ -288,17 +289,15 @@ var app = {
 
                 // Get the textarea element (post body)
                 var element = document.getElementById("edit-post-body");
+                // Create a new SimpleMD Editor
+                var simplemde = this.associateTextAreaWithSimpleMDE(element, {
+                                enabled: $(element).data('autosave-enable'),
+                                uniqueId: "edit_post", // Unique id for identifying saving purposes
+                                delay: 1000, // Time between saves milli seconds
+                    });
 
-                new SimpleMDE({
-                    element: element,
-                    // Enables Auto Save which is removed when the form is submitted
-                    autosave: {
-                        enabled: $(element).data('autosave-enable'),
-                        uniqueId: "edit_post", // Unique id for identifying saving purposes
-                        delay: 1000, // Time between saves milli seconds
-                    },
-                    spellChecker: false, // Disable Spell Checker
-                });
+                // Update the current text area
+                $(element).html(simplemde.value());
             }
         }
 
@@ -1343,6 +1342,30 @@ var app = {
         $(commentRootNode.find('.save-comment-icon')).hide();
         $(commentRootNode.find('.edit-comment-icon')).show();
     },
+
+    submitAddOrEditPostForm: function (form){
+        var postBody = $(form).find('textarea[name="body"]');
+        var errorContainer = $(form).find('div[name="edit-post-error"]');
+
+        // Validate post body length not less than 50 characters
+        if(postBody.text().length >= app.blogPostMinimumBodyLength)
+            return true;
+
+        // Create new DOM element and assign basic attributes
+        var entry = document.createElement('label');
+
+        entry.className += 'label label-danger';
+
+        // Add element content and append to view
+        entry.innerHTML = "The body must at least 50 characters" ;
+
+        $(errorContainer).empty();
+        $(errorContainer).append(entry);
+
+        // Stop Submit
+        return false;
+    },
+
     // ==================================================
     //              UTILITIES FUNCTIONS
     // ==================================================
@@ -1352,12 +1375,14 @@ var app = {
      * such that any changes in the simple mde, reflect to the textarea
      *
      * @param textarea
+     * @param saveAttributes configurations for auto-save
      */
-    associateTextAreaWithSimpleMDE: function (textarea) {
+    associateTextAreaWithSimpleMDE: function (textarea, saveAttributes) {
 
         // SimpleMDE
         var simplemde = new SimpleMDE({
             element: textarea,
+            autosave: saveAttributes,
             spellChecker: false, //Disable Spell Checker
         });
 
@@ -1365,6 +1390,8 @@ var app = {
         simplemde.codemirror.on("change", function () {
             $(textarea).html(simplemde.value());
         });
+
+        return simplemde;
     },
 
     /**
