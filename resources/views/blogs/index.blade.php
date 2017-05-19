@@ -48,7 +48,7 @@
                     {{ $posts->render() }}
 
                 @else
-                    @if($q != '')
+                    @if(isset($q) && $q != '')
                         <p class="lead">Sorry, no blogs were posted yet!</p>
                     @else
                         <p class="lead">Sorry, no blogs meeting your search word.</p>
