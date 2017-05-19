@@ -82,9 +82,9 @@ class User extends Authenticatable
 
         if ($this->exists) {
             $rules[Constants::FLD_USERS_USERNAME] = 'required|max:20|unique:' .
-                Constants::TBL_USERS . ',' . Constants::FLD_USERS_USERNAME . ',' . $this->id;
+                Constants::TBL_USERS . ',' . Constants::FLD_USERS_USERNAME . ',' . $this[Constants::FLD_USERS_ID];
             $rules[Constants::FLD_USERS_EMAIL] = 'required|email|max:50|unique:' .
-                Constants::TBL_USERS . ',' . Constants::FLD_USERS_EMAIL . ',' . $this->id;
+                Constants::TBL_USERS . ',' . Constants::FLD_USERS_EMAIL . ',' . $this[Constants::FLD_USERS_ID];
         }
 
         Validator::make($this->attributes, $rules)->validate();
@@ -163,6 +163,47 @@ class User extends Authenticatable
     public function submissions()
     {
         return $this->hasMany(Submission::class, Constants::FLD_SUBMISSIONS_USER_ID);
+    }
+
+    /**
+     * Return the latest offset-th submission id related to the given online judge id.
+     * If no submission was found null will be returned
+     *
+     * @param $judgeId
+     * @param $offset
+     * @return int|null
+     */
+    public function latestSubmissionID($judgeId, $offset)
+    {
+        $query = DB::table(Constants::TBL_SUBMISSIONS)
+            ->select(Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID)
+            ->join(
+                Constants::TBL_PROBLEMS,
+                Constants::TBL_PROBLEMS . '.'  . Constants::FLD_PROBLEMS_ID,
+                '=',
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID
+            )
+            ->where(
+                Constants::TBL_PROBLEMS . '.'  . Constants::FLD_PROBLEMS_JUDGE_ID,
+                '=',
+                $judgeId
+            )
+            ->where(
+                Constants::TBL_SUBMISSIONS . '.'  . Constants::FLD_SUBMISSIONS_USER_ID,
+                '=',
+                $this[Constants::FLD_USERS_ID]
+            )
+            ->orderByDesc(Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID)
+            ->limit(1)
+            ->offset($offset);
+
+        $submissionId = $query->first();
+
+        if ($submissionId != null) {
+            return ((array)$submissionId)[Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID];
+        }
+
+        return null;
     }
 
     /**
@@ -292,7 +333,7 @@ class User extends Authenticatable
     public function answeredQuestions()
     {
         return $this->questions()
-            ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this->id);
+            ->where(Constants::FLD_QUESTIONS_ADMIN_ID, '=', $this[Constants::FLD_USERS_ID]);
     }
 
     /**

@@ -5,11 +5,8 @@ namespace App\Services;
 use Log;
 use Exception;
 use App\Models\User;
-
-
 use App\Models\Language;
 use App\Utilities\Constants;
-use App\Services\UHuntSyncService as UHunt;
 
 abstract class UHuntSyncService extends JudgeSyncService
 {
@@ -110,9 +107,10 @@ abstract class UHuntSyncService extends JudgeSyncService
     {
         try {
             $handle = $user->handle($this->judge[Constants::FLD_JUDGES_ID]);
+            $username = $user[Constants::FLD_USERS_USERNAME];
 
             if (!$handle) {
-                Log::warning("$user->username has no handle on $this->judgeName.");
+                Log::warning("$username has no handle on $this->judgeName.");
                 return false;
             }
 
@@ -122,6 +120,13 @@ abstract class UHuntSyncService extends JudgeSyncService
             }
 
             $this->apiBaseSubmissionsUrl = $this->apiBaseSubmissionsUrl . $this->rawDataString;
+
+            // Fetch the latest submissions only
+            $submissionId = $user->latestSubmissionID($this->judgeId, 5);
+
+            if ($submissionId != null) {
+                $this->apiBaseSubmissionsUrl .= '/' . $submissionId;
+            }
 
             return parent::syncSubmissions($user);
         }
@@ -174,7 +179,7 @@ abstract class UHuntSyncService extends JudgeSyncService
     {
         // Find if submission already exists
         $submission = $this->judge->submissions()->firstOrNew([
-            Constants::FLD_SUBMISSIONS_USER_ID => $user->id,
+            Constants::FLD_SUBMISSIONS_USER_ID => $user[Constants::FLD_USERS_ID],
             Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => $submissionData[self::SUBMISSION_ID]
         ]);
 

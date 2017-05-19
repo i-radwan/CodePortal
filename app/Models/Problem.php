@@ -152,7 +152,7 @@ class Problem extends Model
         $submissions = $this
             ->submissions()
             ->where([
-                [Constants::FLD_SUBMISSIONS_USER_ID, '=', $user->id],
+                [Constants::FLD_SUBMISSIONS_USER_ID, '=', $user[Constants::FLD_USERS_ID]],
                 [Constants::FLD_SUBMISSIONS_VERDICT, '=', Constants::VERDICT_ACCEPTED]
             ]);
 
@@ -163,7 +163,7 @@ class Problem extends Model
         // Count the total number of submissions
         $submissions = $this
             ->submissions()
-            ->where(Constants::FLD_SUBMISSIONS_USER_ID, '=', $user->id);
+            ->where(Constants::FLD_SUBMISSIONS_USER_ID, '=', $user[Constants::FLD_USERS_ID]);
 
         if ($submissions->count() > 0) {
             return Constants::SIMPLE_VERDICT_WRONG_SUBMISSION;
