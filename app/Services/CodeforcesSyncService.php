@@ -9,7 +9,6 @@ use App\Models\Problem;
 use App\Models\Tag;
 use App\Models\Language;
 use App\Utilities\Constants;
-use App\Services\CodeforcesSyncService as Codeforces;
 
 class CodeforcesSyncService extends JudgeSyncService
 {
@@ -175,9 +174,10 @@ class CodeforcesSyncService extends JudgeSyncService
         try {
             if ($user) {
                 $handle = $user->handle($this->judge[Constants::FLD_JUDGES_ID]);
+                $username = $user[Constants::FLD_USERS_USERNAME];
 
                 if (!$handle) {
-                    Log::warning("$user->username has no handle on $this->judgeName.");
+                    Log::warning("$username has no handle on $this->judgeName.");
                     return false;
                 }
 

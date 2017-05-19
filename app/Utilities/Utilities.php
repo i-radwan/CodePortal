@@ -99,7 +99,6 @@ class Utilities
      * Convert given minutes count to hours:minutes format
      *
      * @param int $time
-     * @param string $format
      *
      * @return string
      */
@@ -135,5 +134,15 @@ class Utilities
     public static function makeInputSafe($data)
     {
         return htmlspecialchars(stripslashes(trim($data)));
+    }
+
+    /**
+     * Truncates the post body to a reasonable limit and adding '...' to the end of the truncated body
+     * @param $postBody string the body of the post
+     *
+     * @return string the truncated post body
+     */
+    public static function truncatePostBody($postBody){
+        return (strlen($postBody) <= Constants::POSTS_MAX_DISPLAY_LIMIT) ? $postBody : substr( $postBody, 0, (Constants::POSTS_MAX_DISPLAY_LIMIT - 3)). "...";
     }
 }

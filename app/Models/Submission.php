@@ -47,7 +47,7 @@ class Submission extends Model
     protected $rules = [
         //Constants::FLD_SUBMISSIONS_USER_ID => 'required|integer|exists:' . Constants::TBL_USERS . ',' . Constants::FLD_USERS_ID,
         //Constants::FLD_SUBMISSIONS_PROBLEM_ID => 'required|integer|exists:' . Constants::TBL_PROBLEMS . ',' . Constants::FLD_PROBLEMS_ID,
-        Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => 'required|integer|unique:' . Constants::TBL_SUBMISSIONS,
+        Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID => 'required|integer',
         //Constants::FLD_SUBMISSIONS_LANGUAGE_ID => 'required|integer|exists:' . Constants::TBL_LANGUAGES . ',' . Constants::FLD_LANGUAGES_ID,
         Constants::FLD_SUBMISSIONS_SUBMISSION_TIME => 'required|integer|min:0',
         Constants::FLD_SUBMISSIONS_EXECUTION_TIME => 'required|integer|min:0',
