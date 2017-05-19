@@ -20,7 +20,7 @@
                 @include('components.alert')
 
                 {{--New post form--}}
-                <form class="form-horizontal" role="form" method="post"
+                <form class="form-horizontal" role="form" method="post" onsubmit="return app.submitAddOrEditPostForm(this)"
                       action= {{ isset($postID) ? route(\App\Utilities\Constants::ROUTES_BLOGS_POST_UPDATE, $postID) : route(\App\Utilities\Constants::ROUTES_BLOGS_POST_STORE) }}>
 
                     {{--Hidden fields--}}
@@ -39,7 +39,7 @@
                         <label for="title" class="col-sm-2 control-label new-post-label">Title</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" id="post-title" name="title" placeholder="Title"
-                                   value="{{ isset($postTitle) ? $postTitle: "" }}">
+                                   value="{{ isset($postTitle) ? $postTitle: "" }}" autocomplete="off" minlength="6" required>
                         </div>
                     </div>
 
@@ -50,12 +50,16 @@
                         </div>
                         <div class="col-md-10">
                                 <textarea id="edit-post-body" name="body" class="form-control new-post-text-area"
-                                          rows="15" contenteditable="true"
+                                          contenteditable="true"
                                           data-autosave-enable="{{ isset($postBody) ? "false" : "true" }}">
                                     {{ isset($postBody) ? $postBody: "" }}
                                 </textarea>
                         </div>
                     </div>
+
+
+                    <div name="edit-post-error" class="centered"></div>
+
 
                     {{--Submit Button--}}
                     <button type="submit"

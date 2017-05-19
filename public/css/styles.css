@@ -1328,6 +1328,8 @@ td.problems-reorder-view > .fa-bars {
 .post-small-paragraph {
     word-wrap: break-word;
     font-size: medium;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .post-paragraph {

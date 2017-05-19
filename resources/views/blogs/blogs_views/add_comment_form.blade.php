@@ -25,6 +25,6 @@
         </div>
 
         {{--Submit--}}
-        <button type="submit" class="btn btn-primary">Replay</button>
+        <button type="submit" class="btn btn-primary">Reply</button>
     </form>
 </div>
