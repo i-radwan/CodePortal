@@ -25,7 +25,7 @@
                         {{--Define variables--}}
                         @php
                             $postID = $post[\App\Utilities\Constants::FLD_POSTS_ID];
-                            $postBody = $post[\App\Utilities\Constants::FLD_POSTS_BODY];
+                            $postBody = \App\Utilities\Utilities::truncatePostBody($post[\App\Utilities\Constants::FLD_POSTS_BODY]);
                             $postTitle = $post[\App\Utilities\Constants::FLD_POSTS_TITLE];
                             $postOwnerUsername = $post->owner[\App\Utilities\Constants::FLD_USERS_USERNAME];
                             $isOwner = ((Auth::check()) ? (Auth::user()->posts()->find($postID) != null) : false);
