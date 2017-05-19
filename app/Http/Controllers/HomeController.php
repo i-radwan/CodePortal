@@ -13,7 +13,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // @Wael : To be stored in database && to use db_constants
         $features = [
             [
                 'title' => 'Contests',

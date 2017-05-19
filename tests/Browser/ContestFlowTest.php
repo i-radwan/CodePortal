@@ -40,6 +40,7 @@ class ContestFlowTest extends DuskTestCase
             $username5 = User::find(12)[Constants::FLD_USERS_USERNAME];
             $username6 = User::find(14)[Constants::FLD_USERS_USERNAME];
             $asd = 'asd';
+
             // Visit contests page
             $browser->visit(new Contests)
                 ->assertSee('Contests');
@@ -145,7 +146,6 @@ class ContestFlowTest extends DuskTestCase
 
             // Check contest name
             $browser2->assertSee($contestName);
-
             // Check organizers added
             $browser2->assertSeeIn('.organizers-p', User::find(2)[Constants::FLD_USERS_USERNAME])
                 ->assertSeeIn('.organizers-p', User::find(3)[Constants::FLD_USERS_USERNAME])
@@ -235,8 +235,6 @@ class ContestFlowTest extends DuskTestCase
             $browser2->visit(route(Constants::ROUTES_CONTESTS_DISPLAY, $privateContest[Constants::FLD_CONTESTS_ID]));
             $browser2->assertPathIs(route(Constants::ROUTES_CONTESTS_DISPLAY, $privateContest[Constants::FLD_CONTESTS_ID], false));
 
-            dump("!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            $browser2->pause(30000);
             // Check notification panel
             $browser2->refresh()
                 ->click('#testing-notification-link');

@@ -65,7 +65,7 @@ class Handler extends ExceptionHandler
 
             // Call the unauthenticated function if not authenticated
             if (!Auth::check()) {
-                return $this->unauthenticated($request);
+                return $this->unauthenticated($request, null);
             } else {
                 if ($request->expectsJson()) {
                     return response()->json(['error' => 'Unauthorized.'], 401);
