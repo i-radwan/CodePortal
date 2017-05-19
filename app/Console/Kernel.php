@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\SyncJudgeProblems::class,
-        Commands\SyncJudgeSubmissions::class
+        Commands\SyncJudgeSubmissions::class,
+        Commands\SyncNewHandles::class
     ];
 
     /**
@@ -28,12 +29,12 @@ class Kernel extends ConsoleKernel
         // Run problems sync every day
         $schedule->command('sync:judge-problems --judge=codeforces')->daily();
         $schedule->command('sync:judge-problems --judge=uva')->daily();
-        $schedule->command('sync:judge-problems --judge=livearchive')->daily();
+        $schedule->command('sync:judge-problems --judge=live-archive')->daily();
 
         // Sync all submissions
-        $schedule->command('sync:judge-submissions * --judge=codeforces')->everyMinute();
-        $schedule->command('sync:judge-submissions * --judge=uva')->withoutOverlapping()->everyMinute();
-        $schedule->command('sync:judge-submissions * --judge=livearchive')->withoutOverlapping()->everyMinute();
+        $schedule->command('sync:judge-submissions "*" --judge=codeforces')->everyMinute();
+        $schedule->command('sync:judge-submissions "*" --judge=uva')->withoutOverlapping()->everyMinute();
+        $schedule->command('sync:judge-submissions "*" --judge=live-archive')->withoutOverlapping()->everyMinute();
 
         // Sync submissions for new handles
         $schedule->command('sync:handles-submissions')->withoutOverlapping()->everyMinute();

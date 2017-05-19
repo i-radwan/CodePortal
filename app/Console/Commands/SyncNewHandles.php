@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Services\CodeforcesSyncService;
 use App\Services\LiveArchiveSyncService;
 use App\Services\UVaSyncService;
 use App\Utilities\Constants;
 use Illuminate\Console\Command;
+use DB;
 
 class SyncNewHandles extends Command
 {
@@ -39,6 +41,7 @@ class SyncNewHandles extends Command
      */
     public function handle()
     {
+        \Log::info("Syncing new users handles");
         // Get user handles to sync their submissions from database table
         $handles = \DB::table(Constants::TBL_HANDLES_SYNC_QUEUE)
             ->select()
@@ -47,9 +50,9 @@ class SyncNewHandles extends Command
 
         // iterate over the queue first 5 handles to sync their submissions
         $handles->each(function ($handle) {
+            $handle = (array)$handle;
             $userID = $handle[Constants::FLD_HANDLES_SYNC_QUEUE_USER_ID];
             $judgeID = $handle[Constants::FLD_HANDLES_SYNC_QUEUE_JUDGE_ID];
-
             switch ($judgeID) {
                 case Constants::JUDGE_CODEFORCES_ID:
                     $syncService = new CodeforcesSyncService();
@@ -61,11 +64,11 @@ class SyncNewHandles extends Command
                     $syncService = new LiveArchiveSyncService();
                     break;
             }
-            $syncStatus = $syncService->syncSubmissions(User::find($userID));
+            $syncStatus = $syncService->syncSubmissions(User::find($userID)->first());
 
             // Remove the handle from the table if sync succeeded
             if ($syncStatus) {
-                \DB::table(Constants::TBL_HANDLES_SYNC_QUEUE)
+                DB::table(Constants::TBL_HANDLES_SYNC_QUEUE)
                     ->where(Constants::FLD_HANDLES_SYNC_QUEUE_USER_ID, $userID)
                     ->where(Constants::FLD_HANDLES_SYNC_QUEUE_JUDGE_ID, $judgeID)
                     ->delete();

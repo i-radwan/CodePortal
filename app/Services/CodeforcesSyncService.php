@@ -206,7 +206,6 @@ class CodeforcesSyncService extends JudgeSyncService
     protected function syncSubmissionsWithDatabase(User $user = null)
     {
         $data = json_decode($this->rawDataString, true);
-
         // Check the response status
         if ($data[self::RESPONSE_STATUS] == self::RESPONSE_STATUS_FAILED) {
             Log::alert("$this->judgeName response comment: " . $data[self::RESPONSE_COMMENT]);

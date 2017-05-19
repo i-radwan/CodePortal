@@ -211,11 +211,10 @@ class User extends Authenticatable
             ->orderByDesc(Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID)
             ->limit(1)
             ->offset($offset);
+        $submissionId = (array) $query->first();
 
-        $submissionId = $query->first();
-
-        if ($submissionId != null) {
-            return ((array)$submissionId)[Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID];
+        if ($submissionId != null && isset($submissionId)) {
+            return $submissionId[Constants::FLD_SUBMISSIONS_JUDGE_SUBMISSION_ID];
         }
 
         return null;

@@ -121,7 +121,6 @@ abstract class JudgeSyncService
                 Log::alert("Failed to fetch submissions from $this->judgeName.");
                 return false;
             }
-
             if (!$this->syncSubmissionsWithDatabase($user)) {
                 Log::alert("Failed to sync submissions from $this->judgeName with database.");
                 return false;

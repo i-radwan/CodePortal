@@ -99,4 +99,15 @@ class Judge extends Model
             Constants::FLD_USER_HANDLES_USER_ID
         )->withPivot(Constants::FLD_USER_HANDLES_HANDLE);
     }
+    
+    /**
+     * Return the user model corresponding to the given handle, if not found then null is returned
+     *
+     * @param string $handle
+     * @return User|null
+     */
+    public function user($handle)
+    {
+        return $this->users()->wherePivot(Constants::FLD_USER_HANDLES_HANDLE, $handle)->first();
+    }
 }
