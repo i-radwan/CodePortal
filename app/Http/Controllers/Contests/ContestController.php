@@ -408,7 +408,7 @@ class ContestController extends Controller
      */
     private function getStandingsInfo($contest)
     {
-        //\DB::enableQueryLog();
+        \DB::enableQueryLog();
 
         //TODO: fix pagination
         $rawData = $contest
@@ -416,7 +416,7 @@ class ContestController extends Controller
             ->get();
         //->paginate(Constants::CONTEST_STANDINGS_PER_PAGE, ['*'], 'standings_page');
 
-        //dd(\DB::getQueryLog());
+//        dd(\DB::getQueryLog());
 
         $standings = [];
         $idx = 0;

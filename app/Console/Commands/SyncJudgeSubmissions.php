@@ -17,7 +17,7 @@ class SyncJudgeSubmissions extends Command
      *
      * @var string
      */
-    protected $signature = 'sync-judge:submissions
+    protected $signature = 'sync:judge-submissions
                             {user-id : the id of the user to fetch submissions for, write * to fetch submissions for all users}
                             {--judge=codeforces : the name of the online judge to be synced (codeforces, uva, live-archive)}';
 
@@ -39,8 +39,6 @@ class SyncJudgeSubmissions extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {

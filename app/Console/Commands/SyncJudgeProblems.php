@@ -16,7 +16,7 @@ class SyncJudgeProblems extends Command
      *
      * @var string
      */
-    protected $signature = 'sync-judge:problems
+    protected $signature = 'sync:judge-problems
                             {--judge=codeforces : the name of the online judge to be synced (codeforces, uva, live-archive)}';
 
     /**

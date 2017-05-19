@@ -11,8 +11,8 @@ class ProblemsTableSeeder extends Seeder
      */
     public function run()
     {
-        Artisan::call("sync-judge:problems", ["--judge" => "codeforces"]);
-        Artisan::call("sync-judge:problems", ["--judge" => "uva"]);
-        Artisan::call("sync-judge:problems", ["--judge" => "live-archive"]);
+        Artisan::call("sync:judge-problems", ["--judge" => "codeforces"]);
+        Artisan::call("sync:judge-problems", ["--judge" => "uva"]);
+        Artisan::call("sync:judge-problems", ["--judge" => "live-archive"]);
     }
 }

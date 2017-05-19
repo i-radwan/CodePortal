@@ -20,13 +20,23 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // Run problems sync every day
+        $schedule->command('sync:judge-problems --judge=codeforces')->daily();
+        $schedule->command('sync:judge-problems --judge=uva')->daily();
+        $schedule->command('sync:judge-problems --judge=livearchive')->daily();
+
+        // Sync all submissions
+        $schedule->command('sync:judge-submissions * --judge=codeforces')->everyMinute();
+        $schedule->command('sync:judge-submissions * --judge=uva')->withoutOverlapping()->everyMinute();
+        $schedule->command('sync:judge-submissions * --judge=livearchive')->withoutOverlapping()->everyMinute();
+
+        // Sync submissions for new handles
+        $schedule->command('sync:handles-submissions')->withoutOverlapping()->everyMinute();
     }
 
     /**
