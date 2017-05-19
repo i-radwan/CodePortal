@@ -40,5 +40,5 @@ Route::get('profile/{user}/teams', 'TeamController@index')
     ->name(Constants::ROUTES_PROFILE_TEAMS);
 
 // User blogs
-Route::get('profile/{user}/blogs', 'BlogController@displayUserPosts')
+Route::get('profile/{user}/blogs', 'Blogs\BlogController@displayUserPosts')
     ->name(Constants::ROUTES_PROFILE_BLOGS);
