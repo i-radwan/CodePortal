@@ -572,6 +572,9 @@ class Constants
     const TBL_VOTES = "votes";
     const TBL_DOWN_VOTES = "down_votes";
 
+    // Extra tables
+    const TBL_HANDLES_SYNC_QUEUE = "handles_sync_queue";
+
     //
     // Fields
     //
@@ -737,7 +740,7 @@ class Constants
     const FLD_BLOGS_BLOG_ID = "id";
     const FLD_BLOGS_OWNER_ID = "owner_id";
 
-    // POSTS
+    // Posts
     const FLD_POSTS_ID = "id";
     const FLD_POSTS_OWNER_ID = "owner_id";
     const FLD_POSTS_TITLE = "title";
@@ -769,6 +772,9 @@ class Constants
     const FLD_VOTES_DELETED_AT = "deleted_at";
     const FLD_VOTES_CREATED_AT = "created_at";
 
+    // Handles sync queue
+    const FLD_HANDLES_SYNC_QUEUE_USER_ID = "user_id";
+    const FLD_HANDLES_SYNC_QUEUE_JUDGE_ID = "judge_id";
     // ============================================================
 
     //endregion
