@@ -13,7 +13,7 @@
            {{--If there's unread notifications, mark them read once clicked--}}
            @if($unreadCount) onclick="app.markAllNotificationsRead('{{ csrf_token() }}', '{{ route(\App\Utilities\Constants::ROUTES_NOTIFICATIONS_MARK_ALL_READ) }}');" @endif >
             <i id="notifications-icon"
-               class="notifications-icon fa fa-bell{{($unreadCount)?' dark-red':'-o'}}"
+               class="notifications-icon fa fa-bell{{ ($unreadCount)?' dark-red':'-o' }}"
                aria-hidden="true">
             </i>
 
@@ -30,12 +30,12 @@
                         // Generate resource link, which the user gets to when clicking the notification
                         case \App\Utilities\Constants::NOTIFICATION_TYPE_CONTEST:
                             $resource = \App\Models\Contest::find($notification->resource_id);
-                            $resourceLink = 'contest/' . $resource->id;
+                            $resourceLink = route(\App\Utilities\Constants::ROUTES_CONTESTS_DISPLAY, $resource[\App\Utilities\Constants::FLD_CONTESTS_ID]);
                             $icon = 'fa-flag-checkered';
                             break;
                         case \App\Utilities\Constants::NOTIFICATION_TYPE_GROUP:
                             $resource = \App\Models\Group::find($notification->resource_id);
-                            $resourceLink = 'groups/' . $resource->id;
+                            $resourceLink = route(\App\Utilities\Constants::ROUTES_GROUPS_DISPLAY, $resource[\App\Utilities\Constants::FLD_GROUPS_ID]);
                             $icon = 'fa-users';
                             break;
                         case \App\Utilities\Constants::NOTIFICATION_TYPE_TEAM:

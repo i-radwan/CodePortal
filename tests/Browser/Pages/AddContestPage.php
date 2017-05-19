@@ -69,7 +69,7 @@ class AddContestPage extends BasePage
             $browser->script(['$("#public_visibility").prop(\'checked\', true);$("#private_visibility").prop(\'checked\', false);']);
 
         // Save and return new model
-        $browser->press('Save');
+        $browser->press('Add');
     }
 
     /**
