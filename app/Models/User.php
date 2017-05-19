@@ -141,10 +141,6 @@ class User extends Authenticatable
      */
     public function addHandle($judgeId, $handle)
     {
-        // TODO: Omar Wael
-        // TODO: add these handles in a queue to fetch their submissions
-        // TODO: validate
-
         // If adding the same handle as before then no need to proceed further
         if ($this->handle($judgeId) == $handle) {
             return;
@@ -153,6 +149,25 @@ class User extends Authenticatable
         $this->handles()->syncWithoutDetaching([
             $judgeId => [Constants::FLD_USER_HANDLES_HANDLE => $handle]
         ]);
+
+        // Delete previous record of the current user if exits
+        DB::table(Constants::TBL_HANDLES_SYNC_QUEUE)
+            ->where(
+                Constants::FLD_HANDLES_SYNC_QUEUE_USER_ID,
+                $this[Constants::FLD_USERS_ID]
+            )
+            ->where(
+                Constants::FLD_HANDLES_SYNC_QUEUE_JUDGE_ID,
+                $judgeId
+            )
+            ->delete();
+
+        // Add new handle to sync queue
+        DB::table(Constants::TBL_HANDLES_SYNC_QUEUE)
+            ->insert([
+                Constants::FLD_HANDLES_SYNC_QUEUE_USER_ID => $this[Constants::FLD_USERS_ID],
+                Constants::FLD_HANDLES_SYNC_QUEUE_JUDGE_ID => $judgeId
+            ]);
     }
 
     /**
