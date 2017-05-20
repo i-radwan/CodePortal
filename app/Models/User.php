@@ -150,7 +150,11 @@ class User extends Authenticatable
             $judgeId => [Constants::FLD_USER_HANDLES_HANDLE => $handle]
         ]);
 
+        //
         // Delete previous record of the current user if exits
+        //
+
+        // delete previous records in sync queue
         DB::table(Constants::TBL_HANDLES_SYNC_QUEUE)
             ->where(
                 Constants::FLD_HANDLES_SYNC_QUEUE_USER_ID,
@@ -162,7 +166,27 @@ class User extends Authenticatable
             )
             ->delete();
 
-        // Add new handle to sync queue
+        // Delete previous submissions
+        DB::table(Constants::TBL_SUBMISSIONS)
+            ->join(
+                Constants::TBL_PROBLEMS,
+                Constants::TBL_PROBLEMS . '.'  . Constants::FLD_PROBLEMS_ID,
+                '=',
+                Constants::TBL_SUBMISSIONS . '.' . Constants::FLD_SUBMISSIONS_PROBLEM_ID
+            )
+            ->where(
+                Constants::TBL_PROBLEMS . '.'  . Constants::FLD_PROBLEMS_JUDGE_ID,
+                '=',
+                $judgeId
+            )
+            ->where(
+                Constants::TBL_SUBMISSIONS . '.'  . Constants::FLD_SUBMISSIONS_USER_ID,
+                '=',
+                $this[Constants::FLD_USERS_ID]
+            )
+            ->delete();
+
+        // Add new handle to sync queue to be fetched in turn
         DB::table(Constants::TBL_HANDLES_SYNC_QUEUE)
             ->insert([
                 Constants::FLD_HANDLES_SYNC_QUEUE_USER_ID => $this[Constants::FLD_USERS_ID],
