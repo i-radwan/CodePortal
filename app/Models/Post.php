@@ -53,6 +53,26 @@ class Post extends Model
     ];
 
     /**
+     * Delete the model from the database and its related data
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        // Delete comments
+        foreach ($this->comments()->get() as $comment){
+            $comment->delete();
+        }
+
+        // Delete votes
+        foreach ($this->votes()->get() as $vote){
+            $vote->forceDelete();
+        }
+
+        return parent::delete();
+    }
+
+    /**
      * Get comments for this Post
      */
     public function comments()

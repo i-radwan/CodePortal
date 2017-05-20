@@ -53,6 +53,20 @@ class Comment extends Model
         Constants::FLD_COMMENTS_PARENT_ID => 'nullable|exists:' . Constants::TBL_COMMENTS . ',' . Constants::FLD_COMMENTS_ID,
     ];
 
+    /**
+     * Delete the model from the database and its related data
+     *
+     * @return bool|null
+     */
+    public function delete()
+    {
+        // Delete votes
+        foreach ($this->votes()->get() as $vote){
+            $vote->forceDelete();
+        }
+
+        return parent::delete();
+    }
 
     /**
      * Get Comment Owner User Name
