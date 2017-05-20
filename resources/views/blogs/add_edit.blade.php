@@ -23,6 +23,8 @@
                 <form class="form-horizontal" role="form" method="post" onsubmit="return app.submitAddOrEditPostForm(this)"
                       action= {{ isset($postID) ? route(\App\Utilities\Constants::ROUTES_BLOGS_POST_UPDATE, $postID) : route(\App\Utilities\Constants::ROUTES_BLOGS_POST_STORE) }}>
 
+                    <span  name="edit-post-error" class="centered"> </span>
+
                     {{--Hidden fields--}}
                     @if(isset($postID))
                         {{method_field('PUT')}}
@@ -56,10 +58,6 @@
                                 </textarea>
                         </div>
                     </div>
-
-
-                    <div name="edit-post-error" class="centered"></div>
-
 
                     {{--Submit Button--}}
                     <button type="submit"

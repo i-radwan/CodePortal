@@ -289,6 +289,7 @@ var app = {
 
                 // Get the textarea element (post body)
                 var element = document.getElementById("edit-post-body");
+
                 // Create a new SimpleMD Editor
                 var simplemde = this.associateTextAreaWithSimpleMDE(element, {
                                 enabled: $(element).data('autosave-enable'),
@@ -1344,17 +1345,20 @@ var app = {
     },
 
     submitAddOrEditPostForm: function (form){
-        var postBody = $(form).find('#edit-post-body')[0];
-        var errorContainer = $(form).find('div[name="edit-post-error"]')[0];
+        var postBody = $(form).find('#edit-post-body');
+        var errorContainer = $(form).find('span[name="edit-post-error"]');
 
         // Validate post body length not less than 50 characters
         if(postBody.text().length >= app.blogPostMinimumBodyLength)
             return true;
 
-        // Create new DOM element and assign basic attributes
-        var entry = document.createElement('label');
+        // Show the error container
+        $(errorContainer).show();
 
-        entry.className += 'label label-danger';
+        // Create new DOM element and assign basic attributes
+        var entry = document.createElement('div');
+
+        entry.className += 'alert alert-danger';
 
         // Add element content and append to view
         entry.innerHTML = "The body must at least 50 characters" ;
