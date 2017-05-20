@@ -336,7 +336,7 @@ class ContestFlowTest extends DuskTestCase
                 ->clickLink('Questions')
                 ->assertSee($title)
                 ->assertSee($content)
-                ->assertSee(Utilities::generateProblemNumber(Problem::find(2)))
+                ->assertSee(Problem::find(2)[Constants::FLD_PROBLEMS_NAME])
                 // Not organizer, must not see the actions buttons
                 ->assertMissing('.testing-question-action-button');
 
@@ -351,7 +351,7 @@ class ContestFlowTest extends DuskTestCase
                 ->clickLink('Questions')
                 ->assertSee($title)
                 ->assertSee($content)
-                ->assertSee(Utilities::generateProblemNumber(Problem::find(2)))
+                ->assertSee(Problem::find(2)[Constants::FLD_PROBLEMS_NAME])
                 ->assertVisible('.testing-question-action-button.answer')
                 ->click('.testing-question-action-button.answer')
                 ->waitFor('#question-answer')
@@ -427,14 +427,12 @@ class ContestFlowTest extends DuskTestCase
             $browser->clickLink('Edit');
 
             // Check autoFill (that contest data is available here)
-            //saveContest($contestName, $validContestDate, 10000, 1, [1, 2, 3, 4], [$asd, $username1], [$username2, $username3]);
             $browser->assertInputValue('#name', $contestName)
-                ->assertInputValue('#time', '2017-04-23 12:12:12')
                 ->script(["$('#duration').show();"]);
             $browser
                 ->waitFor('#duration')
                 ->pause(1000)
-                ->assertInputValue('#duration', 10000 * 60)
+                ->assertInputValue('#duration', 1728000)
                 ->assertRadioSelected('visibility', 1)
                 ->assertSeeIn('#organisers-list', $username1);
 
@@ -478,7 +476,9 @@ class ContestFlowTest extends DuskTestCase
             // ==========================================================================
             // Add($username4)/remove(mitchell.otha) organizers (check with browser 2)
             // ==========================================================================
-            $browser->click('.remove-btn');
+            $browser
+                ->click("#name")
+                ->click('.remove-btn');
 
             $browser->script(['sessionStorage.setItem(app.organizersSessionKey, \'["' . $username4 . '"]\')']);
 
@@ -489,7 +489,6 @@ class ContestFlowTest extends DuskTestCase
             $browser2->refresh()
                 ->assertPathIs(route(Constants::ROUTES_ERRORS_401, [], false))
                 ->clickLink('Logout')
-                // Login as mitchell.otha
                 ->visit(new Login)
                 ->loginUser($username4, 'asdasd');
 

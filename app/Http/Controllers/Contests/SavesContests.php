@@ -17,8 +17,6 @@ trait SavesContests
     /**
      * Save contest to database
      *
-     * ToDo: test this function
-     *
      * @param Request $request
      * @param Group $group
      * @param Contest $contest

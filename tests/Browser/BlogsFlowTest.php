@@ -45,7 +45,8 @@ class BlogsFlowTest extends DuskTestCase
             $latestEntryTitle = $latestEntry[Constants::FLD_POSTS_TITLE];
             $latestEntryBody = $latestEntry[Constants::FLD_POSTS_BODY];
 
-            $browser->assertPathIs(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID, false))
+            $browser
+                ->assertPathIs(route(Constants::ROUTES_BLOGS_POST_DISPLAY, $latestEntryID, false))
                 ->assertSee('Post added successfully!')
                 ->assertSee($latestEntryTitle)
                 ->assertSee($latestEntryBody);
@@ -55,7 +56,7 @@ class BlogsFlowTest extends DuskTestCase
             //============================================================
 
             $browser->type('.add-comment-text', $comment = $faker->sentence((30)))
-                ->press('Replay')
+                ->press('Reply')
                 ->assertSee('Comment Added Successfully')
                 ->assertSee($comment);
 

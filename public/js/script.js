@@ -1344,8 +1344,8 @@ var app = {
     },
 
     submitAddOrEditPostForm: function (form){
-        var postBody = $(form).find('textarea[name="body"]');
-        var errorContainer = $(form).find('div[name="edit-post-error"]');
+        var postBody = $(form).find('#edit-post-body')[0];
+        var errorContainer = $(form).find('div[name="edit-post-error"]')[0];
 
         // Validate post body length not less than 50 characters
         if(postBody.text().length >= app.blogPostMinimumBodyLength)
