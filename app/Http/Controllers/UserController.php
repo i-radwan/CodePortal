@@ -215,7 +215,7 @@ class UserController extends Controller
             $user[Constants::FLD_USERS_PROFILE_PICTURE] = $fileName;
 
             // Delete user old file
-            unlink($oldFile);
+            // unlink($oldFile);
         }
 
 

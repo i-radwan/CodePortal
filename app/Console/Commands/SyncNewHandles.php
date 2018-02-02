@@ -48,11 +48,13 @@ class SyncNewHandles extends Command
             ->limit(5)
             ->get();
 
+        dump($handles);
         // iterate over the queue first 5 handles to sync their submissions
         $handles->each(function ($handle) {
             $handle = (array)$handle;
             $userID = $handle[Constants::FLD_HANDLES_SYNC_QUEUE_USER_ID];
             $judgeID = $handle[Constants::FLD_HANDLES_SYNC_QUEUE_JUDGE_ID];
+
             switch ($judgeID) {
                 case Constants::JUDGE_CODEFORCES_ID:
                     $syncService = new CodeforcesSyncService();
@@ -64,7 +66,7 @@ class SyncNewHandles extends Command
                     $syncService = new LiveArchiveSyncService();
                     break;
             }
-            $syncStatus = $syncService->syncSubmissions(User::find($userID)->first());
+            $syncStatus = $syncService->syncSubmissions(User::find($userID));
 
             // Remove the handle from the table if sync succeeded
             if ($syncStatus) {

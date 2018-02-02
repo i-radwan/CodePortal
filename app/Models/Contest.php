@@ -617,9 +617,9 @@ class Contest extends Model
             "then " .
             "`" . Constants::TBL_SUBMISSIONS . "`.`" . Constants::FLD_SUBMISSIONS_SUBMISSION_TIME . "` " .
             "- " .
-            "UNIX_TIMESTAMP(" .
+            "UNIX_TIMESTAMP(CONVERT_TZ(" .
             "`" . Constants::TBL_CONTESTS . "`.`" . Constants::FLD_CONTESTS_TIME . "`" .
-            ") " .
+            ", '+00:00', @@session.time_zone)) " .
             "else 0 end) as " .
             "`" . $columnAlias . "`"
         ));

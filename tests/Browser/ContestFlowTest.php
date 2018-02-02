@@ -628,7 +628,7 @@ class ContestFlowTest extends DuskTestCase
             $browser->waitFor('.testing-problem-order-2');
 
             // Check problem order as third
-            $this->assertTrue($browser->text('.testing-problem-order-2') ==
+            assertTrue($browser->text('.testing-problem-order-2') ==
                 Utilities::generateProblemNumber(Problem::find(2)));
 
             // ==========================================================
