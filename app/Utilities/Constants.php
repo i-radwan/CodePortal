@@ -131,7 +131,7 @@ class Constants
     //region Limits
 
     const TEAM_MEMBERS_MAX_COUNT = 3;
-    const POSTS_COUNT_PER_PAGE = 7;
+    const POSTS_COUNT_PER_PAGE = 15;
     const POSTS_MAX_DISPLAY_LIMIT = 120;
 
     //=============================================================
